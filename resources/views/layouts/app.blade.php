@@ -32,7 +32,13 @@
   <!-- Page Wrapper -->
   <div id="wrapper">
 
-    @include('layouts.sidebar')
+    @switch(Auth::user()->role)
+        @case('admin_kyoo')
+            @include('layouts.sidebarAdmin')
+            @break
+        @default
+            
+    @endswitch
 
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
