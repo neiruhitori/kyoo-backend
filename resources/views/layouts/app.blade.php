@@ -19,7 +19,12 @@
 
   <!-- Custom styles for this template-->
   <link href="{{asset('admin/css/sb-admin-2.css')}}" rel="stylesheet">
-
+  <style>
+    .bg-gradient-primary {
+      background-image: linear-gradient(355.22deg, #189DCD 4.98%, #0A5194 121.39%);
+    }
+  </style>
+  @stack('css')
 </head>
 
 <body id="page-top">
@@ -39,10 +44,7 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-
-          <!-- Page Heading -->
-          <h1 class="h3 mb-4 text-gray-800">Blank Page</h1>
-
+          @yield('content')
         </div>
         <!-- /.container-fluid -->
 
@@ -79,7 +81,7 @@
 
   <!-- Custom scripts for all pages-->
   <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
-
+  @stack('js')
 </body>
 
 </html>
