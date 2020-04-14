@@ -30,4 +30,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
 
     // Industry Category
     Route::resource('industryCategory', 'IndustryCategoryController');
+
+    // Branch
+    Route::resource('branch', 'BranchController');
 });

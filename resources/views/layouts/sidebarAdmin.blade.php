@@ -46,8 +46,8 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Submenu:</h6>
-            <a class="collapse-item" href="buttons.html">Insert Branch</a>
-            <a class="collapse-item" href="cards.html">List Branch</a>
+            <a class="collapse-item" href="{{route('admin.branch.create')}}">Insert Branch</a>
+            <a class="collapse-item" href="{{route('admin.branch.index')}}">List Branch</a>
           </div>
         </div>
       </li>
