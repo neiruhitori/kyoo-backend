@@ -19,6 +19,9 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('token_external')->nullable();
+            $table->string('platform')->nullable();
+            $table->enum('role', ['admin_kyoo', 'admin_branch', 'cs', 'customer'])->default('customer');
             $table->rememberToken();
             $table->timestamps();
         });

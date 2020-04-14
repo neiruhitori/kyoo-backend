@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin Kyoo',
             'email' => 'admin@kyoo.id',
             'password' => bcrypt('secret123'),
+            'role' => 'admin_kyoo'
         ]);
     }
 }
