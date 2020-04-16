@@ -25,6 +25,15 @@
                                     <input name="icon" type="file" class="form-control @error('icon') is-invalid @enderror" value="{{old('icon')}}" required>
                                     @include('layouts.inputError', ['errorName' => 'icon'])
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="name">Show on Mobile</label>
+                                    <select name="" id="" class="form-control">
+                                        <option value="">Yes</option>
+                                        <option value="">No</option>
+                                    </select>
+                                    @include('layouts.inputError', ['errorName' => 'name'])
+                                </div>
                                 <button class="btn btn-primary">Save</button>
                             </form>
                         </div>

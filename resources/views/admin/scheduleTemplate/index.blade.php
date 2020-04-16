@@ -14,10 +14,13 @@
                 <div class="card-body">
                     @include('layouts.alert')
                     <div class="row">
-                        <div class="col-md-12 text-right">
-                            <a href="{{route('admin.industryCategory.create')}}" class="btn btn-primary"">
+                        <div class="col-md-12">
+                            <label for="">Upload your Excel</label>
+                            <input type="file" class="form-control">
+                            <a href="{{route('admin.industryCategory.create')}}" class="btn btn-primary btn-sm mt-2">
                                 Insert Category
                             </a>
+                            <hr>
                         </div>
                     </div>
                     <div class="row">
@@ -27,21 +30,17 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Category</th>
-                                            <th>Icon</th>
-                                            <th>Show on Mobile</th>
+                                            <th>Description</th>
+                                            <th>Date</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td>1</td>
-                                            <td>Healtcare</td>
+                                            <td>Ied Fitr</td>
                                             <td>
-                                                <img src="{{asset('img/ic-healtcare.svg')}}" alt="">    
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-primary">Ya</span>
+                                                21-05-2020
                                             </td>
                                             <td>
                                                 <a href="" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Category">
@@ -58,12 +57,9 @@
                                         </tr>
                                         <tr>
                                             <td>2</td>
-                                            <td>Food n Beverage</td>
+                                            <td>Ied Adha</td>
                                             <td>
-                                                <img src="{{asset('img/ic-fnb.svg')}}" alt="">    
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-danger">No</span>
+                                                21-09-2020
                                             </td>
                                             <td>
                                                 <a href="" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Category">

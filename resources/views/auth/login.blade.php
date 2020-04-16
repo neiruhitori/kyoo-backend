@@ -17,7 +17,11 @@
 
   <!-- Custom styles for this template-->
   <link href="{{asset('admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
-
+  <style>
+    .bg-gradient-primary {
+      background: linear-gradient(121.16deg, #189DCD 0.95%, #0A5194 97.59%);
+    }
+  </style>
 </head>
 
 <body class="bg-gradient-primary">
@@ -37,7 +41,7 @@
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                    <img src="{{asset('img/logo-color.svg')}}" alt="" class="img-fluid mb-4">
                   </div>
                   <form method="POST" action="{{ route('login') }}" class="user">
                         @csrf
@@ -68,12 +72,12 @@
                     </button>
                   </form>
                   <hr>
-                  {{-- <div class="text-center">
-                    <a class="small" href="forgot-password.html">Forgot Password?</a>
+                  <div class="text-center">
+                    <a class="small" href="{{route('password.request')}}">Forgot Password?</a>
                   </div>
                   <div class="text-center">
-                    <a class="small" href="register.html">Create an Account!</a>
-                  </div> --}}
+                    <a class="small" href="{{route('register')}}">Register your Branch here!</a>
+                  </div>
                 </div>
               </div>
             </div>

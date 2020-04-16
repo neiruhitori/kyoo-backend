@@ -1,8 +1,8 @@
 <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('home')}}">
-        <img src="{{asset('img/logo.svg')}}" alt="">
+      <a class="sidebar-brand d-flex mb-2" href="{{route('home')}}">
+        <img src="{{asset('img/logo.svg')}}" alt="" style="height: 40px;">
       </a>
 
       <!-- Divider -->
@@ -48,8 +48,16 @@
             <h6 class="collapse-header">Submenu:</h6>
             <a class="collapse-item" href="{{route('admin.branch.create')}}">Insert Branch</a>
             <a class="collapse-item" href="{{route('admin.branch.index')}}">List Branch</a>
+            <a class="collapse-item" href="{{route('admin.branch.verify.index')}}">Verify Branch</a>
           </div>
         </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{{route('admin.scheduleTemplate.index')}}">
+          <i class="fas fa-fw fa-calendar"></i>
+          <span>Schedule Template</span>
+        </a>
       </li>
 
       <!-- Divider -->

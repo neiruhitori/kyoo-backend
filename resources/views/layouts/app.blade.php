@@ -23,6 +23,9 @@
     .bg-gradient-primary {
       background-image: linear-gradient(355.22deg, #189DCD 4.98%, #0A5194 121.39%);
     }
+    .fullwidth {
+      width: 100%;
+    }
   </style>
   @stack('css')
 </head>

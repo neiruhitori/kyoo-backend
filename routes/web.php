@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect(route('home'));
 });
 
 Route::get('/unauthorized', function () {
@@ -32,5 +32,9 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::resource('industryCategory', 'IndustryCategoryController');
 
     // Branch
+    Route::get('branch/verify', 'BranchController@verifyList')->name('branch.verify.index');
     Route::resource('branch', 'BranchController');
+
+    // Schedule Template
+    Route::resource('scheduleTemplate', 'ScheduleTemplateController');
 });

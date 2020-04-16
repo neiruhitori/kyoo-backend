@@ -14,94 +14,28 @@
                         <div class="col-md-12">
                             <form action="" method="post">
                                 @csrf
-                                <div class="form-group">
-                                    <label for="name">Industry Category</label>
-                                    <select name="" id="" class="form-control">
-                                        <option value="">Healtcare</option>
-                                    </select>
-                                    @include('layouts.inputError', ['errorName' => 'name'])
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
-                                    @include('layouts.inputError', ['errorName' => 'name'])
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email')}}" required>
-                                    @include('layouts.inputError', ['errorName' => 'email'])
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="name">Province</label>
-                                            <select name="" id="" class="form-control">
-                                                <option value="">Healtcare</option>
-                                            </select>
-                                            @include('layouts.inputError', ['errorName' => 'name'])
-                                        </div>
+                                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Branch Profile</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="location-tab" data-toggle="tab" href="#location" role="tab" aria-controls="location" aria-selected="false">Branch Location</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="admin" aria-selected="false">Branch Admin</a>
+                                    </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                        @include('admin.branch.create1')
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="name">City</label>
-                                            <select name="" id="" class="form-control">
-                                                <option value="">Healtcare</option>
-                                            </select>
-                                            @include('layouts.inputError', ['errorName' => 'name'])
-                                        </div>
+                                    <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
+                                        @include('admin.branch.create2')
+                                    </div>
+                                    <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">
+                                        @include('admin.branch.create3')
                                     </div>
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="name">Address</label>
-                                    <textarea name="" id="" cols="" rows="" class="form-control"></textarea>
-                                    @include('layouts.inputError', ['errorName' => 'name'])
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="name">Latitude</label>
-                                            <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
-                                            @include('layouts.inputError', ['errorName' => 'name'])
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="name">Longitude</label>
-                                            <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
-                                            @include('layouts.inputError', ['errorName' => 'name'])
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name">Phone</label>
-                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
-                                    @include('layouts.inputError', ['errorName' => 'name'])
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="icon">Logo</label>
-                                            <input name="icon" type="file" class="form-control @error('icon') is-invalid @enderror" value="{{old('icon')}}" required>
-                                            @include('layouts.inputError', ['errorName' => 'icon'])
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="icon">Background Photo</label>
-                                            <input name="icon" type="file" class="form-control @error('icon') is-invalid @enderror" value="{{old('icon')}}" required>
-                                            @include('layouts.inputError', ['errorName' => 'icon'])
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button class="btn btn-primary">Save</button>
                             </form>
                         </div>
                     </div>

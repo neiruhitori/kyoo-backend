@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Branch;
 use App\Http\Controllers\Controller;
+use App\ScheduleTemplate;
 use Illuminate\Http\Request;
 
-class BranchController extends Controller
+class ScheduleTemplateController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,17 +15,8 @@ class BranchController extends Controller
      */
     public function index()
     {
-        return view('admin.branch.index');
+        return view('admin.scheduleTemplate.index');
     }
-
-    /**
-     * Display a listing of Verifying Branch
-     */
-
-     public function verifyList()
-     {
-         return view('admin.branch.verify');
-     }
 
     /**
      * Show the form for creating a new resource.
@@ -34,7 +25,7 @@ class BranchController extends Controller
      */
     public function create()
     {
-        return view('admin.branch.create');
+        //
     }
 
     /**
@@ -51,22 +42,21 @@ class BranchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Branch  $branch
+     * @param  \App\ScheduleTemplate  $scheduleTemplate
      * @return \Illuminate\Http\Response
      */
-    // public function show(Branch $branch)
-    public function show()
+    public function show(ScheduleTemplate $scheduleTemplate)
     {
-        return view('admin.branch.show');
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Branch  $branch
+     * @param  \App\ScheduleTemplate  $scheduleTemplate
      * @return \Illuminate\Http\Response
      */
-    public function edit(Branch $branch)
+    public function edit(ScheduleTemplate $scheduleTemplate)
     {
         //
     }
@@ -75,10 +65,10 @@ class BranchController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Branch  $branch
+     * @param  \App\ScheduleTemplate  $scheduleTemplate
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Branch $branch)
+    public function update(Request $request, ScheduleTemplate $scheduleTemplate)
     {
         //
     }
@@ -86,10 +76,10 @@ class BranchController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Branch  $branch
+     * @param  \App\ScheduleTemplate  $scheduleTemplate
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Branch $branch)
+    public function destroy(ScheduleTemplate $scheduleTemplate)
     {
         //
     }

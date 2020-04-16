@@ -9,17 +9,10 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">List Branch</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">List need to Verify</h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
-                    <div class="row">
-                        <div class="col-md-12 text-right">
-                            <a href="{{route('admin.branch.create')}}" class="btn btn-primary"">
-                                Insert Branch
-                            </a>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
@@ -32,7 +25,6 @@
                                             <th>Name</th>
                                             <th>Address</th>
                                             <th>Created At</th>
-                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -47,22 +39,15 @@
                                             <td>Jl. Ir. H. Juanda No.100, Lebakgede, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132</td>
                                             <td>Tue, 14 Apr 2020</td>
                                             <td>
-                                                <span class="badge badge-primary">Active</span>
-                                            </td>
-                                            <td>
                                                 <a href="{{route('admin.branch.show', 1)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
                                                     <i class="fas fa-fw fa-eye"></i>
                                                 </a>
-                                                <a href="" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Branch">
-                                                    <i class="fas fa-fw fa-edit"></i>
+                                                <a href="{{route('admin.branch.show', 1)}}" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
+                                                    <i class="fas fa-fw fa-check"></i>
                                                 </a>
-                                                {{-- <form action="" method="post" style="display: inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
-                                                        <i class="fas fa-fw fa-trash"></i>
-                                                    </button>
-                                                </form> --}}
+                                                <a href="{{route('admin.branch.show', 1)}}" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
+                                                    <i class="fas fa-fw fa-times"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                     </tbody>
