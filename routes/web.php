@@ -21,6 +21,10 @@ Route::get('/unauthorized', function () {
     return 'unauthorized';
 });
 
+Route::get('/registerTemplate', function () {
+    return view('register');
+});
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
