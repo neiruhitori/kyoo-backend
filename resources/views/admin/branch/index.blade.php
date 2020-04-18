@@ -61,13 +61,6 @@
                                                     <a href="{{route('admin.branch.edit', $branch->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Branch">
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
-                                                    {{-- <form action="" method="post" style="display: inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
-                                                            <i class="fas fa-fw fa-trash"></i>
-                                                        </button>
-                                                    </form> --}}
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -12,12 +12,12 @@
                     <div class="row">
                         <div class="col-md-4">
                                 <p>Logo:</p>
-                                <img src="https://3.bp.blogspot.com/-JWqH64vAzUI/U2dY3LVwlPI/AAAAAAAARSQ/rjgVQ7bBdlg/s1600/RS+ORTHOPEDI+DAN+TRAUMATOLOGI.png" class="img-fluid">    
+                                <img src="{{asset('storage/'.$branch->logo)}}" class="img-fluid">    
                                 <p class="mt-3">Image Background:</p>
-                                <img src="https://rsborromeus.com/wp-content/uploads/2017/02/EB.jpg" class="img-fluid">    
+                                <img src="{{asset('storage/'.$branch->photo)}}" class="img-fluid">    
                         </div>
                         <div class="col-md-8">
-                            <h5>RS Boromeus Bandung</h5>
+                            <h5>{{$branch->name}}</h5>
                             <div class="table-responsive">
                                 <table class="table">
                                     <tr>
@@ -25,28 +25,37 @@
                                     </tr>
                                     <tr>
                                         <th>Category</th>
-                                        <td>Healtcare</td>
+                                        <td>{{$branch->IndustryCategory->name}}</td>
                                     </tr>
                                     <tr>
                                         <th>Email</th>
-                                        <td>boromeusbandung@gmail.com</td>
+                                        <td>{{$branch->email}}</td>
                                     </tr>
                                     <tr>
                                         <th>Country</th>
-                                        <td>Indonesia</td>
+                                        <td>{{$branch->country}}</td>
                                     </tr>
                                     <tr>
                                         <th>Phone Number</th>
-                                        <td>2552000</td>
+                                        <td>
+                                            {{$branch->fixed_phone}}
+                                            @isset($branch->mobile_phone)
+                                                / {{$branch->mobile_phone}}
+                                            @endisset
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Services Likes</th>
-                                        <td>2023</td>
+                                        <td>{{number_format($branch->likes)}}</td>
                                     </tr>
                                     <tr>
                                         <th>Show in Mobile?</th>
                                         <td>
-                                            <h5 class="badge badge-primary">YA</h5>
+                                            @if ($branch->is_active)
+                                                <h5 class="badge badge-primary">Yes</h5>
+                                            @else
+                                                <h5 class="badge badge-danger">No</h5>
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
@@ -58,15 +67,15 @@
                                     </tr>
                                     <tr>
                                         <th>Address</th>
-                                        <td>Jl. Ir. H. Juanda No.100, Lebakgede, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132</td>
+                                        <td>{{$branch->address}}, {{$branch->Regency->name}}</td>
                                     </tr>
                                     <tr>
                                         <th>Latitude</th>
-                                        <td>1,24512</td>
+                                        <td>{{$branch->lat}}</td>
                                     </tr>
                                     <tr>
                                         <th>Longitude</th>
-                                        <td>2,1241123</td>
+                                        <td>{{$branch->long}}</td>
                                     </tr>
                                     <tr>
                                         <th>Maps</th>
@@ -118,11 +127,15 @@
                                     </tr>
                                     <tr>
                                         <th>Email</th>
-                                        <td>admin@boromeus.org.id</td>
+                                        <td>{{$branch->Admin[0]->email}}</td>
                                     </tr>
                                     <tr>
                                         <th>Name</th>
-                                        <td>Admin Boromeius</td>
+                                        <td>{{$branch->Admin[0]->name}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Phone</th>
+                                        <td>{{$branch->Admin[0]->phone}}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -131,7 +144,13 @@
                     <div class="row">
                         <div class="col-md-12">
                             <a href="{{route('admin.branch.index')}}" class="btn btn-primary">Back to List</a>
-                            <a href="{{route('admin.branch.index')}}" class="btn btn-danger">Suspend Branch</a>
+                            <form action="{{route('admin.branch.destroy', $branch->id)}}" method="post" style="display: inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
+                                    Supend Branch
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -89,10 +89,9 @@ class BranchController extends Controller
      * @param  \App\Branch  $branch
      * @return \Illuminate\Http\Response
      */
-    // public function show(Branch $branch)
-    public function show()
+    public function show(Branch $branch)
     {
-        return view('admin.branch.show');
+        return view('admin.branch.show')->withBranch($branch);
     }
 
     /**
@@ -124,8 +123,10 @@ class BranchController extends Controller
      * @param  \App\Branch  $branch
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Branch $branch)
+    public function destroy(Request $request, Branch $branch)
     {
-        //
+        $branch->delete();
+        $request->session()->flash('error', 'Branch '.$branch->name.' has been suspended!');
+        return redirect(route('admin.branch.index'));
     }
 }

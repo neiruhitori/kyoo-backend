@@ -20,4 +20,9 @@ class Branch extends Model
     {
         return $this->belongsTo('App\Models\Regency');
     }
+
+    public function Admin()
+    {
+        return $this->hasMany('App\User')->where('role', 'admin_branch');
+    }
 }
