@@ -24,16 +24,16 @@
                                     <li class="nav-item">
                                         <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="admin" aria-selected="false">Branch Admin</a>
                                     </li>
-                                    </ul>
-                                    <div class="tab-content" id="myTabContent">
+                                </ul>
+                                <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                        @include('admin.branch.create1')
+                                        @include('admin.branch.create.step-1')
                                     </div>
                                     <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
-                                        @include('admin.branch.create2')
+                                        @include('admin.branch.create.step-2')
                                     </div>
                                     <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">
-                                        @include('admin.branch.create3')
+                                        @include('admin.branch.create.step-3')
                                     </div>
                                 </div>
                             </form>

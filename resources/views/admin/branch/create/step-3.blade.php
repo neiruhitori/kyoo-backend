@@ -12,6 +12,11 @@
     @include('layouts.inputError', ['errorName' => 'name'])
 </div>
 <div class="form-group">
+    <label for="name">Phone</label>
+    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
+    @include('layouts.inputError', ['errorName' => 'name'])
+</div>
+<div class="form-group">
     <label for="name">Password</label>
     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
     @include('layouts.inputError', ['errorName' => 'name'])

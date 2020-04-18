@@ -14,6 +14,11 @@
     @include('layouts.inputError', ['errorName' => 'name'])
 </div>
 <div class="form-group">
+    <label for="name">Description</label>
+    <textarea name="" id="" cols="" rows="" class="form-control"></textarea>
+    @include('layouts.inputError', ['errorName' => 'name'])
+</div>
+<div class="form-group">
     <label for="name">Email</label>
     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
     @include('layouts.inputError', ['errorName' => 'name'])
@@ -26,7 +31,12 @@
     @include('layouts.inputError', ['errorName' => 'name'])
 </div>
 <div class="form-group">
-    <label for="name">Phone</label>
+    <label for="name">Fixed Phone</label>
+    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
+    @include('layouts.inputError', ['errorName' => 'name'])
+</div>
+<div class="form-group">
+    <label for="name">Mobile Phone</label>
     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
     @include('layouts.inputError', ['errorName' => 'name'])
 </div>
