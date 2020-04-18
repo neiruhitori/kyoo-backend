@@ -12,7 +12,7 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="" method="post">
+                            <form action="{{route('admin.branch.store')}}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                                     <li class="nav-item">
@@ -36,6 +36,7 @@
                                         @include('admin.branch.create.step-3')
                                     </div>
                                 </div>
+                                <button class="btn btn-primary fullwidth mb-3">Save</button>
                             </form>
                         </div>
                     </div>

@@ -7,60 +7,97 @@
     @include('layouts.inputError', ['errorName' => 'name'])
 </div>
 <div class="form-group">
-    <label for="name">Category</label>
-    <select name="" id="" class="form-control">
-        <option value="">Healtcare</option>
+    <label for="industry_category_id">Category</label>
+    <select name="industry_category_id" id="industry_category_id" class="form-control @error('industry_category_id') is-invalid @enderror" required>
+        @foreach ($categories as $category)
+            <option value="{{$category->id}}">{{$category->name}}</option>
+        @endforeach
     </select>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    @include('layouts.inputError', ['errorName' => 'industry_category_id'])
 </div>
 <div class="form-group">
-    <label for="name">Description</label>
-    <textarea name="" id="" cols="" rows="" class="form-control"></textarea>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    <label for="description">Description</label>
+    <textarea name="description" id="" cols="" rows="" class="form-control @error('description') is-invalid @enderror">{{old('description')}}</textarea>
+    @include('layouts.inputError', ['errorName' => 'description'])
 </div>
 <div class="form-group">
-    <label for="name">Email</label>
-    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    <label for="email">Email</label>
+    <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email')}}" required>
+    @include('layouts.inputError', ['errorName' => 'email'])
 </div>
 <div class="form-group">
-    <label for="name">Country</label>
-    <select name="" id="" class="form-control">
-        <option value="">Indonesia</option>
+    <label for="country">Country</label>
+    <select name="country" id="country" class="form-control @error('country') is-invalid @enderror" required>
+        @foreach ($countries as $country)
+            <option value="{{$country}}">{{$country}}</option>
+        @endforeach
     </select>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    @include('layouts.inputError', ['errorName' => 'country'])
 </div>
 <div class="form-group">
-    <label for="name">Fixed Phone</label>
-    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    <label for="fixed_phone">Fixed Phone</label>
+    <input name="fixed_phone" type="text" class="form-control @error('fixed_phone') is-invalid @enderror" value="{{old('fixed_phone')}}" required>
+    @include('layouts.inputError', ['errorName' => 'fixed_phone'])
 </div>
 <div class="form-group">
-    <label for="name">Mobile Phone</label>
-    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    <label for="mobile_phone">Mobile Phone</label>
+    <input name="mobile_phone" type="text" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone')}}">
+    @include('layouts.inputError', ['errorName' => 'mobile_phone'])
 </div>
 <div class="form-group">
-    <label for="name">Logo</label>
-    <input name="name" type="file" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    <label for="logo">Logo</label>
+    <input name="logo" type="file" class="form-control @error('logo') is-invalid @enderror" required>
+    @include('layouts.inputError', ['errorName' => 'logo'])
 </div>
 <div class="form-group">
-    <label for="name">Image Background</label>
-    <input name="name" type="file" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    <label for="photo">Image Background</label>
+    <input name="photo" type="file" class="form-control @error('photo') is-invalid @enderror" required>
+    @include('layouts.inputError', ['errorName' => 'photo'])
 </div>
 <div class="form-group">
-    <label for="name">Show on Mobile</label>
-    <select name="" id="" class="form-control">
-        <option value="">Yes</option>
+    <label for="is_active">Show on Mobile</label>
+    <select name="is_active" id="is_active" class="form-control @error('is_active') is-invalid @enderror" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
     </select>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    @include('layouts.inputError', ['errorName' => 'is_active'])
 </div>
 <div class="form-group">
-    <label for="name">Follow Template Schedule</label>
-    <select name="" id="" class="form-control">
-        <option value="">Yes</option>
+    <label for="schedule_template_id">Follow Template Schedule</label>
+    <select name="schedule_template_id" id="schedule_template_id" class="form-control @error('schedule_template_id') is-invalid @enderror">
+        <option value="">Not Following</option>
+        @foreach ($templates as $template)
+            <option value="{{$template->id}}">{{$template->name}}</option>
+        @endforeach
     </select>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    @include('layouts.inputError', ['errorName' => 'schedule_template_id'])
 </div>
+@push('js')
+    <script>
+        $(document).ready(function() {
+            const industry_category_idOldValue = '{{ old('industry_category_id') }}';
+            
+            if(industry_category_idOldValue !== '') {
+                $('#industry_category_id').val(industry_category_idOldValue);
+            }
+
+            const countryOldValue = '{{ old('country') ?: "Indonesia" }}';
+            
+            if(countryOldValue !== '') {
+                $('#country').val(countryOldValue);
+            }
+
+            const is_activeOldValue = '{{ old('is_active') }}';
+            
+            if(is_activeOldValue !== '') {
+                $('#is_active').val(is_activeOldValue);
+            }
+
+            const schedule_template_idOldValue = '{{ old('schedule_template_id') }}';
+            
+            if(schedule_template_idOldValue !== '') {
+                $('#schedule_template_id').val(schedule_template_idOldValue);
+            }
+        });
+    </script>
+@endpush

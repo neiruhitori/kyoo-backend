@@ -3,9 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Branch;
+use App\IndustryCategory;
+use App\ScheduleTemplate;
+use App\User;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreBranch;
 use Illuminate\Http\Request;
 use Countries;
+use App\Models\Province;
+
+use Storage;
 
 class BranchController extends Controller
 {
@@ -16,7 +23,8 @@ class BranchController extends Controller
      */
     public function index()
     {
-        return view('admin.branch.index');
+        $branches = Branch::where('status', 'verified')->get();
+        return view('admin.branch.index')->withBranches($branches);
     }
 
     /**
@@ -36,7 +44,15 @@ class BranchController extends Controller
     public function create()
     {
         $countries = Countries::getList('en_US');
-        return view('admin.branch.create');
+        $categories = IndustryCategory::all();
+        $templates = ScheduleTemplate::all();
+        $provinces = Province::all();
+        return view('admin.branch.create', [
+            'countries' => $countries,
+            'categories' => $categories,
+            'templates' => $templates,
+            'provinces' => $provinces
+        ]);
     }
 
     /**
@@ -45,9 +61,26 @@ class BranchController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreBranch $request)
     {
-        //
+        // create branch
+        $input = $request->all();
+        $input['logo'] = Storage::disk('public')->put('branch_logos', $request->logo);
+        $input['photo'] = Storage::disk('public')->put('branch_photos', $request->photo);
+        $input['status'] = 'verified';
+        $branch = Branch::create($input);
+
+        // create admin branch
+        $user = User::create([
+            'branch_id' => $branch->id,
+            'name' => $input['admin_name'],
+            'email' => $input['admin_email'],
+            'password' => $input['admin_password'],
+            'phone' => $input['admin_phone'],
+            'role' => 'admin_branch'
+        ]);
+        $request->session()->flash('success', 'Branch '.$request->name.' has been inserted!');
+        return redirect(route('admin.branch.index'));
     }
 
     /**

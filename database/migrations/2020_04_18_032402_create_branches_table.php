@@ -30,10 +30,10 @@ class CreateBranchesTable extends Migration
             $table->string('logo');
             $table->string('photo')->nullable();
             $table->integer('likes')->default(0);
-            $table->boolean('is_validate')->default(false);
             $table->boolean('is_active')->default(false);
-            $table->softdeletes();
+            $table->enum('status', ['unverified', 'verified', 'rejected'])->default('unverified');
             $table->timestamps();
+            $table->softdeletes();
 
             $table->foreign('industry_category_id')->references('id')->on('industry_categories');
             $table->foreign('schedule_template_id')->references('id')->on('schedule_templates');

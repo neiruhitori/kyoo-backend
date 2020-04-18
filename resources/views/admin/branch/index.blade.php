@@ -32,39 +32,45 @@
                                             <th>Name</th>
                                             <th>Address</th>
                                             <th>Created At</th>
-                                            <th>Status</th>
+                                            <th>Show in Mobile</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>
-                                                <img src="https://rsborromeus.com/wp-content/uploads/2017/02/EB.jpg" style="max-width: 200px">    
-                                            </td>
-                                            <td>Healtcare</td>
-                                            <td>RS Boromeus Bandung</td>
-                                            <td>Jl. Ir. H. Juanda No.100, Lebakgede, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132</td>
-                                            <td>Tue, 14 Apr 2020</td>
-                                            <td>
-                                                <span class="badge badge-primary">Active</span>
-                                            </td>
-                                            <td>
-                                                <a href="{{route('admin.branch.show', 1)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
-                                                    <i class="fas fa-fw fa-eye"></i>
-                                                </a>
-                                                <a href="" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Branch">
-                                                    <i class="fas fa-fw fa-edit"></i>
-                                                </a>
-                                                {{-- <form action="" method="post" style="display: inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
-                                                        <i class="fas fa-fw fa-trash"></i>
-                                                    </button>
-                                                </form> --}}
-                                            </td>
-                                        </tr>
+                                        @foreach ($branches as $branch)
+                                            <tr>
+                                                <td>{{$branch->id}}</td>
+                                                <td>
+                                                    <img src="{{asset('storage/'.$branch->logo)}}" style="max-width: 200px">    
+                                                </td>
+                                                <td>{{$branch->IndustryCategory->name}}</td>
+                                                <td>{{$branch->name}}</td>
+                                                <td>{{$branch->address}}, {{$branch->Regency->name}}</td>
+                                                <td>{{$branch->created_at->format('D, d M y')}}</td>
+                                                <td>
+                                                    @if ($branch->is_active)
+                                                        <span class="badge badge-primary">Active</span>
+                                                    @else
+                                                        <span class="badge badge-danger">Non Active</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="{{route('admin.branch.show', $branch->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
+                                                        <i class="fas fa-fw fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{route('admin.branch.edit', $branch->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Branch">
+                                                        <i class="fas fa-fw fa-edit"></i>
+                                                    </a>
+                                                    {{-- <form action="" method="post" style="display: inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
+                                                            <i class="fas fa-fw fa-trash"></i>
+                                                        </button>
+                                                    </form> --}}
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
