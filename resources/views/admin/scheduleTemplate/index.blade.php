@@ -13,67 +13,57 @@
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="">Upload your Excel</label>
-                            <input type="file" class="form-control">
-                            <a href="{{route('admin.industryCategory.create')}}" class="btn btn-primary btn-sm mt-2">
-                                Insert Category
-                            </a>
-                            <hr>
+                    <form action="{{route('admin.scheduleTemplate.store')}}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="name">Template Name</label>
+                                <input name="name" type="text" class="form-control" required>
+                                @include('layouts.inputError', ['errorName' => 'name'])
+                                <label for="file">File Excel</label>
+                                <input name="file" type="file" class="form-control" required>
+                                @include('layouts.inputError', ['errorName' => 'file'])
+                                <button class="btn btn-primary btn-sm mt-2">
+                                    Insert Template
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                     <div class="row">
                         <div class="col-md-12 mt-3">
+                            <hr>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
+                                            <th>Template</th>
                                             <th>Description</th>
                                             <th>Date</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Ied Fitr</td>
-                                            <td>
-                                                21-05-2020
-                                            </td>
-                                            <td>
-                                                <a href="" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Category">
-                                                    <i class="fas fa-fw fa-edit"></i>
-                                                </a>
-                                                <form action="" method="post" style="display: inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Category">
-                                                        <i class="fas fa-fw fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Ied Adha</td>
-                                            <td>
-                                                21-09-2020
-                                            </td>
-                                            <td>
-                                                <a href="" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Category">
-                                                    <i class="fas fa-fw fa-edit"></i>
-                                                </a>
-                                                <form action="" method="post" style="display: inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Category">
-                                                        <i class="fas fa-fw fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
+                                        @foreach ($schedules as $schedule)
+                                            <tr>
+                                                <td>{{$schedule->id}}</td>
+                                                <td>{{$schedule->ScheduleTemplate->name}}</td>
+                                                <td>{{$schedule->description}}</td>
+                                                <td>{{$schedule->date}}</td>
+                                                <td>
+                                                    <a href="{{route('admin.scheduleTemplateDetail.edit', $schedule->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Category">
+                                                        <i class="fas fa-fw fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{route('admin.scheduleTemplateDetail.destroy', $schedule->id)}}" method="post" style="display: inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Category">
+                                                            <i class="fas fa-fw fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\ScheduleTemplate;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreScheduleTemplate;
+use App\Imports\ScheduleTemplateDetailImport;
+use App\ScheduleTemplate;
+use App\ScheduleTemplateDetail;
+
+use Storage;
+use Excel;
 
 class ScheduleTemplateController extends Controller
 {
@@ -15,7 +21,8 @@ class ScheduleTemplateController extends Controller
      */
     public function index()
     {
-        return view('admin.scheduleTemplate.index');
+        $schedules = ScheduleTemplateDetail::all();
+        return view('admin.scheduleTemplate.index')->withSchedules($schedules);
     }
 
     /**
@@ -34,9 +41,16 @@ class ScheduleTemplateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreScheduleTemplate $request)
     {
-        //
+        $input = $request->all();
+        $input['file'] = Storage::disk('public')->put('schedule_templates', $request->file);
+        $scheduleTemplate = ScheduleTemplate::create($input);
+
+        Excel::import(new ScheduleTemplateDetailImport($scheduleTemplate->id), "storage/$scheduleTemplate->file");
+
+        $request->session()->flash('success', 'Schedule Template '.$request->name.' has been added!');
+        return redirect(route('admin.scheduleTemplate.index'));
     }
 
     /**

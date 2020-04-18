@@ -39,6 +39,13 @@
       </li>
       
       <li class="nav-item">
+        <a class="nav-link" href="{{route('admin.scheduleTemplate.index')}}">
+          <i class="fas fa-fw fa-calendar"></i>
+          <span>Schedule Template</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-building"></i>
           <span>Branch Management</span>
@@ -51,13 +58,6 @@
             <a class="collapse-item" href="{{route('admin.branch.verify.index')}}">Verify Branch</a>
           </div>
         </div>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" href="{{route('admin.scheduleTemplate.index')}}">
-          <i class="fas fa-fw fa-calendar"></i>
-          <span>Schedule Template</span>
-        </a>
       </li>
 
       <!-- Divider -->

@@ -41,4 +41,5 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
 
     // Schedule Template
     Route::resource('scheduleTemplate', 'ScheduleTemplateController');
+    Route::resource('scheduleTemplateDetail', 'ScheduleTemplateDetailController');
 });
