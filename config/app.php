@@ -167,6 +167,7 @@ return [
          */
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Monarobase\CountryList\CountryListServiceProvider::class,
+        AzisHapidin\IndoRegion\IndoRegionServiceProvider::class,
         /*
          * Application Service Providers...
          */
