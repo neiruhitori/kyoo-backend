@@ -8,6 +8,7 @@ use App\ScheduleTemplate;
 use App\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreBranch;
+use App\Http\Requests\Admin\UpdateBranch;
 use Illuminate\Http\Request;
 use Countries;
 use App\Models\Province;
@@ -102,7 +103,17 @@ class BranchController extends Controller
      */
     public function edit(Branch $branch)
     {
-        //
+        $countries = Countries::getList('en_US');
+        $categories = IndustryCategory::all();
+        $templates = ScheduleTemplate::all();
+        $provinces = Province::all();
+        return view('admin.branch.edit', [
+            'branch' => $branch,
+            'countries' => $countries,
+            'categories' => $categories,
+            'templates' => $templates,
+            'provinces' => $provinces
+        ]);
     }
 
     /**
@@ -112,9 +123,29 @@ class BranchController extends Controller
      * @param  \App\Branch  $branch
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Branch $branch)
+    public function update(UpdateBranch $request, Branch $branch)
     {
-        //
+        $input = $request->all();
+        if (isset($request->logo)) {
+            Storage::disk('public')->delete($branch->logo);
+            $input['logo'] = Storage::disk('public')->put('branch_logos', $request->logo);
+        }
+
+        if (isset($request->photo)) {
+            Storage::disk('public')->delete($branch->logo);
+            $input['photo'] = Storage::disk('public')->put('branch_photos', $request->photo);
+        }
+        $branch->update($input);
+
+        $admin = $branch->Admin[0];
+        $admin->update([
+            'name' => $input['admin_name'],
+            'email' => $input['admin_email'],
+            'password' => $input['admin_password'] ?: '',
+            'phone' => $input['admin_phone'],
+        ]);
+        $request->session()->flash('warning', 'Branch '.$request->name.' has been updated!');
+        return redirect(route('admin.branch.index'));
     }
 
     /**

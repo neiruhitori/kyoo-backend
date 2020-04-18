@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
-class StoreBranch extends FormRequest
+class UpdateBranch extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,12 +28,12 @@ class StoreBranch extends FormRequest
             'name' => 'required|string',
             'industry_category_id' => 'required|exists:industry_categories,id',
             'description' => 'required',
-            'email' => 'required|email|unique:branches,email',
+            'email' => 'required|email|unique:branches,email,'.$this->id,
             'country' => 'required',
             'fixed_phone' => 'required|numeric|min:5',
             'mobile_phone' => 'nullable|numeric|min:5',
-            'logo' => 'required|image',
-            'photo' => 'required|image',
+            'logo' => 'sometimes|image',
+            'photo' => 'sometimes|image',
             'is_active' => 'required',
             'schedule_template_id' => 'nullable|exists:schedule_templates,id',
 
@@ -48,7 +48,7 @@ class StoreBranch extends FormRequest
             'admin_email' => 'required|email',
             'admin_phone' => 'required|numeric|min:5',
             'admin_phone' => 'required|numeric|min:5',
-            'admin_password' => 'required|min:8|confirmed',
+            'admin_password' => 'nullable|min:8|confirmed',
         ];
     }
 }
