@@ -5,36 +5,39 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Insert Industry Category</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Update Industry Category</h6>
                 </div>
                 @csrf
                 <div class="card-body">
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('admin.industryCategory.store')}}" method="post" enctype="multipart/form-data">
+                            <form action="{{route('admin.industryCategory.update', $category->id)}}" method="post" enctype="multipart/form-data">
                                 @csrf
+                                @method('PUT')
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
+                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: $category->name}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
 
                                 <div class="form-group">
                                     <label for="icon">Icon</label>
-                                    <input name="icon" type="file" class="form-control @error('icon') is-invalid @enderror" value="{{old('icon')}}" required>
+                                    <br>
+                                    <img src="{{asset('storage/'.$category->icon)}}" alt="" style="max-height: 100px">
+                                    <input name="icon" type="file" class="form-control @error('icon') is-invalid @enderror">
                                     @include('layouts.inputError', ['errorName' => 'icon'])
                                 </div>
 
                                 <div class="form-group">
                                     <label for="is_active">Show on Mobile</label>
-                                    <select name="is_active" id="" class="form-control" required>
+                                    <select name="is_active" id="is_active" class="form-control" required>
                                         <option value="1">Yes</option>
                                         <option value="0">No</option>
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'is_active'])
                                 </div>
-                                <button class="btn btn-primary">Save</button>
+                                <button class="btn btn-warning">Update</button>
                             </form>
                         </div>
                     </div>
@@ -43,3 +46,14 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script>
+        $(document).ready(function() {
+            const is_activeOldValue = '{{ old('is_active') ?: $category->is_active }}';
+            
+            if(is_activeOldValue !== '') {
+                $('#is_active').val(is_activeOldValue);
+            }
+        });
+    </script>
+@endpush

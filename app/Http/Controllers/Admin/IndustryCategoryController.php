@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreIndustryCategory;
 use App\IndustryCategory;
 use Illuminate\Http\Request;
+
+use Storage;
 
 class IndustryCategoryController extends Controller
 {
@@ -15,7 +18,8 @@ class IndustryCategoryController extends Controller
      */
     public function index()
     {
-       return view('admin.industryCategory.index');
+        $categories = IndustryCategory::all();
+       return view('admin.industryCategory.index')->withCategories($categories);
     }
 
     /**
@@ -34,9 +38,13 @@ class IndustryCategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreIndustryCategory $request)
     {
-        //
+        $input = $request->all();
+        $input['icon'] = Storage::disk('public')->put('icons', $request->icon);
+        IndustryCategory::create($input);
+        $request->session()->flash('success', 'Industry Category '.$request->name.' has been added!');
+        return redirect(route('admin.industryCategory.index'));
     }
 
     /**
@@ -58,7 +66,7 @@ class IndustryCategoryController extends Controller
      */
     public function edit(IndustryCategory $industryCategory)
     {
-        //
+        return view('admin.industryCategory.edit')->withCategory($industryCategory);
     }
 
     /**
@@ -68,9 +76,16 @@ class IndustryCategoryController extends Controller
      * @param  \App\IndustryCategory  $industryCategory
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, IndustryCategory $industryCategory)
+    public function update(StoreIndustryCategory $request, IndustryCategory $industryCategory)
     {
-        //
+        $input = $request->all();
+        if ($request->icon) {
+            Storage::disk('public')->delete($industryCategory->icon);
+            $input['icon'] = Storage::disk('public')->put('icons', $request->icon);
+        }
+        $industryCategory->update($input);
+        $request->session()->flash('warning', 'Industry Category '.$request->name.' has been updated!');
+        return redirect(route('admin.industryCategory.index'));
     }
 
     /**
@@ -79,8 +94,10 @@ class IndustryCategoryController extends Controller
      * @param  \App\IndustryCategory  $industryCategory
      * @return \Illuminate\Http\Response
      */
-    public function destroy(IndustryCategory $industryCategory)
+    public function destroy(Request $request, IndustryCategory $industryCategory)
     {
-        //
+        $industryCategory->delete();
+        $request->session()->flash('error', 'Industry Category '.$industryCategory->name.' has been removed!');
+        return redirect(route('admin.industryCategory.index'));
     }
 }

@@ -34,50 +34,34 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Healtcare</td>
-                                            <td>
-                                                <img src="{{asset('img/ic-healtcare.svg')}}" alt="">    
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-primary">Ya</span>
-                                            </td>
-                                            <td>
-                                                <a href="" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Category">
-                                                    <i class="fas fa-fw fa-edit"></i>
-                                                </a>
-                                                <form action="" method="post" style="display: inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Category">
-                                                        <i class="fas fa-fw fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Food n Beverage</td>
-                                            <td>
-                                                <img src="{{asset('img/ic-fnb.svg')}}" alt="">    
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-danger">No</span>
-                                            </td>
-                                            <td>
-                                                <a href="" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Category">
-                                                    <i class="fas fa-fw fa-edit"></i>
-                                                </a>
-                                                <form action="" method="post" style="display: inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Category">
-                                                        <i class="fas fa-fw fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
+                                        @foreach ($categories as $category)
+                                            <tr>
+                                                <td>{{$category->id}}</td>
+                                                <td>{{$category->name}}</td>
+                                                <td>
+                                                    <img src="{{asset('storage/'.$category->icon)}}" alt="">    
+                                                </td>
+                                                <td>
+                                                    @if ($category->is_active)
+                                                        <span class="badge badge-primary">Yes</span>
+                                                    @else
+                                                        <span class="badge badge-danger">No</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="{{route('admin.industryCategory.edit', $category->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Category">
+                                                        <i class="fas fa-fw fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{route('admin.industryCategory.destroy', $category->id)}}" method="post" style="display: inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Category">
+                                                            <i class="fas fa-fw fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

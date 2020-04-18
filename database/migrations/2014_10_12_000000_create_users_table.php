@@ -15,6 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('branch_id')->nullable();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -22,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('token_external')->nullable();
             $table->string('platform')->nullable();
             $table->enum('role', ['admin_kyoo', 'admin_branch', 'cs', 'customer'])->default('customer');
+            $table->string('phone', 20)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
