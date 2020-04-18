@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Branch;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Countries;
 
 class BranchController extends Controller
 {
@@ -34,6 +35,7 @@ class BranchController extends Controller
      */
     public function create()
     {
+        $countries = Countries::getList('en_US');
         return view('admin.branch.create');
     }
 
