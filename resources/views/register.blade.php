@@ -45,7 +45,7 @@
                         <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
                         <div class="row">
                             <div class="col-md-12">
-                                <form action="" method="post">
+                                <form action="{{route('branch.store')}}" method="post" enctype="multipart/form-data">
                                     @csrf
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
@@ -60,14 +60,15 @@
                                         </ul>
                                         <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                            @include('admin.branch.create1')
+                                            @include('admin.branch.create.step-1')
                                         </div>
                                         <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
-                                            @include('admin.branch.create2')
+                                            @include('admin.branch.create.step-2')
                                         </div>
                                         <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">
-                                            @include('admin.branch.create3')
+                                            @include('admin.branch.create.step-3')
                                         </div>
+                                        <button class="btn btn-primary fullwidth">Register</button>
                                     </div>
                                 </form>
                             </div>
@@ -91,7 +92,7 @@
 
   <!-- Custom scripts for all pages-->
   <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
-
+  @stack('name')
 </body>
 
 </html>

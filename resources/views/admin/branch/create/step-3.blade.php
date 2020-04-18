@@ -3,7 +3,7 @@
 </h5>
 <div class="form-group">
     <label for="admin_name">Name</label>
-    <input name="admin_name" type="text" class="form-control @error('admin_name')}} is-invalid @enderror" required>
+    <input name="admin_name" type="text" class="form-control @error('admin_name')}} is-invalid @enderror" value="{{old('admin_name')}}" required>
     @include('layouts.inputError', ['errorName' => 'admin_name'])
 </div>
 <div class="form-group">
