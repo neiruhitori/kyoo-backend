@@ -144,13 +144,15 @@
                     <div class="row">
                         <div class="col-md-12">
                             <a href="{{route('admin.branch.index')}}" class="btn btn-primary">Back to List</a>
-                            <form action="{{route('admin.branch.destroy', $branch->id)}}" method="post" style="display: inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
-                                    Supend Branch
-                                </button>
-                            </form>
+                            @if ($branch->status == 'verified')
+                                <form action="{{route('admin.branch.destroy', $branch->id)}}" method="post" style="display: inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
+                                        Supend Branch
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>

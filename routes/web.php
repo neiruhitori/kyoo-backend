@@ -37,6 +37,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
 
     // Branch
     Route::get('branch/verify', 'BranchController@verifyList')->name('branch.verify.index');
+    Route::put('branch/verify/{branch}', 'BranchController@doVerify')->name('branch.verify.update');
     Route::resource('branch', 'BranchController');
 
     // Schedule Template

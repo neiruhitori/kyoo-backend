@@ -20,36 +20,60 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Logo</th>
-                                            <th>Category</th>
                                             <th>Name</th>
+                                            <th>Category</th>
                                             <th>Address</th>
+                                            <th>Admin Contact</th>
                                             <th>Created At</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>
-                                                <img src="https://rsborromeus.com/wp-content/uploads/2017/02/EB.jpg" style="max-width: 200px">    
-                                            </td>
-                                            <td>Healtcare</td>
-                                            <td>RS Boromeus Bandung</td>
-                                            <td>Jl. Ir. H. Juanda No.100, Lebakgede, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132</td>
-                                            <td>Tue, 14 Apr 2020</td>
-                                            <td>
-                                                <a href="{{route('admin.branch.show', 1)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
-                                                    <i class="fas fa-fw fa-eye"></i>
-                                                </a>
-                                                <a href="{{route('admin.branch.show', 1)}}" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
-                                                    <i class="fas fa-fw fa-check"></i>
-                                                </a>
-                                                <a href="{{route('admin.branch.show', 1)}}" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
-                                                    <i class="fas fa-fw fa-times"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        @foreach ($branches as $branch)
+                                            <tr>
+                                                <td>{{$branch->id}}</td>
+                                                <td>{{$branch->name}}</td>
+                                                <td>{{$branch->IndustryCategory->name}}</td>
+                                                <td>{{$branch->address}}, {{$branch->Regency->name}}</td>
+                                                <td>
+                                                    <ul>
+                                                        <li>Name: <b>{{$branch->Admin[0]->name}}</b></li>
+                                                        <li>Email: <b>{{$branch->Admin[0]->email}}</b></li>
+                                                        <li>Phone: <b>{{$branch->Admin[0]->phone}}</b></li>
+                                                    </ul>
+                                                </td>
+                                                <td>{{$branch->created_at->format('D, d M Y')}}</td>
+                                                <td>
+                                                    @if ($branch->status == 'unverified')
+                                                        <span class="badge badge-secondary">Unverified</span>
+                                                    @else
+                                                        <span class="badge badge-danger">Rejected</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="{{route('admin.branch.show', $branch->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
+                                                        <i class="fas fa-fw fa-eye"></i>
+                                                    </a>
+                                                    <form action="{{route('admin.branch.verify.update', $branch->id)}}" method="post" style="display: inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="verified">
+                                                        <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Approve Branch">
+                                                            <i class="fas fa-fw fa-check"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{route('admin.branch.verify.update', $branch->id)}}" method="post" style="display: inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="rejected">
+                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Reject Branch">
+                                                            <i class="fas fa-fw fa-times"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

@@ -29,15 +29,6 @@ class BranchController extends Controller
     }
 
     /**
-     * Display a listing of Verifying Branch
-     */
-
-     public function verifyList()
-     {
-         return view('admin.branch.verify');
-     }
-
-    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -160,4 +151,30 @@ class BranchController extends Controller
         $request->session()->flash('error', 'Branch '.$branch->name.' has been suspended!');
         return redirect(route('admin.branch.index'));
     }
+
+    /**
+     * Display a listing of Verifying Branch
+     */
+
+     public function verifyList()
+     {
+         $branches = Branch::where('status', '!=', 'verified')->get();
+         return view('admin.branch.verify')->withBranches($branches);
+     }
+
+     /**
+      * Change status branch to be verified or rejected
+      */
+      public function doVerify(Request $request, Branch $branch)
+      {
+          $branch->status = $request->status;
+          $branch->save();
+          if ($request->status == 'verified') {
+              $request->session()->flash('success', 'Branch '.$branch->name.' has been verified!');
+          } else {
+              $request->session()->flash('error', 'Branch '.$branch->name.' has been rejected!');
+          }
+          
+          return redirect(route('admin.branch.verify.index'));
+      }
 }
