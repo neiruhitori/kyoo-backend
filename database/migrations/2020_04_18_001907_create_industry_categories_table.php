@@ -15,7 +15,7 @@ class CreateIndustryCategoriesTable extends Migration
     {
         Schema::create('industry_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('icon');
             $table->boolean('is_active')->default(true);
             $table->timestamps();

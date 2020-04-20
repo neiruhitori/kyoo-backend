@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreIndustryCategory;
+use App\Http\Requests\Admin\UpdateIndustryCategory;
 use App\IndustryCategory;
 use Illuminate\Http\Request;
 
@@ -76,7 +77,7 @@ class IndustryCategoryController extends Controller
      * @param  \App\IndustryCategory  $industryCategory
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreIndustryCategory $request, IndustryCategory $industryCategory)
+    public function update(UpdateIndustryCategory $request, IndustryCategory $industryCategory)
     {
         $input = $request->all();
         if ($request->icon) {

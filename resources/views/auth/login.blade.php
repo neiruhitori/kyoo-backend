@@ -76,7 +76,7 @@
                     <a class="small" href="{{route('password.request')}}">Forgot Password?</a>
                   </div>
                   <div class="text-center">
-                    <a class="small" href="{{route('register')}}">Register your Branch here!</a>
+                    <a class="small" href="{{route('branch.register')}}">Register your Branch here!</a>
                   </div>
                 </div>
               </div>

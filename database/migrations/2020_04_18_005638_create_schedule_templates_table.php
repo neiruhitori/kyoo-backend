@@ -18,6 +18,7 @@ class CreateScheduleTemplatesTable extends Migration
             $table->string('name');
             $table->string('file');
             $table->timestamps();
+            $table->softdeletes();
         });
     }
 

@@ -15,6 +15,7 @@
                             <form action="{{route('admin.industryCategory.update', $category->id)}}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
+                                <input type="hidden" name="id" value="{{$category->id}}">
                                 <div class="form-group">
                                     <label for="name">Name</label>
                                     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: $category->name}}" required>

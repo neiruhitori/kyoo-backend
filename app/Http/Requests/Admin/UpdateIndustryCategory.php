@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
-class StoreIndustryCategory extends FormRequest
+class UpdateIndustryCategory extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class StoreIndustryCategory extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|unique:industry_categories',
+            'name' => 'required|string|unique:industry_categories,name,'.$this->id,
             'icon' => 'sometimes|image',
             'is_active' => 'required',
         ];
