@@ -36,12 +36,12 @@
 </div>
 <div class="form-group">
     <label for="fixed_phone">Fixed Phone</label>
-    <input name="fixed_phone" type="text" class="form-control @error('fixed_phone') is-invalid @enderror" value="{{old('fixed_phone')}}" required>
+    <input name="fixed_phone" type="text" class="form-control @error('fixed_phone') is-invalid @enderror" value="{{old('fixed_phone')}}">
     @include('layouts.inputError', ['errorName' => 'fixed_phone'])
 </div>
 <div class="form-group">
     <label for="mobile_phone">Mobile Phone</label>
-    <input name="mobile_phone" type="text" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone')}}">
+    <input name="mobile_phone" type="text" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone')}}" required>
     @include('layouts.inputError', ['errorName' => 'mobile_phone'])
 </div>
 <div class="form-group">
@@ -62,16 +62,6 @@
     </select>
     @include('layouts.inputError', ['errorName' => 'is_active'])
 </div>
-<div class="form-group">
-    <label for="schedule_template_id">Follow Template Schedule</label>
-    <select name="schedule_template_id" id="schedule_template_id" class="form-control @error('schedule_template_id') is-invalid @enderror">
-        <option value="">Not Following</option>
-        @foreach ($templates as $template)
-            <option value="{{$template->id}}">{{$template->name}}</option>
-        @endforeach
-    </select>
-    @include('layouts.inputError', ['errorName' => 'schedule_template_id'])
-</div>
 @push('js')
     <script>
         $(document).ready(function() {
@@ -91,12 +81,6 @@
             
             if(is_activeOldValue !== '') {
                 $('#is_active').val(is_activeOldValue);
-            }
-
-            const schedule_template_idOldValue = '{{ old('schedule_template_id') }}';
-            
-            if(schedule_template_idOldValue !== '') {
-                $('#schedule_template_id').val(schedule_template_idOldValue);
             }
         });
     </script>

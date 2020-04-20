@@ -21,8 +21,8 @@ class CreateBranchesTable extends Migration
             $table->string('email');
             $table->text('address');
             $table->text('description');
-            $table->string('fixed_phone', 20);
-            $table->string('mobile_phone', 20)->nullable();
+            $table->string('fixed_phone', 20)->nullable();
+            $table->string('mobile_phone', 20);
             $table->decimal('lat');
             $table->decimal('long');
             $table->string('country');
