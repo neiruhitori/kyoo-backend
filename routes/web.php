@@ -30,7 +30,9 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->name('admin.')->group(function () {
-    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('home', 'HomeController@index')->name('home');
+    Route::get('profile', 'HomeController@edit')->name('profile.edit');
+    Route::put('profile', 'HomeController@update')->name('profile.update');
 
     // Industry Category
     Route::resource('industryCategory', 'IndustryCategoryController');

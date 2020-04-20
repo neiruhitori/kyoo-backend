@@ -16,6 +16,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Admin Kyoo',
             'email' => 'admin@kyoo.id',
             'password' => 'secret123',
+            'phone' => '123123123',
             'role' => 'admin_kyoo'
         ]);
     }
