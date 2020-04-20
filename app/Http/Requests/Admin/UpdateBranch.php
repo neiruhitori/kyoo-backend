@@ -28,7 +28,7 @@ class UpdateBranch extends FormRequest
             'name' => 'required|string',
             'industry_category_id' => 'required|exists:industry_categories,id',
             'description' => 'required',
-            'email' => 'required|email|unique:branches,email,'.$this->id,
+            'email' => 'required|email',
             'country' => 'required',
             'fixed_phone' => 'nullable|numeric|min:5',
             'mobile_phone' => 'required|numeric|min:5',

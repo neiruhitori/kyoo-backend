@@ -28,7 +28,7 @@ class StoreBranch extends FormRequest
             'name' => 'required|string',
             'industry_category_id' => 'required|exists:industry_categories,id',
             'description' => 'required',
-            'email' => 'required|email|unique:branches,email',
+            'email' => 'required|email',
             'country' => 'required',
             'fixed_phone' => 'nullable|numeric|min:5',
             'mobile_phone' => 'required|numeric|min:5',
@@ -44,7 +44,7 @@ class StoreBranch extends FormRequest
 
             // branch admin
             'admin_name' => 'required|string',
-            'admin_email' => 'required|email',
+            'admin_email' => 'required|email|unique:users,email',
             'admin_phone' => 'required|numeric|min:5',
             'admin_phone' => 'required|numeric|min:5',
             'admin_password' => [

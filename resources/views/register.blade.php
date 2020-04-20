@@ -45,7 +45,8 @@
                         <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
                         <div class="row">
                             <div class="col-md-12">
-                                <form action="{{route('branch.store')}}" method="post" enctype="multipart/form-data">
+                                <form action="{{route('registrationBranch.store')}}" method="post">
+                                    @csrf
                                     <div class="form-group">
                                         <label for="name">Name</label>
                                         <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
@@ -66,9 +67,14 @@
                                         @include('layouts.inputError', ['errorName' => 'email'])
                                     </div>
                                     <div class="form-group">
-                                        <label for="mobile_phone">Password</label>
-                                        <input name="mobile_phone" type="password" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone')}}" required>
-                                        @include('layouts.inputError', ['errorName' => 'mobile_phone'])
+                                        <label for="password">Password</label>
+                                        <input name="password" type="password" class="form-control @error('password') is-invalid @enderror" value="{{old('password')}}" required>
+                                        @include('layouts.inputError', ['errorName' => 'password'])
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password_confirmation">Password Confirmation</label>
+                                        <input name="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{old('password_confirmation')}}" required>
+                                        @include('layouts.inputError', ['errorName' => 'password_confirmation'])
                                     </div>
                                     <div class="form-group">
                                         <label for="country">Country</label>
@@ -80,9 +86,9 @@
                                         @include('layouts.inputError', ['errorName' => 'country'])
                                     </div>
                                     <div class="form-group">
-                                        <label for="mobile_phone">Mobile Phone</label>
-                                        <input name="mobile_phone" type="text" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone')}}" required>
-                                        @include('layouts.inputError', ['errorName' => 'mobile_phone'])
+                                        <label for="phone">Mobile Phone</label>
+                                        <input name="phone" type="text" class="form-control @error('phone') is-invalid @enderror" value="{{old('phone')}}" required>
+                                        @include('layouts.inputError', ['errorName' => 'phone'])
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
@@ -105,6 +111,12 @@
                                                 @include('layouts.inputError', ['errorName' => 'regency_id'])
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="captcha">Captcha</label>
+                                        {!! NoCaptcha::renderJs() !!}
+                                        {!! NoCaptcha::display() !!}
+                                        <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
                                     </div>
                                     <button class="btn btn-primary fullwidth">Register</button>
                                 </form>

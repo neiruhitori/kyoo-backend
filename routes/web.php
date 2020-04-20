@@ -21,9 +21,8 @@ Route::get('/unauthorized', function () {
     return 'unauthorized';
 });
 
-Route::get('/register/branch', 'BranchController@register')->name('branch.register');
-Route::post('/register/branch', 'BranchController@store')->name('branch.store');
-Route::get('/register/branch/success', 'BranchController@afterRegister')->name('branch.afterRegister');
+Route::resource('registrationBranch', 'RegistrationBranchController');
+Route::get('/register/success', 'RegistrationBranchController@afterRegister')->name('registrationBranch.afterRegister');
 
 Auth::routes();
 
