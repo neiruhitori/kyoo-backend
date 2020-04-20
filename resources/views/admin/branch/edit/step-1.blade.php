@@ -22,7 +22,7 @@
 </div>
 <div class="form-group">
     <label for="email">Email</label>
-    <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email') ?: $branch->email}}" required>
+    <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email') ?: $branch->email}}">
     @include('layouts.inputError', ['errorName' => 'email'])
 </div>
 <div class="form-group">
