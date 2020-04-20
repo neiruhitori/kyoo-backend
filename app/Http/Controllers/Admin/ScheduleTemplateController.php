@@ -8,7 +8,6 @@ use App\Http\Requests\Admin\StoreScheduleTemplate;
 use App\Http\Requests\Admin\UpdateScheduleTemplate;
 use App\Imports\ScheduleTemplateDetailImport;
 use App\ScheduleTemplate;
-use App\ScheduleTemplateDetail;
 
 use Storage;
 use Excel;
