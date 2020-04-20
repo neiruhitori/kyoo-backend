@@ -6,6 +6,8 @@ use App\RegistrationBranch;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreRegistrationBranch;
 use Illuminate\Support\Facades\Crypt;
+use App\Mail\RegistrationBranchMail;
+use Illuminate\Support\Facades\Mail;
 
 class RegistrationBranchController extends Controller
 {
@@ -39,7 +41,10 @@ class RegistrationBranchController extends Controller
     {
         $input = $request->all();
         $input['password'] = Crypt::encryptString($request->password);
-        RegistrationBranch::create($input);
+        $branch = RegistrationBranch::create($input);
+
+        // sending email
+        Mail::to($branch->email)->send(new RegistrationBranchMail($branch));
         return redirect(route('registrationBranch.afterRegister'));
     }
 
@@ -62,7 +67,9 @@ class RegistrationBranchController extends Controller
      */
     public function edit(RegistrationBranch $registrationBranch)
     {
-        //
+        $registrationBranch->is_email_verified = 1;
+        $registrationBranch->save();
+        return redirect(route('registrationBranch.afterVerified'));
     }
 
     /**
@@ -91,5 +98,10 @@ class RegistrationBranchController extends Controller
     public function afterRegister()
     {
         return view('afterRegister');
+    }
+
+    public function afterVerified()
+    {
+        return view('afterVerified');
     }
 }

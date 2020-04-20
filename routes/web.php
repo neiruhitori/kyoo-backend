@@ -23,6 +23,7 @@ Route::get('/unauthorized', function () {
 
 Route::resource('registrationBranch', 'RegistrationBranchController');
 Route::get('/register/success', 'RegistrationBranchController@afterRegister')->name('registrationBranch.afterRegister');
+Route::get('/register/verified', 'RegistrationBranchController@afterVerified')->name('registrationBranch.afterVerified');
 
 Auth::routes();
 
