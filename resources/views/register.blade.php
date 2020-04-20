@@ -46,30 +46,67 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <form action="{{route('branch.store')}}" method="post" enctype="multipart/form-data">
-                                    @csrf
-                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Branch Profile</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="location-tab" data-toggle="tab" href="#location" role="tab" aria-controls="location" aria-selected="false">Branch Location</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="admin" aria-selected="false">Branch Admin</a>
-                                        </li>
-                                        </ul>
-                                        <div class="tab-content" id="myTabContent">
-                                        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                            @include('admin.branch.create.step-1')
-                                        </div>
-                                        <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
-                                            @include('admin.branch.create.step-2')
-                                        </div>
-                                        <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">
-                                            @include('admin.branch.create.step-3')
-                                        </div>
-                                        <button class="btn btn-primary fullwidth">Register</button>
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
+                                        @include('layouts.inputError', ['errorName' => 'name'])
                                     </div>
+                                    <div class="form-group">
+                                        <label for="industry_category_id">Category</label>
+                                        <select name="industry_category_id" id="industry_category_id" class="form-control @error('industry_category_id') is-invalid @enderror" required>
+                                            @foreach ($categories as $category)
+                                                <option value="{{$category->id}}">{{$category->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        @include('layouts.inputError', ['errorName' => 'industry_category_id'])
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email')}}" required>
+                                        @include('layouts.inputError', ['errorName' => 'email'])
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mobile_phone">Password</label>
+                                        <input name="mobile_phone" type="password" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone')}}" required>
+                                        @include('layouts.inputError', ['errorName' => 'mobile_phone'])
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="country">Country</label>
+                                        <select name="country" id="country" class="form-control @error('country') is-invalid @enderror" required>
+                                            @foreach ($countries as $country)
+                                                <option value="{{$country}}">{{$country}}</option>
+                                            @endforeach
+                                        </select>
+                                        @include('layouts.inputError', ['errorName' => 'country'])
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mobile_phone">Mobile Phone</label>
+                                        <input name="mobile_phone" type="text" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone')}}" required>
+                                        @include('layouts.inputError', ['errorName' => 'mobile_phone'])
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="province_id">Province</label>
+                                                <select name="province_id" id="province_id" class="form-control @error('province_id') is-invalid @enderror">
+                                                    @foreach ($provinces as $province)
+                                                        <option value="{{$province->id}}">{{$province->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @include('layouts.inputError', ['errorName' => 'province_id'])
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="regency_id">City</label>
+                                                <select name="regency_id" id="regency_id" class="form-control">
+                                                    <option value="">Choose City</option>
+                                                </select>
+                                                @include('layouts.inputError', ['errorName' => 'regency_id'])
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary fullwidth">Register</button>
                                 </form>
                             </div>
                         </div>
@@ -92,7 +129,37 @@
 
   <!-- Custom scripts for all pages-->
   <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
-  @stack('name')
+  <script>
+        $(document).ready(function() {
+            const industry_category_idOldValue = '{{ old('industry_category_id') }}';
+            
+            if(industry_category_idOldValue !== '') {
+                $('#industry_category_id').val(industry_category_idOldValue);
+            }
+
+            const countryOldValue = '{{ old('country') ?: "Indonesia" }}';
+            
+            if(countryOldValue !== '') {
+                $('#country').val(countryOldValue);
+            }
+
+            $('#province_id').change(() => {
+                let provinceId = $('#province_id').val()
+                fetch(`/api/regency/${provinceId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        $('#regency_id option').remove()
+                        data.data.forEach(regency => {
+                            $('#regency_id')
+                                .append($("<option></option>")
+                                .attr("value", regency.id)
+                                .text(regency.name)); 
+                        });
+                    })
+                    .catch(err => console.log(err))
+            })
+        });
+    </script>
 </body>
 
 </html>
