@@ -24,7 +24,7 @@ class BranchController extends Controller
      */
     public function index()
     {
-        $branches = Branch::where('status', 'verified')->get();
+        $branches = Branch::all();
         return view('admin.branch.index')->withBranches($branches);
     }
 

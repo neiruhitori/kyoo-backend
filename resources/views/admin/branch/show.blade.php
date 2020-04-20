@@ -139,15 +139,43 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            @if ($branch->status == 'verified')
-                                                <form action="{{route('admin.branch.destroy', $branch->id)}}" method="post" style="display: inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
-                                                        Unregister Branch
-                                                    </button>
-                                                </form>
-                                            @endif
+                                            {{-- <form action="{{route('admin.branch.destroy', $branch->id)}}" method="post" style="display: inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
+                                                    Unregister Branch
+                                                </button>
+                                            </form> --}}
+                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#unregisterModal">
+                                                Unregister Branch
+                                            </button>
+                                            {{-- START MODAL --}}
+                                            <div class="modal fade" id="unregisterModal" tabindex="-1" role="dialog" aria-labelledby="unregisterModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="unregisterModalLabel">Unregistering Branch</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Are you sure want to unregister this branch?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                                        <form action="{{route('admin.branch.destroy', $branch->id)}}" method="post" style="display: inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
+                                                                Yes
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- END MODAL --}}
                                             <div class="text-right">
                                                 <a href="{{route('admin.branch.index')}}" class="btn btn-primary">Back to List</a>
                                             </div>

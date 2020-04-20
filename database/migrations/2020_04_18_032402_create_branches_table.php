@@ -31,7 +31,6 @@ class CreateBranchesTable extends Migration
             $table->string('photo')->nullable();
             $table->integer('likes')->default(0);
             $table->boolean('is_active')->default(false);
-            $table->enum('status', ['unverified', 'verified', 'rejected'])->default('unverified');
             $table->timestamps();
             $table->softdeletes();
 
