@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreScheduleTemplate;
+use App\Http\Requests\Admin\UpdateScheduleTemplate;
 use App\Imports\ScheduleTemplateDetailImport;
 use App\ScheduleTemplate;
 use App\ScheduleTemplateDetail;
@@ -21,7 +22,7 @@ class ScheduleTemplateController extends Controller
      */
     public function index()
     {
-        $schedules = ScheduleTemplateDetail::all();
+        $schedules = ScheduleTemplate::all();
         return view('admin.scheduleTemplate.index')->withSchedules($schedules);
     }
 
@@ -61,7 +62,7 @@ class ScheduleTemplateController extends Controller
      */
     public function show(ScheduleTemplate $scheduleTemplate)
     {
-        //
+        return view('admin.scheduleTemplate.show')->withSchedule($scheduleTemplate);
     }
 
     /**
@@ -82,9 +83,18 @@ class ScheduleTemplateController extends Controller
      * @param  \App\ScheduleTemplate  $scheduleTemplate
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ScheduleTemplate $scheduleTemplate)
+    public function update(UpdateScheduleTemplate $request, ScheduleTemplate $scheduleTemplate)
     {
-        //
+        // remove all schedule template detail
+        foreach ($scheduleTemplate->ScheduleTemplateDetail as $detail) {
+            $detail->delete();
+        }
+        Storage::disk('public')->delete($scheduleTemplate->file);
+        $scheduleTemplate->file = Storage::disk('public')->put('schedule_templates', $request->file);
+        $scheduleTemplate->save();
+        Excel::import(new ScheduleTemplateDetailImport($scheduleTemplate->id), "storage/$scheduleTemplate->file");
+        $request->session()->flash('warning', 'Schedule Template '.$scheduleTemplate->name.' has been updated!');
+        return redirect()->back();
     }
 
     /**
@@ -93,8 +103,11 @@ class ScheduleTemplateController extends Controller
      * @param  \App\ScheduleTemplate  $scheduleTemplate
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ScheduleTemplate $scheduleTemplate)
+    public function destroy(Request $request, ScheduleTemplate $scheduleTemplate)
     {
-        //
+        Storage::disk('public')->delete($scheduleTemplate->file);
+        $scheduleTemplate->delete();
+        $request->session()->flash('error', 'Schedule Template '.$scheduleTemplate->name.' has been removed!');
+        return redirect(route('admin.scheduleTemplate.index'));
     }
 }

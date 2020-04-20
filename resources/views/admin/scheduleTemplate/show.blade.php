@@ -9,22 +9,20 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">List Schedule Template</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">List Schedule Template {{$schedule->name}}</h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
-                    <form action="{{route('admin.scheduleTemplate.store')}}" method="post" enctype="multipart/form-data">
+                    <form action="{{route('admin.scheduleTemplate.update', $schedule->id)}}" method="post" enctype="multipart/form-data">
                         @csrf
+                        @method('PUT')
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="name">Template Name</label>
-                                <input name="name" type="text" class="form-control" required>
-                                @include('layouts.inputError', ['errorName' => 'name'])
                                 <label for="file">File Excel</label>
                                 <input name="file" type="file" class="form-control" required>
                                 @include('layouts.inputError', ['errorName' => 'file'])
-                                <button class="btn btn-primary btn-sm mt-2">
-                                    Insert Template
+                                <button class="btn btn-warning btn-sm mt-2">
+                                    Update Template
                                 </button>
                             </div>
                         </div>
@@ -37,27 +35,16 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Template</th>
-                                            <th>Action</th>
+                                            <th>Description</th>
+                                            <th>Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($schedules as $schedule)
+                                        @foreach ($schedule->ScheduleTemplateDetail as $detail)
                                             <tr>
-                                                <td>{{$schedule->id}}</td>
-                                                <td>{{$schedule->name}}</td>
-                                                <td>
-                                                    <a href="{{route('admin.scheduleTemplate.show', $schedule->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Show Template">
-                                                        <i class="fas fa-fw fa-eye"></i>
-                                                    </a>
-                                                    <form action="{{route('admin.scheduleTemplate.destroy', $schedule->id)}}" method="post" style="display: inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Template">
-                                                            <i class="fas fa-fw fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </td>
+                                                <td>{{$detail->id}}</td>
+                                                <td>{{$detail->description}}</td>
+                                                <td>{{$detail->date}}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

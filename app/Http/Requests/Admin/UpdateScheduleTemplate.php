@@ -5,7 +5,7 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
 
-class StoreScheduleTemplateDetail extends FormRequest
+class UpdateScheduleTemplate extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,7 @@ class StoreScheduleTemplateDetail extends FormRequest
     public function rules()
     {
         return [
-            'date' => 'required|date',
-            'description' => 'required|string',
+            'file' => 'required|mimes:csv,xls,xlsx'
         ];
     }
 }
