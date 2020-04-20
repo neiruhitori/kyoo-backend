@@ -41,7 +41,9 @@
                                             <tr>
                                                 <td>{{$branch->id}}</td>
                                                 <td>
-                                                    <img src="{{asset('storage/'.$branch->logo)}}" style="max-width: 200px">    
+                                                    @isset($branch->logo)
+                                                        <img src="{{asset('storage/'.$branch->logo)}}" style="max-width: 200px">
+                                                    @endisset    
                                                 </td>
                                                 <td>{{$branch->IndustryCategory->name}}</td>
                                                 <td>{{$branch->name}}</td>

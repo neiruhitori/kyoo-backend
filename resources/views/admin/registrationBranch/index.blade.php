@@ -25,7 +25,7 @@
                                             <th>Address</th>
                                             <th>Admin Contact</th>
                                             <th>Created At</th>
-                                            <th>Status</th>
+                                            <th>Email Verified</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -38,39 +38,22 @@
                                                 <td>{{$branch->address}}, {{$branch->Regency->name}}</td>
                                                 <td>
                                                     <ul>
-                                                        <li>Name: <b>{{$branch->Admin[0]->name}}</b></li>
-                                                        <li>Email: <b>{{$branch->Admin[0]->email}}</b></li>
-                                                        <li>Phone: <b>{{$branch->Admin[0]->phone}}</b></li>
+                                                        <li>Email: <b>{{$branch->email}}</b></li>
+                                                        <li>Phone: <b>{{$branch->phone}}</b></li>
                                                     </ul>
+                                                </td>
+                                                <td>
+                                                    @if ($branch->is_email_verified)
+                                                        <span class="badge badge-primary">Verified</span>
+                                                    @else
+                                                        <span class="badge badge-danger">Not Verified</span>
+                                                    @endif
                                                 </td>
                                                 <td>{{$branch->created_at->format('D, d M Y')}}</td>
                                                 <td>
-                                                    @if ($branch->status == 'unverified')
-                                                        <span class="badge badge-secondary">Unverified</span>
-                                                    @else
-                                                        <span class="badge badge-danger">Rejected</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <a href="{{route('admin.branch.show', $branch->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
+                                                    <a href="{{route('admin.registrationBranch.show', $branch->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Show Branch">
                                                         <i class="fas fa-fw fa-eye"></i>
                                                     </a>
-                                                    <form action="{{route('admin.branch.verify.update', $branch->id)}}" method="post" style="display: inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="verified">
-                                                        <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Approve Branch">
-                                                            <i class="fas fa-fw fa-check"></i>
-                                                        </button>
-                                                    </form>
-                                                    <form action="{{route('admin.branch.verify.update', $branch->id)}}" method="post" style="display: inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="rejected">
-                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Reject Branch">
-                                                            <i class="fas fa-fw fa-times"></i>
-                                                        </button>
-                                                    </form>
                                                 </td>
                                             </tr>
                                         @endforeach

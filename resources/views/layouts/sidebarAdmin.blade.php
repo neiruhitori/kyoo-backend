@@ -54,7 +54,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Submenu:</h6>
             <a class="collapse-item" href="{{route('admin.branch.index')}}">List Branch</a>
-            <a class="collapse-item" href="{{route('admin.branch.verify.index')}}">Verify Branch</a>
+            <a class="collapse-item" href="{{route('admin.registrationBranch.index')}}">Verify Branch</a>
             <a class="collapse-item" href="{{route('admin.branch.create')}}">Insert Branch</a>
           </div>
         </div>

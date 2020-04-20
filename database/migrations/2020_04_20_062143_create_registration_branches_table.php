@@ -21,9 +21,11 @@ class CreateRegistrationBranchesTable extends Migration
             $table->string('password');
             $table->string('country');
             $table->string('phone', 20);
+            $table->text('address');
             $table->char('regency_id', 10);
             $table->boolean('is_email_verified')->default(false);
             $table->timestamps();
+            $table->softdeletes();
 
             $table->foreign('industry_category_id')->references('id')->on('industry_categories');
         });

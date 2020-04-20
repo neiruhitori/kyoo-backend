@@ -45,6 +45,7 @@
                         <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
                         <div class="row">
                             <div class="col-md-12">
+                                @include('layouts.alert')
                                 <form action="{{route('registrationBranch.store')}}" method="post">
                                     @csrf
                                     <div class="form-group">
@@ -111,6 +112,11 @@
                                                 @include('layouts.inputError', ['errorName' => 'regency_id'])
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address">Address</label>
+                                        <textarea name="address" id="" cols="" rows="" class="form-control @error('address') is-invalid @enderror">{{old('address')}}</textarea>
+                                        @include('layouts.inputError', ['errorName' => 'address'])
                                     </div>
                                     <div class="form-group">
                                         <label for="captcha">Captcha</label>

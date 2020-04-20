@@ -21,7 +21,7 @@ Route::get('/unauthorized', function () {
     return 'unauthorized';
 });
 
-Route::resource('registrationBranch', 'RegistrationBranchController');
+Route::resource('registrationBranch', 'RegistrationBranchController')->only(['store', 'edit']);
 Route::get('/register/success', 'RegistrationBranchController@afterRegister')->name('registrationBranch.afterRegister');
 Route::get('/register/verified', 'RegistrationBranchController@afterVerified')->name('registrationBranch.afterVerified');
 
@@ -38,9 +38,8 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::resource('industryCategory', 'IndustryCategoryController');
 
     // Branch
-    Route::get('branch/verify', 'BranchController@verifyList')->name('branch.verify.index');
-    Route::put('branch/verify/{branch}', 'BranchController@doVerify')->name('branch.verify.update');
     Route::resource('branch', 'BranchController');
+    Route::resource('registrationBranch', 'RegistrationBranchController')->only(['index', 'show', 'update']);
 
     // Schedule Template
     Route::resource('scheduleTemplate', 'ScheduleTemplateController');

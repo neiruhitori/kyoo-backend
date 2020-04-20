@@ -12,9 +12,13 @@
                     <div class="row">
                         <div class="col-md-4">
                                 <p>Logo:</p>
-                                <img src="{{asset('storage/'.$branch->logo)}}" class="img-fluid">    
+                                @isset($branch->logo)
+                                    <img src="{{asset('storage/'.$branch->logo)}}" class="img-fluid">  
+                                @endisset  
                                 <p class="mt-3">Image Background:</p>
-                                <img src="{{asset('storage/'.$branch->photo)}}" class="img-fluid">    
+                                @isset($branch->photo)
+                                    <img src="{{asset('storage/'.$branch->photo)}}" class="img-fluid">
+                                @endisset    
                         </div>
                         <div class="col-md-8">
                             <h5>{{$branch->name}}</h5>
@@ -38,10 +42,10 @@
                                     <tr>
                                         <th>Phone Number</th>
                                         <td>
-                                            {{$branch->fixed_phone}}
-                                            @isset($branch->mobile_phone)
-                                                / {{$branch->mobile_phone}}
-                                            @endisset
+                                            <ul>
+                                                <li>Fixed Phone: <b>{{$branch->fixed_phone ?: '-'}}</b></li>
+                                                <li>Mobile Phone: <b>{{$branch->mobile_phone}}</b></li>
+                                            </ul>
                                         </td>
                                     </tr>
                                     <tr>
@@ -139,13 +143,6 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            {{-- <form action="{{route('admin.branch.destroy', $branch->id)}}" method="post" style="display: inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Branch">
-                                                    Unregister Branch
-                                                </button>
-                                            </form> --}}
                                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#unregisterModal">
                                                 Unregister Branch
                                             </button>
