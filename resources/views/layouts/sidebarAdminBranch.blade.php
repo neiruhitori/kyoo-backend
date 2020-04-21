@@ -25,7 +25,7 @@
 
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link" href="{{route('admin.scheduleTemplate.index')}}">
+        <a class="nav-link" href="{{route('adminBranch.branch.edit')}}">
           <i class="fas fa-fw fa-building"></i>
           <span>Edit Branch Profile</span>
         </a>
