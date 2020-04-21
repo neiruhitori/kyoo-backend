@@ -25,6 +25,13 @@
 
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
+        <a class="nav-link" href="{{route('admin.scheduleTemplate.index')}}">
+          <i class="fas fa-fw fa-building"></i>
+          <span>Edit Branch Profile</span>
+        </a>
+      </li>
+
+      {{-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           <i class="fas fa-fw fa-list-ul"></i>
           <span>Industry Category</span>
@@ -36,14 +43,7 @@
             <a class="collapse-item" href="{{route('admin.industryCategory.create')}}">Insert Category</a>
           </div>
         </div>
-      </li>
-      
-      <li class="nav-item">
-        <a class="nav-link" href="{{route('admin.scheduleTemplate.index')}}">
-          <i class="fas fa-fw fa-calendar"></i>
-          <span>Schedule Template</span>
-        </a>
-      </li>
+      </li> --}}
 
       <!-- Divider -->
       <hr class="sidebar-divider">

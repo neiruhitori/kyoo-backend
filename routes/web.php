@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::get('/unauthorized', function () {
     return 'unauthorized';
-});
+})->name('unauthorized');
 
 Route::resource('registrationBranch', 'RegistrationBranchController')->only(['store', 'edit']);
 Route::get('/register/success', 'RegistrationBranchController@afterRegister')->name('registrationBranch.afterRegister');
@@ -47,4 +47,6 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
 
 Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch')->name('adminBranch.')->group(function () {
     Route::get('home', 'HomeController@index')->name('home');
+    Route::get('profile', 'HomeController@edit')->name('profile.edit');
+    Route::put('profile', 'HomeController@update')->name('profile.update');
 });

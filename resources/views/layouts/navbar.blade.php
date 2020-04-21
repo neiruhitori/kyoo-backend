@@ -53,7 +53,7 @@
                     </a>
                     @break
                 @case('admin_branch')
-                    <a class="dropdown-item" href="">
+                    <a class="dropdown-item" href="{{route('adminBranch.profile.edit')}}">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         Profile
                     </a>
