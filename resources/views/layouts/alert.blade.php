@@ -23,7 +23,7 @@
     <div class="alert alert-danger alert-block">
         <div class="row">
             <div class="col-md-8">
-                <p>Terjadi Kesalahan</p>
+                <p>Error</p>
             </div>
             <div class="col-md-4">
                 <button type="button" class="close" data-dismiss="alert">×</button>

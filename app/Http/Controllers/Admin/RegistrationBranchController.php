@@ -98,8 +98,10 @@ class RegistrationBranchController extends Controller
      * @param  \App\RegistrationBranch  $registrationBranch
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RegistrationBranch $registrationBranch)
+    public function destroy(Request $request, RegistrationBranch $registrationBranch)
     {
-        //
+        $registrationBranch->delete();
+        $request->session()->flash('error', 'Branch '.$registrationBranch->name.' has been rejected!');
+        return redirect(route('admin.branch.index'));
     }
 }

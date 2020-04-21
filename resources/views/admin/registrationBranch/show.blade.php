@@ -15,7 +15,9 @@
                             <div class="table-responsive">
                                 <table class="table">
                                     <tr>
-                                        <th colspan="2">Profile</th>
+                                        <th colspan="2">
+                                            <h5>Profile</h5>
+                                        </th>
                                     </tr>
                                     <tr>
                                         <th>Category</th>
@@ -42,12 +44,19 @@
                                         <td>{{$branch->updated_at->format('D, d-m-Y H:i')}}</td>
                                     </tr>
                                 </table>
-                                <form action="{{route('admin.registrationBranch.update', $branch->id)}}" method="post">
-                                    @csrf
-                                    @method('PUT')
-                                    <button class="btn btn-primary">Verify This Branch</button>
-                                </form>
                             </div>
+                        </div>
+                        <div class="col-md-12">
+                            <form action="{{route('admin.registrationBranch.update', $branch->id)}}" method="post" style="display: inline">
+                                @csrf
+                                @method('PUT')
+                                <button class="btn btn-primary">Approve</button>
+                            </form>
+                            <form action="{{route('admin.registrationBranch.destroy', $branch->id)}}" method="post" style="display: inline">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger ml-5">Reject</button>
+                            </form>
                         </div>
                     </div>
                 </div>

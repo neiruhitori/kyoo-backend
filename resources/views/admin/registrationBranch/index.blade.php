@@ -24,8 +24,8 @@
                                             <th>Category</th>
                                             <th>Address</th>
                                             <th>Admin Contact</th>
-                                            <th>Created At</th>
                                             <th>Email Verified</th>
+                                            <th>Created At</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>

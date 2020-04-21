@@ -23,7 +23,7 @@
 
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email') ?: Auth::user()->email}}" required>
+                                    <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email') ?: Auth::user()->email}}" required disabled>
                                     @include('layouts.inputError', ['errorName' => 'email'])
                                 </div>
 

@@ -25,7 +25,9 @@
                             <div class="table-responsive">
                                 <table class="table">
                                     <tr>
-                                        <th colspan="2">Profile</th>
+                                        <th colspan="2">
+                                            <h5>Profile</h5>
+                                        </th>
                                     </tr>
                                     <tr>
                                         <th>Category</th>
@@ -66,7 +68,7 @@
                                         <th colspan="2">
                                             <br>
                                             <br>
-                                            Location Detail
+                                            <h5>Location Detail</h5>
                                         </th>
                                     </tr>
                                     <tr>
@@ -91,7 +93,7 @@
                                         <th colspan="2">
                                             <br>
                                             <br>
-                                            Services Days and Times
+                                            <h5>Services Days and Times</h5>
                                         </th>
                                     </tr>
                                     <tr>
@@ -126,7 +128,7 @@
                                         <th colspan="2">
                                             <br>
                                             <br>
-                                            Admin Account
+                                            <h5>Admin Account</h5>
                                         </th>
                                     </tr>
                                     <tr>

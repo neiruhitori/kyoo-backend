@@ -54,7 +54,7 @@
                                         @include('layouts.inputError', ['errorName' => 'name'])
                                     </div>
                                     <div class="form-group">
-                                        <label for="industry_category_id">Category</label>
+                                        <label for="industry_category_id">Industry Category</label>
                                         <select name="industry_category_id" id="industry_category_id" class="form-control @error('industry_category_id') is-invalid @enderror" required>
                                             @foreach ($categories as $category)
                                                 <option value="{{$category->id}}">{{$category->name}}</option>
