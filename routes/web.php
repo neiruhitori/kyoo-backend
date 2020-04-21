@@ -14,9 +14,33 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect(route('home'));
 });
+
+Route::get('/unauthorized', function () {
+    return 'unauthorized';
+});
+
+Route::resource('registrationBranch', 'RegistrationBranchController')->only(['store', 'edit']);
+Route::get('/register/success', 'RegistrationBranchController@afterRegister')->name('registrationBranch.afterRegister');
+Route::get('/register/verified', 'RegistrationBranchController@afterVerified')->name('registrationBranch.afterVerified');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->name('admin.')->group(function () {
+    Route::get('home', 'HomeController@index')->name('home');
+    Route::get('profile', 'HomeController@edit')->name('profile.edit');
+    Route::put('profile', 'HomeController@update')->name('profile.update');
+
+    // Industry Category
+    Route::resource('industryCategory', 'IndustryCategoryController');
+
+    // Branch
+    Route::resource('branch', 'BranchController');
+    Route::resource('registrationBranch', 'RegistrationBranchController')->only(['index', 'show', 'update', 'destroy']);
+
+    // Schedule Template
+    Route::resource('scheduleTemplate', 'ScheduleTemplateController');
+});

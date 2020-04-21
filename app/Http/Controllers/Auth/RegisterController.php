@@ -9,6 +9,10 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+use Countries;
+use App\Models\Province;
+use App\IndustryCategory;
+
 class RegisterController extends Controller
 {
     /*
@@ -68,6 +72,23 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+        ]);
+    }
+
+    /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRegistrationForm()
+    {
+        $countries = Countries::getList('en_US');
+        $categories = IndustryCategory::all();
+        $provinces = Province::all();
+        return view('register', [
+            'countries' => $countries,
+            'categories' => $categories,
+            'provinces' => $provinces
         ]);
     }
 }

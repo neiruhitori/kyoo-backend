@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('token_external')->nullable();
             $table->string('platform')->nullable();
             $table->enum('role', ['admin_kyoo', 'admin_branch', 'cs', 'customer'])->default('customer');
+            $table->string('phone', 20)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

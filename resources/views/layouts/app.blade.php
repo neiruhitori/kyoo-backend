@@ -23,6 +23,9 @@
     .bg-gradient-primary {
       background-image: linear-gradient(355.22deg, #189DCD 4.98%, #0A5194 121.39%);
     }
+    .fullwidth {
+      width: 100%;
+    }
   </style>
   @stack('css')
 </head>
@@ -32,7 +35,13 @@
   <!-- Page Wrapper -->
   <div id="wrapper">
 
-    @include('layouts.sidebar')
+    @switch(Auth::user()->role)
+        @case('admin_kyoo')
+            @include('layouts.sidebarAdmin')
+            @break
+        @default
+            
+    @endswitch
 
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
