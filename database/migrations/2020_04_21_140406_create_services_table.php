@@ -18,6 +18,7 @@ class CreateServicesTable extends Migration
             $table->foreignId('branch_id');
             $table->string('name');
             $table->timestamps();
+            $table->softdeletes();
 
             $table->foreign('branch_id')->references('id')->on('branches');
         });

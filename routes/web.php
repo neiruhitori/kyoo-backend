@@ -55,5 +55,8 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
     Route::put('branch', 'BranchController@update')->name('branch.update');
 
     // Schedule routes
-    Route::resource('schedule', 'ScheduleController');
+    Route::resource('schedule', 'ScheduleController')->except('show');
+
+    // Service routes
+    Route::resource('service', 'ServiceController');
 });
