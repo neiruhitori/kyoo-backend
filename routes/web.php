@@ -44,3 +44,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     // Schedule Template
     Route::resource('scheduleTemplate', 'ScheduleTemplateController');
 });
+
+Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch')->name('adminBranch.')->group(function () {
+    Route::get('home', 'HomeController@index')->name('home');
+});
