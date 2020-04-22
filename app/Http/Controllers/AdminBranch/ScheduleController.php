@@ -66,6 +66,11 @@ class ScheduleController extends Controller
      */
     public function edit(Schedule $schedule)
     {
+        // gate
+        if ($schedule->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+
         return view('adminBranch.schedule.edit')->withSchedule($schedule);
     }
 
@@ -78,6 +83,11 @@ class ScheduleController extends Controller
      */
     public function update(UpdateSchedule $request, Schedule $schedule)
     {
+        // gate
+        if ($schedule->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+
         $schedule->update($request->all());
         $request->session()->flash('warning', 'Schedule has been updated!');
         return redirect(route('adminBranch.schedule.index'));
@@ -91,6 +101,11 @@ class ScheduleController extends Controller
      */
     public function destroy(Request $request, Schedule $schedule)
     {
+        // gate
+        if ($schedule->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+
         $schedule->delete();
         $request->session()->flash('error', 'Schedule has been removed!');
         return redirect(route('adminBranch.schedule.index'));

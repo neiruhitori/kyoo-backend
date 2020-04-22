@@ -8,7 +8,7 @@ use App\Service;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreSlot;
 use App\Http\Requests\AdminBranch\UpdateSlot;
-
+use Auth;
 class SlotController extends Controller
 {
     /**
@@ -65,6 +65,11 @@ class SlotController extends Controller
      */
     public function edit(Slot $slot)
     {
+        // gate
+        if ($slot->Service->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+        
         return view('adminBranch.service.slot.edit')->withSlot($slot);
     }
 
@@ -77,6 +82,11 @@ class SlotController extends Controller
      */
     public function update(UpdateSlot $request, Slot $slot)
     {
+        // gate
+        if ($slot->Service->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+        
         $slot->update($request->all());
         $request->session()->flash('warning', 'Slot has been updated!');
         return redirect(route('adminBranch.service.slot.index', $slot->service_id));
@@ -90,6 +100,11 @@ class SlotController extends Controller
      */
     public function destroy(Request $request, Slot $slot)
     {
+        // gate
+        if ($slot->Service->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+        
         $slot->delete();
         $request->session()->flash('error', 'Slot has been removed!');
         return redirect(route('adminBranch.service.slot.index', $slot->service_id));

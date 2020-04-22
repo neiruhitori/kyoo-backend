@@ -64,6 +64,10 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
+        // gate
+        if ($service->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
         return view('adminBranch.service.edit')->withService($service);
     }
 
@@ -76,6 +80,11 @@ class ServiceController extends Controller
      */
     public function update(Request $request, Service $service)
     {
+        // gate
+        if ($service->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+
         $service->update($request->all());
         $request->session()->flash('warning', 'Service '.$request->name.' has been updated!');
         return redirect(route('adminBranch.service.index'));
@@ -89,6 +98,11 @@ class ServiceController extends Controller
      */
     public function destroy(Request $request, Service $service)
     {
+        // gate
+        if ($service->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+        
         $service->delete();
         $request->session()->flash('error', 'Service '.$service->name.' has been removed!');
         return redirect(route('adminBranch.service.index'));
