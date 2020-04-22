@@ -9,14 +9,14 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">List Industry service</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">List Slot</h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12 text-right">
-                            <a href="{{route('adminBranch.service.create')}}" class="btn btn-primary"">
-                                Insert service
+                            <a href="{{route('adminBranch.service.slot.create', $service->id)}}" class="btn btn-primary"">
+                                Insert slot
                             </a>
                         </div>
                     </div>
@@ -26,26 +26,23 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Total Slot</th>
+                                            <th>Day</th>
+                                            <th>Start Time</th>
+                                            <th>End Time</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($services as $service)
+                                        @foreach ($service->Slot as $slot)
                                             <tr>
-                                                <td>{{$service->name}}</td>
+                                                <td>{{$slot->day}}</td>
+                                                <td>{{$slot->start_time}}</td>
+                                                <td>{{$slot->end_time}}</td>
                                                 <td>
-                                                    {{count($service->Slot)}}
-                                                </td>
-                                                <td>
-                                                    <a href="{{route('adminBranch.service.slot.index', $service->id)}}" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Service Slots">
-                                                        <i class="fas fa-fw fa-th-list"></i>
-                                                    </a>
-                                                    <a href="{{route('adminBranch.service.edit', $service->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Service">
+                                                    <a href="{{route('adminBranch.slot.edit', $slot->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Service">
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
-                                                    <form action="{{route('adminBranch.service.destroy', $service->id)}}" method="post" style="display: inline">
+                                                    <form action="{{route('adminBranch.slot.destroy', $slot->id)}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Service">

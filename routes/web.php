@@ -59,4 +59,7 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
 
     // Service routes
     Route::resource('service', 'ServiceController');
+
+    // Slot routes
+    Route::resource('service.slot', 'SlotController')->shallow();
 });

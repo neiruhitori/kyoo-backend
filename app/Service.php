@@ -10,4 +10,9 @@ class Service extends Model
     use SoftDeletes;
     
     protected $fillable = ['branch_id', 'name'];
+
+    public function Slot()
+    {
+        return $this->hasMany('App\Slot');
+    }
 }
