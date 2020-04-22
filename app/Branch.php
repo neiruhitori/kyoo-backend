@@ -25,4 +25,9 @@ class Branch extends Model
     {
         return $this->hasMany('App\User')->where('role', 'admin_branch');
     }
+
+    public function Schedule()
+    {
+        return $this->hasMany('App\Schedule');
+    }
 }

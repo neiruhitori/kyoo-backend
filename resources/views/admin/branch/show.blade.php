@@ -96,34 +96,23 @@
                                             <h5>Services Days and Times</h5>
                                         </th>
                                     </tr>
-                                    <tr>
-                                        <th>Monday</th>
-                                        <td>10.00 - 18.00</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Tuesday</th>
-                                        <td>10.00 - 18.00</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Wednesday</th>
-                                        <td>10.00 - 18.00</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Thursday</th>
-                                        <td>10.00 - 18.00</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Friday</th>
-                                        <td>10.00 - 18.00</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Saturday</th>
-                                        <td>10.00 - 12.00</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Sunday</th>
-                                        <td>Close</td>
-                                    </tr>
+                                    @foreach ($branch->Schedule as $schedule)
+                                        <tr>
+                                            <th>{{$schedule->day}}</th>
+                                            <td>
+                                                @switch($schedule->status)
+                                                    @case('closed')
+                                                        <span class="badge badge-danger">Closed</span>
+                                                        @break
+                                                    @case('fullday')
+                                                        <span class="badge badge-success">Fullday</span>
+                                                        @break
+                                                    @default
+                                                        {{$schedule->start_time}} - {{$schedule->end_time}}
+                                                @endswitch
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     <tr>
                                         <th colspan="2">
                                             <br>
