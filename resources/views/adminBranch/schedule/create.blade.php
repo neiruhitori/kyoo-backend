@@ -30,7 +30,7 @@
 
                                 <div class="form-group">
                                     <label for="status">Status</label>
-                                    <select name="status" id="status" class="form-control @error('status') is-invalid @enderror">
+                                    <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" onchange="changeStatus()">
                                         <option value="">Open</option>
                                         <option value="fullday">Open Fullday</option>
                                         <option value="closed">Closed</option>
@@ -38,13 +38,13 @@
                                     @include('layouts.inputError', ['errorName' => 'status'])
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" id="start_time">
                                     <label for="start_time">Start Time</label>
                                     <input name="start_time" type="time" class="form-control @error('start_time') is-invalid @enderror" value="{{old('start_time')}}" required>
                                     @include('layouts.inputError', ['errorName' => 'start_time'])
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" id="end_time">
                                     <label for="end_time">End Time</label>
                                     <input name="end_time" type="time" class="form-control @error('end_time') is-invalid @enderror" value="{{old('end_time')}}" required>
                                     @include('layouts.inputError', ['errorName' => 'end_time'])
@@ -74,5 +74,16 @@
                 $('#status').val(statusOldValue);
             }
         });
+
+        function changeStatus() {
+            let status = $('#status option:selected').val()
+            if (!status) {
+                $('#start_time').show()
+                $('#end_time').show()
+            } else {
+                $('#start_time').hide()
+                $('#end_time').hide()
+            }
+        }
     </script>
 @endpush

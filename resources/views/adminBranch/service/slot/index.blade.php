@@ -36,7 +36,7 @@
                                     <tbody>
                                         @foreach ($service->Slot as $slot)
                                             <tr>
-                                                <td>{{$slot->day}}</td>
+                                                <td class="text-capitalize">{{$slot->day}}</td>
                                                 <td>{{$slot->max_slots}}</td>
                                                 <td>{{$slot->start_time}}</td>
                                                 <td>{{$slot->end_time}}</td>
