@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::get('/unauthorized', function () {
     return 'unauthorized';
-});
+})->name('unauthorized');
 
 Route::resource('registrationBranch', 'RegistrationBranchController')->only(['store', 'edit']);
 Route::get('/register/success', 'RegistrationBranchController@afterRegister')->name('registrationBranch.afterRegister');
@@ -43,4 +43,28 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
 
     // Schedule Template
     Route::resource('scheduleTemplate', 'ScheduleTemplateController');
+});
+
+Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch')->name('adminBranch.')->group(function () {
+    Route::get('home', 'HomeController@index')->name('home');
+    Route::get('profile', 'HomeController@edit')->name('profile.edit');
+    Route::put('profile', 'HomeController@update')->name('profile.update');
+
+    // Branch routes
+    Route::get('branch', 'BranchController@edit')->name('branch.edit');
+    Route::put('branch', 'BranchController@update')->name('branch.update');
+
+    // Schedule routes
+    Route::get('/schedule/list', 'ScheduleController@templateIndex')->name('schedule.template.index');
+    Route::put('/schedule/list', 'ScheduleController@templateUpdate')->name('schedule.template.update');
+    Route::resource('schedule', 'ScheduleController')->except('show');
+
+    // Service routes
+    Route::resource('service', 'ServiceController');
+
+    // Slot routes
+    Route::resource('service.slot', 'SlotController')->shallow();
+
+    // Counter routes
+    Route::resource('user', 'UserController');
 });

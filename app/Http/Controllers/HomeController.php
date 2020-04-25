@@ -28,6 +28,9 @@ class HomeController extends Controller
             case 'admin_kyoo':
                 return redirect(route('admin.home'));
                 break;
+            case 'admin_branch':
+                return redirect(route('adminBranch.home'));
+                break;
             
             default:
                 return 'on going';

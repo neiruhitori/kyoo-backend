@@ -45,10 +45,22 @@
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-            <a class="dropdown-item" href="{{route('admin.profile.edit')}}">
-                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                Profile
-            </a>
+            @switch(Auth::user()->role)
+                @case('admin_kyoo')
+                    <a class="dropdown-item" href="{{route('admin.profile.edit')}}">
+                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Profile
+                    </a>
+                    @break
+                @case('admin_branch')
+                    <a class="dropdown-item" href="{{route('adminBranch.profile.edit')}}">
+                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Profile
+                    </a>
+                    @break
+                @default
+                    
+            @endswitch
             <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

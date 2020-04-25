@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\AdminBranch;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
-
 class UpdateProfile extends FormRequest
 {
     /**
@@ -14,7 +13,7 @@ class UpdateProfile extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->role == 'admin_kyoo';
+        return Auth::user()->role == 'admin_branch';
     }
 
     /**

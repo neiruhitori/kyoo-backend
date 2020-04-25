@@ -39,6 +39,9 @@
         @case('admin_kyoo')
             @include('layouts.sidebarAdmin')
             @break
+        @case('admin_branch')
+            @include('layouts.sidebarAdminBranch')
+            @break
         @default
             
     @endswitch

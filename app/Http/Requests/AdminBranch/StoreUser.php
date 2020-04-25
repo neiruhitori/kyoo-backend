@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\AdminBranch;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
 
-class UpdateProfile extends FormRequest
+class StoreUser extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class UpdateProfile extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->role == 'admin_kyoo';
+        return Auth::user()->role == 'admin_branch';
     }
 
     /**
@@ -25,9 +25,7 @@ class UpdateProfile extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:3',
-            'email' => 'sometimes|email|unique:users,email,'.Auth::user()->id,
-            'phone' => 'required|numeric|min:5',
+            'username' => 'required|unique:users',
             'password' => [
                 'required',
                 'confirmed',

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Admin Kyoo Dashboard</h1>
+        <h1 class="h3 mb-0 text-gray-800">Admin Branch Dashboard</h1>
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -13,8 +13,9 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Branches</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalBranch)}}</div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Appointment</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">12</div>
+                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalBranch)}}</div> --}}
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -28,7 +29,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Customer</div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Served</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">102</div>
                     </div>
                     <div class="col-auto">
@@ -43,7 +44,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Appointment</div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total No Show</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">543</div>
                         </div>
                         <div class="col-auto">
@@ -59,7 +60,7 @@
             <!-- Area Chart -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Transaction Performance</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Total Appointment</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">

@@ -18,6 +18,16 @@
 </div>
 <div class="form-group">
     <label for="admin_password">Password</label>
+    <br>
+    <small>
+        rules:
+        <ul>
+            <li>must be at least 8 characters in length</li>
+            <li>must contain at least one lowercase letter</li>
+            <li>must contain at least one uppercase letter</li>
+            <li>must contain at least one digit</li>
+        </ul>
+    </small>
     <input name="admin_password" type="password" class="form-control @error('admin_password') is-invalid @enderror" value="">
     @include('layouts.inputError', ['errorName' => 'admin_password'])
 </div>
