@@ -42,6 +42,9 @@
         @case('admin_branch')
             @include('layouts.sidebarAdminBranch')
             @break
+        @case('cs')
+            @include('layouts.sidebarCS')
+            @break
         @default
             
     @endswitch

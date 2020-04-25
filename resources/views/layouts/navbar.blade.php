@@ -51,17 +51,18 @@
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         Profile
                     </a>
+                    <div class="dropdown-divider"></div>
                     @break
                 @case('admin_branch')
                     <a class="dropdown-item" href="{{route('adminBranch.profile.edit')}}">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         Profile
                     </a>
+                    <div class="dropdown-divider"></div>
                     @break
                 @default
                     
             @endswitch
-            <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

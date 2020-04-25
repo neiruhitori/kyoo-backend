@@ -31,9 +31,11 @@ class HomeController extends Controller
             case 'admin_branch':
                 return redirect(route('adminBranch.home'));
                 break;
-            
+            case 'cs':
+                return redirect(route('cs.home'));
+                break;
             default:
-                return 'on going';
+                return redirect(route('unauthorized'));
                 break;
         }
     }
