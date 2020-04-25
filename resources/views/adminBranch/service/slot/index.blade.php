@@ -27,6 +27,7 @@
                                     <thead>
                                         <tr>
                                             <th>Day</th>
+                                            <th>Maximum Slot</th>
                                             <th>Start Time</th>
                                             <th>End Time</th>
                                             <th>Action</th>
@@ -36,6 +37,7 @@
                                         @foreach ($service->Slot as $slot)
                                             <tr>
                                                 <td>{{$slot->day}}</td>
+                                                <td>{{$slot->max_slots}}</td>
                                                 <td>{{$slot->start_time}}</td>
                                                 <td>{{$slot->end_time}}</td>
                                                 <td>

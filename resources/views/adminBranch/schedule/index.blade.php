@@ -9,10 +9,16 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">List Industry schedule</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">List Schedule</h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
+                    <div class="col-md-12 alert alert-primary">
+                        @if (Auth::user()->Branch->schedule_template_id)
+                            <h5>Youre using {{Auth::user()->Branch->ScheduleTemplate->name}}</h5>
+                        @endif
+                        <a href="{{route('adminBranch.schedule.template.index')}}"><b>Click here to choose or change schedule template from Kyoo (optional)</b></a>
+                    </div>
                     <div class="row">
                         <div class="col-md-12 text-right">
                             <a href="{{route('adminBranch.schedule.create')}}" class="btn btn-primary"">

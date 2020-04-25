@@ -27,7 +27,7 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Total Slot</th>
+                                            <th>Total Slot Time Interval</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -39,7 +39,7 @@
                                                     {{count($service->Slot)}}
                                                 </td>
                                                 <td>
-                                                    <a href="{{route('adminBranch.service.slot.index', $service->id)}}" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Service Slots">
+                                                    <a href="{{route('adminBranch.service.slot.index', $service->id)}}" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Slot Time Interval">
                                                         <i class="fas fa-fw fa-th-list"></i>
                                                     </a>
                                                     <a href="{{route('adminBranch.service.edit', $service->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Service">

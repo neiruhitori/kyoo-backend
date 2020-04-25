@@ -30,4 +30,9 @@ class Branch extends Model
     {
         return $this->hasMany('App\Schedule');
     }
+
+    public function ScheduleTemplate()
+    {
+        return $this->belongsTo('App\ScheduleTemplate');
+    }
 }

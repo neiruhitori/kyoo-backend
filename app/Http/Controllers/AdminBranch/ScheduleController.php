@@ -4,6 +4,8 @@ namespace App\Http\Controllers\AdminBranch;
 
 use App\Http\Controllers\Controller;
 use App\Schedule;
+use App\ScheduleTemplate;
+use App\Branch;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreSchedule;
 use App\Http\Requests\AdminBranch\UpdateSchedule;
@@ -108,6 +110,23 @@ class ScheduleController extends Controller
 
         $schedule->delete();
         $request->session()->flash('error', 'Schedule has been removed!');
+        return redirect(route('adminBranch.schedule.index'));
+    }
+
+    public function templateIndex()
+    {
+        $schedules = ScheduleTemplate::all();
+        $branch = Branch::find(Auth::user()->branch_id);
+        return view('adminBranch.schedule.template.index', [
+            'schedules' => $schedules,
+            'branch' => $branch,
+        ]);
+    }
+
+    public function templateUpdate(Request $request)
+    {
+        Branch::find(Auth::user()->branch_id)->update($request->all());
+        $request->session()->flash('warning', 'Schedule Template has been updated!');
         return redirect(route('adminBranch.schedule.index'));
     }
 }

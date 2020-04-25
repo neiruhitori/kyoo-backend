@@ -5,6 +5,9 @@
         <h1 class="h3 mb-0 text-gray-800">Admin Kyoo Dashboard</h1>
     </div>
     <div class="row">
+        <div class="col-md-12">
+            @include('layouts.alert')
+        </div>
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">

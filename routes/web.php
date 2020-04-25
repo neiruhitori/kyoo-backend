@@ -55,6 +55,8 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
     Route::put('branch', 'BranchController@update')->name('branch.update');
 
     // Schedule routes
+    Route::get('/schedule/list', 'ScheduleController@templateIndex')->name('schedule.template.index');
+    Route::put('/schedule/list', 'ScheduleController@templateUpdate')->name('schedule.template.update');
     Route::resource('schedule', 'ScheduleController')->except('show');
 
     // Service routes
