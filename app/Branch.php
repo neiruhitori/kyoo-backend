@@ -26,6 +26,11 @@ class Branch extends Model
         return $this->hasMany('App\User')->where('role', 'admin_branch');
     }
 
+    public function CS()
+    {
+        return $this->hasMany('App\User')->withTrashed()->where('role', 'cs');
+    }
+
     public function Schedule()
     {
         return $this->hasMany('App\Schedule');
