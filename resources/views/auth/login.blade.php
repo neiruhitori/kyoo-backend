@@ -43,10 +43,11 @@
                   <div class="text-center">
                     <img src="{{asset('img/logo-color.svg')}}" alt="" class="img-fluid mb-4">
                   </div>
+                  @include('layouts.alert')
                   <form method="POST" action="{{ route('login') }}" class="user">
                         @csrf
                     <div class="form-group">
-                      <input type="email" name="email" class="form-control form-control-user @error('email') is-invalid @enderror" value="{{ old('email') }}" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                      <input type="text" name="email" class="form-control form-control-user @error('email') is-invalid @enderror" value="{{ old('email') }}" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email or Username...">
                         @error('email')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
