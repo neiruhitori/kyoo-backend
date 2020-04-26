@@ -34,6 +34,9 @@ Route::get('branch/{branch}', 'API\BranchController@show');
 // service routes
 Route::get('service/branch/{branch_id}', 'API\ServiceController@getAllByBranchId');
 
+// slot routes
+Route::post('slot', 'API\SlotController@index');
+
 Route::middleware(['auth:api'])->group(function () {
     // user routes
     Route::get('user', 'API\UserController@detail');
