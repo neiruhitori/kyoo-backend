@@ -53,4 +53,16 @@ class UserController extends Controller
             ], 401);
         }
     }
+
+    public function detail()
+    {
+        $user = Auth::user();
+        $user->Customer;
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'get detail user',
+            'data' => $user
+        ]);
+    }
 }

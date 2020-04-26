@@ -13,13 +13,28 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+// region routes
 Route::get('allProvince', 'API\RegionController@allProvince');
 Route::get('regency/{province}', 'API\RegionController@regencyByProvince');
 
-// User
+// user routes
 Route::post('user/register', 'API\UserController@register');
 Route::post('user/login', 'API\UserController@login');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// industry category routes
+Route::get('industry-category', 'API\IndustryCategoryController@index');
+
+// branch routes
+Route::get('branch/city/{regency_id}', 'API\BranchController@getAllByCityId');
+Route::get('branch/keyword/{keyword}', 'API\BranchController@getAllByKeyword');
+Route::get('branch/industry-category/{industry_category_id}', 'API\BranchController@getAllByIndustryCategory');
+Route::get('branch/{branch}', 'API\BranchController@show');
+
+// service routes
+Route::get('service/branch/{branch_id}', 'API\ServiceController@getAllByBranchId');
+
+Route::middleware(['auth:api'])->group(function () {
+    // user routes
+    Route::get('user', 'API\UserController@detail');
 });
