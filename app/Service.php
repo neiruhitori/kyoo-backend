@@ -15,4 +15,9 @@ class Service extends Model
     {
         return $this->hasMany('App\Slot');
     }
+
+    public function Branch()
+    {
+        return $this->belongsTo('App\Branch');
+    }
 }
