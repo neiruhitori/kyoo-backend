@@ -66,5 +66,11 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
     Route::resource('service.slot', 'SlotController')->shallow();
 
     // Counter routes
+    Route::put('user/restore', 'UserController@restore')->name('user.restore');
     Route::resource('user', 'UserController');
+});
+
+Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {
+    Route::get('home', 'HomeController@index')->name('home');
+    Route::put('appointment/{appointment}', 'HomeController@updateAppointment')->name('appointment.update');
 });

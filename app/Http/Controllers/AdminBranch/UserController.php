@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreUser;
 use App\Http\Requests\AdminBranch\UpdateUser;
 use Auth;
+use Hash;
 
 class UserController extends Controller
 {
@@ -46,8 +47,8 @@ class UserController extends Controller
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
         $input['role'] = 'cs';
-        $input['name'] = "BR{$input['branch_id']}_".$request->username;
-        $input['username'] = "BR{$input['branch_id']}_".$request->username;
+        $input['name'] = "KY{$input['branch_id']}_".$request->username;
+        $input['username'] = "KY{$input['branch_id']}_".$request->username;
         User::create($input);
         $request->session()->flash('success', 'Account '.$input['username'].' has been inserted!');
         return redirect(route('adminBranch.user.index'));
@@ -88,9 +89,18 @@ class UserController extends Controller
         if ($user->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            $request->session()->flash('error', 'Please insert correct old password!');
+            return redirect()->back();
+        }
+        
         $input = $request->all();
-        $input['name'] = "BR{$user['branch_id']}_".$request->username;
-        $input['username'] = "BR{$user['branch_id']}_".$request->username;
+        $input['name'] = "KY{$user['branch_id']}_".$request->username;
+        $input['username'] = "KY{$user['branch_id']}_".$request->username;
+        if (!$request->password) {
+            unset($input['password']);
+        }
         $user->update($input);
         $request->session()->flash('warning', 'Account '.$input['username'].' has been updated!');
         return redirect(route('adminBranch.user.index'));
@@ -110,6 +120,14 @@ class UserController extends Controller
         }
         $user->delete();
         $request->session()->flash('error', 'Account '.$user->name.' has been removed!');
+        return redirect(route('adminBranch.user.index'));
+    }
+
+    public function restore(Request $request)
+    {
+        $user = User::withTrashed()->find($request->user_id);
+        $user->restore();
+        $request->session()->flash('success', 'Account '.$user->name.' has been restored!');
         return redirect(route('adminBranch.user.index'));
     }
 }

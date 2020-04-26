@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">List CS Account</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">User Counter List</h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-12 text-right">
                                 <a href="{{route('adminBranch.user.create')}}" class="btn btn-primary"">
-                                    Create CS Account
+                                    Create User Counter
                                 </a>
                             </div>
                         </div>
@@ -29,7 +29,7 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>User VCT Name</th>
+                                            <th>Username</th>
                                             <th>Role</th>
                                             <th>Status</th>
                                             <th>Action</th>
@@ -40,7 +40,7 @@
                                             <tr>
                                                 <td>{{$user->id}}</td>
                                                 <td>{{$user->username}}</td>
-                                                <td>CS</td>
+                                                <td>Counter</td>
                                                 <td>
                                                     @if ($user->deleted_at)
                                                             <span class="badge badge-danger">Non Active</span>
@@ -49,15 +49,24 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <a href="{{route('adminBranch.user.edit', $user->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit User">
-                                                        <i class="fas fa-fw fa-edit"></i>
-                                                    </a>
                                                     @if (!$user->deleted_at)
+                                                        <a href="{{route('adminBranch.user.edit', $user->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit User">
+                                                            <i class="fas fa-fw fa-edit"></i>
+                                                        </a>
                                                         <form action="{{route('adminBranch.user.destroy', $user->id)}}" method="post" style="display: inline">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove User">
                                                                 <i class="fas fa-fw fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                        @else
+                                                        <form action="{{route('adminBranch.user.restore')}}" method="post" style="display: inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="user_id" value="{{$user->id}}">
+                                                            <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Restore User">
+                                                                <i class="fas fa-fw fa-check"></i>
                                                             </button>
                                                         </form>
                                                     @endif

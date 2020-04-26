@@ -12,13 +12,6 @@
                     <h6 class="m-0 font-weight-bold text-primary">List Schedule</h6>
                 </div>
                 <div class="card-body">
-                    @include('layouts.alert')
-                    <div class="col-md-12 alert alert-primary">
-                        @if (Auth::user()->Branch->schedule_template_id)
-                            <h5>Youre using {{Auth::user()->Branch->ScheduleTemplate->name}}</h5>
-                        @endif
-                        <a href="{{route('adminBranch.schedule.template.index')}}"><b>Click here to choose or change schedule template from Kyoo (optional)</b></a>
-                    </div>
                     <div class="row">
                         <div class="col-md-12 text-right">
                             <a href="{{route('adminBranch.schedule.create')}}" class="btn btn-primary"">
@@ -26,6 +19,7 @@
                             </a>
                         </div>
                     </div>
+                    @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
@@ -69,6 +63,47 @@
                                                         </button>
                                                     </form>
                                                 </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Public Holiday</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 alert alert-primary">
+                            @if (Auth::user()->Branch->schedule_template_id)
+                                <h5>Youre using {{Auth::user()->Branch->ScheduleTemplate->name}}</h5>
+                            @endif
+                            <a href="{{route('adminBranch.schedule.template.index')}}"><b>Click here to choose or change schedule template from Kyoo (optional)</b></a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Description</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Auth::user()->Branch->ScheduleTemplate->ScheduleTemplateDetail as $schedule)
+                                            <tr>
+                                                <td>{{$schedule->description}}</td>
+                                                <td>{{$schedule->date}}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

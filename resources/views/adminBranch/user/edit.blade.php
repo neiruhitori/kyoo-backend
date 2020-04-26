@@ -18,11 +18,16 @@
                                     <label for="username">Username</label>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">BR{{Auth::user()->branch_id}}_</span>
+                                            <span class="input-group-text" id="basic-addon1">KY{{Auth::user()->branch_id}}_</span>
                                         </div>
                                         <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{!!old('username') ?: explode('_', $user->username)[1]!!}" required>
                                     </div>
                                     @include('layouts.inputError', ['errorName' => 'username'])
+                                </div>
+                                <div class="form-group">
+                                    <label for="password_confirmation">Old Password</label>
+                                    <input name="old_password" type="password" class="form-control @error('old_password') is-invalid @enderror" value="{{old('old_password')}}" required>
+                                    @include('layouts.inputError', ['errorName' => 'old_password'])
                                 </div>
                                 <div class="form-group">
                                     <label for="password">Password</label>
@@ -36,12 +41,12 @@
                                             <li>must contain at least one digit</li>
                                         </ul>
                                     </small>
-                                    <input name="password" type="password" class="form-control @error('password') is-invalid @enderror" value="{{old('password')}}" required>
+                                    <input name="password" type="password" class="form-control @error('password') is-invalid @enderror" value="{{old('password')}}">
                                     @include('layouts.inputError', ['errorName' => 'password'])
                                 </div>
                                 <div class="form-group">
                                     <label for="password_confirmation">Confirmation Password</label>
-                                    <input name="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{old('password_confirmation')}}" required>
+                                    <input name="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{old('password_confirmation')}}">
                                     @include('layouts.inputError', ['errorName' => 'password_confirmation'])
                                 </div>
                                 <button class="btn btn-warning">Update</button>
