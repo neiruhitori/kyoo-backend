@@ -22,7 +22,7 @@ class CreateAppointmentsTable extends Migration
             $table->string('phone');
             $table->string('email');
             $table->text('notes')->nullable();
-            $table->enum('status', ['book', 'attend', 'not attend', 'served'])->default('book');
+            $table->enum('status', ['book', 'check in', 'no show', 'served'])->default('book');
             $table->smallInteger('rating')->nullable();
             $table->boolean('is_liked')->default(false);
             $table->timestamps();

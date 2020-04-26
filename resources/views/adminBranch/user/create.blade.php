@@ -16,7 +16,7 @@
                                     <label for="username">Username</label>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">BR{{Auth::user()->branch_id}}_</span>
+                                            <span class="input-group-text" id="basic-addon1">KY{{Auth::user()->branch_id}}_</span>
                                         </div>
                                         <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{{old('username')}}" required>
                                     </div>

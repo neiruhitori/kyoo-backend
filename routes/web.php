@@ -66,6 +66,7 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
     Route::resource('service.slot', 'SlotController')->shallow();
 
     // Counter routes
+    Route::put('user/restore', 'UserController@restore')->name('user.restore');
     Route::resource('user', 'UserController');
 });
 

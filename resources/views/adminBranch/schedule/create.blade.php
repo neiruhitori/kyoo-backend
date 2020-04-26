@@ -40,13 +40,13 @@
 
                                 <div class="form-group" id="start_time">
                                     <label for="start_time">Start Time</label>
-                                    <input name="start_time" type="time" class="form-control @error('start_time') is-invalid @enderror" value="{{old('start_time')}}" required>
+                                    <input name="start_time" type="time" class="form-control @error('start_time') is-invalid @enderror" value="{{old('start_time')}}">
                                     @include('layouts.inputError', ['errorName' => 'start_time'])
                                 </div>
 
                                 <div class="form-group" id="end_time">
                                     <label for="end_time">End Time</label>
-                                    <input name="end_time" type="time" class="form-control @error('end_time') is-invalid @enderror" value="{{old('end_time')}}" required>
+                                    <input name="end_time" type="time" class="form-control @error('end_time') is-invalid @enderror" value="{{old('end_time')}}">
                                     @include('layouts.inputError', ['errorName' => 'end_time'])
                                 </div>
 
