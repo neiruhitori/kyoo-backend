@@ -6,9 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\API\UserRegister;
 use App\Http\Requests\API\UserLogin;
+use App\Http\Requests\API\UpdateUser;
+use App\Http\Requests\API\UpdateUserPassword;
+use App\Http\Requests\API\UpdateUserAvatar;
 use App\User;
 use App\Customer;
 use Auth;
+use Hash;
+use Storage;
 
 class UserController extends Controller
 {
@@ -62,6 +67,52 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get detail user',
+            'data' => $user
+        ]);
+    }
+
+    public function update(UpdateUser $request)
+    {
+        $user = User::find(Auth::id());
+        $user->update($request->all());
+        $user->Customer->update($request->all());
+        $user->Customer;
+        return response()->json([
+            'success' => true,
+            'message' => 'update user',
+            'data' => $user
+        ]);
+    }
+
+    public function updatePassword(UpdateUserPassword $request)
+    {
+        $user = User::find(Auth::id());
+        if (Hash::check($request->old_password, $user->password)) {
+            $user->password = $request->new_password;
+            $user->save();
+            return response()->json([
+                'success' => true,
+                'message' => 'update user password',
+                'data' => $user
+            ]);
+        }   
+        return response()->json([
+            'success' => false,
+            'message' => 'failed to update user password',
+            'data' => null
+        ]);
+    }
+
+    public function updateAvatar(UpdateUserAvatar $request)
+    {
+        $input = $request->all();
+        $input['photo'] = Storage::disk('public')->put('customers', $request->photo);
+        $user = User::find(Auth::id());
+        $user->Customer->update($input);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'update user avatar',
             'data' => $user
         ]);
     }

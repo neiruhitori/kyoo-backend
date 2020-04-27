@@ -40,10 +40,18 @@ Route::post('slot', 'API\SlotController@index');
 Route::middleware(['auth:api'])->group(function () {
     // user routes
     Route::get('user', 'API\UserController@detail');
+    Route::put('user/update-profile', 'API\UserController@update');
+    Route::put('user/update-password', 'API\UserController@updatePassword');
+    Route::put('user/update-avatar', 'API\UserController@updateAvatar');
 
     // appointment routes
     Route::post('appointment', 'API\AppointmentController@store');
     Route::get('appointment', 'API\AppointmentController@index');
     Route::get('appointment/history', 'API\AppointmentController@history');
     Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
+    Route::get('appointment/upcoming', 'API\AppointmentController@upcoming');
+
+    // favorite routes
+    Route::get('favorite', 'API\FavoriteController@index');
+    Route::post('favorite', 'API\FavoriteController@store');
 });

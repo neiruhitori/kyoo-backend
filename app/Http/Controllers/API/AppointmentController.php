@@ -65,8 +65,25 @@ class AppointmentController extends Controller
         $appointment->update($request->all());
         return response()->json([
             'success' => true,
-            'message' => 'succes give feedback appointment',
+            'message' => 'success give feedback appointment',
             'data' => $appointment
+        ]);
+    }
+
+    public function upcoming()
+    {
+        $dateNow = date('Y-m-d');
+        $appointments = Appointment::with('Slot.Service')->where('date', '>=', $dateNow)->where('user_id', Auth::id())->where('status', 'book')->orderBy('date', 'asc')->get();
+        foreach ($appointments as $appointment) {
+            $filledSlot = Appointment::whereHas('Slot', function($query) use ($appointment) {
+                $query->where('id', $appointment->slot_id);
+            })->where('date', $dateNow)->whereIn('status', ['book', 'check in'])->where('user_id', '!=', Auth::id())->get();
+            $appointment['Slot']['waiting'] = count($filledSlot);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'get upcoming appointment',
+            'data' => $appointments
         ]);
     }
 }
