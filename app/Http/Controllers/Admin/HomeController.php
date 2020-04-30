@@ -9,6 +9,8 @@ use App\Branch;
 use App\User;
 use App\Appointment;
 use Auth;
+use DB;
+
 class HomeController extends Controller
 {
     public function index()
@@ -16,10 +18,12 @@ class HomeController extends Controller
         $branches = Branch::all();
         $users = User::whereRole('customer')->get();
         $appointments = Appointment::all();
+        $appointmentGraph = Appointment::select(DB::raw('MONTH(date) as `month`'), DB::raw('count(id) as `total`'))->groupBy('month')->get();
         return view('admin.home', [
             'totalBranch' => count($branches),
             'totalUser' => count($users),
             'totalAppointment' => count($appointments),
+            'appointmentGraph' => $appointmentGraph
         ]);
     }
 
