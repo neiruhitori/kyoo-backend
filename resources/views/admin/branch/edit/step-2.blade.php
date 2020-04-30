@@ -1,3 +1,43 @@
+@push('css')
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <style type="text/css">
+        .log {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        height: 150px;
+        width: 250px;
+        overflow: scroll;
+        background: white;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 12px;
+      }
+      .log-entry {
+        padding: 5px;
+        border-bottom: 1px solid #d0d9e9;
+      }
+      .log-entry:nth-child(odd) {
+          background-color: #e1e7f1;
+      }
+	  #map {
+        width: 95%;
+        height: 450px;
+        background: grey;
+		}
+
+		#panel {
+        width: 100%;
+        height: 400px;
+		}
+    </style>
+    <script src='https://developer.here.com/javascript/src/iframeheight.js'></script>
+@endpush
 <h5 class="my-3">
     <span class="badge badge-warning">Step 2 of 3</span>
 </h5>
@@ -32,23 +72,22 @@
     <div class="col-md-6">
         <div class="form-group">
             <label for="lat">Lat</label>
-            <input name="lat" type="text" class="form-control @error('lat') is-invalid @enderror" value="{{old('lat') ?: $branch->lat}}">
+            <input name="lat" id="latInput" type="text" class="form-control @error('lat') is-invalid @enderror" value="{{old('lat') ?: $branch->lat}}" disabled>
             @include('layouts.inputError', ['errorName' => 'lat'])
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label for="long">Long</label>
-            <input name="long" type="text" class="form-control @error('long') is-invalid @enderror" value="{{old('long') ?: $branch->long}}">
+            <input name="long" id="lngInput" type="text" class="form-control @error('long') is-invalid @enderror" value="{{old('long') ?: $branch->long}}" disabled>
             @include('layouts.inputError', ['errorName' => 'long'])
         </div>
     </div>
 </div>
 <div class="form-group">
-    <label for="name">Get Lat n Long from Maps</label>
+    <label for="name" class="text-primary" onclick="initMaps()">Click here to show the maps</label>
     <br>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.011310751414!2d107.5938467146131!3d-6.889247869328712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e69314ebee4b%3A0xbc5831d22e61beeb!2sParis%20Van%20Java%20Resort%20Lifestyle%20Place!5e0!3m2!1sid!2sid!4v1587043514969!5m2!1sid!2sid" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
-    @include('layouts.inputError', ['errorName' => 'name'])
+    <div id="map"></div>
 </div>
 
 @push('js')
@@ -77,4 +116,70 @@
             })
         });
     </script>
+    <script>
+		function initMaps() {
+            /**
+            * An event listener is added to listen to tap events on the map.
+            * Clicking on the map displays an alert box containing the latitude and longitude
+            * of the location pressed.
+            * @param  {H.Map} map      A HERE Map instance within the application
+            */
+            function setUpClickListener(map) {
+            // Attach an event listener to map display
+            // obtain the coordinates and display in an alert box.
+            map.addEventListener('tap', function (evt) {
+                var coord = map.screenToGeo(evt.currentPointer.viewportX,
+                        evt.currentPointer.viewportY);
+                logEvent('Clicked at ' + Math.abs(coord.lat.toFixed(4)) +
+                    ((coord.lat > 0) ? 'N' : 'S') +
+                    ' ' + Math.abs(coord.lng.toFixed(4)) +
+                    ((coord.lng > 0) ? 'E' : 'W'));
+                    $('#latInput').val(coord.lat)
+                    $('#lngInput').val(coord.lng)
+            });
+            }
+
+            /**
+            * Boilerplate map initialization code starts below:
+            */
+
+            //Step 1: initialize communication with the platform
+            // In your own code, replace variable window.apikey with your own apikey
+            var platform = new H.service.Platform({
+                apikey: 'lr27OGV_xlkWUrjFSfHhpMKBtxL1zzi3n5tu-jOOYJ4'
+            });
+            var defaultLayers = platform.createDefaultLayers();
+
+            //Step 2: initialize a map
+            var map = new H.Map(document.getElementById('map'),
+            defaultLayers.vector.normal.map,{
+            center: {lat: {{ $branch->lat }}, lng: {{ $branch->long }}},
+            zoom: 13,
+            pixelRatio: window.devicePixelRatio || 1
+            });
+            // add a resize listener to make sure that the map occupies the whole container
+            window.addEventListener('resize', () => map.getViewPort().resize());
+
+            //Step 3: make the map interactive
+            // MapEvents enables the event system
+            // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+            var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+            // Step 4: create custom logging facilities
+            var logContainer = document.createElement('ul');
+            logContainer.className ='log';
+            logContainer.innerHTML = '<li class="log-entry">Try clicking on the map</li>';
+            map.getElement().appendChild(logContainer);
+
+            // Helper for logging events
+            function logEvent(str) {
+            var entry = document.createElement('li');
+            entry.className = 'log-entry';
+            entry.textContent = str;
+            logContainer.insertBefore(entry, logContainer.firstChild);
+            }
+
+            setUpClickListener(map);
+        }
+	</script>
 @endpush
