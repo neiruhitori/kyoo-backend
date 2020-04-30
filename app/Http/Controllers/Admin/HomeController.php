@@ -7,14 +7,19 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Admin\UpdateProfile;
 use App\Branch;
 use App\User;
+use App\Appointment;
 use Auth;
 class HomeController extends Controller
 {
     public function index()
     {
         $branches = Branch::all();
+        $users = User::whereRole('customer')->get();
+        $appointments = Appointment::all();
         return view('admin.home', [
-            'totalBranch' => count($branches)
+            'totalBranch' => count($branches),
+            'totalUser' => count($users),
+            'totalAppointment' => count($appointments),
         ]);
     }
 
