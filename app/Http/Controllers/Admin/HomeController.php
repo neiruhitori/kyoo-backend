@@ -18,7 +18,7 @@ class HomeController extends Controller
         $branches = Branch::all();
         $users = User::whereRole('customer')->get();
         $appointments = Appointment::all();
-        $appointmentGraph = Appointment::select(DB::raw('MONTH(date) as `month`'), DB::raw('count(id) as `total`'))->groupBy('month')->get();
+        $appointmentGraph = Appointment::select(DB::raw("MONTH(date) as 'month'"), DB::raw("count(id) as 'total'"))->groupBy('month')->get();
         return view('admin.home', [
             'totalBranch' => count($branches),
             'totalUser' => count($users),
