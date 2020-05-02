@@ -15,15 +15,19 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $branches = Branch::all();
-        $users = User::whereRole('customer')->get();
-        $appointments = Appointment::all();
-        $appointmentGraph = Appointment::select(DB::raw("MONTH(date) as 'month'"), DB::raw("count(id) as 'total'"))->groupBy('month')->get();
+        // $branches = Branch::all();
+        // $users = User::whereRole('customer')->get();
+        // $appointments = Appointment::all();
+        // $appointmentGraph = Appointment::select(DB::raw("MONTH(date) as 'month'"), DB::raw("count(id) as 'total'"))->groupBy('month')->get();
         return view('admin.home', [
-            'totalBranch' => count($branches),
-            'totalUser' => count($users),
-            'totalAppointment' => count($appointments),
-            'appointmentGraph' => $appointmentGraph
+            'totalBranch' => 0,
+            'totalUser' => 0,
+            'totalAppointment' => 0,
+            'appointmentGraph' => []
+            // 'totalBranch' => count($branches),
+            // 'totalUser' => count($users),
+            // 'totalAppointment' => count($appointments),
+            // 'appointmentGraph' => $appointmentGraph
         ]);
     }
 
