@@ -23,8 +23,8 @@ class CreateBranchesTable extends Migration
             $table->text('description')->nullable();
             $table->string('fixed_phone', 20)->nullable();
             $table->string('mobile_phone', 20);
-            $table->decimal('lat')->nullable();
-            $table->decimal('long')->nullable();
+            $table->string('lat', 50)->nullable();
+            $table->string('long', 50)->nullable();
             $table->string('country');
             $table->char('regency_id', 10);
             $table->string('logo')->nullable();

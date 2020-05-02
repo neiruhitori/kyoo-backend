@@ -17,6 +17,7 @@ class CreateAppointmentsTable extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('slot_id');
+            $table->string('booking_code', 5);
             $table->date('date');
             $table->string('name');
             $table->string('phone');
