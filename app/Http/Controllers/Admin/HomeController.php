@@ -19,11 +19,12 @@ class HomeController extends Controller
         // $users = User::whereRole('customer')->get();
         // $appointments = Appointment::all();
         // $appointmentGraph = Appointment::select(DB::raw("MONTH(date) as 'month'"), DB::raw("count(id) as 'total'"))->groupBy('month')->get();
+        $appointmentGraph = Appointment::all();
         return view('admin.home', [
             'totalBranch' => 0,
             'totalUser' => 0,
             'totalAppointment' => 0,
-            'appointmentGraph' => []
+            'appointmentGraph' => $appointmentGraph
             // 'totalBranch' => count($branches),
             // 'totalUser' => count($users),
             // 'totalAppointment' => count($appointments),
