@@ -72,14 +72,14 @@
     <div class="col-md-6">
         <div class="form-group">
             <label for="lat">Lat</label>
-            <input name="lat" id="latInput" type="text" class="form-control @error('lat') is-invalid @enderror" value="{{old('lat') ?: $branch->lat}}" disabled>
+            <input name="lat" id="latInput" type="text" class="form-control @error('lat') is-invalid @enderror" value="{{old('lat') ?: $branch->lat}}">
             @include('layouts.inputError', ['errorName' => 'lat'])
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label for="long">Long</label>
-            <input name="long" id="lngInput" type="text" class="form-control @error('long') is-invalid @enderror" value="{{old('long') ?: $branch->long}}" disabled>
+            <input name="long" id="lngInput" type="text" class="form-control @error('long') is-invalid @enderror" value="{{old('long') ?: $branch->long}}">
             @include('layouts.inputError', ['errorName' => 'long'])
         </div>
     </div>

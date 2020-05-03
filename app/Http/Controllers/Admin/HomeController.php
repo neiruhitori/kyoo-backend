@@ -18,7 +18,8 @@ class HomeController extends Controller
         $branches = Branch::all();
         $users = User::whereRole('customer')->get();
         $appointments = Appointment::all();
-        $appointmentGraph = Appointment::select(DB::raw("MONTH(date) as 'month'"), DB::raw("count(id) as 'total'"))->groupBy('month')->get();
+        // $appointmentGraph = Appointment::select(DB::raw("MONTH(date) as 'month'"), DB::raw("count(id) as 'total'"))->groupBy('month')->get(); // for mysql
+        $appointmentGraph = Appointment::select(DB::raw("date_part('month', date) as month"), DB::raw("count(id) as total"))->groupBy('month')->orderBy('month')->get(); // for pgsql
         return view('admin.home', [
             'totalBranch' => count($branches),
             'totalUser' => count($users),
