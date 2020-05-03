@@ -32,8 +32,8 @@ class UpdateBranch extends FormRequest
             'country' => 'required',
             'fixed_phone' => 'nullable|numeric|min:5',
             'mobile_phone' => 'required|numeric|min:5',
-            'logo' => 'sometimes|image',
-            'photo' => 'sometimes|image',
+            'logo' => 'sometimes|image|max:2048',
+            'photo' => 'sometimes|image|max:2048',
             'is_active' => 'required',
 
             // branch location
