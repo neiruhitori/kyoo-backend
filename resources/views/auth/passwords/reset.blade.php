@@ -51,7 +51,6 @@
                     @endif
                   <form method="POST" action="{{ route('password.update') }}" class="user">
                     @csrf
-                    <h4 class="text-center mb-3">Reset Password</h4>
                     <input type="hidden" name="token" value="{{ $token }}">
                     <h4 class="text-center mb-3">Reset Password</h4>
                     <div class="form-group">
