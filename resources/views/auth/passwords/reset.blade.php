@@ -53,6 +53,15 @@
                     @csrf
                     <input type="hidden" name="token" value="{{ $token }}">
                     <h4 class="text-center mb-3">Reset Password</h4>
+                      <small>
+                          password rules:
+                          <ul>
+                              <li>must be at least 8 characters in length</li>
+                              <li>must contain at least one lowercase letter</li>
+                              <li>must contain at least one uppercase letter</li>
+                              <li>must contain at least one digit</li>
+                          </ul>
+                      </small>
                     <div class="form-group">
                       <input type="email" name="email" class="form-control form-control-user @error('email') is-invalid @enderror" value="{{ $email ?? old('email') }}" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email" required>
                         @error('email')
