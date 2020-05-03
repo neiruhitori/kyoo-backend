@@ -44,10 +44,6 @@ class HomeController extends Controller
 
     public function exportExcel()
     {
-        // $appointments = Appointment::all();
-        // return view('exports.report', [
-        //     'appointments' => $appointments
-        // ]);
-        return Excel::download(new ReportExport, 'admin kyoo report.xlsx');
+        return Excel::download(new ReportExport, 'Kyoo - Admin Report.xlsx');
     }
 }

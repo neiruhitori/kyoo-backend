@@ -52,7 +52,8 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('profile', 'HomeController@edit')->name('profile.edit');
     Route::put('profile', 'HomeController@update')->name('profile.update');
-
+    Route::get('export', 'HomeController@exportExcel')->name('export');
+    
     // Branch routes
     Route::get('branch', 'BranchController@edit')->name('branch.edit');
     Route::put('branch', 'BranchController@update')->name('branch.update');

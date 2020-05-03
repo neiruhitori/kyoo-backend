@@ -65,10 +65,6 @@ class LoginController extends Controller
             // on success
             return redirect()->route('home');
         }
-            Log::create([
-                'user_id' => Auth::id(),
-                'description' => 'Login Failed'
-            ]);
         // on failed
         return redirect()->route('login')->with(['error' => 'Authenticate Failed']);
     }
