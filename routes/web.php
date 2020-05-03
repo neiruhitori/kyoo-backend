@@ -35,6 +35,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('profile', 'HomeController@edit')->name('profile.edit');
     Route::put('profile', 'HomeController@update')->name('profile.update');
+    Route::get('export', 'HomeController@exportExcel')->name('export');
 
     // Industry Category
     Route::resource('industryCategory', 'IndustryCategoryController');

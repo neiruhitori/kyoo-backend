@@ -40,4 +40,12 @@ class HomeController extends Controller
         $request->session()->flash('warning', 'Admin profile has been updated!');
         return redirect(route('admin.profile.edit'));
     }
+
+    public function exportExcel()
+    {
+        $appointments = Appointment::all();
+        return view('exports.report', [
+            'appointments' => $appointments
+        ]);
+    }
 }
