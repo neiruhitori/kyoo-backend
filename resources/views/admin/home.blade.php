@@ -64,7 +64,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col text-right">
-                            <button class="btn btn-primary">Download Report</button>
+                            <a href="{{ route('admin.export') }}" class="btn btn-primary">Download Report</a>
                         </div>
                     </div>
                     <div class="chart-area"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>

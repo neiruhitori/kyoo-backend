@@ -29,11 +29,41 @@ class HomeController extends Controller
     
     public function updateAppointment(Request $request, Appointment $appointment)
     {
-        $appointment->update($request->all());
-        Log::create([
-            'user_id' => Auth::id(),
-            'description' => 'Update Appointment'
-        ]);
+        switch ($request->status) {
+            case 'check in':
+                $appointment->update([
+                    'vct_id' => Auth::id(),
+                    'status' => $request->status,
+                    'checkin_time' => date(now())
+                ]);
+                Log::create([
+                    'user_id' => Auth::id(),
+                    'description' => 'Update Appointment to Check in'
+                ]);       
+                break;
+            case 'served':
+                $appointment->update([
+                    'vct_id' => Auth::id(),
+                    'status' => $request->status,
+                    'served_time' => date(now())
+                ]);
+                Log::create([
+                    'user_id' => Auth::id(),
+                    'description' => 'Update Appointment to Served'
+                ]);    
+                break;
+            case 'no show':
+                $appointment->update([
+                    'vct_id' => Auth::id(),
+                    'status' => $request->status,
+                    'served_time' => date(now())
+                ]);
+                Log::create([
+                    'user_id' => Auth::id(),
+                    'description' => 'Update Appointment to No Show'
+                ]);    
+                break;
+        }
         $request->session()->flash('success', 'Appointment #'.$appointment->id.' status has been changed!');
         return redirect(route('cs.home'));
     }

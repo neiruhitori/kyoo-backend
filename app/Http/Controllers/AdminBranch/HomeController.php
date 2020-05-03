@@ -9,6 +9,8 @@ use App\User;
 use App\Appointment;
 use Auth;
 use DB;
+use App\Exports\AdminBranch\ReportExport;
+use Excel;
 
 class HomeController extends Controller
 {
@@ -36,5 +38,10 @@ class HomeController extends Controller
         $user->update($request->all());
         $request->session()->flash('warning', 'Admin profile has been updated!');
         return redirect(route('adminBranch.profile.edit'));
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new ReportExport, 'Kyoo - Branch Report.xlsx');
     }
 }

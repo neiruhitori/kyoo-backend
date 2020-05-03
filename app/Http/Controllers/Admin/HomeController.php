@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Admin\UpdateProfile;
+use App\Exports\Admin\ReportExport;
 use App\Branch;
 use App\User;
 use App\Appointment;
 use Auth;
 use DB;
-
+use Excel;
 class HomeController extends Controller
 {
     public function index()
@@ -39,5 +40,10 @@ class HomeController extends Controller
         $user->update($request->all());
         $request->session()->flash('warning', 'Admin profile has been updated!');
         return redirect(route('admin.profile.edit'));
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new ReportExport, 'Kyoo - Admin Report.xlsx');
     }
 }
