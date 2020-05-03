@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AdminBranch;
 
 use App\Http\Controllers\Controller;
 use App\Service;
+use App\Log;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -41,6 +42,10 @@ class ServiceController extends Controller
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
         Service::create($input);
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Insert Service'
+        ]);
         $request->session()->flash('success', 'Service '.$request->name.' has been inserted!');
         return redirect(route('adminBranch.service.index'));
     }
@@ -86,6 +91,10 @@ class ServiceController extends Controller
         }
 
         $service->update($request->all());
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update Service'
+        ]);
         $request->session()->flash('warning', 'Service '.$request->name.' has been updated!');
         return redirect(route('adminBranch.service.index'));
     }
@@ -104,6 +113,10 @@ class ServiceController extends Controller
         }
         
         $service->delete();
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Remove Service'
+        ]);
         $request->session()->flash('error', 'Service '.$service->name.' has been removed!');
         return redirect(route('adminBranch.service.index'));
     }

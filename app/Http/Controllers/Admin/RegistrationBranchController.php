@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\RegistrationBranch;
 use App\Branch;
 use App\User;
+use App\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Auth;
 
 class RegistrationBranchController extends Controller
 {
@@ -101,6 +103,10 @@ class RegistrationBranchController extends Controller
     public function destroy(Request $request, RegistrationBranch $registrationBranch)
     {
         $registrationBranch->delete();
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Remove Branch Registration'
+        ]);
         $request->session()->flash('error', 'Branch '.$registrationBranch->name.' has been rejected!');
         return redirect(route('admin.branch.index'));
     }

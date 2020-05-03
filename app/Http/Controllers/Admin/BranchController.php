@@ -6,6 +6,7 @@ use App\Branch;
 use App\IndustryCategory;
 use App\ScheduleTemplate;
 use App\User;
+use App\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreBranch;
 use App\Http\Requests\Admin\UpdateBranch;
@@ -14,6 +15,7 @@ use Countries;
 use App\Models\Province;
 
 use Storage;
+use Auth;
 
 class BranchController extends Controller
 {
@@ -70,6 +72,11 @@ class BranchController extends Controller
             'password' => $input['admin_password'],
             'phone' => $input['admin_phone'],
             'role' => 'admin_branch'
+        ]);
+        
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Create Branch'
         ]);
         $request->session()->flash('success', 'Branch '.$request->name.' has been inserted!');
         return redirect(route('admin.branch.index'));
@@ -135,6 +142,10 @@ class BranchController extends Controller
             'password' => $input['admin_password'] ?: '',
             'phone' => $input['admin_phone'],
         ]);
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update Branch'
+        ]);
         $request->session()->flash('warning', 'Branch '.$request->name.' has been updated!');
         return redirect(route('admin.branch.index'));
     }
@@ -148,6 +159,10 @@ class BranchController extends Controller
     public function destroy(Request $request, Branch $branch)
     {
         $branch->delete();
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Remove Branch'
+        ]);
         $request->session()->flash('error', 'Branch '.$branch->name.' has been suspended!');
         return redirect(route('admin.branch.index'));
     }
@@ -170,8 +185,16 @@ class BranchController extends Controller
           $branch->status = $request->status;
           $branch->save();
           if ($request->status == 'verified') {
+              Log::create([
+                    'user_id' => Auth::id(),
+                    'description' => 'Success Verify Branch'
+                ]);
               $request->session()->flash('success', 'Branch '.$branch->name.' has been verified!');
           } else {
+              Log::create([
+                    'user_id' => Auth::id(),
+                    'description' => 'Failed Verify Branch'
+                ]);
               $request->session()->flash('error', 'Branch '.$branch->name.' has been rejected!');
           }
           

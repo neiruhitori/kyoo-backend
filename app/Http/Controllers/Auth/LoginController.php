@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-
+use App\Log;
+use Auth;
 class LoginController extends Controller
 {
     /*
@@ -57,9 +58,17 @@ class LoginController extends Controller
     
         // do login
         if (auth()->attempt($login)) {
+            Log::create([
+                'user_id' => Auth::id(),
+                'description' => 'Login Success'
+            ]);
             // on success
             return redirect()->route('home');
         }
+            Log::create([
+                'user_id' => Auth::id(),
+                'description' => 'Login Failed'
+            ]);
         // on failed
         return redirect()->route('login')->with(['error' => 'Authenticate Failed']);
     }

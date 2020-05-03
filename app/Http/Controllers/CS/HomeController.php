@@ -5,6 +5,7 @@ namespace App\Http\Controllers\CS;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Appointment;
+use App\Log;
 use Auth;
 class HomeController extends Controller
 {
@@ -29,6 +30,10 @@ class HomeController extends Controller
     public function updateAppointment(Request $request, Appointment $appointment)
     {
         $appointment->update($request->all());
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update Appointment'
+        ]);
         $request->session()->flash('success', 'Appointment #'.$appointment->id.' status has been changed!');
         return redirect(route('cs.home'));
     }

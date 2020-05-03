@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Schedule;
 use App\ScheduleTemplate;
 use App\Branch;
+use App\Log;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreSchedule;
 use App\Http\Requests\AdminBranch\UpdateSchedule;
@@ -45,6 +46,10 @@ class ScheduleController extends Controller
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
         Schedule::create($input);
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Insert Schedule'
+        ]);
         $request->session()->flash('success', 'Schedule has been inserted!');
         return redirect(route('adminBranch.schedule.index'));
     }
@@ -91,6 +96,10 @@ class ScheduleController extends Controller
         }
 
         $schedule->update($request->all());
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update Schedule'
+        ]);
         $request->session()->flash('warning', 'Schedule has been updated!');
         return redirect(route('adminBranch.schedule.index'));
     }
@@ -109,6 +118,10 @@ class ScheduleController extends Controller
         }
 
         $schedule->delete();
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Remove Schedule'
+        ]);
         $request->session()->flash('error', 'Schedule has been removed!');
         return redirect(route('adminBranch.schedule.index'));
     }
@@ -126,6 +139,10 @@ class ScheduleController extends Controller
     public function templateUpdate(Request $request)
     {
         Branch::find(Auth::user()->branch_id)->update($request->all());
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update Template Schedule Branch'
+        ]);
         $request->session()->flash('warning', 'Schedule Template has been updated!');
         return redirect(route('adminBranch.schedule.index'));
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AdminBranch;
 use App\Http\Controllers\Controller;
 use App\Slot;
 use App\Service;
+use App\Log;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreSlot;
 use App\Http\Requests\AdminBranch\UpdateSlot;
@@ -42,6 +43,10 @@ class SlotController extends Controller
         $input = $request->all();
         $input['service_id'] = $service->id;
         Slot::create($input);
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Insert Slot'
+        ]);
         $request->session()->flash('success', 'Slot for service '.$service->name.' has been inserted!');
         return redirect(route('adminBranch.service.slot.index', $service->id));
     }
@@ -88,6 +93,10 @@ class SlotController extends Controller
         }
         
         $slot->update($request->all());
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update Slot'
+        ]);
         $request->session()->flash('warning', 'Slot has been updated!');
         return redirect(route('adminBranch.service.slot.index', $slot->service_id));
     }
@@ -106,6 +115,10 @@ class SlotController extends Controller
         }
         
         $slot->delete();
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Remove Slot'
+        ]);
         $request->session()->flash('error', 'Slot has been removed!');
         return redirect(route('adminBranch.service.slot.index', $slot->service_id));
     }

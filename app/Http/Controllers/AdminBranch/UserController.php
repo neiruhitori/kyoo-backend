@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AdminBranch;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Log;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreUser;
 use App\Http\Requests\AdminBranch\UpdateUser;
@@ -50,6 +51,10 @@ class UserController extends Controller
         $input['name'] = "KY{$input['branch_id']}_".$request->username;
         $input['username'] = "KY{$input['branch_id']}_".$request->username;
         User::create($input);
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Create VCT User'
+        ]);
         $request->session()->flash('success', 'Account '.$input['username'].' has been inserted!');
         return redirect(route('adminBranch.user.index'));
     }
@@ -102,6 +107,10 @@ class UserController extends Controller
             unset($input['password']);
         }
         $user->update($input);
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update VCT User'
+        ]);
         $request->session()->flash('warning', 'Account '.$input['username'].' has been updated!');
         return redirect(route('adminBranch.user.index'));
     }
@@ -119,6 +128,10 @@ class UserController extends Controller
             return redirect(route('unauthorized'));
         }
         $user->delete();
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Remove VCT User'
+        ]);
         $request->session()->flash('error', 'Account '.$user->name.' has been removed!');
         return redirect(route('adminBranch.user.index'));
     }
@@ -127,6 +140,10 @@ class UserController extends Controller
     {
         $user = User::withTrashed()->find($request->user_id);
         $user->restore();
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Restore VCT User'
+        ]);
         $request->session()->flash('success', 'Account '.$user->name.' has been restored!');
         return redirect(route('adminBranch.user.index'));
     }

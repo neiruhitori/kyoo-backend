@@ -8,10 +8,11 @@ use App\Http\Requests\Admin\StoreScheduleTemplate;
 use App\Http\Requests\Admin\UpdateScheduleTemplate;
 use App\Imports\ScheduleTemplateDetailImport;
 use App\ScheduleTemplate;
+use App\Log;
 
 use Storage;
 use Excel;
-
+use Auth;
 class ScheduleTemplateController extends Controller
 {
     /**
@@ -48,7 +49,10 @@ class ScheduleTemplateController extends Controller
         $scheduleTemplate = ScheduleTemplate::create($input);
 
         Excel::import(new ScheduleTemplateDetailImport($scheduleTemplate->id), "storage/$scheduleTemplate->file");
-
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Import Schedule Template'
+        ]);
         $request->session()->flash('success', 'Schedule Template '.$request->name.' has been added!');
         return redirect(route('admin.scheduleTemplate.index'));
     }
@@ -92,6 +96,10 @@ class ScheduleTemplateController extends Controller
         $scheduleTemplate->file = Storage::disk('public')->put('schedule_templates', $request->file);
         $scheduleTemplate->save();
         Excel::import(new ScheduleTemplateDetailImport($scheduleTemplate->id), "storage/$scheduleTemplate->file");
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update Schedule Template'
+        ]);
         $request->session()->flash('warning', 'Schedule Template '.$scheduleTemplate->name.' has been updated!');
         return redirect()->back();
     }
@@ -106,6 +114,10 @@ class ScheduleTemplateController extends Controller
     {
         Storage::disk('public')->delete($scheduleTemplate->file);
         $scheduleTemplate->delete();
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Remove Schedule Template'
+        ]);
         $request->session()->flash('error', 'Schedule Template '.$scheduleTemplate->name.' has been removed!');
         return redirect(route('admin.scheduleTemplate.index'));
     }

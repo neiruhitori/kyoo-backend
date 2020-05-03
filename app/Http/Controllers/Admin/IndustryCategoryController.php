@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreIndustryCategory;
 use App\Http\Requests\Admin\UpdateIndustryCategory;
 use App\IndustryCategory;
+use App\Log;
 use Illuminate\Http\Request;
 
 use Storage;
+use Auth;
 
 class IndustryCategoryController extends Controller
 {
@@ -44,6 +46,10 @@ class IndustryCategoryController extends Controller
         $input = $request->all();
         $input['icon'] = Storage::disk('public')->put('icons', $request->icon);
         IndustryCategory::create($input);
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Create Industry Category'
+        ]);
         $request->session()->flash('success', 'Industry Category '.$request->name.' has been added!');
         return redirect(route('admin.industryCategory.index'));
     }
@@ -85,6 +91,10 @@ class IndustryCategoryController extends Controller
             $input['icon'] = Storage::disk('public')->put('icons', $request->icon);
         }
         $industryCategory->update($input);
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update Industry Category'
+        ]);
         $request->session()->flash('warning', 'Industry Category '.$request->name.' has been updated!');
         return redirect(route('admin.industryCategory.index'));
     }
@@ -98,6 +108,10 @@ class IndustryCategoryController extends Controller
     public function destroy(Request $request, IndustryCategory $industryCategory)
     {
         $industryCategory->delete();
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Remove Industry Category'
+        ]);
         $request->session()->flash('error', 'Industry Category '.$industryCategory->name.' has been removed!');
         return redirect(route('admin.industryCategory.index'));
     }

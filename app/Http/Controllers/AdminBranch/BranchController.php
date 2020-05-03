@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\IndustryCategory;
 use App\ScheduleTemplate;
+use App\Log;
 use Countries;
 use App\Models\Province;
 use App\Http\Requests\AdminBranch\UpdateBranch;
@@ -107,6 +108,10 @@ class BranchController extends Controller
             'email' => $input['admin_email'],
             'password' => $input['admin_password'] ?: '',
             'phone' => $input['admin_phone'],
+        ]);
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update Branch'
         ]);
         $request->session()->flash('warning', 'Branch '.$request->name.' has been updated!');
         return redirect(route('adminBranch.home'));
