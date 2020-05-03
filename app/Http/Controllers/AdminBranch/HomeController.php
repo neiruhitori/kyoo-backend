@@ -15,7 +15,8 @@ class HomeController extends Controller
     public function index()
     {
         $appointments = Appointment::whereMonth('date', date('m'))->get();
-        $appointmentGraph = Appointment::select(DB::raw('DAY(date) as `day`'), DB::raw('count(id) as `total`'))->whereMonth('date', date('m'))->groupBy('day')->get();
+        // $appointmentGraph = Appointment::select(DB::raw('DAY(date) as `day`'), DB::raw('count(id) as `total`'))->whereMonth('date', date('m'))->groupBy('day')->get(); // for mysql
+        $appointmentGraph = Appointment::select(DB::raw("date_part('day', date) as day"), DB::raw('count(id) as total'))->whereMonth('date', date('m'))->groupBy('day')->get(); // for pgsql
         return view('adminBranch.home', [
             'totalAppointment' => count($appointments),
             'totalServed' => count($appointments->where('status', 'served')),

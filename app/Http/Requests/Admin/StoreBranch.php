@@ -32,8 +32,8 @@ class StoreBranch extends FormRequest
             'country' => 'required',
             'fixed_phone' => 'nullable|numeric|min:5',
             'mobile_phone' => 'required|numeric|min:5',
-            'logo' => 'required|image',
-            'photo' => 'required|image',
+            'logo' => 'required|image|max:2048',
+            'photo' => 'required|image|max:2048',
             'is_active' => 'required',
 
             // branch location
