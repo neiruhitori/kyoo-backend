@@ -100,12 +100,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (Auth::user()->Branch->ScheduleTemplate->ScheduleTemplateDetail as $schedule)
-                                            <tr>
-                                                <td>{{$schedule->description}}</td>
-                                                <td>{{$schedule->date}}</td>
-                                            </tr>
-                                        @endforeach
+                                        @if (Auth::user()->Branch->schedule_template_id)
+                                            @foreach (Auth::user()->Branch->ScheduleTemplate->ScheduleTemplateDetail as $schedule)
+                                                <tr>
+                                                    <td>{{$schedule->description}}</td>
+                                                    <td>{{$schedule->date}}</td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
