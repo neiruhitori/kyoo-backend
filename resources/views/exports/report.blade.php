@@ -9,18 +9,18 @@
 <body>
     <table>
         <tr>
-            <th>Transaction ID</th>
-            <th>Customer ID</th>
-            <th>VCT ID</th>
-            <th>Transaction Date</th>
-            <th>Branch ID</th>
-            <th>Service ID</th>
-            <th>Appointment Booking Code</th>
-            <th>Appointment Date</th>
-            <th>Appointment Channel</th>
-            <th>Appointment Status</th>
-            <th>Datetime Checkin</th>
-            <th>Datetime Served</th>
+            <th><b>Transaction ID</b></th>
+            <th><b>Customer ID</b></th>
+            <th><b>VCT ID</b></th>
+            <th><b>Transaction Date</b></th>
+            <th><b>Branch ID</b></th>
+            <th><b>Service ID</b></th>
+            <th><b>Appointment Booking Code</b></th>
+            <th><b>Appointment Date</b></th>
+            <th><b>Appointment Channel</b></th>
+            <th><b>Appointment Status</b></th>
+            <th><b>Datetime Checkin</b></th>
+            <th><b>Datetime Served</b></th>
         </tr>
         @forelse ($appointments as $appointment)
             <tr>

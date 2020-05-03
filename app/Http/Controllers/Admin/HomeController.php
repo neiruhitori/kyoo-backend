@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Admin\UpdateProfile;
+use App\Exports\Admin\ReportExport;
 use App\Branch;
 use App\User;
 use App\Appointment;
 use Auth;
 use DB;
-
+use Excel;
 class HomeController extends Controller
 {
     public function index()
@@ -43,9 +44,10 @@ class HomeController extends Controller
 
     public function exportExcel()
     {
-        $appointments = Appointment::all();
-        return view('exports.report', [
-            'appointments' => $appointments
-        ]);
+        // $appointments = Appointment::all();
+        // return view('exports.report', [
+        //     'appointments' => $appointments
+        // ]);
+        return Excel::download(new ReportExport, 'admin kyoo report.xlsx');
     }
 }
