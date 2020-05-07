@@ -21,6 +21,7 @@
             <th><b>Appointment Status</b></th>
             <th><b>Datetime Checkin</b></th>
             <th><b>Datetime Served</b></th>
+            <th><b>Datetime End Served</b></th>
         </tr>
         @forelse ($appointments as $appointment)
             <tr>
@@ -36,6 +37,7 @@
                 <td>{{ $appointment->status }}</td>
                 <td>{{ $appointment->checkin_time }}</td>
                 <td>{{ $appointment->served_time }}</td>
+                <td>{{ $appointment->end_served_time }}</td>
             </tr>
         @empty
             <tr>
