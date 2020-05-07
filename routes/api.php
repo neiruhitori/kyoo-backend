@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 // region routes
 Route::get('allProvince', 'API\RegionController@allProvince');
+Route::get('allRegency', 'API\RegionController@allRegency');
 Route::get('regency/{province}', 'API\RegionController@regencyByProvince');
 
 // user routes

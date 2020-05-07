@@ -20,6 +20,16 @@ class RegionController extends Controller
         ]);
     }
 
+    public function allRegency()
+    {
+        $regencies = Regency::all();
+        return response()->json([
+            'success' => true,
+            'message' => 'get all regencies',
+            'data' => $regencies
+        ]);
+    }
+
     public function regencyByProvince($province)
     {
         $regencies = Regency::where('province_id', $province)->get();
