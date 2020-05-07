@@ -45,6 +45,11 @@ class ScheduleController extends Controller
     {
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
+        $sameDay = Schedule::where('branch_id', $input['branch_id'])->where('day', $input['day'])->first();
+        if (isset($sameDay)) {
+            $request->session()->flash('error', "Schedule on {$input['day']} already inserted!");
+            return redirect()->back()->withInput();
+        }
         Schedule::create($input);
         Log::create([
             'user_id' => Auth::id(),
@@ -94,8 +99,13 @@ class ScheduleController extends Controller
         if ($schedule->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
-
-        $schedule->update($request->all());
+        $input = $request->all();
+        $sameDay = Schedule::where('branch_id', $schedule['branch_id'])->where('day', $input['day'])->where('id', '!=', $schedule->id)->first();
+        if (isset($sameDay)) {
+            $request->session()->flash('error', "Schedule on {$input['day']} already inserted!");
+            return redirect()->back()->withInput();
+        }
+        $schedule->update($input);
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Update Schedule'
