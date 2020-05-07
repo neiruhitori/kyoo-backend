@@ -185,6 +185,9 @@
 
             setUpClickListener(map);
             addMarkersToMap(map);
+            // Create the default UI:
+            var ui = H.ui.UI.createDefault(map, defaultLayers);
+            ui.getControl('zoom').setEnabled(true)
         }
 	</script>
 @endpush

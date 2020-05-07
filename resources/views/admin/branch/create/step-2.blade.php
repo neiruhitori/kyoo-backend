@@ -146,10 +146,11 @@
             //Step 2: initialize a map
             var map = new H.Map(document.getElementById('map'),
             defaultLayers.vector.normal.map,{
-            center: {lat: -6.175392, lng: 106.827153},
-            zoom: 13,
-            pixelRatio: window.devicePixelRatio || 1
+                center: {lat: -6.175392, lng: 106.827153},
+                zoom: 13,
+                pixelRatio: window.devicePixelRatio || 1
             });
+
             // add a resize listener to make sure that the map occupies the whole container
             window.addEventListener('resize', () => map.getViewPort().resize());
 
@@ -157,6 +158,7 @@
             // MapEvents enables the event system
             // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
             var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+            // map.getControl('zoom').setEnabled(false)
 
             // Step 4: create custom logging facilities
             var logContainer = document.createElement('ul');
@@ -173,6 +175,9 @@
             }
 
             setUpClickListener(map);
+            // Create the default UI:
+            var ui = H.ui.UI.createDefault(map, defaultLayers);
+            ui.getControl('zoom').setEnabled(true)
         }
 	</script>
 @endpush

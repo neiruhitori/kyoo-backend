@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">List Schedule</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Working Days Schedule</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -86,7 +86,7 @@
                             @if (Auth::user()->Branch->schedule_template_id)
                                 <h5>Youre using {{Auth::user()->Branch->ScheduleTemplate->name}}</h5>
                             @endif
-                            <a href="{{route('adminBranch.schedule.template.index')}}"><b>Click here to choose or change schedule template from Kyoo (optional)</b></a>
+                            <a href="{{route('adminBranch.schedule.template.index')}}"><b>Click here to add public holidays schedule as exceptional working days</b></a>
                         </div>
                     </div>
                     <div class="row">
