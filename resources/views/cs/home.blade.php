@@ -45,6 +45,9 @@
                                                 @case('check in')
                                                     <span class="badge badge-success">Attend</span>
                                                     @break        
+                                                @case('served')
+                                                    <span class="badge badge-info">On Progress</span>
+                                                    @break        
                                             @endswitch
                                         </td>
                                         <td>
@@ -76,6 +79,16 @@
                                                             <input type="hidden" name="status" value="served">
                                                             <button class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Served">
                                                                 Served
+                                                            </button>
+                                                        </form>
+                                                    @break        
+                                                @case('served')
+                                                    <form action="{{route('cs.appointment.update', $appointment->id)}}" method="post">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="end served">
+                                                            <button class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Served">
+                                                                End Served
                                                             </button>
                                                         </form>
                                                     @break        
@@ -120,7 +133,7 @@
                                     </td>
                                     <th>
                                         @switch($appointment->status)
-                                            @case('served')
+                                            @case('end served')
                                                 <span class="badge badge-success">Served</span>
                                                 @break
                                             @case('no show')

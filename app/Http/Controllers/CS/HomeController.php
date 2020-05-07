@@ -15,11 +15,11 @@ class HomeController extends Controller
         
         $appointments = Appointment::whereHas('Slot.Service', function($query) {
             $query->where('branch_id', Auth::user()->branch_id);
-        })->where('date', $dateNow)->whereIn('status', ['book', 'check in'])->get();
+        })->where('date', $dateNow)->whereIn('status', ['book', 'check in', 'served'])->get();
 
         $historyAppointments = Appointment::whereHas('Slot.Service', function($query) {
             $query->where('branch_id', Auth::user()->branch_id);
-        })->where('date', $dateNow)->whereIn('status', ['no show', 'served'])->get();
+        })->where('date', $dateNow)->whereIn('status', ['no show', 'end served'])->get();
         
         return view('cs.home', [
             'appointments' => $appointments,
@@ -42,6 +42,11 @@ class HomeController extends Controller
                 ]);       
                 break;
             case 'served':
+                $onServed = Appointment::where('slot_id', $appointment->slot_id)->where('date', $appointment->date)->where('status', 'served')->first();
+                if (isset($onServed)) {
+                    $request->session()->flash('error', 'Cant move to serve because other appointment in progress on '.$appointment->Slot->Service->name);
+                    return redirect(route('cs.home'));
+                }
                 $appointment->update([
                     'vct_id' => Auth::id(),
                     'status' => $request->status,
@@ -50,6 +55,17 @@ class HomeController extends Controller
                 Log::create([
                     'user_id' => Auth::id(),
                     'description' => 'Update Appointment to Served'
+                ]);    
+                break;
+            case 'end served':
+                $appointment->update([
+                    'vct_id' => Auth::id(),
+                    'status' => $request->status,
+                    'end_served_time' => date(now())
+                ]);
+                Log::create([
+                    'user_id' => Auth::id(),
+                    'description' => 'Update Appointment to End Served'
                 ]);    
                 break;
             case 'no show':
