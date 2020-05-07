@@ -85,7 +85,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label for="name" class="text-primary" onclick="initMaps(); this.onclick=null;">Click here to show the maps</label>
+    <label for="name" id="map-text" class="text-primary" onclick="initMaps()">Click here to show the maps</label>
     <br>
     <div id="map"></div>
 </div>
@@ -118,6 +118,7 @@
     </script>
     <script>
 		function initMaps() {
+            $('#map-text').hide()
             /**
             * An event listener is added to listen to tap events on the map.
             * Clicking on the map displays an alert box containing the latitude and longitude
