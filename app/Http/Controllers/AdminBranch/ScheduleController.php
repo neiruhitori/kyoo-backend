@@ -21,7 +21,15 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        $schedules = Schedule::whereBranchId(Auth::user()->branch_id)->get();
+        $schedules = Schedule::whereBranchId(Auth::user()->branch_id)->orderByRaw(
+                        "CASE WHEN Day = 'sunday' THEN 1
+                            WHEN Day = 'monday' THEN 2
+                            WHEN Day = 'tuesday' THEN 3
+                            WHEN Day = 'wednesday' THEN 4
+                            WHEN Day = 'thursday' THEN 5
+                            WHEN Day = 'friday' THEN 6
+                            WHEN Day = 'saturday' THEN 7 END ASC"
+                      )->get();
         return view('adminBranch.schedule.index')->withSchedules($schedules);
     }
 

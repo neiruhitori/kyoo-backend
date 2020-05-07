@@ -26,6 +26,7 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
+                                            <th>No</th>
                                             <th>Day</th>
                                             <th>Status</th>
                                             <th>Start Time</th>
@@ -34,8 +35,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($schedules as $schedule)
+                                        @foreach ($schedules as $index => $schedule)
                                             <tr>
+                                                <td>{{ ++$index }}</td>
                                                 <td>{{$schedule->day}}</td>
                                                 <td>
                                                     @switch($schedule->status)
