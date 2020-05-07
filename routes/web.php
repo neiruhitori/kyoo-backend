@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/maps', function(){
-    return view('maps');
-});
 Route::get('/', function () {
     return redirect(route('home'));
 });

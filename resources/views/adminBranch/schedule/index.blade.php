@@ -38,7 +38,7 @@
                                         @foreach ($schedules as $index => $schedule)
                                             <tr>
                                                 <td>{{ ++$index }}</td>
-                                                <td>{{$schedule->day}}</td>
+                                                <td style="text-transform: capitalize;">{{$schedule->day}}</td>
                                                 <td>
                                                     @switch($schedule->status)
                                                         @case('closed')
