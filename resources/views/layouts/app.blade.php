@@ -18,6 +18,7 @@
 
   <!-- Custom styles for this template-->
   <link href="{{asset('admin/css/sb-admin-2.css')}}" rel="stylesheet">
+  <link rel="icon" href="{{ asset('img/logo-icon.svg') }}" type="image/icon type">
   <style>
     .bg-gradient-primary {
       background-image: linear-gradient(355.22deg, #189DCD 4.98%, #0A5194 121.39%);
