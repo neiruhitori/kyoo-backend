@@ -85,7 +85,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label for="name" class="text-primary" onclick="initMaps()">Click here to show the maps</label>
+    <label for="name" class="text-primary" onclick="initMaps(); this.onclick=null;">Click here to show the maps</label>
     <br>
     <div id="map"></div>
 </div>
@@ -138,6 +138,10 @@
                     $('#lngInput').val(coord.lng)
             });
             }
+            function addMarkersToMap(map) {
+                var parisMarker = new H.map.Marker({lat: {{ $branch->lat }}, lng: {{ $branch->long }}});
+                map.addObject(parisMarker);
+            }
 
             /**
             * Boilerplate map initialization code starts below:
@@ -154,7 +158,7 @@
             var map = new H.Map(document.getElementById('map'),
             defaultLayers.vector.normal.map,{
             center: {lat: {{ $branch->lat }}, lng: {{ $branch->long }}},
-            zoom: 13,
+            zoom: 17,
             pixelRatio: window.devicePixelRatio || 1
             });
             // add a resize listener to make sure that the map occupies the whole container
@@ -180,6 +184,7 @@
             }
 
             setUpClickListener(map);
+            addMarkersToMap(map);
         }
 	</script>
 @endpush

@@ -85,7 +85,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label for="name" class="text-primary" onclick="initMaps()">Click here to show the maps</label>
+    <label id="map-text" for="name" class="text-primary" onclick="initMaps(); this.onclick=null;" style="cursor: pointer">Click here to show the maps</label>
     <br>
     <div id="map"></div>
 </div>
