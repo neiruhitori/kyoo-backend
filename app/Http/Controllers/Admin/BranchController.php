@@ -90,6 +90,7 @@ class BranchController extends Controller
             'name' => $input['admin_name'],
             'email' => $input['admin_email'],
             'password' => $password,
+            'is_password_changed' => false,
             'phone' => $input['admin_phone'],
             'role' => 'admin_branch'
         ]);
