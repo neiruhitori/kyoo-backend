@@ -13,6 +13,8 @@ use App\Http\Requests\Admin\UpdateBranch;
 use Illuminate\Http\Request;
 use Countries;
 use App\Models\Province;
+use App\Mail\RegisteredBranchMail;
+use Illuminate\Support\Facades\Mail;
 
 use Storage;
 use Auth;
@@ -99,6 +101,9 @@ class BranchController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Create Branch'
         ]);
+        // sending email
+        Mail::to($user->email)->send(new RegisteredBranchMail($branch, $password));
+
         $request->session()->flash('success', 'Branch '.$request->name.' has been inserted!');
         return redirect(route('admin.branch.index'));
     }

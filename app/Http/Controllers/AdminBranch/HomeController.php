@@ -35,7 +35,9 @@ class HomeController extends Controller
     public function update(UpdateProfile $request)
     {
         $user = User::find(Auth::user()->id);
-        $user->update($request->all());
+        $input = $request->all();
+        $input['is_password_changed'] = true;
+        $user->update($input);
         $request->session()->flash('warning', 'Admin profile has been updated!');
         return redirect(route('adminBranch.profile.edit'));
     }
