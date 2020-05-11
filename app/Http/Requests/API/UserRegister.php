@@ -41,9 +41,9 @@ class UserRegister extends FormRequest
                 'regex:/[0-9]/',      // must contain at least one digit
             ],
             'phone' => 'required',
-            'birthday' => 'required|date',
-            'marital' => 'required|boolean',
-            'gender' => 'required|in:male,female'
+            'birthday' => 'nullable|date',
+            'marital' => 'nullable|boolean',
+            'gender' => 'nullable|in:male,female'
         ];
     }
 
