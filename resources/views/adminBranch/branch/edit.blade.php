@@ -23,19 +23,13 @@
                                     <li class="nav-item">
                                         <a class="nav-link" id="location-tab" data-toggle="tab" href="#location" role="tab" aria-controls="location" aria-selected="false">Branch Location</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="admin" aria-selected="false">Branch Admin</a>
-                                    </li>
                                 </ul>
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                        @include('admin.branch.edit.step-1')
+                                        @include('adminBranch.branch.edit.step-1')
                                     </div>
                                     <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
-                                        @include('admin.branch.edit.step-2')
-                                    </div>
-                                    <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">
-                                        @include('admin.branch.edit.step-3')
+                                        @include('adminBranch.branch.edit.step-2')
                                     </div>
                                 </div>
                                 <button class="btn btn-warning fullwidth mb-3">Update</button>

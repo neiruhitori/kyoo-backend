@@ -101,14 +101,7 @@ class BranchController extends Controller
             $input['photo'] = Storage::disk('public')->put('branch_photos', $request->photo);
         }
         $branch->update($input);
-
-        $admin = $branch->Admin[0];
-        $admin->update([
-            'name' => $input['admin_name'],
-            'email' => $input['admin_email'],
-            'password' => $input['admin_password'] ?: '',
-            'phone' => $input['admin_phone'],
-        ]);
+        
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Update Branch'
