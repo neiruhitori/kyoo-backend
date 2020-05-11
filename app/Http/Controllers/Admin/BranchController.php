@@ -19,6 +19,22 @@ use Auth;
 
 class BranchController extends Controller
 {
+
+    /**
+     * @param integer $length
+     * @param string $characters
+     * 
+     * @return void
+     */
+    private function generateRandomString($length = 3, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -65,11 +81,15 @@ class BranchController extends Controller
         $branch = Branch::create($input);
 
         // create admin branch
+        $password = $this->generateRandomString(3, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // random uppercase
+        $password .= $this->generateRandomString(3, 'abcdefghijklmnopqrstuvwxyz'); // random lowercase
+        $password .= $this->generateRandomString(3, '0123456789'); // random number
+
         $user = User::create([
             'branch_id' => $branch->id,
             'name' => $input['admin_name'],
             'email' => $input['admin_email'],
-            'password' => $input['admin_password'],
+            'password' => $password,
             'phone' => $input['admin_phone'],
             'role' => 'admin_branch'
         ]);
@@ -139,7 +159,6 @@ class BranchController extends Controller
         $admin->update([
             'name' => $input['admin_name'],
             'email' => $input['admin_email'],
-            'password' => $input['admin_password'] ?: '',
             'phone' => $input['admin_phone'],
         ]);
         Log::create([

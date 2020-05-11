@@ -47,14 +47,6 @@ class UpdateBranch extends FormRequest
             'admin_email' => 'required|email',
             'admin_phone' => 'required|numeric|min:5',
             'admin_phone' => 'required|numeric|min:5',
-            'admin_password' => [
-                'required',
-                'confirmed',
-                'min:8',             // must be at least 8 characters in length
-                'regex:/[a-z]/',      // must contain at least one lowercase letter
-                'regex:/[A-Z]/',      // must contain at least one uppercase letter
-                'regex:/[0-9]/',      // must contain at least one digit
-            ]
         ];
     }
 }
