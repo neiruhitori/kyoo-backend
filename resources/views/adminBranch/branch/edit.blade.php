@@ -32,7 +32,7 @@
                                         @include('adminBranch.branch.edit.step-2')
                                     </div>
                                 </div>
-                                <button class="btn btn-warning fullwidth mb-3">Update</button>
+                                <button type="submit" class="btn btn-warning fullwidth mb-3">Update</button>
                             </form>
                         </div>
                     </div>
@@ -41,3 +41,36 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        $(document).on('click', 'form button[type=submit]', function(e) {
+            // PAGE 1
+            let name = $("input[name=name]").val();
+            let industry_category_id = $("select[name=industry_category_id]").val();
+            let email = $("input[name=email]").val();
+            let country = $("select[name=country]").val();
+            let mobile_phone = $("input[name=mobile_phone]").val();
+            let is_active = $("select[name=is_active]").val();
+            
+            if (!name || !industry_category_id || !email || !country || !mobile_phone || !is_active) {
+                e.preventDefault();
+                swal('', 'Please fill all mandatory input on Branch Profile page', 'info')
+                return
+            }
+
+            // PAGE 2
+            let lat = $("input[name=lat]").val();
+            let long = $("input[name=long]").val();
+            let province_id = $("select[name=province_id]").val();
+            let regency_id = $("select[name=regency_id]").val();
+            let address = $("textarea[name=address]").val();
+
+            if (!lat || !long || !province_id || !regency_id || !address) {
+                e.preventDefault();
+                swal('', 'Please fill all mandatory input on Branch Location page', 'info')
+                return
+            }
+        });
+    </script>
+@endpush

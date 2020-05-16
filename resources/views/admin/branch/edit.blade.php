@@ -57,11 +57,9 @@
             let email = $("input[name=email]").val();
             let country = $("select[name=country]").val();
             let mobile_phone = $("input[name=mobile_phone]").val();
-            let logo = $("input[name=logo]").val();
-            let photo = $("input[name=photo]").val();
             let is_active = $("select[name=is_active]").val();
             
-            if (!name || !industry_category_id || !email || !country || !mobile_phone || !logo || !photo || !is_active) {
+            if (!name || !industry_category_id || !email || !country || !mobile_phone || !is_active) {
                 e.preventDefault();
                 swal('', 'Please fill all mandatory input on Branch Profile page', 'info')
                 return

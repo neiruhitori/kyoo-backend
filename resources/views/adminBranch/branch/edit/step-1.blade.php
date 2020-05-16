@@ -3,12 +3,12 @@
 </h5>
 <div class="form-group">
     <label for="name">Name</label>
-    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: $branch->name}}" required>
+    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: $branch->name}}" >
     @include('layouts.inputError', ['errorName' => 'name'])
 </div>
 <div class="form-group">
     <label for="industry_category_id">Category</label>
-    <select name="industry_category_id" id="industry_category_id" class="form-control @error('industry_category_id') is-invalid @enderror" required>
+    <select name="industry_category_id" id="industry_category_id" class="form-control @error('industry_category_id') is-invalid @enderror" >
         @foreach ($categories as $category)
             <option value="{{$category->id}}">{{$category->name}}</option>
         @endforeach
@@ -27,7 +27,7 @@
 </div>
 <div class="form-group">
     <label for="country">Country</label>
-    <select name="country" id="country" class="form-control @error('country') is-invalid @enderror" required>
+    <select name="country" id="country" class="form-control @error('country') is-invalid @enderror" >
         @foreach ($countries as $country)
             <option value="{{$country}}">{{$country}}</option>
         @endforeach
@@ -41,7 +41,7 @@
 </div>
 <div class="form-group">
     <label for="mobile_phone">Mobile Phone</label>
-    <input name="mobile_phone" type="text" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone') ?: $branch->mobile_phone}}" required>
+    <input name="mobile_phone" type="text" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone') ?: $branch->mobile_phone}}" >
     @include('layouts.inputError', ['errorName' => 'mobile_phone'])
 </div>
 <div class="form-group">
@@ -62,7 +62,7 @@
 </div>
 <div class="form-group">
     <label for="is_active">Show on Mobile</label>
-    <select name="is_active" id="is_active" class="form-control @error('is_active') is-invalid @enderror" required>
+    <select name="is_active" id="is_active" class="form-control @error('is_active') is-invalid @enderror" >
         <option value="1">Yes</option>
         <option value="0">No</option>
     </select>
