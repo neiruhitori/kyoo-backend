@@ -49,26 +49,29 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('profile', 'HomeController@edit')->name('profile.edit');
     Route::put('profile', 'HomeController@update')->name('profile.update');
-    Route::get('export', 'HomeController@exportExcel')->name('export');
+
+    Route::middleware('auth', 'checkAdminBranchPassword')->group(function () {
+        Route::get('export', 'HomeController@exportExcel')->name('export');
     
-    // Branch routes
-    Route::get('branch', 'BranchController@edit')->name('branch.edit');
-    Route::put('branch', 'BranchController@update')->name('branch.update');
+        // Branch routes
+        Route::get('branch', 'BranchController@edit')->name('branch.edit');
+        Route::put('branch', 'BranchController@update')->name('branch.update');
 
-    // Schedule routes
-    Route::get('/schedule/list', 'ScheduleController@templateIndex')->name('schedule.template.index');
-    Route::put('/schedule/list', 'ScheduleController@templateUpdate')->name('schedule.template.update');
-    Route::resource('schedule', 'ScheduleController')->except('show');
+        // Schedule routes
+        Route::get('/schedule/list', 'ScheduleController@templateIndex')->name('schedule.template.index');
+        Route::put('/schedule/list', 'ScheduleController@templateUpdate')->name('schedule.template.update');
+        Route::resource('schedule', 'ScheduleController')->except('show');
 
-    // Service routes
-    Route::resource('service', 'ServiceController');
+        // Service routes
+        Route::resource('service', 'ServiceController');
 
-    // Slot routes
-    Route::resource('service.slot', 'SlotController')->shallow();
+        // Slot routes
+        Route::resource('service.slot', 'SlotController')->shallow();
 
-    // Counter routes
-    Route::put('user/restore', 'UserController@restore')->name('user.restore');
-    Route::resource('user', 'UserController');
+        // Counter routes
+        Route::put('user/restore', 'UserController@restore')->name('user.restore');
+        Route::resource('user', 'UserController');
+    });
 });
 
 Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {
