@@ -2,12 +2,12 @@
     <span class="badge badge-primary">Step 1 of 3</span>
 </h5>
 <div class="form-group">
-    <label for="name">Name</label>
+    <label for="name">Name (*)</label>
     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
     @include('layouts.inputError', ['errorName' => 'name'])
 </div>
 <div class="form-group">
-    <label for="industry_category_id">Category</label>
+    <label for="industry_category_id">Category (*)</label>
     <select name="industry_category_id" id="industry_category_id" class="form-control @error('industry_category_id') is-invalid @enderror" required>
         @foreach ($categories as $category)
             <option value="{{$category->id}}">{{$category->name}}</option>
@@ -21,12 +21,12 @@
     @include('layouts.inputError', ['errorName' => 'description'])
 </div>
 <div class="form-group">
-    <label for="email">Email</label>
+    <label for="email">Email (*)</label>
     <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email')}}">
     @include('layouts.inputError', ['errorName' => 'email'])
 </div>
 <div class="form-group">
-    <label for="country">Country</label>
+    <label for="country">Country (*)</label>
     <select name="country" id="country" class="form-control @error('country') is-invalid @enderror" required>
         @foreach ($countries as $country)
             <option value="{{$country}}">{{$country}}</option>
@@ -40,22 +40,22 @@
     @include('layouts.inputError', ['errorName' => 'fixed_phone'])
 </div>
 <div class="form-group">
-    <label for="mobile_phone">Mobile Phone</label>
+    <label for="mobile_phone">Mobile Phone (*)</label>
     <input name="mobile_phone" type="text" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone')}}" required>
     @include('layouts.inputError', ['errorName' => 'mobile_phone'])
 </div>
 <div class="form-group">
-    <label for="logo">Logo</label>
+    <label for="logo">Logo (*)</label>
     <input name="logo" type="file" class="form-control @error('logo') is-invalid @enderror" required>
     @include('layouts.inputError', ['errorName' => 'logo'])
 </div>
 <div class="form-group">
-    <label for="photo">Image Background</label>
+    <label for="photo">Image Background (*)</label>
     <input name="photo" type="file" class="form-control @error('photo') is-invalid @enderror" required>
     @include('layouts.inputError', ['errorName' => 'photo'])
 </div>
 <div class="form-group">
-    <label for="is_active">Show on Mobile</label>
+    <label for="is_active">Show on Mobile (*)</label>
     <select name="is_active" id="is_active" class="form-control @error('is_active') is-invalid @enderror" required>
         <option value="1">Yes</option>
         <option value="0">No</option>

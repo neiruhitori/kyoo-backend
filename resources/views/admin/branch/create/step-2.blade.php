@@ -44,7 +44,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
-            <label for="province_id">Province</label>
+            <label for="province_id">Province (*)</label>
             <select name="province_id" id="province_id" class="form-control @error('province_id') is-invalid @enderror">
                 @foreach ($provinces as $province)
                     <option value="{{$province->id}}">{{$province->name}}</option>
@@ -55,8 +55,8 @@
     </div>
     <div class="col-md-6">
         <div class="form-group">
-            <label for="regency_id">City</label>
-            <select name="regency_id" id="regency_id" class="form-control">
+            <label for="regency_id">City (*)</label>
+            <select name="regency_id" id="regency_id" class="form-control" required>
                 <option value="">Choose City</option>
             </select>
             @include('layouts.inputError', ['errorName' => 'regency_id'])
@@ -64,21 +64,21 @@
     </div>
 </div>
 <div class="form-group">
-    <label for="address">Address</label>
+    <label for="address">Address (*)</label>
     <textarea name="address" cols="" rows="" class="form-control @error('address') is-invalid @enderror">{{old('address')}}</textarea>
     @include('layouts.inputError', ['errorName' => 'address'])
 </div>
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
-            <label for="lat">Lat</label>
+            <label for="lat">Lat (*)</label>
             <input name="lat" id="latInput" type="text" class="form-control @error('lat') is-invalid @enderror" value="{{old('lat')}}">
             @include('layouts.inputError', ['errorName' => 'lat'])
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
-            <label for="long">Long</label>
+            <label for="long">Long (*)</label>
             <input name="long" id="lngInput" type="text" class="form-control @error('long') is-invalid @enderror" value="{{old('long')}}">
             @include('layouts.inputError', ['errorName' => 'long'])
         </div>
