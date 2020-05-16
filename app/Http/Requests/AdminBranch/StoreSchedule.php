@@ -27,8 +27,8 @@ class StoreSchedule extends FormRequest
         return [
             'day' => 'required|in:sunday,monday,tuesday,wednesday,thursday,friday,saturday',
             'status' => 'nullable|in:closed,fullday',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i|after:start_time'
+            'start_time' => 'required_without:status|nullable|date_format:H:i',
+            'end_time' => 'required_without:status|nullable|date_format:H:i|after:start_time'
         ];
     }
 }
