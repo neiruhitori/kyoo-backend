@@ -21,6 +21,19 @@
     .bg-gradient-primary {
       background: linear-gradient(121.16deg, #189DCD 0.95%, #0A5194 97.59%);
     }
+    .img-welcome {
+      text-align: center;
+      margin-top: 80px;
+    }
+    .img-welcome img {
+      width: 500px;
+    }
+    @media only screen and (max-width: 768px) {
+      /* For mobile phones: */
+      .img-welcome img {
+        width: 200px;
+      }
+    }
   </style>
 </head>
 
@@ -37,7 +50,9 @@
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-              <div class="col-lg-6 d-none d-lg-block bg-login-image" style="background-image: url({{asset('/img/queue.jpeg')}});"></div>
+              <div class="col-lg-6 img-welcome">
+                <img src="{{ asset('/img/welcome.svg') }}" alt="welcome img">
+              </div>
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
