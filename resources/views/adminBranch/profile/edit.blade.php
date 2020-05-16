@@ -12,6 +12,14 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
+                            @if(!Auth::user()->is_password_changed)
+                                <div class="alert alert-warning alert-block">
+                                    <button type="button" class="close" data-dismiss="alert">×</button> 
+                                    <strong>
+                                        Your password not changed from registered, <a href="{{ route('adminBranch.profile.edit') }}">click here to change.</a>
+                                    </strong>
+                                </div>
+                            @endif
                             <form action="{{route('adminBranch.profile.update')}}" method="post">
                                 @csrf
                                 @method('PUT')
