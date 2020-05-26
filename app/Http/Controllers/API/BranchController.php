@@ -21,7 +21,7 @@ class BranchController extends Controller
 
     public function getAllByKeyword($keyword)
     {
-        $branches = Branch::with('IndustryCategory')->where('name', 'like', "%$keyword%")->get();
+        $branches = Branch::with('IndustryCategory')->where('name', 'ilike', "%$keyword%")->get();
         return response()->json([
             'success' => true,
             'message' => 'get all branches by keyword',
