@@ -41,7 +41,6 @@ class BranchController extends Controller
 
     public function show(Branch $branch)
     {
-        $branch->regency_id = (int) $branch->regency_id;
         $branch->Schedule;
         $branch->IndustryCategory;
 

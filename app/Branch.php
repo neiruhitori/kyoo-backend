@@ -11,6 +11,15 @@ class Branch extends Model
 
     protected $fillable = ['industry_category_id', 'schedule_template_id', 'name', 'email', 'address', 'description', 'fixed_phone', 'mobile_phone', 'lat', 'long', 'country', 'regency_id', 'logo', 'photo', 'likes', 'is_active'];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'regency_id' => 'integer',
+    ];
+
     public function IndustryCategory()
     {
         return $this->belongsTo('App\IndustryCategory');
