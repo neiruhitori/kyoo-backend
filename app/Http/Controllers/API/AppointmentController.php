@@ -41,7 +41,6 @@ class AppointmentController extends Controller
 
     public function index()
     {
-        // $appointments = Appointment::with('Slot.Service.Branch')->where('user_id', Auth::id())->where('status', 'book')->orderBy('date', 'desc')->get();
         $appointments = Appointment::where('user_id', Auth::id())->where('status', 'book')->orderBy('date', 'desc')->get();
         
         return response()->json([
@@ -62,12 +61,12 @@ class AppointmentController extends Controller
     
     public function history()
     {
-        $appointments = Appointment::with('Slot.Service.Branch')->where('user_id', Auth::id())->where('status', '!=', 'book')->orderBy('date', 'desc')->get();
+        $appointments = Appointment::where('user_id', Auth::id())->where('status', '!=', 'book')->orderBy('date', 'desc')->get();
         
         return response()->json([
             'success' => true,
             'message' => 'get all history appointment',
-            'data' => $appointments
+            'data' => AppointmentCollection::collection($appointments)
         ]);
     }
 

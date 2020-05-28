@@ -49,7 +49,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('appointment', 'API\AppointmentController@store');
     Route::get('appointment/{appointment}', 'API\AppointmentController@show');
     Route::get('appointment', 'API\AppointmentController@index');
-    Route::get('appointment/history', 'API\AppointmentController@history');
+    Route::get('appointment-history', 'API\AppointmentController@history');
     Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
     Route::get('appointment/upcoming', 'API\AppointmentController@upcoming');
 
