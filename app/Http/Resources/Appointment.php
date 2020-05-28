@@ -19,6 +19,7 @@ class Appointment extends JsonResource
             'id' => $this->id,
             'branch_name' => $this->Slot->Service->Branch->name,
             'service_name' => $this->Slot->Service->name,
+            'service_id' => $this->Slot->Service->id,
             'status' => $this->status,
             'date' => $this->date,
             'start_time' => $this->Slot->start_time,
