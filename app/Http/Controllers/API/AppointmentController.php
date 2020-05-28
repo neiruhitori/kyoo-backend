@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\API\StoreAppointment;
 use App\Http\Requests\API\FeedbackAppointment;
 use App\Appointment;
+use App\Http\Resources\Appointment as AppointmentCollection;
 use Auth;
 
 class AppointmentController extends Controller
@@ -40,12 +41,22 @@ class AppointmentController extends Controller
 
     public function index()
     {
-        $appointments = Appointment::with('Slot.Service.Branch')->where('user_id', Auth::id())->where('status', 'book')->orderBy('date', 'desc')->get();
+        // $appointments = Appointment::with('Slot.Service.Branch')->where('user_id', Auth::id())->where('status', 'book')->orderBy('date', 'desc')->get();
+        $appointments = Appointment::where('user_id', Auth::id())->where('status', 'book')->orderBy('date', 'desc')->get();
         
         return response()->json([
             'success' => true,
             'message' => 'get all appointment',
-            'data' => $appointments
+            'data' => AppointmentCollection::collection($appointments)
+        ]);
+    }
+
+    public function show(Appointment $appointment)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'get detail appointment by id',
+            'data' => new AppointmentCollection($appointment)
         ]);
     }
     
