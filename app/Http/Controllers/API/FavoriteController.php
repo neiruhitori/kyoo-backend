@@ -39,13 +39,13 @@ class FavoriteController extends Controller
         ]);
     }
 
-    public function destroy(Favorite $favorite)
+    public function destroy(Request $request)
     {
-        $favorite->delete();
+        $favorite = Favorite::whereUserIdAndBranchId(Auth::id(), $request->branch_id)->delete();
         return response()->json([
             'success' => true,
             'message' => 'remove favorite success',
-            'data' => $favorite
+            'data' => null
         ]);
     }
 }
