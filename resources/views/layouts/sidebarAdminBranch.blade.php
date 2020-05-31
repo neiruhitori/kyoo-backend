@@ -15,6 +15,12 @@
           <span>Dashboard</span></a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link" href="{{route('adminBranch.qr')}}" target="_blank">
+          <i class="fas fa-fw fa-qrcode"></i>
+          <span>Show QR Code</span></a>
+      </li>
+
       <!-- Divider -->
       <hr class="sidebar-divider">
 

@@ -52,7 +52,8 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
 
     Route::middleware('auth', 'checkAdminBranchPassword')->group(function () {
         Route::get('export', 'HomeController@exportExcel')->name('export');
-    
+        Route::get('qr', 'HomeController@qr')->name('qr');
+
         // Branch routes
         Route::get('branch', 'BranchController@edit')->name('branch.edit');
         Route::put('branch', 'BranchController@update')->name('branch.update');

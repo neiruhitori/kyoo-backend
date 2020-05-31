@@ -46,4 +46,13 @@ class HomeController extends Controller
     {
         return Excel::download(new ReportExport, 'Kyoo - Branch Report.xlsx');
     }
+
+    public function qr()
+    {
+        $id = base64_encode(Auth::user()->branch_id);
+        $image = \QrCode::format('png')
+                         ->size(500)->errorCorrection('H')
+                         ->generate($id);
+      return response($image)->header('Content-type','image/png');
+    }
 }
