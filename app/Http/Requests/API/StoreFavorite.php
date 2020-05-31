@@ -28,7 +28,7 @@ class StoreFavorite extends FormRequest
     {
         return [
             'user_id' => 'required|exists:users,id',
-            'service_id' => 'required|exists:services,id'
+            'branch_id' => 'required|exists:branches,id'
         ];
     }
 

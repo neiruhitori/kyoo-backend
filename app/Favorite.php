@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Favorite extends Model
 {
-    protected $fillable = ['user_id', 'service_id'];
+    protected $fillable = ['user_id', 'branch_id'];
 
-    public function Service()
+    public function Branch()
     {
-        return $this->belongsTo('App\Service');
+        return $this->belongsTo('App\Branch');
     }
 }
