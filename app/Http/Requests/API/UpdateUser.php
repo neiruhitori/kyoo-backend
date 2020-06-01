@@ -30,7 +30,7 @@ class UpdateUser extends FormRequest
         return [
             'name' => 'required|string',
             'phone' => 'required|numeric|digits_between:6,15',
-            'email' => 'required|email|unique:users,id,'.Auth::id(),
+            'email' => 'required|email|unique:users,email,'.Auth::id(),
             'birthday' => 'required|date',
             'gender' => 'required|in:male,female',
             'marital' => 'required|boolean'

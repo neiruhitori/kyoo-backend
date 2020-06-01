@@ -73,6 +73,7 @@ class UserController extends Controller
 
     public function update(UpdateUser $request)
     {
+        return $request;
         $user = User::find(Auth::id());
         $user->update($request->all());
         $user->Customer->update($request->all());
