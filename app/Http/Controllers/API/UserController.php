@@ -13,6 +13,7 @@ use App\User;
 use App\Customer;
 use App\ChangeEmail;
 use App\Mail\UserChangeEmail;
+use App\Mail\UserRegister as UserRegisterMail;
 use Auth;
 use Hash;
 use Storage;
@@ -36,6 +37,10 @@ class UserController extends Controller
         // send response
         $user->Customer;
         $user['token'] =  $user->createToken('nApp')->accessToken;
+
+        // send email
+        Mail::to($user->email)->send(new UserRegisterMail($user));
+
         return response()->json([
             'success' => true,
             'message' => 'user registered',
@@ -47,6 +52,16 @@ class UserController extends Controller
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = Auth::user();
+            if(!$user->email_verified_at){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'login failed unverified',
+                    'data' => [
+                        'email' => 'not verified'
+                    ]
+                ], 401);
+            }
+
             $user['token'] =  $user->createToken('nApp')->accessToken;
             return response()->json([
                 'success' => true,
@@ -148,5 +163,15 @@ class UserController extends Controller
 
         $changeEmail->delete();
         return view('afterChangeEmail');
+    }
+
+    public function userRegister($id)
+    {
+        $id = Crypt::decrypt($id);
+        $user = User::findOrFail($id);
+        $user->email_verified_at = date('Y-m-d');
+        $user->save();
+        
+        return view('afterRegisterUser');
     }
 }
