@@ -11,6 +11,7 @@ use App\Http\Requests\API\UpdateUserPassword;
 use App\Http\Requests\API\UpdateUserAvatar;
 use App\User;
 use App\Customer;
+use App\ChangeEmail;
 use Auth;
 use Hash;
 use Storage;
@@ -73,8 +74,25 @@ class UserController extends Controller
 
     public function update(UpdateUser $request)
     {
-        return $request;
         $user = User::find(Auth::id());
+        $input = $request->all();
+
+        if ($request->email != $user->email) {
+            $input['email'] = $user->email;
+            $changeEmail = ChangeEmail::whereUserId($user->id)->first();
+            if ($changeEmail) {
+                $changeEmail->update([
+                    'email' => $request->email
+                ]);
+            } else {
+                ChangeEmail::create([
+                    'user_id' => $user->id,
+                    'email' => $request->email
+                ]);
+            }
+        }
+
+        return $input;
         $user->update($request->all());
         $user->Customer->update($request->all());
         $user->Customer;
