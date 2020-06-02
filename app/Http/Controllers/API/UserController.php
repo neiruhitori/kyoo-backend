@@ -12,9 +12,12 @@ use App\Http\Requests\API\UpdateUserAvatar;
 use App\User;
 use App\Customer;
 use App\ChangeEmail;
+use App\Mail\UserChangeEmail;
 use Auth;
 use Hash;
 use Storage;
+use Mail;
+use Crypt;
 
 class UserController extends Controller
 {
@@ -85,15 +88,15 @@ class UserController extends Controller
                     'email' => $request->email
                 ]);
             } else {
-                ChangeEmail::create([
+                $changeEmail = ChangeEmail::create([
                     'user_id' => $user->id,
                     'email' => $request->email
                 ]);
             }
+            Mail::to($request->email)->send(new UserChangeEmail($changeEmail));
         }
 
-        return $input;
-        $user->update($request->all());
+        $user->update($input);
         $user->Customer->update($request->all());
         $user->Customer;
         return response()->json([
@@ -134,5 +137,16 @@ class UserController extends Controller
             'message' => 'update user avatar',
             'data' => $user
         ]);
+    }
+
+    public function changeEmail($id)
+    {
+        $id = Crypt::decrypt($id);
+        $changeEmail = ChangeEmail::findOrFail($id);
+        $changeEmail->User->email = $changeEmail->email;
+        $changeEmail->User->save();
+
+        $changeEmail->delete();
+        return view('afterChangeEmail');
     }
 }

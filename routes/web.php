@@ -28,6 +28,9 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+// success state from API
+Route::get('/changeEmail/{id}', 'API\UserController@changeEmail')->name('user.changeEmail');
+
 Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->name('admin.')->group(function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('profile', 'HomeController@edit')->name('profile.edit');
