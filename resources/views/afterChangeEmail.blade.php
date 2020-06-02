@@ -46,9 +46,7 @@
                         <img src="{{asset('img/desk.svg')}}" alt="" class="mb-3" style="max-height: 200px">
                         <div class="row">
                             <div class="col-md-12">
-                                <p>Your email was changed</p>
-                                <p>Please re-login your account on our apps, thanks!</p>
-                                <button class="btn btn-sm btn-primary" onclick="window.close()">Back</button>
+                                <p>You email profile succesfully updated. Please re-login on KYOO Apps.</p>
                             </div>
                         </div>
                     </div>

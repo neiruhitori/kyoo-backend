@@ -7,6 +7,6 @@ Hi {{$branch->name}}, thank you for register your branch to Kyoo.id. Please clic
 Verify Here
 @endcomponent
 
-Thanks,<br>
+Thank You,<br>
 {{ config('app.name') }}
 @endcomponent

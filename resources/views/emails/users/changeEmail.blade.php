@@ -7,6 +7,6 @@ Hi {{ $changeEmail->User->name }}, please click button below to verify your new 
 Verify
 @endcomponent
 
-Thanks,<br>
+Thank You,<br>
 {{ config('app.name') }}
 @endcomponent

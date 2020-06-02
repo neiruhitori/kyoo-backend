@@ -46,8 +46,7 @@
                         <img src="{{asset('img/desk.svg')}}" alt="" class="mb-3" style="max-height: 200px">
                         <div class="row">
                             <div class="col-md-12">
-                                <p>Thanks for register on KYOO, please continue login on our apps.</p>
-                                <button class="btn btn-sm btn-primary" onclick="window.close()">Back</button>
+                                <p>Thank you for your registration, please continue login on KYOO Apps.</p>
                             </div>
                         </div>
                     </div>

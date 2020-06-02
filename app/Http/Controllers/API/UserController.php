@@ -108,7 +108,7 @@ class UserController extends Controller
                     'email' => $request->email
                 ]);
             }
-            Mail::to($request->email)->send(new UserChangeEmail($changeEmail));
+            Mail::to($user->email)->send(new UserChangeEmail($changeEmail));
         }
 
         $user->update($input);

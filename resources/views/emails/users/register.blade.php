@@ -7,6 +7,6 @@ Hi {{ $user->name }}, thanks for register on {{ config('app.name') }}, please cl
 Verify
 @endcomponent
 
-Thanks,<br>
+Thank You,<br>
 {{ config('app.name') }}
 @endcomponent

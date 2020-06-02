@@ -9,6 +9,6 @@ Hi {{$branch->name}}, thank you for register your branch to Kyoo.id. Please logi
     <h5>{{ $password }}</h5>
 </center>
 
-Thanks,<br>
+Thank You,<br>
 {{ config('app.name') }}
 @endcomponent
