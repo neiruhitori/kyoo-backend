@@ -11,9 +11,14 @@ use App\Http\Requests\API\UpdateUserPassword;
 use App\Http\Requests\API\UpdateUserAvatar;
 use App\User;
 use App\Customer;
+use App\ChangeEmail;
+use App\Mail\UserChangeEmail;
+use App\Mail\UserRegister as UserRegisterMail;
 use Auth;
 use Hash;
 use Storage;
+use Mail;
+use Crypt;
 
 class UserController extends Controller
 {
@@ -32,6 +37,10 @@ class UserController extends Controller
         // send response
         $user->Customer;
         $user['token'] =  $user->createToken('nApp')->accessToken;
+
+        // send email
+        Mail::to($user->email)->send(new UserRegisterMail($user));
+
         return response()->json([
             'success' => true,
             'message' => 'user registered',
@@ -43,6 +52,16 @@ class UserController extends Controller
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = Auth::user();
+            if(!$user->email_verified_at){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'login failed unverified',
+                    'data' => [
+                        'email' => 'not verified'
+                    ]
+                ], 401);
+            }
+
             $user['token'] =  $user->createToken('nApp')->accessToken;
             return response()->json([
                 'success' => true,
@@ -74,7 +93,25 @@ class UserController extends Controller
     public function update(UpdateUser $request)
     {
         $user = User::find(Auth::id());
-        $user->update($request->all());
+        $input = $request->all();
+
+        if ($request->email != $user->email) {
+            $input['email'] = $user->email;
+            $changeEmail = ChangeEmail::whereUserId($user->id)->first();
+            if ($changeEmail) {
+                $changeEmail->update([
+                    'email' => $request->email
+                ]);
+            } else {
+                $changeEmail = ChangeEmail::create([
+                    'user_id' => $user->id,
+                    'email' => $request->email
+                ]);
+            }
+            Mail::to($request->email)->send(new UserChangeEmail($changeEmail));
+        }
+
+        $user->update($input);
         $user->Customer->update($request->all());
         $user->Customer;
         return response()->json([
@@ -115,5 +152,26 @@ class UserController extends Controller
             'message' => 'update user avatar',
             'data' => $user
         ]);
+    }
+
+    public function changeEmail($id)
+    {
+        $id = Crypt::decrypt($id);
+        $changeEmail = ChangeEmail::findOrFail($id);
+        $changeEmail->User->email = $changeEmail->email;
+        $changeEmail->User->save();
+
+        $changeEmail->delete();
+        return view('afterChangeEmail');
+    }
+
+    public function userRegister($id)
+    {
+        $id = Crypt::decrypt($id);
+        $user = User::findOrFail($id);
+        $user->email_verified_at = date('Y-m-d');
+        $user->save();
+        
+        return view('afterRegisterUser');
     }
 }
