@@ -33,7 +33,7 @@
                             <tbody>
                                 @foreach ($appointments as $appointment)
                                     <tr>
-                                        <td>{{$appointment->id}}</td>
+                                        <td>{{$appointment->booking_code}}</td>
                                         <td>{{$appointment->Slot->start_time}} - {{$appointment->Slot->end_time}}</td>
                                         <td>{{$appointment->name}}</td>
                                         <td>{{$appointment->Slot->Service->name}}</td>

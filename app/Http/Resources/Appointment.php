@@ -31,7 +31,8 @@ class Appointment extends JsonResource
             'phone' => $this->phone,
             'email' => $this->email,
             'rating' => $this->rating,
-            'is_liked' => $this->is_liked
+            'is_liked' => $this->is_liked,
+            'number' => (int) $this->number,
         ];
     }
 }

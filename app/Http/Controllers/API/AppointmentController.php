@@ -28,8 +28,20 @@ class AppointmentController extends Controller
 
     public function store(StoreAppointment $request)
     {
+        $sameAppointment = Appointment::where(['user_id' => $request->user_id])
+                                            ->where(['slot_id' => $request->slot_id]) 
+                                            ->where(['date' => $request->date])
+                                            ->first(); 
+        if ($sameAppointment) {
+            return response()->json([
+                'success' => false,
+                'message' => 'you cant create appointment with same slot and day',
+                'data' => []
+            ]);
+        }
         $input = $request->all();
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
+        $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
         $appointment = Appointment::create($input);
 
         return response()->json([
