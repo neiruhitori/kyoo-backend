@@ -51,7 +51,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('appointment', 'API\AppointmentController@index');
     Route::get('appointment-history', 'API\AppointmentController@history');
     Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
-    Route::get('appointment/upcoming', 'API\AppointmentController@upcoming');
+    Route::get('appointment-upcoming', 'API\AppointmentController@upcoming');
 
     // favorite routes
     Route::get('favorite', 'API\FavoriteController@index');
