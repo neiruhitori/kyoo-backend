@@ -52,15 +52,15 @@ class UserController extends Controller
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = Auth::user();
-            if(!$user->email_verified_at){
-                return response()->json([
-                    'success' => false,
-                    'message' => 'login failed unverified',
-                    'data' => [
-                        'email' => 'not verified'
-                    ]
-                ], 401);
-            }
+            // if(!$user->email_verified_at){
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'login failed unverified',
+            //         'data' => [
+            //             'email' => 'not verified'
+            //         ]
+            //     ], 401);
+            // }
 
             $user['token'] =  $user->createToken('nApp')->accessToken;
             return response()->json([
