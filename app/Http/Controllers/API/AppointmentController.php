@@ -41,6 +41,7 @@ class AppointmentController extends Controller
         }
         $input = $request->all();
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
+        $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
         $appointment = Appointment::create($input);
 
         return response()->json([
