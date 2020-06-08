@@ -73,7 +73,7 @@ class AppointmentController extends Controller
     
     public function history()
     {
-        $appointments = Appointment::where('user_id', Auth::id())->where('status', '!=', 'book')->orderBy('date', 'desc')->get();
+        $appointments = Appointment::where('user_id', Auth::id())->whereIn('status', ['no show', 'end served'])->orderBy('date', 'desc')->get();
         
         return response()->json([
             'success' => true,
