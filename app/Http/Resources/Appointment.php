@@ -25,6 +25,7 @@ class Appointment extends JsonResource
             'date' => $this->date,
             'start_time' => $this->Slot->start_time,
             'end_time' => $this->Slot->end_time,
+            'timezone' => $this->Slot->Service->Branch->timezone,
             'booking_code' => $this->booking_code,
             'industry_category' => $this->Slot->Service->Branch->IndustryCategory->name,
             'name' => $this->name,
