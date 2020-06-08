@@ -35,6 +35,16 @@
     @include('layouts.inputError', ['errorName' => 'country'])
 </div>
 <div class="form-group">
+    <label for="timezone">Indonesia Timezone</label>
+    <select name="timezone" id="timezone" class="form-control @error('timezone') is-invalid @enderror" >
+        <option value="" selected disabled>Select Timezone</option>
+        <option value="WIB">WIB</option>
+        <option value="WITA">WITA</option>
+        <option value="WIT">WIT</option>
+    </select>
+    @include('layouts.inputError', ['errorName' => 'country'])
+</div>
+<div class="form-group">
     <label for="fixed_phone">Fixed Phone</label>
     <input name="fixed_phone" type="text" class="form-control @error('fixed_phone') is-invalid @enderror" value="{{old('fixed_phone') ?: $branch->fixed_phone}}">
     @include('layouts.inputError', ['errorName' => 'fixed_phone'])
@@ -87,6 +97,12 @@
             
             if(is_activeOldValue !== '') {
                 $('#is_active').val(is_activeOldValue);
+            }
+
+            const timezoneOldValue = '{{ old('timezone') ?: $branch->timezone }}';
+            
+            if(timezoneOldValue !== '') {
+                $('#timezone').val(timezoneOldValue);
             }
         });
     </script>
