@@ -31,6 +31,7 @@ class UpdateBranch extends FormRequest
             'description' => 'required',
             'email' => 'email',
             'country' => 'required',
+            'timezone' => 'required|string',
             'fixed_phone' => 'nullable|numeric|min:5',
             'mobile_phone' => 'required|numeric|min:5',
             'logo' => 'sometimes|image',
