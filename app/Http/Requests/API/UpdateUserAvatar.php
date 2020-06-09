@@ -28,7 +28,7 @@ class UpdateUserAvatar extends FormRequest
     public function rules()
     {
         return [
-            'photo' => 'required|image|max:2048',
+            'photo' => 'required|image',
         ];
     }
 
