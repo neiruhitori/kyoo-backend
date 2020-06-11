@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Appointment as AppointmentModel;
 
 class Appointment extends JsonResource
 {
@@ -34,6 +35,7 @@ class Appointment extends JsonResource
             'rating' => $this->rating,
             'is_liked' => $this->is_liked,
             'number' => (int) $this->number,
+            'queue_number' => AppointmentModel::where('slot_id', $this->slot_id)->where('date', $this->date)->where('number', '<', $this->number)->whereIn('status', ['book', 'check in'])->get()->count()
         ];
     }
 }
