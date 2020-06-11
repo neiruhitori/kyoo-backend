@@ -35,6 +35,7 @@ class UserLogin extends FormRequest
                 'regex:/[A-Z]/',      // must contain at least one uppercase letter
                 'regex:/[0-9]/',      // must contain at least one digit
             ],
+            'fcm_token' => 'required'
         ];
     }
 

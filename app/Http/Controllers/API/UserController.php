@@ -62,7 +62,10 @@ class UserController extends Controller
             //     ], 401);
             // }
 
+            $user->fcm_token = $request->fcm_token;
+            $user->save();
             $user['token'] =  $user->createToken('nApp')->accessToken;
+
             return response()->json([
                 'success' => true,
                 'message' => 'login success',
@@ -178,5 +181,18 @@ class UserController extends Controller
         $user->save();
         
         return view('afterRegisterUser');
+    }
+
+    public function logout()
+    {
+        $user = Auth::user();
+        $user->fcm_token = '';
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'user logged out',
+            'data' => $user
+        ]);
     }
 }

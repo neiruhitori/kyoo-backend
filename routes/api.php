@@ -44,6 +44,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('user/update-profile', 'API\UserController@update');
     Route::put('user/update-password', 'API\UserController@updatePassword');
     Route::put('user/update-avatar', 'API\UserController@updateAvatar');
+    Route::post('user/logout', 'API\UserController@logout');
 
     // appointment routes
     Route::post('appointment', 'API\AppointmentController@store');
