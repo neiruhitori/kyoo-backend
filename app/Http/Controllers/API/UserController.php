@@ -145,7 +145,12 @@ class UserController extends Controller
         $input = $request->all();
         $input['photo'] = Storage::disk('public')->put('customers', $request->photo);
         $user = User::find(Auth::id());
+        $tmpPhoto = $user->Customer->photo;
         $user->Customer->update($input);
+
+        $exists = Storage::disk('public')->exists($tmpPhoto);
+        if($exists)
+            Storage::disk('public')->delete($tmpPhoto);
 
         return response()->json([
             'success' => true,
