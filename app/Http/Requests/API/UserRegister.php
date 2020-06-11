@@ -40,7 +40,7 @@ class UserRegister extends FormRequest
                 'regex:/[A-Z]/',      // must contain at least one uppercase letter
                 'regex:/[0-9]/',      // must contain at least one digit
             ],
-            'phone' => 'required',
+            'phone' => 'number|digits_between:6,15',
             'birthday' => 'nullable|date',
             'marital' => 'nullable|boolean',
             'gender' => 'nullable|in:male,female'
