@@ -14,6 +14,7 @@ use App\Customer;
 use App\ChangeEmail;
 use App\Mail\UserChangeEmail;
 use App\Mail\UserRegister as UserRegisterMail;
+use App\FcmToken;
 use Auth;
 use Hash;
 use Storage;
@@ -61,10 +62,14 @@ class UserController extends Controller
             //         ]
             //     ], 401);
             // }
-
-            $user->fcm_token = $request->fcm_token;
-            $user->save();
             $user['token'] =  $user->createToken('nApp')->accessToken;
+
+            $fcm = FcmToken::whereUserIdAndToken($user->id, $request->fcm_token)->first();
+            if(!$fcm)
+                FcmToken::create([
+                    'user_id' => $user->id,
+                    'token' => $request->fcm_token
+                ]);
 
             return response()->json([
                 'success' => true,
@@ -183,16 +188,16 @@ class UserController extends Controller
         return view('afterRegisterUser');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        $user = Auth::user();
-        $user->fcm_token = '';
-        $user->save();
+        $fcm = FcmToken::whereUserIdAndToken(Auth::id(), $request->fcm_token)->pluck('id');
+        if($fcm)
+            FcmToken::whereIn('id', $fcm)->delete();
 
         return response()->json([
             'success' => true,
             'message' => 'user logged out',
-            'data' => $user
+            'data' => []
         ]);
     }
 }
