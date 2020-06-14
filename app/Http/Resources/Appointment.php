@@ -16,6 +16,7 @@ class Appointment extends JsonResource
      */
     public function toArray($request)
     {
+        $currently_attending = AppointmentModel::where('slot_id', $this->slot_id)->where('date', $this->date)->where('status', 'served')->first();
         return [
             'id' => $this->id,
             'branch_id' => $this->Slot->Service->Branch->id,
@@ -34,9 +35,9 @@ class Appointment extends JsonResource
             'email' => $this->email,
             'rating' => $this->rating,
             'is_liked' => $this->is_liked,
-            'number' => (int) $this->number,
-            'queue_number' => AppointmentModel::where('slot_id', $this->slot_id)->where('date', $this->date)->where('number', '<', $this->number)->whereIn('status', ['book', 'check in'])->get()->count(),
-            'currently_attending' => AppointmentModel::where('slot_id', $this->slot_id)->where('date', $this->date)->where('status', 'served')->get()->count(),
+            'queue_no' => (int) $this->number,
+            'total_waiting' => AppointmentModel::where('slot_id', $this->slot_id)->where('date', $this->date)->where('number', '<', $this->number)->whereIn('status', ['book', 'check in'])->get()->count(),
+            'currently_attending' => isset($currently_attending) ? $currently_attending->pluck('number') : 0
         ];
     }
 }

@@ -11,6 +11,16 @@ class Slot extends Model
     
     protected $fillable = ['service_id', 'max_slots', 'day', 'start_time', 'end_time'];
 
+    public function getStartTimeAttribute($value)
+    {
+        return date("H:i", strtotime($value));
+    }
+
+    public function getEndTimeAttribute($value)
+    {
+        return date("H:i", strtotime($value));
+    }
+
     public function Service()
     {
         return $this->belongsTo('App\Service')->withTrashed();
