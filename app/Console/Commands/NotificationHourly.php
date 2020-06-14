@@ -48,7 +48,7 @@ class NotificationHourly extends Command
         })->where('date', $date)->where('status', 'book')->get();
         
         foreach ($appointments as $appointment) {
-            $text = "Hi, reminder for your appointment {$appointment->Slot->Service->name} - {$appointment->Slot->Service->Branch->name} at {$appointment->Slot->start_time}";
+            $text = "Please be prepare for your appointment at {$appointment->Slot->Service->Branch->name} at {$appointment->Slot->start_time} - {$appointment->Slot->end_time}";
             Notification::create([
                 'user_id' => $appointment->user_id,
                 'text' => $text

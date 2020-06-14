@@ -54,7 +54,7 @@ class NotificationDaily extends Command
                 ->timeToLive(0)
                 ->notification([
                     'title' => 'KYOO Daily Reminder',
-                    'body' => "Hi, reminder for your appointment today {$appointment->Slot->Service->name} - {$appointment->Slot->Service->Branch->name} at {$appointment->Slot->start_time}"
+                    'body' => "You have appointment at {$appointment->Slot->Service->Branch->name} for today at {$appointment->Slot->start_time} - {$appointment->Slot->end_time}"
                 ])
                 ->send();
         }
