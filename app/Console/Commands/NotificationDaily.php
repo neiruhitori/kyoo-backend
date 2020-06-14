@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Notification;
 use App\Appointment;
+use App\FcmToken;
 
 class NotificationDaily extends Command
 {
@@ -46,10 +47,16 @@ class NotificationDaily extends Command
         $appointments = Appointment::where('date', $date)->where('status', 'book')->get();
         
         foreach ($appointments as $appointment) {
-            Notification::create([
-                'user_id' => $appointment->user_id,
-                'text' => "Hi, reminder for your appointment today {$appointment->Slot->Service->name} - {$appointment->Slot->Service->Branch->name} at {$appointment->Slot->start_time}"
-            ]);
+            $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token');
+            fcm()
+                ->to($recipients) // $recipients must an array
+                ->priority('high')
+                ->timeToLive(0)
+                ->notification([
+                    'title' => 'KYOO Daily Reminder',
+                    'body' => "Hi, reminder for your appointment today {$appointment->Slot->Service->name} - {$appointment->Slot->Service->Branch->name} at {$appointment->Slot->start_time}"
+                ])
+                ->send();
         }
     }
 }

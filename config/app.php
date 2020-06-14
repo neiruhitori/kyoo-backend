@@ -170,6 +170,7 @@ return [
         AzisHapidin\IndoRegion\IndoRegionServiceProvider::class,
         Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+        Kawankoding\Fcm\FcmServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -234,6 +235,7 @@ return [
         'Countries' => Monarobase\CountryList\CountryListFacade::class,
         'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        'Fcm' => Kawankoding\Fcm\FcmFacade::class,
     ],
 
 ];

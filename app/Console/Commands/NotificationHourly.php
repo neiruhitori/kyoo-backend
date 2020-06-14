@@ -48,10 +48,21 @@ class NotificationHourly extends Command
         })->where('date', $date)->where('status', 'book')->get();
         
         foreach ($appointments as $appointment) {
+            $text = "Hi, reminder for your appointment {$appointment->Slot->Service->name} - {$appointment->Slot->Service->Branch->name} at {$appointment->Slot->start_time}";
             Notification::create([
                 'user_id' => $appointment->user_id,
-                'text' => "Hi, reminder for your appointment {$appointment->Slot->Service->name} - {$appointment->Slot->Service->Branch->name} at {$appointment->Slot->start_time}"
+                'text' => $text
             ]);
+            $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token');
+            fcm()
+                ->to($recipients) // $recipients must an array
+                ->priority('high')
+                ->timeToLive(0)
+                ->notification([
+                    'title' => 'KYOO Hourly Reminder',
+                    'body' => $text
+                ])
+                ->send();
         }
     }
 }
