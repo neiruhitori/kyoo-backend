@@ -13,6 +13,6 @@ class Slot extends Model
 
     public function Service()
     {
-        return $this->belongsTo('App\Service');
+        return $this->belongsTo('App\Service')->withTrashed();
     }
 }

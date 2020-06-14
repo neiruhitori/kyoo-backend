@@ -22,7 +22,7 @@ class Branch extends Model
 
     public function IndustryCategory()
     {
-        return $this->belongsTo('App\IndustryCategory');
+        return $this->belongsTo('App\IndustryCategory')->withTrashed();
     }
 
     public function Regency()
@@ -55,7 +55,7 @@ class Branch extends Model
 
     public function ScheduleTemplate()
     {
-        return $this->belongsTo('App\ScheduleTemplate');
+        return $this->belongsTo('App\ScheduleTemplate')->withTrashed();
     }
 
     public function Service()

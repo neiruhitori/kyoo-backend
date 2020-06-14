@@ -19,6 +19,6 @@ class RegistrationBranch extends Model
 
     public function IndustryCategory()
     {
-        return $this->belongsTo('App\IndustryCategory');
+        return $this->belongsTo('App\IndustryCategory')->withTrashed();
     }
 }

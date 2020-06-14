@@ -10,6 +10,6 @@ class Appointment extends Model
 
     public function Slot()
     {
-        return $this->belongsTo('App\Slot');
+        return $this->belongsTo('App\Slot')->withTrashed();
     }
 }

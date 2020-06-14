@@ -10,6 +10,6 @@ class Favorite extends Model
 
     public function Branch()
     {
-        return $this->belongsTo('App\Branch');
+        return $this->belongsTo('App\Branch')->withTrashed();
     }
 }
