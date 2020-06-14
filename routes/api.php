@@ -58,4 +58,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('favorite', 'API\FavoriteController@index');
     Route::post('favorite', 'API\FavoriteController@store');
     Route::post('favorite-delete', 'API\FavoriteController@destroy');
+
+    // notification routes
+    Route::get('notification', 'API\NotificationController@index');
 });
