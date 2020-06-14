@@ -64,12 +64,10 @@ class UserController extends Controller
             // }
             $user['token'] =  $user->createToken('nApp')->accessToken;
 
-            $fcm = FcmToken::whereUserIdAndToken($user->id, $request->fcm_token)->first();
-            if(!$fcm)
-                FcmToken::create([
-                    'user_id' => $user->id,
-                    'token' => $request->fcm_token
-                ]);
+            FcmToken::create([
+                'user_id' => $user->id,
+                'token' => $request->fcm_token
+            ]);
 
             return response()->json([
                 'success' => true,
