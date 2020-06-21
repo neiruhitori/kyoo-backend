@@ -20,6 +20,7 @@ use Hash;
 use Storage;
 use Mail;
 use Crypt;
+use Socialite;
 
 class UserController extends Controller
 {
@@ -53,15 +54,15 @@ class UserController extends Controller
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = Auth::user();
-            // if(!$user->email_verified_at){
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'login failed unverified',
-            //         'data' => [
-            //             'email' => 'not verified'
-            //         ]
-            //     ], 401);
-            // }
+            if(!$user->email_verified_at){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'login failed unverified',
+                    'data' => [
+                        'email' => 'not verified'
+                    ]
+                ], 401);
+            }
             $user['token'] =  $user->createToken('nApp')->accessToken;
 
             FcmToken::create([
@@ -82,6 +83,64 @@ class UserController extends Controller
                 'data' => null
             ], 401);
         }
+    }
+
+    public function socialMedia(Request $request)
+    {
+        $token = $request->token;
+        try {
+            $user = Socialite::driver('google')->userFromToken($token);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to authenticate via social media',
+                'data' => null
+            ]);
+        }
+
+        $email = $user->getEmail();
+        $name = $user->getName();
+
+        $user = User::whereEmail($email)->get();
+        
+        if (count($user) > 0) {
+            // do login
+            Auth::login($user->first());
+            $user = Auth::user();
+            $user->token_external = $token;
+            $user->platform = 'google';
+            $user->save();
+        } else {
+            // do register
+            $user = User::create([
+                'name' => $name,
+                'email' => $email,
+                'email_verified_at' => date('Y-m-d H:i:s'),
+                'password' => $token,
+                'token_external' => $token,
+                'platform' => 'google',
+                'phone' => '',
+                'role' => 'customer'
+            ]);
+
+            Customer::create([
+                'user_id' => $user->id
+            ]);
+        }
+
+        $user->Customer;
+        $user['token'] =  $user->createToken('nApp')->accessToken;
+
+        FcmToken::create([
+            'user_id' => $user->id,
+            'token' => $request->fcm_token
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'user success authenticated',
+            'data' => $user
+        ]);
     }
 
     public function detail()
