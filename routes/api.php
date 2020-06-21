@@ -22,6 +22,7 @@ Route::get('regency/{province}', 'API\RegionController@regencyByProvince');
 // user routes
 Route::post('user/register', 'API\UserController@register');
 Route::post('user/login', 'API\UserController@login');
+Route::post('user/socialMedia', 'API\UserController@socialMedia');
 
 // industry category routes
 Route::get('industry-category', 'API\IndustryCategoryController@index');

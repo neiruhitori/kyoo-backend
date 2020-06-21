@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/google', 'RegistrationBranchController@redirectToProvider');
+Route::get('/google/callback', 'RegistrationBranchController@handleProviderCallback');
+
 Route::get('/', function () {
     return redirect(route('home'));
 });

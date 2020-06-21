@@ -8,6 +8,9 @@ use App\Http\Requests\StoreRegistrationBranch;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\RegistrationBranchMail;
 use Illuminate\Support\Facades\Mail;
+use Laravel\Socialite\Facades\Socialite;
+use App\User;
+use App\Customer;
 
 class RegistrationBranchController extends Controller
 {
@@ -103,5 +106,31 @@ class RegistrationBranchController extends Controller
     public function afterVerified()
     {
         return view('afterVerified');
+    }
+
+    /**
+     * Redirect the user to the GitHub authentication page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function redirectToProvider()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    /**
+     * Obtain the user information from GitHub.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function handleProviderCallback()
+    {
+        $user = Socialite::driver('google')->user();
+
+        return [
+            'id' => $user->getId(),
+            'name' => $user->getName(), 
+            'token' => $user->token
+        ];
     }
 }
