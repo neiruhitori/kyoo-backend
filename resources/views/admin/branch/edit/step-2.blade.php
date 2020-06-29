@@ -141,7 +141,10 @@
             }
             function addMarkersToMap(map) {
                 var parisMarker = new H.map.Marker({lat: {{ $branch->lat ?: -6.175392 }}, lng: {{ $branch->long ?: 106.827153 }}});
-                map.addObject(parisMarker);
+                let lat = {{ $branch->lat ?: 0 }}
+                if (lat != 0) { // will not add marker if no value of lat
+                    map.addObject(parisMarker);
+                }
             }
 
             /**
@@ -158,7 +161,7 @@
             //Step 2: initialize a map
             var map = new H.Map(document.getElementById('map'),
             defaultLayers.vector.normal.map,{
-            center: {lat: {{ $branch->lat }}, lng: {{ $branch->long }}},
+            center: {lat: {{ $branch->lat ?: -6.175392 }}, lng: {{ $branch->long ?: 106.827153 }}},
             zoom: 17,
             pixelRatio: window.devicePixelRatio || 1
             });
