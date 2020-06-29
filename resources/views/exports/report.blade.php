@@ -22,6 +22,7 @@
             <th><b>Datetime Checkin</b></th>
             <th><b>Datetime Served</b></th>
             <th><b>Datetime End Served</b></th>
+            <th><b>Queue Number</b></th>
         </tr>
         @forelse ($appointments as $appointment)
             <tr>
@@ -30,14 +31,15 @@
                 <td>{{ $appointment->vct_id }}</td>
                 <td>{{ $appointment->created_at }}</td>
                 <td>{{ $appointment->Slot->Service->branch_id }}</td>
-                <td>{{ $appointment->Slot->service_id }}</td>
+                <td>{{ $appointment->Slot->Service->name }}</td>
                 <td>{{ $appointment->booking_code }}</td>
                 <td>{{ $appointment->date }}</td>
-                <td>{{ $appointment->Slot->Service->name }}</td>
+                <td>{{ $appointment->appointment_channel }}</td>
                 <td>{{ $appointment->status }}</td>
                 <td>{{ $appointment->checkin_time }}</td>
                 <td>{{ $appointment->served_time }}</td>
                 <td>{{ $appointment->end_served_time }}</td>
+                <td>{{ $appointment->number }}</td>
             </tr>
         @empty
             <tr>
