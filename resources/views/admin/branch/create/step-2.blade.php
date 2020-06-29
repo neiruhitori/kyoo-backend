@@ -123,7 +123,7 @@
             * @param   {H.service.Platform} platform    A stub class to access HERE services
             */
             function geocode(platform) {
-            let city = $('#regency_id option:selected').text()
+            let city = $('#regency_id option:selected').text().split(' ')[1]
             var geocoder = platform.getGeocodingService(),
                 geocodingParameters = {
                     city,
@@ -250,7 +250,6 @@
 
             // Now use the map as required...
             geocode(platform);
-
         }
 	</script>
 @endpush
