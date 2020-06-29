@@ -140,7 +140,7 @@
             });
             }
             function addMarkersToMap(map) {
-                var parisMarker = new H.map.Marker({lat: {{ $branch->lat }}, lng: {{ $branch->long }}});
+                var parisMarker = new H.map.Marker({lat: {{ $branch->lat ?: -6.175392 }}, lng: {{ $branch->long ?: 106.827153 }}});
                 map.addObject(parisMarker);
             }
 
