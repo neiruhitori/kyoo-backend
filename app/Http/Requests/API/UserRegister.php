@@ -60,7 +60,7 @@ class UserRegister extends FormRequest
         $errors = (new ValidationException($validator))->errors();
         throw new HttpResponseException(response()->json([
             'success' => false,
-            'message' => 'failed to validate user register',
+            'message' => 'User registration failed',
             'data' => $errors
         ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
