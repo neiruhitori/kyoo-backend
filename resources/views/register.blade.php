@@ -79,13 +79,14 @@
                                                 <li>must contain at least one digit</li>
                                             </ul>
                                         </small>
-                                        <input name="password" type="password" class="form-control @error('password') is-invalid @enderror" value="{{old('password')}}" required>
+                                        <input id="password" name="password" type="password" class="form-control @error('password') is-invalid @enderror" value="{{old('password')}}" required>
                                         @include('layouts.inputError', ['errorName' => 'password'])
                                     </div>
                                     <div class="form-group">
                                         <label for="password_confirmation">Password Confirmation (*)</label>
-                                        <input name="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{old('password_confirmation')}}" required>
+                                        <input id="password_confirmation" name="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{old('password_confirmation')}}" required>
                                         @include('layouts.inputError', ['errorName' => 'password_confirmation'])
+                                        <small id="visibleText" style="cursor: pointer; color: #3490dc" onclick="visiblePassword()">Show password</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="country">Country (*)</label>
@@ -187,6 +188,24 @@
                     .catch(err => console.log(err))
             })
         });
+
+        let isVisible = false
+        function visiblePassword() {
+            isVisible = !isVisible
+            let password = $('#password').val()
+            let passwordConfirmation = $('#password_confirmation').val()
+            if (isVisible) {
+                // show password
+                $('#visibleText').text('Hide Password')
+                $('#password').attr({type: 'text'})
+                $('#password_confirmation').attr({type: 'text'})
+            } else {
+                // hide password
+                $('#visibleText').text('Show Password')
+                $('#password').attr({type: 'password'})
+                $('#password_confirmation').attr({type: 'password'})
+            }
+        }
     </script>
 </body>
 
