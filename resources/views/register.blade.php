@@ -49,12 +49,12 @@
                                 <form action="{{route('registrationBranch.store')}}" method="post">
                                     @csrf
                                     <div class="form-group">
-                                        <label for="name">Name</label>
+                                        <label for="name">Name (*)</label>
                                         <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
                                         @include('layouts.inputError', ['errorName' => 'name'])
                                     </div>
                                     <div class="form-group">
-                                        <label for="industry_category_id">Industry Category</label>
+                                        <label for="industry_category_id">Industry Category (*)</label>
                                         <select name="industry_category_id" id="industry_category_id" class="form-control @error('industry_category_id') is-invalid @enderror" required>
                                             @foreach ($categories as $category)
                                                 <option value="{{$category->id}}">{{$category->name}}</option>
@@ -63,12 +63,12 @@
                                         @include('layouts.inputError', ['errorName' => 'industry_category_id'])
                                     </div>
                                     <div class="form-group">
-                                        <label for="email">Email</label>
+                                        <label for="email">Email (*)</label>
                                         <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email')}}" required>
                                         @include('layouts.inputError', ['errorName' => 'email'])
                                     </div>
                                     <div class="form-group">
-                                        <label for="password">Password</label>
+                                        <label for="password">Password (*)</label>
                                         <br>
                                         <small>
                                             rules:
@@ -83,12 +83,12 @@
                                         @include('layouts.inputError', ['errorName' => 'password'])
                                     </div>
                                     <div class="form-group">
-                                        <label for="password_confirmation">Password Confirmation</label>
+                                        <label for="password_confirmation">Password Confirmation (*)</label>
                                         <input name="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{old('password_confirmation')}}" required>
                                         @include('layouts.inputError', ['errorName' => 'password_confirmation'])
                                     </div>
                                     <div class="form-group">
-                                        <label for="country">Country</label>
+                                        <label for="country">Country (*)</label>
                                         <select name="country" id="country" class="form-control @error('country') is-invalid @enderror" required>
                                             @foreach ($countries as $country)
                                                 <option value="{{$country}}">{{$country}}</option>
@@ -97,15 +97,15 @@
                                         @include('layouts.inputError', ['errorName' => 'country'])
                                     </div>
                                     <div class="form-group">
-                                        <label for="phone">Mobile Phone</label>
+                                        <label for="phone">Mobile Phone (*)</label>
                                         <input name="phone" type="text" class="form-control @error('phone') is-invalid @enderror" value="{{old('phone')}}" required>
                                         @include('layouts.inputError', ['errorName' => 'phone'])
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="province_id">Province</label>
-                                                <select name="province_id" id="province_id" class="form-control @error('province_id') is-invalid @enderror">
+                                                <label for="province_id">Province (*)</label>
+                                                <select name="province_id" id="province_id" class="form-control @error('province_id') is-invalid @enderror" required>
                                                     @foreach ($provinces as $province)
                                                         <option value="{{$province->id}}">{{$province->name}}</option>
                                                     @endforeach
@@ -115,8 +115,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="regency_id">City</label>
-                                                <select name="regency_id" id="regency_id" class="form-control">
+                                                <label for="regency_id">City (*)</label>
+                                                <select name="regency_id" id="regency_id" class="form-control" required>
                                                     <option value="">Choose City</option>
                                                 </select>
                                                 @include('layouts.inputError', ['errorName' => 'regency_id'])
@@ -124,12 +124,12 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="address">Address</label>
-                                        <textarea name="address" id="" cols="" rows="" class="form-control @error('address') is-invalid @enderror">{{old('address')}}</textarea>
+                                        <label for="address">Address (*)</label>
+                                        <textarea name="address" id="" cols="" rows="" class="form-control @error('address') is-invalid @enderror" required>{{old('address')}}</textarea>
                                         @include('layouts.inputError', ['errorName' => 'address'])
                                     </div>
                                     <div class="form-group">
-                                        <label for="captcha">Captcha</label>
+                                        <label for="captcha">Captcha (*)</label>
                                         {!! NoCaptcha::renderJs() !!}
                                         {!! NoCaptcha::display() !!}
                                         <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
