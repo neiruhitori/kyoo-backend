@@ -23,6 +23,9 @@
                                 <label for="file">File Excel</label>
                                 <input name="file" type="file" class="form-control" required>
                                 @include('layouts.inputError', ['errorName' => 'file'])
+                                <a href="{{ asset('docs/template schedule KYOO.xlsx') }}" class="btn btn-info btn-sm mt-2">
+                                    Download Template
+                                </a>
                                 <button class="btn btn-primary btn-sm mt-2">
                                     Insert Template
                                 </button>
