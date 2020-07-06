@@ -22,6 +22,7 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
+                                    <th>Queue No.</th>
                                     <th>Booking Code</th>
                                     <th>Booking Time</th>
                                     <th>Name</th>
@@ -33,6 +34,7 @@
                             <tbody>
                                 @foreach ($appointments as $appointment)
                                     <tr>
+                                        <td>{{$appointment->number}}</td>
                                         <td>{{$appointment->booking_code}}</td>
                                         <td>{{$appointment->Slot->start_time}} - {{$appointment->Slot->end_time}}</td>
                                         <td>{{$appointment->name}}</td>
@@ -111,6 +113,7 @@
                     <div class="table-responsive">
                         <table class="table">
                             <tr>
+                                <th>Queue No.</th>
                                 <th>Booking Code</th>
                                 <th>Booking Time</th>
                                 <th>Name</th>
@@ -120,7 +123,8 @@
                             </tr>
                             @foreach ($historyAppointments as $index => $appointment)
                                 <tr>
-                                    <td>{{$appointment->id}}</td>
+                                    <td>{{$appointment->number}}</td>
+                                    <td>{{$appointment->booking_code}}</td>
                                     <td>{{$appointment->Slot->start_time}} - {{$appointment->Slot->end_time}}</td>
                                     <td>{{$appointment->name}}</td>
                                     <td>{{$appointment->Slot->Service->name}}</td>
@@ -134,7 +138,7 @@
                                     <th>
                                         @switch($appointment->status)
                                             @case('end served')
-                                                <span class="badge badge-success">Served</span>
+                                                <span class="badge badge-success">End Served</span>
                                                 @break
                                             @case('no show')
                                                 <span class="badge badge-danger">No Show</span>
