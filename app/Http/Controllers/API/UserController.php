@@ -57,7 +57,7 @@ class UserController extends Controller
             if(!$user->email_verified_at){
                 return response()->json([
                     'success' => false,
-                    'message' => 'login failed unverified',
+                    'message' => 'Your email address has not been verified',
                     'data' => [
                         'email' => 'not verified'
                     ]
@@ -79,7 +79,7 @@ class UserController extends Controller
         else{
             return response()->json([
                 'success' => false,
-                'message' => 'login failed',
+                'message' => 'Username or password is incorrect',
                 'data' => null
             ], 401);
         }
