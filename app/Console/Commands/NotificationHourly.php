@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Notification;
 use App\Appointment;
+use App\FcmToken;
 
 class NotificationHourly extends Command
 {
