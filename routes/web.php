@@ -12,6 +12,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('test', function(){
+fcm()
+    ->to(['cvHDsQxkvOI:APA91bHuUTBHu7DlLqiLH2M5SR6gYfpnZntsoYL4vOa8lqUjuyXfiyGuF-jO9gPHwdUSdOWKbRyEVsdDgMGpa7NBfLLc5WkHnB8EZMyHG1J9Zlat_0aPJfx6NTyDs_lQqQv2xmmml7T7']) // $recipients must an array
+    ->priority('high')
+    ->timeToLive(0)
+    ->notification([
+        'title' => 'KYOO',
+        'body' => "TEST"
+    ])
+    ->send();
+});
+
 Route::get('/google', 'RegistrationBranchController@redirectToProvider');
 Route::get('/google/callback', 'RegistrationBranchController@handleProviderCallback');
 
