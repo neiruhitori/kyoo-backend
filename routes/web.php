@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Notification;
+use App\Appointment;
+use App\FcmToken;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,15 +16,31 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('test', function(){
-fcm()
-    ->to(['cvHDsQxkvOI:APA91bHuUTBHu7DlLqiLH2M5SR6gYfpnZntsoYL4vOa8lqUjuyXfiyGuF-jO9gPHwdUSdOWKbRyEVsdDgMGpa7NBfLLc5WkHnB8EZMyHG1J9Zlat_0aPJfx6NTyDs_lQqQv2xmmml7T7']) // $recipients must an array
-    ->priority('high')
-    ->timeToLive(0)
-    ->notification([
-        'title' => 'KYOO',
-        'body' => "TEST"
-    ])
-    ->send();
+$date = date('Y-m-d');
+$hourStart = date('H:00:00', strtotime('1 hour'));
+$hourEnd = date('H:00:00', strtotime('2 hour'));
+
+$appointments = Appointment::whereHas('Slot', function($query) use ($hourStart, $hourEnd){
+    $query->whereBetween('start_time', [$hourStart, $hourEnd]);
+})->where('date', $date)->where('status', 'book')->get();
+
+foreach ($appointments as $appointment) {
+    $text = "Please be prepare for your appointment in {$appointment->Slot->Service->Branch->name} at {$appointment->Slot->start_time} - {$appointment->Slot->end_time}";
+    Notification::create([
+        'user_id' => $appointment->user_id,
+        'text' => $text
+    ]);
+    $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token');
+    fcm()
+        ->to($recipients) // $recipients must an array
+        ->priority('high')
+        ->timeToLive(0)
+        ->notification([
+            'title' => 'KYOO',
+            'body' => $text
+        ])
+        ->send();
+}
 });
 
 Route::get('/google', 'RegistrationBranchController@redirectToProvider');
