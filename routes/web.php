@@ -14,7 +14,19 @@ use App\FcmToken;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('fcm', function(){
+    $recipients = FcmToken::get()->pluck('token')->toArray();
+    fcm()
+        ->to($recipients) // $recipients must an array
+        ->priority('high')
+        ->timeToLive(0)
+        ->notification([
+            'title' => 'KYOO',
+            'body' => $text
+        ])
+        ->send();
+    return $recipients;
+});
 Route::get('test', function(){
 $date = date('Y-m-d');
 $hourStart = date('H:00:00', strtotime('1 hour'));
@@ -30,7 +42,7 @@ foreach ($appointments as $appointment) {
         'user_id' => $appointment->user_id,
         'text' => $text
     ]);
-    $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token');
+    $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token')->toArray();
     fcm()
         ->to($recipients) // $recipients must an array
         ->priority('high')
