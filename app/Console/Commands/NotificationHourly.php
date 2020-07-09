@@ -54,7 +54,7 @@ class NotificationHourly extends Command
                 'user_id' => $appointment->user_id,
                 'text' => $text
             ]);
-            $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token');
+            $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token')->toArray();
             fcm()
                 ->to($recipients) // $recipients must an array
                 ->priority('high')

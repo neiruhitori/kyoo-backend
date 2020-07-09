@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Notification;
-use App\Appointment;
-use App\FcmToken;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,46 +11,6 @@ use App\FcmToken;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('fcm', function(){
-    $recipients = FcmToken::get()->pluck('token')->toArray();
-    fcm()
-        ->to($recipients) // $recipients must an array
-        ->priority('high')
-        ->timeToLive(0)
-        ->notification([
-            'title' => 'KYOO',
-            'body' => $text
-        ])
-        ->send();
-    return $recipients;
-});
-Route::get('test', function(){
-$date = date('Y-m-d');
-$hourStart = date('H:00:00', strtotime('1 hour'));
-$hourEnd = date('H:00:00', strtotime('2 hour'));
-
-$appointments = Appointment::whereHas('Slot', function($query) use ($hourStart, $hourEnd){
-    $query->whereBetween('start_time', [$hourStart, $hourEnd]);
-})->where('date', $date)->where('status', 'book')->get();
-
-foreach ($appointments as $appointment) {
-    $text = "Please be prepare for your appointment in {$appointment->Slot->Service->Branch->name} at {$appointment->Slot->start_time} - {$appointment->Slot->end_time}";
-    Notification::create([
-        'user_id' => $appointment->user_id,
-        'text' => $text
-    ]);
-    $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token')->toArray();
-    fcm()
-        ->to($recipients) // $recipients must an array
-        ->priority('high')
-        ->timeToLive(0)
-        ->notification([
-            'title' => 'KYOO',
-            'body' => $text
-        ])
-        ->send();
-}
-});
 
 Route::get('/google', 'RegistrationBranchController@redirectToProvider');
 Route::get('/google/callback', 'RegistrationBranchController@handleProviderCallback');

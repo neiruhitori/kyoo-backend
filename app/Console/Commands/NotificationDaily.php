@@ -47,7 +47,7 @@ class NotificationDaily extends Command
         $appointments = Appointment::where('date', $date)->where('status', 'book')->get();
         
         foreach ($appointments as $appointment) {
-            $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token');
+            $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token')->toArray();
             fcm()
                 ->to($recipients) // $recipients must an array
                 ->priority('high')
