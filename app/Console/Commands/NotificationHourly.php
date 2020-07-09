@@ -56,7 +56,7 @@ class NotificationHourly extends Command
             ]);
             $recipients = FcmToken::whereUserId($appointment->user_id)->pluck('token');
             fcm()
-                ->to([$recipients]) // $recipients must an array
+                ->to($recipients) // $recipients must an array
                 ->priority('high')
                 ->timeToLive(0)
                 ->notification([
