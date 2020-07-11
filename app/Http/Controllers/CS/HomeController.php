@@ -15,11 +15,15 @@ class HomeController extends Controller
         
         $appointments = Appointment::whereHas('Slot.Service', function($query) {
             $query->where('branch_id', Auth::user()->branch_id);
-        })->where('date', $dateNow)->whereIn('status', ['book', 'check in', 'served'])->get();
+        })->where('date', $dateNow)->whereIn('status', ['book', 'check in', 'served'])->get()->sortBy(function($query){
+            return $query->slot->start_time;
+        });
 
         $historyAppointments = Appointment::whereHas('Slot.Service', function($query) {
             $query->where('branch_id', Auth::user()->branch_id);
-        })->where('date', $dateNow)->whereIn('status', ['no show', 'end served'])->get();
+        })->where('date', $dateNow)->whereIn('status', ['no show', 'end served'])->get()->sortBy(function($query){
+            return $query->slot->start_time;
+        });
         
         return view('cs.home', [
             'appointments' => $appointments,
