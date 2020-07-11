@@ -32,7 +32,7 @@
                                 <div class="form-group">
                                     <label for="status">Status</label>
                                     <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" onchange="changeStatus()">
-                                        <option value="">Open</option>
+                                        <option value="open">Open</option>
                                         <option value="fullday">Open Fullday</option>
                                         <option value="closed">Closed</option>
                                     </select>
@@ -41,13 +41,13 @@
 
                                 <div class="form-group" id="start_time">
                                     <label for="start_time">Start Time</label>
-                                    <input name="start_time" type="time" class="form-control @error('start_time') is-invalid @enderror" value="{{old('start_time') ?: $schedule->start_time}}">
+                                    <input name="start_time" type="time" class="form-control @error('start_time') is-invalid @enderror" value="{{old('start_time') ?: substr($schedule->start_time, 0, -3)}}">
                                     @include('layouts.inputError', ['errorName' => 'start_time'])
                                 </div>
 
                                 <div class="form-group" id="end_time">
                                     <label for="end_time">End Time</label>
-                                    <input name="end_time" type="time" class="form-control @error('end_time') is-invalid @enderror" value="{{old('end_time') ?: $schedule->end_time}}">
+                                    <input name="end_time" type="time" class="form-control @error('end_time') is-invalid @enderror" value="{{old('end_time') ?: substr($schedule->end_time, 0, -3)}}">
                                     @include('layouts.inputError', ['errorName' => 'end_time'])
                                 </div>
 
@@ -75,7 +75,7 @@
                 $('#status').val(statusOldValue);
             }
 
-            if (!statusOldValue) {
+            if (statusOldValue == 'open') {
                 $('#start_time').show()
                 $('#end_time').show()
             } else {
@@ -86,7 +86,7 @@
 
         function changeStatus() {
             let status = $('#status option:selected').val()
-            if (!status) {
+            if (status == 'open') {
                 $('#start_time').show()
                 $('#end_time').show()
             } else {

@@ -31,7 +31,7 @@
                                 <div class="form-group">
                                     <label for="status">Status</label>
                                     <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" onchange="changeStatus()">
-                                        <option value="">Open</option>
+                                        <option value="open">Open</option>
                                         <option value="fullday">Open Fullday</option>
                                         <option value="closed">Closed</option>
                                     </select>
@@ -77,7 +77,7 @@
 
         function changeStatus() {
             let status = $('#status option:selected').val()
-            if (!status) {
+            if (status == 'open') {
                 $('#start_time').show()
                 $('#end_time').show()
             } else {
