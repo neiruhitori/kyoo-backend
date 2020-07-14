@@ -80,7 +80,7 @@ class AppointmentController extends Controller
 
     public function index()
     {
-        $appointments = Appointment::where('user_id', Auth::id())->where('status', 'book')->orderBy('date', 'desc')->get();
+        $appointments = Appointment::where('user_id', Auth::id())->where('status', ['book', 'check in', 'served'])->orderBy('date', 'desc')->get();
         
         return response()->json([
             'success' => true,
