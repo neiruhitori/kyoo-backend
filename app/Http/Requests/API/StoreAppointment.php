@@ -51,7 +51,7 @@ class StoreAppointment extends FormRequest
         $errors = (new ValidationException($validator))->errors();
         throw new HttpResponseException(response()->json([
             'success' => false,
-            'message' => 'failed to validate store appointment',
+            'message' => 'Failed to store appointment',
             'data' => $errors
         ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
