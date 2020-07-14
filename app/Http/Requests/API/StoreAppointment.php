@@ -30,7 +30,7 @@ class StoreAppointment extends FormRequest
         return [
             'user_id' => 'required|exists:users,id',
             'slot_id' => 'required|exists:slots,id',
-            'date' => 'required|date',
+            'date' => 'required|date|after_or_equal:today',
             'name' => 'required|string',
             'phone' => 'required|numeric',
             'email' => 'required|email',
