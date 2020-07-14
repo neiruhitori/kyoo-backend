@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Branch;
+use App\Appointment;
 use App\ScheduleTemplateDetail;
 
 class BranchController extends Controller
@@ -57,6 +58,10 @@ class BranchController extends Controller
                 }
             }
         }
+
+        $branch->likes = Appointment::whereHas('Slot.Service', function($query) use ($branch){
+            $query->where('branch_id', $branch->id);
+        })->where('is_liked', true)->count();
 
         return response()->json([
             'success' => true,
