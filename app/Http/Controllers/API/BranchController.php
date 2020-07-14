@@ -51,7 +51,7 @@ class BranchController extends Controller
             foreach ($branch->Schedule as $key => $schedule) {
                 foreach ($scheduleTemplate as $key2 => $template) {
                     if ($schedule->day == strtolower(date("l", strtotime($template->date)))) {
-                        $branch->Schedule[$key]['status'] = 'close template';   
+                        $branch->Schedule[$key]['status'] = 'closed';   
                         $branch->Schedule[$key]['close_description'] = $template->description;   
                     }
                 }
