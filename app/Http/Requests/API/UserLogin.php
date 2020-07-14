@@ -52,7 +52,7 @@ class UserLogin extends FormRequest
         $errors = (new ValidationException($validator))->errors();
         throw new HttpResponseException(response()->json([
             'success' => false,
-            'message' => 'failed to validate user register',
+            'message' => 'Username or password is incorrect',
             'data' => $errors
         ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
