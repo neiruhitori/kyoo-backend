@@ -28,7 +28,7 @@ class GetSlots extends FormRequest
     public function rules()
     {
         return [
-            'date' => 'required|date',
+            'date' => 'required|date|after_or_equal:today',
             'service_id' => 'required|exists:services,id'
         ];
     }
