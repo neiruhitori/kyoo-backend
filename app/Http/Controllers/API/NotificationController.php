@@ -12,7 +12,7 @@ class NotificationController extends Controller
     public function index()
     {
         $notificationsData = Notification::whereUserId(Auth::id());
-        $notifications = $notificationsData->get();
+        $notifications = $notificationsData->orderBy('created_at', 'desc')->get();
         $notificationsData->update(['is_read' => true]);
         return response()->json([
             'success' => true,
