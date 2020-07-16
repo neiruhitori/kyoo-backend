@@ -23,7 +23,7 @@
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>Day</th>
@@ -66,10 +66,6 @@
 @endsection
 
 @push('js')
-    <script src="{{asset('admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
-    <script src="{{asset('admin/js/demo/datatables-demo.js')}}"></script>
-
     <script>
         $(function () {
           $('[data-toggle="tooltip"]').tooltip()
