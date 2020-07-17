@@ -48,7 +48,7 @@ class SlotController extends Controller
         }
 
         // validation by today and time
-        $slots = Slot::where('service_id', $request->service_id);
+        $slots = Slot::where('service_id', $request->service_id)->where('day', $selected_day);
         if ($current_date == $request->date) {
             $slots->where('end_time', '>', $current_time);
         }
