@@ -37,7 +37,7 @@ class Appointment extends JsonResource
             'is_liked' => $this->is_liked,
             'queue_no' => (int) $this->number,
             'total_waiting' => AppointmentModel::where('slot_id', $this->slot_id)->where('date', $this->date)->where('number', '<', $this->number)->whereIn('status', ['book', 'check in'])->get()->count(),
-            'currently_attending' => isset($currently_attending) ? $currently_attending : 0
+            'currently_attending' => isset($currently_attending) ? $currently_attending->number : 0
         ];
     }
 }
