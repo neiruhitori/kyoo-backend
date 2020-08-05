@@ -58,7 +58,7 @@ class AppointmentController extends Controller
         // cant create appointment with past time slot
         $current_date = date('Y-m-d');
         $current_time = date('H:i');
-        if ($request->date == $current_date && $slot->end_time > $current_time) {
+        if ($request->date == $current_date && $current_time > $slot->end_time) {
             return response()->json([
                 'success' => false,
                 'message' => 'Service Provider Already Closed',
