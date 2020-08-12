@@ -23,6 +23,7 @@ Route::get('regency/{province}', 'API\RegionController@regencyByProvince');
 Route::post('user/register', 'API\UserController@register');
 Route::post('user/login', 'API\UserController@login');
 Route::post('user/socialMedia', 'API\UserController@socialMedia');
+Route::post('user/logout', 'API\UserController@logout');
 
 // industry category routes
 Route::get('industry-category', 'API\IndustryCategoryController@index');
@@ -45,7 +46,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('user/update-profile', 'API\UserController@update');
     Route::put('user/update-password', 'API\UserController@updatePassword');
     Route::put('user/update-avatar', 'API\UserController@updateAvatar');
-    Route::post('user/logout', 'API\UserController@logout');
 
     // appointment routes
     Route::post('appointment', 'API\AppointmentController@store');

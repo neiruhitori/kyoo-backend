@@ -247,7 +247,7 @@ class UserController extends Controller
 
     public function logout(Request $request)
     {
-        $fcm = FcmToken::whereUserIdAndToken(Auth::id(), $request->fcm_token)->pluck('id');
+        $fcm = FcmToken::whereUserIdAndToken($request->user_id, $request->fcm_token)->pluck('id');
         if($fcm)
             FcmToken::whereIn('id', $fcm)->delete();
 
