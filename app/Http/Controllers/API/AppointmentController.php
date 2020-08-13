@@ -45,13 +45,13 @@ class AppointmentController extends Controller
         }
 
         // cant create appointment on closed day
-        $current_day = date('d');
+        $current_day = strtolower(date('l'));
         $slot = Slot::find($request->slot_id)->first();
         $slot_day = Schedule::where('branch_id', $slot->Service->branch_id)->where('day', $current_day)->get(['day', 'status'])->first();
         if ($slot_day->status == 'closed') {
             return response()->json([
                 'success' => false,
-                'message' => 'Service Provider Already Closed'.$slot_day->day,
+                'message' => 'Service Provider Already Closed',
                 'data' => []
             ]);
         }
