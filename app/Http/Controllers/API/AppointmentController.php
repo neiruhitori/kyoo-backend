@@ -67,12 +67,6 @@ class AppointmentController extends Controller
             ]);
         }
 
-        return response()->json([
-                'success' => false,
-                'message' => 'On debug: pass validation',
-                'data' => []
-            ]);
-
         $input = $request->all();
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
         $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
