@@ -9,6 +9,7 @@ use App\Http\Requests\API\FeedbackAppointment;
 use App\Appointment;
 use App\Slot;
 use App\Schedule;
+use App\ScheduleTemplateDetail;
 use App\Http\Resources\Appointment as AppointmentCollection;
 use Auth;
 
@@ -33,8 +34,8 @@ class AppointmentController extends Controller
         /**
          * additional validations:
          * - user cant create appointment on same time slot
-         * - user cant create appointment on closed day
          * - user cant create appointment on closed day with schedule template
+         * - user cant create appointment on closed day
          * - user cant create appointment with past time slot for today
          */
         
@@ -51,10 +52,25 @@ class AppointmentController extends Controller
             ]);
         }
 
-        // cant create appointment on closed day
-        $current_day = strtolower(date('l', strtotime($request->date)));
+        $current_date = date('Y-m-d');
+        $current_time = date('H:i');
+        $selected_day = strtolower(date('l', strtotime($request->date)));
         $slot = Slot::find($request->slot_id);
-        $slot_day = Schedule::where('branch_id', $slot->Service->branch_id)->where('day', $current_day)->get(['day', 'status'])->first();
+
+        // cant create appointment on closed day by schedule template
+        if($slot->Service->Branch->schedule_template_id){
+            $schedule_template_details = ScheduleTemplateDetail::where('schedule_template_id', $slot->Service->Branch->schedule_template_id)->where('date', $request->date)->first();
+            if($schedule_template_details){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Service Provider Already Closed',
+                    'data' => []
+                ]);    
+            }
+        }
+
+        // cant create appointment on closed day
+        $slot_day = Schedule::where('branch_id', $slot->Service->branch_id)->where('day', $selected_day)->get(['day', 'status'])->first();
         if ($slot_day->status == 'closed') {
             return response()->json([
                 'success' => false,
@@ -64,8 +80,6 @@ class AppointmentController extends Controller
         }
 
         // cant create appointment with past time slot
-        $current_date = date('Y-m-d');
-        $current_time = date('H:i');
         if ($request->date == $current_date && $slot->end_time < $current_time) {
             return response()->json([
                 'success' => false,
