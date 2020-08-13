@@ -50,16 +50,10 @@ class AppointmentController extends Controller
         if ($slot_day->status == 'closed') {
             return response()->json([
                 'success' => false,
-                'message' => 'Service Provider Already Closed',
+                'message' => 'Service Provider Already Closed'.$slot_day->day,
                 'data' => []
             ]);
         }
-
-        return response()->json([
-                'success' => false,
-                'message' => 'On debug',
-                'data' => []
-            ]);
 
         // cant create appointment with past time slot
         $current_date = date('Y-m-d');
