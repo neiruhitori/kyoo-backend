@@ -30,7 +30,14 @@ class AppointmentController extends Controller
 
     public function store(StoreAppointment $request)
     {
-        // additional validations
+        /**
+         * additional validations:
+         * - user cant create appointment on same time slot
+         * - user cant create appointment on closed day
+         * - user cant create appointment on closed day with schedule template
+         * - user cant create appointment with past time slot for today
+         */
+        
         // cant create appointment on same time slot
         $sameAppointment = Appointment::where(['user_id' => $request->user_id])
                                             ->where(['slot_id' => $request->slot_id]) 
@@ -45,8 +52,8 @@ class AppointmentController extends Controller
         }
 
         // cant create appointment on closed day
-        $current_day = strtolower(date('l'));
-        $slot = Slot::find($request->slot_id)->first();
+        $current_day = strtolower(date('l', strtotime($request->date)));
+        $slot = Slot::find($request->slot_id);
         $slot_day = Schedule::where('branch_id', $slot->Service->branch_id)->where('day', $current_day)->get(['day', 'status'])->first();
         if ($slot_day->status == 'closed') {
             return response()->json([
@@ -59,7 +66,7 @@ class AppointmentController extends Controller
         // cant create appointment with past time slot
         $current_date = date('Y-m-d');
         $current_time = date('H:i');
-        if ($request->date == $current_date && $current_time > $slot->end_time) {
+        if ($request->date == $current_date && $slot->end_time < $current_time) {
             return response()->json([
                 'success' => false,
                 'message' => 'Service Provider Already Closed',

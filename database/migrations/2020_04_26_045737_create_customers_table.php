@@ -19,7 +19,7 @@ class CreateCustomersTable extends Migration
             $table->date('birthday');
             $table->boolean('marital')->default(false);
             $table->enum('gender', ['male', 'female']);
-            $table->string('photo')->default('customers/avatar.png');
+            $table->string('photo')->nullable();
             $table->timestamps();
             $table->softdeletes();
 
