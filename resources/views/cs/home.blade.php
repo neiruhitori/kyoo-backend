@@ -19,7 +19,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="" width="100%" cellspacing="0">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>Queue No.</th>
@@ -158,11 +158,13 @@
 @push('js')
     <script src="{{asset('admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
-    <script src="{{asset('admin/js/demo/datatables-demo.js')}}"></script>
 
     <script>
-        $(function () {
-          $('[data-toggle="tooltip"]').tooltip()
-        })
+        $(document).ready(function() {
+            $('#dataTable').DataTable( {
+                "ordering": false,
+            });
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     </script>
 @endpush
