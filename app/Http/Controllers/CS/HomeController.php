@@ -10,7 +10,10 @@ use App\Slot;
 use App\ScheduleTemplateDetail;
 use App\Schedule;
 use App\Http\Requests\CS\StoreAppointment;
+use App\Mail\CS\StoreAppointment as StoreAppointmentMail;
 use Auth;
+use Mail;
+
 class HomeController extends Controller
 {
     private $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -176,6 +179,9 @@ class HomeController extends Controller
         $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
         $input['appointment_channel'] = 'VCT web';
         $appointment = Appointment::create($input);
+
+        // send email to customer
+        Mail::to($request->email)->send(new StoreAppointmentMail($appointment));
 
         $request->session()->flash('success', 'Appointment Has Been Created');
         return redirect(route('cs.appointment.create'));
