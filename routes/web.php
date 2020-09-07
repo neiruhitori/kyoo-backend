@@ -85,4 +85,8 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
 Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::put('appointment/{appointment}', 'HomeController@updateAppointment')->name('appointment.update');
+
+    // Appointment
+    Route::get('appointment/create', 'HomeController@createAppointment')->name('appointment.create');
+    Route::post('appointment/create', 'HomeController@storeAppointment')->name('appointment.store');
 });
