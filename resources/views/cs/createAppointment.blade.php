@@ -22,17 +22,26 @@
                         @csrf
                         <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                         <div class="col-md-12 form-group">
-                            <label for="slot_id">Slot</label>
-                            <select name="slot_id" id="slot_id" class="form-control">
-                                <option value="" selected disabled>Choose Slot</option>
-                                @foreach ($slots as $slot)
-                                    <option value="{{ $slot->id }}">{{ $slot->Service->name }} ({{ $slot->day }} | {{ $slot->start_time }} - {{ $slot->end_time }})</option>
+                            <label for="date">Date</label>
+                            <input type="date" name="date" id="date" class="form-control" value="{{ old('date') ?: date('Y-m-d') }}" required>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label for="service_id">Services</label>
+                            <select name="service_id" id="service_id" class="form-control">
+                                <option value="" selected disabled>Choose Services</option>
+                                @foreach ($services as $service)
+                                    <option value="{{ $service->id }}">{{ $service->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label for="date">Date</label>
-                            <input type="date" name="date" id="" class="form-control" value="{{ old('date') }}" required>
+                            <label for="slot_id">Slot</label>
+                            <select name="slot_id" id="slot_id" class="form-control">
+                                <option value="" selected disabled>Choose Slot</option>
+                                {{-- @foreach ($slots as $slot)
+                                    <option value="{{ $slot->id }}">{{ $slot->Service->name }} ({{ $slot->day }} | {{ $slot->start_time }} - {{ $slot->end_time }})</option>
+                                @endforeach --}}
+                            </select>
                         </div>
                         <div class="col-md-12 form-group">
                             <label for="name">Name</label>
@@ -63,10 +72,45 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            const slot_idValue = '{{ old('slot_id') }}';
+            const service_idValue = '{{ old('service_id') }}';
                 
-            if(slot_idValue !== '') {
-                $('#slot_id').val(slot_idValue);
+            if(service_idValue !== '') {
+                $('#service_id').val(service_idValue);
+            }
+
+            $('#service_id').change(() => {
+                getSlots()
+            })
+
+            $('#date').change(() => {
+                getSlots()
+            })
+
+            function getSlots() {
+                let service_id = $('#service_id').val()
+                let date = $('#date').val()
+                fetch(`/api/slot`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        date,
+                        service_id
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        $('#slot_id option').remove()
+                        console.log('res', data);
+                        data.data.forEach(slot => {
+                            $('#slot_id')
+                                .append($("<option></option>")
+                                .attr("value", slot.id)
+                                .text(`${slot.start_time} - ${slot.end_time} (${slot.filledSlot}/${slot.max_slots})`)); 
+                        });
+                    })
+                    .catch(err => console.log(err))
             }
         });
     </script>

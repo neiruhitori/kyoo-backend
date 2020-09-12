@@ -9,6 +9,7 @@ use App\Log;
 use App\Slot;
 use App\ScheduleTemplateDetail;
 use App\Schedule;
+use App\Service;
 use App\Http\Requests\CS\StoreAppointment;
 use App\Mail\CS\StoreAppointment as StoreAppointmentMail;
 use Auth;
@@ -110,11 +111,9 @@ class HomeController extends Controller
 
     public function createAppointment()
     {
-        $slots = Slot::whereHas('Service', function($query){
-            $query->where('branch_id', Auth::user()->branch_id);
-        })->get();
+        $services = Service::where('branch_id', Auth::user()->branch_id)->get();
         return view('cs.createAppointment', [
-            'slots' => $slots
+            'services' => $services
         ]);
     }
 
@@ -152,7 +151,7 @@ class HomeController extends Controller
                                             ->where(['date' => $request->date])
                                             ->count(); 
 
-        if ($sameAppointment > $slot->max_slots) {
+        if ($sameAppointment >= $slot->max_slots) {
             $request->session()->flash('error', "This service slot was full");
             return back()->withInput();
         }
