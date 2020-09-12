@@ -124,6 +124,7 @@ class HomeController extends Controller
         /**
          * additional validations:
          * - user cant create appointment on different day with day on slot
+         * - user cant create appointment when slot is full
          * - user cant create appointment on same time slot
          * - user cant create appointment on closed day with schedule template
          * - user cant create appointment on closed day
@@ -145,6 +146,16 @@ class HomeController extends Controller
         $current_time = date('H:i');
         $selected_day = strtolower(date('l', strtotime($request->date)));
         $slot = Slot::find($request->slot_id);
+
+        // cant create appointment when slot is full
+        $sameAppointment = Appointment::where(['slot_id' => $request->slot_id]) 
+                                            ->where(['date' => $request->date])
+                                            ->count(); 
+
+        if ($sameAppointment > $slot->max_slots) {
+            $request->session()->flash('error', "This service slot was full");
+            return back()->withInput();
+        }
 
         // user cant create appointment on different day with day on slot
         if ($selected_day != $slot->day) {
