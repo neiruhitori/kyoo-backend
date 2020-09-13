@@ -30,7 +30,7 @@ class UserRegister extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@kyoo.id', 'Kyoo')->markdown('emails.users.register', [
+        return $this->from('noreply@kyoo.id', 'KYOO')->markdown('emails.users.register', [
             'user' => $this->user,
             'id' => Crypt::encrypt($this->user->id)
         ]);

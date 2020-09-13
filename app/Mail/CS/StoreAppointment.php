@@ -32,7 +32,7 @@ class StoreAppointment extends Mailable
     public function build()
     {
         $appointment_id = Crypt::encrypt($this->appointment->id);
-        return $this->from('noreply@kyoo.id', 'Kyoo')->subject('Branch Appointment')->markdown('emails.cs.storeAppointment', [
+        return $this->from('noreply@kyoo.id', 'KYOO')->subject('Branch Appointment')->markdown('emails.cs.storeAppointment', [
             'appointment' => $this->appointment,
             'appointment_id' => $appointment_id,
         ]);
