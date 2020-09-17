@@ -59,4 +59,11 @@ class HomeController extends Controller
                          ->generate($id);
       return response($image)->header('Content-type','image/png');
     }
+
+    public function miniReport()
+    {
+        $dateNow = date('Y-m-d');
+        $appointments = Appointment::where('date', $dateNow)->get();
+        return view('adminBranch.miniReport')->withAppointments($appointments);
+    }
 }
