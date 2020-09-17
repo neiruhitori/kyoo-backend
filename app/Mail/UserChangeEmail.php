@@ -30,7 +30,7 @@ class UserChangeEmail extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@kyoo.id', 'Kyoo')->markdown('emails.users.changeEmail', [
+        return $this->from('noreply@kyoo.id', 'KYOO')->markdown('emails.users.changeEmail', [
             'changeEmail' => $this->changeEmail,
             'id' => Crypt::encrypt($this->changeEmail->id)
         ]);

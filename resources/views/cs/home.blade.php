@@ -18,6 +18,13 @@
                     <h6 class="m-0 font-weight-bold text-primary">Active Appointment</h6>
                 </div>
                 <div class="card-body">
+                    <div class="row mb-5">
+                        <div class="col text-right">
+                            <a href="{{ route('cs.appointment.create') }}">
+                                <button class="btn btn-primary">Create New Appointment</button>
+                            </a>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>

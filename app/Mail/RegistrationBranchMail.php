@@ -28,7 +28,7 @@ class RegistrationBranchMail extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@kyoo.id', 'Kyoo')->markdown('emails.registrationBranch', [
+        return $this->from('noreply@kyoo.id', 'KYOO')->markdown('emails.registrationBranch', [
             'branch' => $this->branch
         ]);
     }

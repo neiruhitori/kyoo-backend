@@ -6,9 +6,30 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Appointment;
 use App\Log;
+use App\Slot;
+use App\ScheduleTemplateDetail;
+use App\Schedule;
+use App\Service;
+use App\Http\Requests\CS\StoreAppointment;
+use App\Mail\CS\StoreAppointment as StoreAppointmentMail;
 use Auth;
+use Mail;
+
 class HomeController extends Controller
 {
+    private $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    private function generate_booking_code($input, $strength = 5) {
+        $input_length = strlen($input);
+        $random_string = '';
+        for($i = 0; $i < $strength; $i++) {
+            $random_character = $input[mt_rand(0, $input_length - 1)];
+            $random_string .= $random_character;
+        }
+    
+        return $random_string;
+    }
+
     public function index()
     {
         $dateNow = date('Y-m-d');
@@ -86,5 +107,93 @@ class HomeController extends Controller
         }
         $request->session()->flash('success', 'Appointment #'.$appointment->id.' status has been changed!');
         return redirect(route('cs.home'));
+    }
+
+    public function createAppointment()
+    {
+        $services = Service::where('branch_id', Auth::user()->branch_id)->get();
+        return view('cs.createAppointment', [
+            'services' => $services
+        ]);
+    }
+
+    public function storeAppointment(StoreAppointment $request)
+    {
+        // copy from App\Http\Controllers\API\AppointmentController.php store()
+        /**
+         * additional validations:
+         * - user cant create appointment on different day with day on slot
+         * - user cant create appointment when slot is full
+         * - user cant create appointment on same time slot
+         * - user cant create appointment on closed day with schedule template
+         * - user cant create appointment on closed day
+         * - user cant create appointment with past time slot for today
+         */
+        
+        // cant create appointment on same time slot
+        $sameAppointment = Appointment::where(['email' => $request->email])
+                                            ->where(['phone' => $request->phone]) 
+                                            ->where(['slot_id' => $request->slot_id]) 
+                                            ->where(['date' => $request->date])
+                                            ->first(); 
+        if ($sameAppointment) {
+            $request->session()->flash('error', 'Appointment maximum limit already reached, please find other timeslot schedule');
+            return back()->withInput();
+        }
+
+        $current_date = date('Y-m-d');
+        $current_time = date('H:i');
+        $selected_day = strtolower(date('l', strtotime($request->date)));
+        $slot = Slot::find($request->slot_id);
+
+        // cant create appointment when slot is full
+        $sameAppointment = Appointment::where(['slot_id' => $request->slot_id]) 
+                                            ->where(['date' => $request->date])
+                                            ->count(); 
+
+        if ($sameAppointment >= $slot->max_slots) {
+            $request->session()->flash('error', "This service slot was full");
+            return back()->withInput();
+        }
+
+        // user cant create appointment on different day with day on slot
+        if ($selected_day != $slot->day) {
+            $request->session()->flash('error', "This service slot open at $slot->day");
+            return back()->withInput();
+        }
+
+        // cant create appointment on closed day by schedule template
+        if($slot->Service->Branch->schedule_template_id){
+            $schedule_template_details = ScheduleTemplateDetail::where('schedule_template_id', $slot->Service->Branch->schedule_template_id)->where('date', $request->date)->first();
+            if($schedule_template_details){
+                $request->session()->flash('error', 'Service Provider Already Closed');
+                return back()->withInput();
+            }
+        }
+
+        // cant create appointment on closed day
+        $slot_day = Schedule::where('branch_id', $slot->Service->branch_id)->where('day', $selected_day)->get(['day', 'status'])->first();
+        if ($slot_day->status == 'closed') {
+            $request->session()->flash('error', 'Service Provider Already Closed');
+            return back()->withInput();
+        }
+
+        // cant create appointment with past time slot
+        if ($request->date == $current_date && $slot->end_time < $current_time) {
+            $request->session()->flash('error', 'Service Provider Already Closed');
+            return back()->withInput();
+        }
+
+        $input = $request->all();
+        $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
+        $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
+        $input['appointment_channel'] = 'VCT web';
+        $appointment = Appointment::create($input);
+
+        // send email to customer
+        Mail::to($request->email)->send(new StoreAppointmentMail($appointment));
+
+        $request->session()->flash('success', 'Appointment Has Been Created');
+        return redirect(route('cs.appointment.create'));
     }
 }

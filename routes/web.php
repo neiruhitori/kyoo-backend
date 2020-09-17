@@ -31,6 +31,9 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+// Appointment Status
+Route::get('/appointment/status/{id}', 'AppointmentController@status')->name('appointment.status');
+
 // success state from API
 Route::get('/changeEmail/{id}', 'API\UserController@changeEmail')->name('user.changeEmail');
 Route::get('/userRegister/{id}', 'API\UserController@userRegister')->name('user.userRegister');
@@ -85,4 +88,8 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
 Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::put('appointment/{appointment}', 'HomeController@updateAppointment')->name('appointment.update');
+
+    // Appointment
+    Route::get('appointment/create', 'HomeController@createAppointment')->name('appointment.create');
+    Route::post('appointment/create', 'HomeController@storeAppointment')->name('appointment.store');
 });
