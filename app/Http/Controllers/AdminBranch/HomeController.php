@@ -60,10 +60,10 @@ class HomeController extends Controller
       return response($image)->header('Content-type','image/png');
     }
 
-    public function miniReport()
+    public function miniReport(Request $request)
     {
-        $dateNow = date('Y-m-d');
-        $appointments = Appointment::where('date', $dateNow)->get();
+        $date = $request->date ?: date('Y-m-d');
+        $appointments = Appointment::where('date', $date)->get();
         return view('adminBranch.miniReport')->withAppointments($appointments);
     }
 }

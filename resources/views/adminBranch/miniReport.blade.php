@@ -32,6 +32,17 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        <div class="col-lg-4 col-md-12">
+                            <form action="" method="get">
+                                <div class="form-group">
+                                    <label for="">Select Date</label>
+                                    <input type="date" name="date" class="form-control" />
+                                    <button class="btn btn-primary mt-3">Filter</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col">
                             <div class="table-responsive mt-5">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
