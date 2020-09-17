@@ -196,4 +196,13 @@ class HomeController extends Controller
         $request->session()->flash('success', 'Appointment Has Been Created');
         return redirect(route('cs.appointment.create'));
     }
+
+    public function miniReport(Request $request)
+    {
+        $date = $request->date ?: date('Y-m-d');
+        $appointments = Appointment::whereHas('Slot.Service', function($query){
+            $query->where('branch_id', Auth::user()->branch_id);
+        })->where('date', $date)->get();
+        return view('cs.miniReport')->withAppointments($appointments);
+    }
 }

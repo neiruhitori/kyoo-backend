@@ -63,7 +63,9 @@ class HomeController extends Controller
     public function miniReport(Request $request)
     {
         $date = $request->date ?: date('Y-m-d');
-        $appointments = Appointment::where('date', $date)->get();
+        $appointments = Appointment::whereHas('Slot.Service', function($query){
+            $query->where('branch_id', Auth::user()->branch_id);
+        })->where('date', $date)->get();
         return view('adminBranch.miniReport')->withAppointments($appointments);
     }
 }

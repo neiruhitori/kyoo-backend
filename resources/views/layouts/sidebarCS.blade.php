@@ -15,6 +15,13 @@
           <span>Virtual Counter</span></a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link" href="{{route('cs.miniReport')}}">
+          <i class="fas fa-list-ul"></i>
+          <span>Mini Report</span>
+        </a>
+      </li>
+
       <!-- Divider -->
       <hr class="sidebar-divider">
 
