@@ -28,7 +28,7 @@
         <div class="col-xl-12 col-lg-7">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Mini Report</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Daily Report</h6>
                 </div>
                 <div class="card-body">
                     @if (!$success)
@@ -48,34 +48,32 @@
                     <div class="row">
                         <div class="col">
                             <div class="table-responsive mt-5">
-                                <div class="table-responsive mt-5">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <th>Queue Number</th>
-                                            <th>Name</th>
-                                            <th>Appointment Date</th>
-                                            <th>Service</th>
-                                            <th>Slot</th>
-                                            <th>Channel</th>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($appointments as $appointment)
-                                                <tr>
-                                                    <td>{{ $appointment->number }}</td>
-                                                    <td>{{ $appointment->name }}</td>
-                                                    <td>{{ $appointment->date }}</td>
-                                                    <td>{{ $appointment->Slot->Service->name }}</td>
-                                                    <td>{{ $appointment->Slot->start_time }} - {{ $appointment->Slot->end_time }}</td>
-                                                    <td>{{ $appointment->appointment_channel }}</td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="7" class="text-center">No data</td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <th>Queue Number</th>
+                                        <th>Name</th>
+                                        <th>Appointment Date</th>
+                                        <th>Service</th>
+                                        <th>Slot</th>
+                                        <th>Channel</th>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($appointments as $appointment)
+                                            <tr>
+                                                <td>{{ $appointment->number }}</td>
+                                                <td>{{ $appointment->name }}</td>
+                                                <td>{{ $appointment->date }}</td>
+                                                <td>{{ $appointment->Slot->Service->name }}</td>
+                                                <td>{{ $appointment->Slot->start_time }} - {{ $appointment->Slot->end_time }}</td>
+                                                <td>{{ $appointment->appointment_channel }}</td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center">No data</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
