@@ -99,15 +99,15 @@
             "buttons": [
                 {
                     extend: 'excelHtml5',
-                    title: "Appointments {{ Auth::user()->Branch->name }} {{ $appointments[0] ? $appointments[0]->date : '' }}"
+                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? $appointments[0]->date : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Appointments {{ Auth::user()->Branch->name }} {{ $appointments[0] ? $appointments[0]->date : '' }}"
+                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? $appointments[0]->date : '' }}"
                 },
                 {
                     extend: 'print',
-                    title: "Appointments {{ Auth::user()->Branch->name }} {{ $appointments[0] ? $appointments[0]->date : '' }}"
+                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? $appointments[0]->date : '' }}"
                 }
             ]
         })
