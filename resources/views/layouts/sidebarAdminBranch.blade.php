@@ -74,10 +74,16 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" href="{{route('adminBranch.miniReport')}}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
           <i class="fas fa-list-ul"></i>
-          <span>Mini Report</span>
+          <span>Report</span>
         </a>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Submenu:</h6>
+            <a class="collapse-item" href="{{route('adminBranch.report.daily')}}">Daily Report</a>
+          </div>
+        </div>
       </li>
 
       <!-- Divider -->

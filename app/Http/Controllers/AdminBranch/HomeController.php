@@ -59,13 +59,4 @@ class HomeController extends Controller
                          ->generate($id);
       return response($image)->header('Content-type','image/png');
     }
-
-    public function miniReport(Request $request)
-    {
-        $date = $request->date ?: date('Y-m-d');
-        $appointments = Appointment::whereHas('Slot.Service', function($query){
-            $query->where('branch_id', Auth::user()->branch_id);
-        })->where('date', $date)->get();
-        return view('adminBranch.miniReport')->withAppointments($appointments);
-    }
 }
