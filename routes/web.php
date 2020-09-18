@@ -96,4 +96,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     // Appointment
     Route::get('appointment/create', 'HomeController@createAppointment')->name('appointment.create');
     Route::post('appointment/create', 'HomeController@storeAppointment')->name('appointment.store');
+
+    // Report routes
+    Route::get('report/daily', 'ReportController@daily')->name('report.daily');
 });

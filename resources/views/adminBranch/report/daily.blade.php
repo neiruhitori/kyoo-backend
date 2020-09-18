@@ -31,7 +31,9 @@
                     <h6 class="m-0 font-weight-bold text-primary">Daily Report</h6>
                 </div>
                 <div class="card-body">
-                    @include('layouts.alert')
+                    @if (!$success)
+                        @include('layouts.alert')
+                    @endif
                     <div class="row">
                         <div class="col-lg-4 col-md-12">
                             <form action="" method="get">

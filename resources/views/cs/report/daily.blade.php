@@ -31,12 +31,15 @@
                     <h6 class="m-0 font-weight-bold text-primary">Mini Report</h6>
                 </div>
                 <div class="card-body">
+                    @if (!$success)
+                        @include('layouts.alert')
+                    @endif
                     <div class="row">
                         <div class="col-lg-4 col-md-12">
                             <form action="" method="get">
                                 <div class="form-group">
                                     <label for="">Select Date</label>
-                                    <input type="date" name="date" class="form-control" />
+                                    <input type="date" name="date" class="form-control" value="{{ $date }}" />
                                     <button class="btn btn-primary mt-3">Filter</button>
                                 </div>
                             </form>
