@@ -48,34 +48,34 @@
                     <div class="row">
                         <div class="col">
                             <div class="table-responsive mt-5">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <th>Name</th>
-                                        <th>Phone</th>
-                                        <th>Appointment Date</th>
-                                        <th>Service</th>
-                                        <th>Slot</th>
-                                        <th>Queue Number</th>
-                                        <th>Appointment Channel</th>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($appointments as $appointment)
-                                            <tr>
-                                                <td>{{ $appointment->name }}</td>
-                                                <td>{{ $appointment->phone }}</td>
-                                                <td>{{ $appointment->date }}</td>
-                                                <td>{{ $appointment->Slot->Service->name }}</td>
-                                                <td>{{ $appointment->Slot->start_time }} - {{ $appointment->Slot->end_time }}</td>
-                                                <td>{{ $appointment->number }}</td>
-                                                <td>{{ $appointment->appointment_channel }}</td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="7" class="text-center">No data</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive mt-5">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <th>Queue Number</th>
+                                            <th>Name</th>
+                                            <th>Appointment Date</th>
+                                            <th>Service</th>
+                                            <th>Slot</th>
+                                            <th>Channel</th>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($appointments as $appointment)
+                                                <tr>
+                                                    <td>{{ $appointment->number }}</td>
+                                                    <td>{{ $appointment->name }}</td>
+                                                    <td>{{ $appointment->date }}</td>
+                                                    <td>{{ $appointment->Slot->Service->name }}</td>
+                                                    <td>{{ $appointment->Slot->start_time }} - {{ $appointment->Slot->end_time }}</td>
+                                                    <td>{{ $appointment->appointment_channel }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="7" class="text-center">No data</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
