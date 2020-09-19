@@ -82,14 +82,21 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
         // Counter routes
         Route::put('user/restore', 'UserController@restore')->name('user.restore');
         Route::resource('user', 'UserController');
+
+        // Report routes
+        Route::get('report/daily', 'ReportController@daily')->name('report.daily');
     });
 });
 
 Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::put('appointment/{appointment}', 'HomeController@updateAppointment')->name('appointment.update');
+    Route::get('mini-report', 'HomeController@miniReport')->name('miniReport');
 
     // Appointment
     Route::get('appointment/create', 'HomeController@createAppointment')->name('appointment.create');
     Route::post('appointment/create', 'HomeController@storeAppointment')->name('appointment.store');
+
+    // Report routes
+    Route::get('report/daily', 'ReportController@daily')->name('report.daily');
 });
