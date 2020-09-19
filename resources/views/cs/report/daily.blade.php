@@ -40,6 +40,17 @@
                                 <div class="form-group">
                                     <label for="">Select Date</label>
                                     <input type="date" name="date" class="form-control" value="{{ $date }}" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Select Service</label>
+                                    <select name="service_id" id="service_id" class="form-control">
+                                        <option value="">All</option>
+                                        @foreach (Auth::user()->Branch->Service as $service)
+                                            <option value="{{ $service->id }}">{{ $service->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <button class="btn btn-primary mt-3">Filter</button>
                                 </div>
                             </form>
@@ -94,21 +105,26 @@
     <script src="https://cdn.datatables.net/buttons/1.6.3/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.3/js/buttons.print.min.js"></script>
     <script>
+        $(document).ready(function() {
+            const service_idOldValue = '{{ $service_id }}';
+                
+            $('#service_id').val(service_idOldValue);
+        });
         $('#dataTable').dataTable({
             "ordering": false,
             "dom": 'Bfrtip',
             "buttons": [
                 {
                     extend: 'excelHtml5',
-                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? $appointments[0]->date : '' }}"
+                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '('.$appointments[0]->date.')' : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? $appointments[0]->date : '' }}"
+                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '('.$appointments[0]->date.')' : '' }}"
                 },
                 {
                     extend: 'print',
-                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? $appointments[0]->date : '' }}"
+                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '('.$appointments[0]->date.')' : '' }}"
                 }
             ]
         })

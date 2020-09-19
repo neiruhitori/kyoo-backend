@@ -18,17 +18,18 @@ class ReportController extends Controller
             return view('cs.report.daily', [
             'appointments' => [],
             'date' => $date,
+            'service_id' => $request->service_id,
             'success' => false
         ]);
         }
 
         $appointments = Appointment::whereHas('Slot.Service', function($query) use ($request){
-            $query->where('branch_id', Auth::user()->branch_id);
+            $request->service_id ? $query->where('id', $request->service_id) : $query->where('branch_id', Auth::user()->branch_id);
         })->where('date', $date)->orderBy('number')->get();
-
         return view('cs.report.daily', [
             'appointments' => $appointments,
             'date' => $date,
+            'service_id' => $request->service_id,
             'success' => true
         ]);
     }
