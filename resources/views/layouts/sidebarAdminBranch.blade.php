@@ -39,7 +39,7 @@
 
       @if (Auth::user()->Branch->BranchType->is_direct_queue)
           <li class="nav-item">
-            <a class="nav-link" href="{{route('adminBranch.branch.edit')}}">
+            <a class="nav-link" href="{{route('adminBranch.branchConfiguration.edit')}}">
               <i class="fas fa-fw fa-building"></i>
               <span>Branch Configuration</span>
             </a>

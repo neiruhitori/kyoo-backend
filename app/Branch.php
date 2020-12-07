@@ -67,4 +67,9 @@ class Branch extends Model
     {
         return $this->belongsTo('App\BranchType');
     }
+
+    public function BranchConfiguration()
+    {
+        return $this->hasOne('App\BranchConfiguration');
+    }
 }
