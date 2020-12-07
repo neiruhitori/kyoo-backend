@@ -51,6 +51,9 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::resource('branch', 'BranchController');
     Route::resource('registrationBranch', 'RegistrationBranchController')->only(['index', 'show', 'update', 'destroy']);
 
+    // Branch Type
+    Route::resource('branchType', 'BranchTypeController');
+
     // Schedule Template
     Route::resource('scheduleTemplate', 'ScheduleTemplateController');
 });
