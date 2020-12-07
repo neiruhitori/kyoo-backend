@@ -16,65 +16,65 @@ class BranchTypesTableSeeder extends Seeder
             [
                 "code" => "FAS",
                 "name" => "Free Appointment Service",
-                "isPremium" => false,
-                "isAppointment" => true,
-                "isDirectQueue" => false
+                "is_premium" => false,
+                "is_appointment" => true,
+                "is_direct_queue" => false
             ],
             [
                 "code" => "FDQ",
                 "name" => "Free Direct Queue Service",
-                "isPremium" => false,
-                "isAppointment" => false,
-                "isDirectQueue" => true
+                "is_premium" => false,
+                "is_appointment" => false,
+                "is_direct_queue" => true
             ],
             [
                 "code" => "FAE",
                 "name" => "Free Appointment Event",
-                "isPremium" => false,
-                "isAppointment" => true,
-                "isDirectQueue" => false
+                "is_premium" => false,
+                "is_appointment" => true,
+                "is_direct_queue" => false
             ],
             [
                 "code" => "FAS",
                 "name" => "Free Appointment Space",
-                "isPremium" => false,
-                "isAppointment" => true,
-                "isDirectQueue" => false
+                "is_premium" => false,
+                "is_appointment" => true,
+                "is_direct_queue" => false
             ],
             [
                 "code" => "PAE",
                 "name" => "Premium Appointment Event",
-                "isPremium" => true,
-                "isAppointment" => true,
-                "isDirectQueue" => false
+                "is_premium" => true,
+                "is_appointment" => true,
+                "is_direct_queue" => false
             ],
             [
                 "code" => "PA",
                 "name" => "Premium Appointment Service",
-                "isPremium" => true,
-                "isAppointment" => true,
-                "isDirectQueue" => false
+                "is_premium" => true,
+                "is_appointment" => true,
+                "is_direct_queue" => false
             ],
             [
                 "code" => "PDQ",
                 "name" => "Premium Direct Queue",
-                "isPremium" => true,
-                "isAppointment" => false,
-                "isDirectQueue" => true
+                "is_premium" => true,
+                "is_appointment" => false,
+                "is_direct_queue" => true
             ],
             [
                 "code" => "PAS",
                 "name" => "Premium Appointment Space",
-                "isPremium" => true,
-                "isAppointment" => true,
-                "isDirectQueue" => false
+                "is_premium" => true,
+                "is_appointment" => true,
+                "is_direct_queue" => false
             ],
             [
                 "code" => "PADQ",
                 "name" => "Premium Appointment and Direct Queue",
-                "isPremium" => true,
-                "isAppointment" => true,
-                "isDirectQueue" => true
+                "is_premium" => true,
+                "is_appointment" => true,
+                "is_direct_queue" => true
             ],
         ];
         BranchType::insert($types);

@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class BranchType extends Model
 {
-    protected $fillable = ['code', 'name', 'isAppointment', 'isDirectQueue', 'isPremium'];
+    protected $fillable = ['code', 'name', 'is_premium', 'is_appointment', 'is_direct_queue'];
 }

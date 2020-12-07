@@ -17,9 +17,9 @@ class CreateBranchTypesTable extends Migration
             $table->id();
             $table->string('code', 100);
             $table->string('name', 100);
-            $table->boolean('isPremium')->default(false);
-            $table->boolean('isAppointment')->default(false);
-            $table->boolean('isDirectQueue')->default(false);
+            $table->boolean('is_premium')->default(false);
+            $table->boolean('is_appointment')->default(false);
+            $table->boolean('is_direct_queue')->default(false);
             $table->timestamps();
         });
     }
