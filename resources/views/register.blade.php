@@ -63,6 +63,14 @@
                                         @include('layouts.inputError', ['errorName' => 'industry_category_id'])
                                     </div>
                                     <div class="form-group">
+                                        <label for="queue_type">Queue Type (*)</label>
+                                        <select name="queue_type" id="queue_type" class="form-control @error('queue_type') is-invalid @enderror" required>
+                                            <option value="appointment_queue">Appointment Queue</option>
+                                            <option value="direct_queue">Direct Queue</option>
+                                        </select>
+                                        @include('layouts.inputError', ['errorName' => 'industry_category_id'])
+                                    </div>
+                                    <div class="form-group">
                                         <label for="email">Email (*)</label>
                                         <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email')}}" required>
                                         @include('layouts.inputError', ['errorName' => 'email'])
