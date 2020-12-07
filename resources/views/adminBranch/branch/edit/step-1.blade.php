@@ -16,6 +16,15 @@
     @include('layouts.inputError', ['errorName' => 'industry_category_id'])
 </div>
 <div class="form-group">
+    <label for="branch_type_id">Branch Type</label>
+    <select name="branch_type_id" id="branch_type_id" class="form-control @error('branch_type_id') is-invalid @enderror" disabled>
+        @foreach ($branchTypes as $branchType)
+            <option value="{{$branchType->id}}">{{$branchType->code}} - {{$branchType->name}}</option>
+        @endforeach
+    </select>
+    @include('layouts.inputError', ['errorName' => 'branch_type_id'])
+</div>
+<div class="form-group">
     <label for="description">Description</label>
     <textarea name="description" id="" cols="" rows="" class="form-control @error('description') is-invalid @enderror">{{old('description') ?: $branch->description}}</textarea>
     @include('layouts.inputError', ['errorName' => 'description'])
@@ -103,6 +112,12 @@
             
             if(timezoneOldValue !== '') {
                 $('#timezone').val(timezoneOldValue);
+            }
+
+            const branch_type_idOldValue = '{{ old('branch_type_id') ?: $branch->branch_type_id }}';
+            
+            if(branch_type_idOldValue !== '') {
+                $('#branch_type_id').val(branch_type_idOldValue);
             }
         });
     </script>
