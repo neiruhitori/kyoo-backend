@@ -20,6 +20,7 @@ class CreateBranchTypesTable extends Migration
             $table->boolean('is_premium')->default(false);
             $table->boolean('is_appointment')->default(false);
             $table->boolean('is_direct_queue')->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
