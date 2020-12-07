@@ -37,6 +37,15 @@
         </a>
       </li>
 
+      @if (Auth::user()->Branch->BranchType->is_direct_queue)
+          <li class="nav-item">
+            <a class="nav-link" href="{{route('adminBranch.branch.edit')}}">
+              <i class="fas fa-fw fa-building"></i>
+              <span>Branch Configuration</span>
+            </a>
+          </li>
+      @endif
+
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           <i class="fas fa-fw fa-calendar"></i>

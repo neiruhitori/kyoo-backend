@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\RegistrationBranch;
 use App\Branch;
+use App\BranchConfiguration;
 use App\User;
 use App\Log;
 use Illuminate\Http\Request;
@@ -88,6 +89,10 @@ class RegistrationBranchController extends Controller
         // duplicate to branches table
         $input['mobile_phone'] = $registrationBranch->phone;
         $branch = Branch::create($input);
+        // create branch configuration
+        BranchConfiguration::create([
+            'branch_id' => $branch->id
+        ]);
 
         // duplicate to users table
         $input['password'] = Crypt::decryptString($registrationBranch->makeVisible('attribute')->password);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Branch;
 use App\BranchType;
+use App\BranchConfiguration;
 use App\IndustryCategory;
 use App\ScheduleTemplate;
 use App\User;
@@ -84,6 +85,11 @@ class BranchController extends Controller
         $input['photo'] = Storage::disk('public')->put('branch_photos', $request->photo);
         $input['status'] = 'verified';
         $branch = Branch::create($input);
+
+        // create branch configuration
+        BranchConfiguration::create([
+            'branch_id' => $branch->id
+        ]);
 
         // create admin branch
         $password = $this->generateRandomString(3, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // random uppercase
