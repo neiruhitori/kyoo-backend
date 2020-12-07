@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Branch;
+use App\BranchType;
 use App\IndustryCategory;
 use App\ScheduleTemplate;
 use App\User;
@@ -59,11 +60,13 @@ class BranchController extends Controller
         $categories = IndustryCategory::all();
         $templates = ScheduleTemplate::all();
         $provinces = Province::all();
+        $branchTypes = BranchType::all();
         return view('admin.branch.create', [
             'countries' => $countries,
             'categories' => $categories,
             'templates' => $templates,
-            'provinces' => $provinces
+            'provinces' => $provinces,
+            'branchTypes' => $branchTypes
         ]);
     }
 
@@ -131,12 +134,14 @@ class BranchController extends Controller
         $categories = IndustryCategory::all();
         $templates = ScheduleTemplate::all();
         $provinces = Province::all();
+        $branchTypes = BranchType::all();
         return view('admin.branch.edit', [
             'branch' => $branch,
             'countries' => $countries,
             'categories' => $categories,
             'templates' => $templates,
-            'provinces' => $provinces
+            'provinces' => $provinces,
+            'branchTypes' => $branchTypes
         ]);
     }
 

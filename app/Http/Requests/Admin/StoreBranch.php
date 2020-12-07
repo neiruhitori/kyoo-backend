@@ -27,6 +27,7 @@ class StoreBranch extends FormRequest
             // branch profile
             'name' => 'required|string',
             'industry_category_id' => 'required|exists:industry_categories,id',
+            'branch_type_id' => 'required|exists:branch_types,id',
             'description' => 'required',
             'email' => 'email',
             'country' => 'required',

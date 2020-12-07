@@ -77,6 +77,14 @@ class RegistrationBranchController extends Controller
     public function update(Request $request, RegistrationBranch $registrationBranch)
     {
         $input = $registrationBranch->toArray();
+        switch ($input['queue_type']) {
+            case 'direct_queue':
+                $input['branch_type_id'] = 2;
+                break;
+            case 'appointment_queue':
+                $input['branch_type_id'] = 1;
+                break;
+        }
         // duplicate to branches table
         $input['mobile_phone'] = $registrationBranch->phone;
         $branch = Branch::create($input);

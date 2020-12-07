@@ -73,6 +73,14 @@
                                         <td>{{$branch->IndustryCategory->name}}</td>
                                     </tr>
                                     <tr>
+                                        <th>Branch Type</th>
+                                        <td>
+                                            <span class="badge badge-primary">
+                                                {{$branch->BranchType->code}} - {{$branch->BranchType->name}}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Email</th>
                                         <td>{{$branch->email}}</td>
                                     </tr>
