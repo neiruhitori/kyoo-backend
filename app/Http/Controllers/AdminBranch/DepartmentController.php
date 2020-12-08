@@ -19,7 +19,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::all();
+        $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         return view('adminBranch.department.index', [
             'departments' => $departments
         ]);

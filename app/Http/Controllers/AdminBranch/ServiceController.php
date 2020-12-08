@@ -31,7 +31,7 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        $departments = Department::all();
+        $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         return view('adminBranch.service.create', [
             'departments' => $departments
         ]);
@@ -79,7 +79,7 @@ class ServiceController extends Controller
         if ($service->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
-        $departments = Department::all();
+        $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         return view('adminBranch.service.edit', [
             'service' => $service,
             'departments' => $departments
