@@ -72,4 +72,9 @@ class Branch extends Model
     {
         return $this->hasOne('App\BranchConfiguration');
     }
+
+    public function Departments()
+    {
+        return $this->hasMany('App\Department');
+    }
 }

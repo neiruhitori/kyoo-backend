@@ -61,6 +61,13 @@
       </li>
 
       <li class="nav-item">
+        <a class="nav-link" href="{{route('adminBranch.department.index')}}">
+          <i class="fas fa-fw fa-building"></i>
+          <span>Department</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-bars"></i>
           <span>Service</span>

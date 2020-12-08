@@ -75,6 +75,9 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
         Route::get('branchConfiguration', 'BranchConfigurationController@edit')->name('branchConfiguration.edit');
         Route::put('branchConfiguration', 'BranchConfigurationController@update')->name('branchConfiguration.update');
 
+        // Department routes
+        Route::resource('department', 'DepartmentController');
+
         // Schedule routes
         Route::get('/schedule/list', 'ScheduleController@templateIndex')->name('schedule.template.index');
         Route::put('/schedule/list', 'ScheduleController@templateUpdate')->name('schedule.template.update');
