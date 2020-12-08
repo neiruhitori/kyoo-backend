@@ -14,4 +14,9 @@ class Workstation extends Model
     {
         return $this->belongsTo('App\Department');
     }
+
+    public function WorkstationService()
+    {
+        return $this->hasMany('App\WorkstationService');
+    }
 }

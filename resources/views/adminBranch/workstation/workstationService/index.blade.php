@@ -9,14 +9,14 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">List Workstation</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">List Workstation Service</h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12 text-right">
-                            <a href="{{route('adminBranch.workstation.create')}}" class="btn btn-primary"">
-                                Insert Workstation
+                            <a href="{{route('adminBranch.workstation.workstationService.create', $workstation->id)}}" class="btn btn-primary"">
+                                Insert Workstation Service
                             </a>
                         </div>
                     </div>
@@ -26,28 +26,21 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Label</th>
-                                            <th>Display ID</th>
-                                            <th>Department</th>
+                                            <th>Service</th>
+                                            <th>Priority</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($workstations as $workstation)
+                                        @foreach ($workstation->WorkstationService as $workstationService)
                                             <tr>
-                                                <td>{{$workstation->name}}</td>
-                                                <td>{{$workstation->label}}</td>
-                                                <td>{{$workstation->display_id}}</td>
-                                                <td>{{$workstation->Department->name}}</td>
+                                                <td>{{$workstationService->Service->name}}</td>
+                                                <td>{{$workstationService->priority}}</td>
                                                 <td>
-                                                    <a href="{{route('adminBranch.workstation.workstationService.index', $workstation->id)}}" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Show workstation service">
-                                                        <i class="fas fa-fw fa-list"></i>
-                                                    </a>
-                                                    <a href="{{route('adminBranch.workstation.edit', $workstation->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit workstation">
+                                                    <a href="{{route('adminBranch.workstation.workstationService.edit', ["workstation" => $workstation->id, "workstationService" => $workstationService->id])}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit workstation">
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
-                                                    <form action="{{route('adminBranch.workstation.destroy', $workstation->id)}}" method="post" style="display: inline">
+                                                    <form action="{{route('adminBranch.workstation.workstationService.destroy', ["workstation" => $workstation->id, "workstationService" => $workstationService->id])}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove workstation">
