@@ -1,0 +1,65 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Insert Workstation</h6>
+                </div>
+                @csrf
+                <div class="card-body">
+                    @include('layouts.alert')
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form action="{{route('adminBranch.workstation.store')}}" method="post">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="department_id">Department</label>
+                                    <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror">
+                                        <option value="">- Select Department -</option>
+                                        @foreach ($departments as $department)
+                                            <option value="{{$department->id}}">{{$department->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @include('layouts.inputError', ['errorName' => 'department_id'])
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input name="name" id="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: 'Counter 1'}}" onchange="onChangeName()" required>
+                                    @include('layouts.inputError', ['errorName' => 'name'])
+                                </div>
+                                <div class="form-group">
+                                    <label for="label">Label</label>
+                                    <input name="label" type="text" class="form-control @error('label') is-invalid @enderror" value="{{old('label')}}" required>
+                                    @include('layouts.inputError', ['errorName' => 'label'])
+                                </div>
+                                <div class="form-group">
+                                    <label for="display_id">Display ID</label>
+                                    <input name="display_id" id="display_id" type="text" class="form-control @error('display_id') is-invalid @enderror" value="{{old('display_id') ?: 'Counter 1'}}" required readonly>
+                                    @include('layouts.inputError', ['errorName' => 'display_id'])
+                                </div>
+                                <button class="btn btn-primary">Insert</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+@push('js')
+    <script>
+        $(document).ready(function() {
+            const department_idOldValue = '{{ old('department_id') }}';
+            
+            if(department_idOldValue !== '') {
+                $('#department_id').val(department_idOldValue);
+            }
+        });
+        function onChangeName(){
+            const name = $('#name').val()
+            $('#display_id').val(name)
+        }
+    </script>
+@endpush

@@ -89,6 +89,9 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
         // Slot routes
         Route::resource('service.slot', 'SlotController')->shallow();
 
+        // Workstation routes
+        Route::resource('workstation', 'WorkstationController');
+
         // Counter routes
         Route::put('user/restore', 'UserController@restore')->name('user.restore');
         Route::resource('user', 'UserController');

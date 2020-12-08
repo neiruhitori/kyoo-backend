@@ -83,6 +83,13 @@
 
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
+        <a class="nav-link" href="{{route('adminBranch.workstation.index')}}">
+          <i class="fas fa-fw fa-user"></i>
+          <span>Workstation</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link" href="{{route('adminBranch.user.index')}}">
           <i class="fas fa-fw fa-user"></i>
           <span>Virtual Counter</span>
