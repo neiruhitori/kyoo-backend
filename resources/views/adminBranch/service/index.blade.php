@@ -27,6 +27,7 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
+                                            <th>Department</th>
                                             <th>Total Slot Time Interval</th>
                                             <th>Action</th>
                                         </tr>
@@ -35,6 +36,13 @@
                                         @foreach ($services as $service)
                                             <tr>
                                                 <td>{{$service->name}}</td>
+                                                <td>
+                                                    @if ($service->Department)
+                                                        {{$service->Department->name}}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     {{count($service->Slot)}}
                                                 </td>
