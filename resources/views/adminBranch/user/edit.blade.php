@@ -15,6 +15,16 @@
                                 @method('PUT')
                                 <input type="hidden" name="user_id" value="{{$user->id}}">
                                 <div class="form-group">
+                                    <label for="workstation_id">Workstation</label>
+                                    <select name="workstation_id" id="workstation_id" class="form-control @error('workstation_id') is-invalid @enderror">
+                                        <option value="">- Select Workstation -</option>
+                                        @foreach ($workstations as $workstation)
+                                            <option value="{{$workstation->id}}">{{$workstation->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @include('layouts.inputError', ['errorName' => 'department_id'])
+                                </div>
+                                <div class="form-group">
                                     <label for="username">Username</label>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
@@ -58,3 +68,14 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script>
+        $(document).ready(function() {
+            const workstation_idOldValue = '{{ old('workstation_id') ?: $user->WorkstationVct->workstation_id }}';
+            
+            if(workstation_idOldValue !== '') {
+                $('#workstation_id').val(workstation_idOldValue);
+            }
+        });
+    </script>
+@endpush

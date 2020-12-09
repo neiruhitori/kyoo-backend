@@ -4,6 +4,8 @@ namespace App\Http\Controllers\AdminBranch;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Workstation;
+use App\WorkstationVct;
 use App\Log;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreUser;
@@ -30,7 +32,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('adminBranch.user.create');
+        $workstations = Workstation::whereHas('Department', function($query){
+            return $query->whereBranchId(Auth::user()->branch_id);
+        })->get();
+        return view('adminBranch.user.create')->withWorkstations($workstations);
     }
 
     /**
@@ -50,7 +55,11 @@ class UserController extends Controller
         $input['role'] = 'cs';
         $input['name'] = "KY{$input['branch_id']}_".$request->username;
         $input['username'] = "KY{$input['branch_id']}_".$request->username;
-        User::create($input);
+        $user = User::create($input);
+        WorkstationVct::create([
+            'workstation_id' => $request->workstation_id,
+            'vct_id' => $user->id
+        ]);
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Create VCT User'
@@ -78,7 +87,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('adminBranch.user.edit')->withUser($user);
+        $workstations = Workstation::whereHas('Department', function($query){
+            return $query->whereBranchId(Auth::user()->branch_id);
+        })->get();
+        return view('adminBranch.user.edit')->withUser($user)->withWorkstations($workstations);
     }
 
     /**
@@ -99,7 +111,6 @@ class UserController extends Controller
             $request->session()->flash('error', 'Please insert correct old password!');
             return redirect()->back();
         }
-        
         $input = $request->all();
         $input['name'] = "KY{$user['branch_id']}_".$request->username;
         $input['username'] = "KY{$user['branch_id']}_".$request->username;
@@ -107,6 +118,9 @@ class UserController extends Controller
             unset($input['password']);
         }
         $user->update($input);
+        WorkstationVct::whereVctId($user->id)->update([
+            'workstation_id' => $request->workstation_id
+        ]);
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Update VCT User'

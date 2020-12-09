@@ -25,7 +25,8 @@ class UpdateUser extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required|unique:users,id,'.$this->user_id,
+            'workstation_id' => 'required|exists:workstations,id',
+            'username' => 'required|unique:users,username,'.$this->user_id,
             'old_password' => [
                 'required',
                 'min:8',             // must be at least 8 characters in length
