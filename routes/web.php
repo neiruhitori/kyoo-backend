@@ -111,6 +111,9 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     Route::get('appointment/create', 'HomeController@createAppointment')->name('appointment.create');
     Route::post('appointment/create', 'HomeController@storeAppointment')->name('appointment.store');
 
+    // Direct Queue
+    Route::resource('directQueue', 'DirectQueueController');
+
     // Report routes
     Route::get('report/daily', 'ReportController@daily')->name('report.daily');
 });

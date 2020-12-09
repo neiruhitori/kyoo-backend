@@ -16,6 +16,12 @@
       </li>
 
       <li class="nav-item">
+        <a class="nav-link" href="{{route('cs.directQueue.create')}}">
+          <i class="fas fa-fw fa-edit"></i>
+          <span>Direct Queue</span></a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           <i class="fas fa-list-ul"></i>
           <span>Report</span>

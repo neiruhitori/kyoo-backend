@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Requests\CS;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Auth;
+
+class StoreDirectQueue extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return Auth::user()->role == 'cs';
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'vct_id' => 'required|exists:users,id',
+            'workstation_service_id' => 'required|exists:workstation_services,id',
+            'name' => 'required|string|max:100',
+            'phone' => 'nullable'
+        ];
+    }
+}
