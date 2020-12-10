@@ -16,9 +16,78 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        <!-- START DIRECT QUEUE CALLER -->
                         <div class="col-md-4">
-                            waiting
+                            <b class="text-primary">Direct Queue Caller</b>
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="search-by"
+                                            >Input Queue No</label
+                                        >
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            placeholder="Input here"
+                                            v-model="selected_queue"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-md-12" v-if="!isOnCall">
+                                    <button
+                                        class="btn btn-primary fullwidth mb-2"
+                                        @click="onCall"
+                                    >
+                                        CALL
+                                    </button>
+                                </div>
+                                <template v-else>
+                                    <div class="col-md-6">
+                                        <button
+                                            class="btn btn-info fullwidth mb-2"
+                                            @click="onRecall"
+                                        >
+                                            RECALL
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button
+                                            class="btn btn-success fullwidth mb-2"
+                                            @click="onDone"
+                                        >
+                                            DONE
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button
+                                            class="btn btn-secondary fullwidth mb-2"
+                                            @click="onRequeue"
+                                        >
+                                            REQUEUE
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button
+                                            class="btn btn-danger fullwidth mb-2"
+                                            @click="onUnattend"
+                                        >
+                                            UNATTEND
+                                        </button>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <button
+                                            class="btn btn-warning fullwidth mb-2"
+                                            @click="onTransfer"
+                                        >
+                                            TRANSFER
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
                         </div>
+                        <!-- END DIRECT QUEUE CALLER -->
+                        <!-- START DIRECT QUEUE LIST -->
                         <div class="col-md-8">
                             <b class="text-primary">Direct Queue List</b>
                             <hr />
@@ -51,6 +120,10 @@
                                             <tr
                                                 v-for="queue in queues"
                                                 :key="queue.id"
+                                                @click="
+                                                    selectQueue(queue.queue_no)
+                                                "
+                                                class="pointer"
                                             >
                                                 <td>{{ queue.queue_no }}</td>
                                                 <td>{{ queue.name }}</td>
@@ -70,6 +143,7 @@
                                 </table>
                             </div>
                         </div>
+                        <!-- END DIRECT QUEUE LIST -->
                     </div>
                 </div>
             </div>
@@ -92,7 +166,9 @@ export default {
             isLoading: true,
             keyword: "",
             debounce: null,
-            queues: []
+            queues: [],
+            selected_queue: "",
+            isOnCall: false
         };
     },
     mounted() {
@@ -113,9 +189,40 @@ export default {
                 this.keyword = event.target.value;
                 this.getQueues();
             }, 500);
+        },
+        selectQueue(queue_no) {
+            this.selected_queue = queue_no;
+        },
+        onCall() {
+            alert("on call");
+            this.isOnCall = true;
+        },
+        onRecall() {
+            alert("on recall");
+            this.isOnCall = false;
+        },
+        onDone() {
+            alert("on done");
+            this.isOnCall = false;
+        },
+        onRequeue() {
+            alert("on requeue");
+            this.isOnCall = false;
+        },
+        onUnattend() {
+            alert("on unattend");
+            this.isOnCall = false;
+        },
+        onTransfer() {
+            alert("on onTransfer");
+            this.isOnCall = false;
         }
     }
 };
 </script>
 
-<style></style>
+<style>
+.pointer {
+    cursor: pointer;
+}
+</style>
