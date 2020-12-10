@@ -7,6 +7,7 @@ use App\Service;
 use App\WorkstationService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CS\StoreDirectQueue;
 use Auth;
 
@@ -105,5 +106,31 @@ class DirectQueueController extends Controller
     public function destroy(DirectQueue $directQueue)
     {
         //
+    }
+
+    public function onCall(Request $request)
+    {
+        $rules = [
+            'id' => 'required|integer|min:1|exists:direct_queues,id'
+        ];
+        $validation = Validator::make($request->all(), $rules);
+        if ($validation->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error validation',
+                'data' => $validation->errors()
+            ], 400);
+        }
+
+        $directQueue = DirectQueue::find($request->id);
+        $directQueue->status = 'call';
+        $directQueue->called_at = Date('Y-m-d H:m:s');
+        $directQueue->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Direct Queue on Call',
+            'data' => $directQueue
+        ]);
     }
 }

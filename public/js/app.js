@@ -2084,7 +2084,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
 // Import component
  // Import stylesheet
 
@@ -2099,7 +2098,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       keyword: "",
       debounce: null,
       queues: [],
-      selected_queue: "",
+      selected_queue: {},
       isOnCall: false
     };
   },
@@ -2143,12 +2142,47 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         _this2.getQueues();
       }, 500);
     },
-    selectQueue: function selectQueue(queue_no) {
-      this.selected_queue = queue_no;
+    selectQueue: function selectQueue(queue) {
+      this.selected_queue = queue;
     },
     onCall: function onCall() {
-      alert("on call");
-      this.isOnCall = true;
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _this3.isOnCall = true;
+                _this3.isLoading = true;
+                _context2.prev = 2;
+                _context2.next = 5;
+                return axios.post("/cs/directQueue/onCall", {
+                  id: _this3.selected_queue.id
+                });
+
+              case 5:
+                data = _context2.sent;
+                console.log(data);
+                _context2.next = 12;
+                break;
+
+              case 9:
+                _context2.prev = 9;
+                _context2.t0 = _context2["catch"](2);
+                alert(_context2.t0.response.data.message);
+
+              case 12:
+                _this3.isLoading = false;
+
+              case 13:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[2, 9]]);
+      }))();
     },
     onRecall: function onRecall() {
       alert("on recall");
@@ -39270,19 +39304,23 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.selected_queue,
-                              expression: "selected_queue"
+                              value: _vm.selected_queue.queue_no,
+                              expression: "selected_queue.queue_no"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: { type: "text", placeholder: "Input here" },
-                          domProps: { value: _vm.selected_queue },
+                          domProps: { value: _vm.selected_queue.queue_no },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.selected_queue = $event.target.value
+                              _vm.$set(
+                                _vm.selected_queue,
+                                "queue_no",
+                                $event.target.value
+                              )
                             }
                           }
                         })
@@ -39295,6 +39333,7 @@ var render = function() {
                             "button",
                             {
                               staticClass: "btn btn-primary fullwidth mb-2",
+                              attrs: { disabled: !_vm.selected_queue.queue_no },
                               on: { click: _vm.onCall }
                             },
                             [
@@ -39424,7 +39463,7 @@ var render = function() {
                                   staticClass: "pointer",
                                   on: {
                                     click: function($event) {
-                                      return _vm.selectQueue(queue.queue_no)
+                                      return _vm.selectQueue(queue)
                                     }
                                   }
                                 },
