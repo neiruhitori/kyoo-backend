@@ -47,13 +47,24 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr
-                                            v-for="queue in queues"
-                                            :key="queue.id"
-                                        >
-                                            <td>{{ queue.queue_no }}</td>
-                                            <td>{{ queue.name }}</td>
-                                            <td>{{ queue.service.name }}</td>
+                                        <template v-if="queues.length > 0">
+                                            <tr
+                                                v-for="queue in queues"
+                                                :key="queue.id"
+                                            >
+                                                <td>{{ queue.queue_no }}</td>
+                                                <td>{{ queue.name }}</td>
+                                                <td>
+                                                    {{ queue.service.name }}
+                                                </td>
+                                            </tr>
+                                        </template>
+                                        <tr v-else>
+                                            <td colspan="3">
+                                                <p class="text-center">
+                                                    No Data Found
+                                                </p>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>

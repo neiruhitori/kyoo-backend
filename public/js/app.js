@@ -2000,6 +2000,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // Import component
  // Import stylesheet
 
@@ -39120,16 +39131,26 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "tbody",
-                      _vm._l(_vm.queues, function(queue) {
-                        return _c("tr", { key: queue.id }, [
-                          _c("td", [_vm._v(_vm._s(queue.queue_no))]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(queue.name))]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(queue.service.name))])
-                        ])
-                      }),
-                      0
+                      [
+                        _vm.queues.length > 0
+                          ? _vm._l(_vm.queues, function(queue) {
+                              return _c("tr", { key: queue.id }, [
+                                _c("td", [_vm._v(_vm._s(queue.queue_no))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(queue.name))]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(
+                                    "\n                                                " +
+                                      _vm._s(queue.service.name) +
+                                      "\n                                            "
+                                  )
+                                ])
+                              ])
+                            })
+                          : _c("tr", [_vm._m(2)])
+                      ],
+                      2
                     )
                   ])
                 ])
@@ -39164,6 +39185,18 @@ var staticRenderFns = [
         _c("th", [_vm._v("Name")]),
         _vm._v(" "),
         _c("th", [_vm._v("Service Name")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", { attrs: { colspan: "3" } }, [
+      _c("p", { staticClass: "text-center" }, [
+        _vm._v(
+          "\n                                                No Data Found\n                                            "
+        )
       ])
     ])
   }
