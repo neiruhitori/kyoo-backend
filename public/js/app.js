@@ -2224,8 +2224,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.isOnCall = false;
     },
     onRequeue: function onRequeue() {
-      alert("on requeue");
-      this.isOnCall = false;
+      var _this5 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _this5.isLoading = true;
+                _context4.prev = 1;
+                _context4.next = 4;
+                return axios.post("/cs/directQueue/onRequeue", {
+                  queue_no: _this5.selected_queue
+                });
+
+              case 4:
+                _this5.isOnCall = false;
+                _context4.next = 10;
+                break;
+
+              case 7:
+                _context4.prev = 7;
+                _context4.t0 = _context4["catch"](1);
+                alert(_context4.t0.response.data.message);
+
+              case 10:
+                _this5.isLoading = false;
+
+              case 11:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[1, 7]]);
+      }))();
     },
     onUnattend: function onUnattend() {
       alert("on unattend");

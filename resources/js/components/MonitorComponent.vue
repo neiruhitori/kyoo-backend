@@ -222,9 +222,17 @@ export default {
             alert("on done");
             this.isOnCall = false;
         },
-        onRequeue() {
-            alert("on requeue");
-            this.isOnCall = false;
+        async onRequeue() {
+            this.isLoading = true;
+            try {
+                await axios.post("/cs/directQueue/onRequeue", {
+                    queue_no: this.selected_queue
+                });
+                this.isOnCall = false;
+            } catch (error) {
+                alert(error.response.data.message);
+            }
+            this.isLoading = false;
         },
         onUnattend() {
             alert("on unattend");
