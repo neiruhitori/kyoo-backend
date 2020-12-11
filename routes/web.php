@@ -120,6 +120,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     Route::post('directQueue/onRecall', 'DirectQueueController@onRecall');
     Route::post('directQueue/onRequeue', 'DirectQueueController@onRequeue');
     Route::post('directQueue/onDone', 'DirectQueueController@onDone');
+    Route::post('directQueue/onUnattend', 'DirectQueueController@onUnattend');
 
     // Report routes
     Route::get('report/daily', 'ReportController@daily')->name('report.daily');

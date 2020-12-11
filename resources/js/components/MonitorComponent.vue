@@ -242,9 +242,17 @@ export default {
             }
             this.isLoading = false;
         },
-        onUnattend() {
-            alert("on unattend");
-            this.isOnCall = false;
+        async onUnattend() {
+            this.isLoading = true;
+            try {
+                await axios.post("/cs/directQueue/onUnattend", {
+                    queue_no: this.selected_queue
+                });
+                this.isOnCall = false;
+            } catch (error) {
+                alert(error.response.data.message);
+            }
+            this.isLoading = false;
         },
         onTransfer() {
             alert("on onTransfer");

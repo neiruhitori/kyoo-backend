@@ -2292,8 +2292,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     onUnattend: function onUnattend() {
-      alert("on unattend");
-      this.isOnCall = false;
+      var _this7 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _this7.isLoading = true;
+                _context6.prev = 1;
+                _context6.next = 4;
+                return axios.post("/cs/directQueue/onUnattend", {
+                  queue_no: _this7.selected_queue
+                });
+
+              case 4:
+                _this7.isOnCall = false;
+                _context6.next = 10;
+                break;
+
+              case 7:
+                _context6.prev = 7;
+                _context6.t0 = _context6["catch"](1);
+                alert(_context6.t0.response.data.message);
+
+              case 10:
+                _this7.isLoading = false;
+
+              case 11:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, null, [[1, 7]]);
+      }))();
     },
     onTransfer: function onTransfer() {
       alert("on onTransfer");

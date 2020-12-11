@@ -241,4 +241,37 @@ class DirectQueueController extends Controller
             'data' => $directQueue
         ]);
     }
+
+    public function onUnattend(Request $request)
+    {
+        $rules = [
+            'queue_no' => 'required|integer|min:1|exists:direct_queues'
+        ];
+        $validation = Validator::make($request->all(), $rules);
+        if ($validation->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error validation',
+                'data' => $validation->errors()
+            ], 400);
+        }
+
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        if (!$directQueue) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Queue not found',
+                'data' => $validation->errors()
+            ], 404);
+        }
+        $directQueue->status = 'unattend';
+        $directQueue->done_at = Date('Y-m-d H:m:s');
+        $directQueue->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Direct Queue on Call',
+            'data' => $directQueue
+        ]);
+    }
 }
