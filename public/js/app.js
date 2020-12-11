@@ -2184,8 +2184,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     onRecall: function onRecall() {
-      alert("on recall");
-      this.isOnCall = false;
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _this4.isLoading = true;
+                _context3.prev = 1;
+                _context3.next = 4;
+                return axios.post("/cs/directQueue/onRecall", {
+                  queue_no: _this4.selected_queue
+                });
+
+              case 4:
+                _this4.isOnCall = false;
+                _context3.next = 10;
+                break;
+
+              case 7:
+                _context3.prev = 7;
+                _context3.t0 = _context3["catch"](1);
+                alert(_context3.t0.response.data.message);
+
+              case 10:
+                _this4.isLoading = false;
+
+              case 11:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[1, 7]]);
+      }))();
     },
     onDone: function onDone() {
       alert("on done");

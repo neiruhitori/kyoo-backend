@@ -206,9 +206,17 @@ export default {
             }
             this.isLoading = false;
         },
-        onRecall() {
-            alert("on recall");
-            this.isOnCall = false;
+        async onRecall() {
+            this.isLoading = true;
+            try {
+                await axios.post("/cs/directQueue/onRecall", {
+                    queue_no: this.selected_queue
+                });
+                this.isOnCall = false;
+            } catch (error) {
+                alert(error.response.data.message);
+            }
+            this.isLoading = false;
         },
         onDone() {
             alert("on done");
