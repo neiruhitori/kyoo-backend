@@ -2220,10 +2220,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     onDone: function onDone() {
-      alert("on done");
-      this.isOnCall = false;
-    },
-    onRequeue: function onRequeue() {
       var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
@@ -2234,7 +2230,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this5.isLoading = true;
                 _context4.prev = 1;
                 _context4.next = 4;
-                return axios.post("/cs/directQueue/onRequeue", {
+                return axios.post("/cs/directQueue/onDone", {
                   queue_no: _this5.selected_queue
                 });
 
@@ -2257,6 +2253,42 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             }
           }
         }, _callee4, null, [[1, 7]]);
+      }))();
+    },
+    onRequeue: function onRequeue() {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _this6.isLoading = true;
+                _context5.prev = 1;
+                _context5.next = 4;
+                return axios.post("/cs/directQueue/onRequeue", {
+                  queue_no: _this6.selected_queue
+                });
+
+              case 4:
+                _this6.isOnCall = false;
+                _context5.next = 10;
+                break;
+
+              case 7:
+                _context5.prev = 7;
+                _context5.t0 = _context5["catch"](1);
+                alert(_context5.t0.response.data.message);
+
+              case 10:
+                _this6.isLoading = false;
+
+              case 11:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, null, [[1, 7]]);
       }))();
     },
     onUnattend: function onUnattend() {

@@ -218,9 +218,17 @@ export default {
             }
             this.isLoading = false;
         },
-        onDone() {
-            alert("on done");
-            this.isOnCall = false;
+        async onDone() {
+            this.isLoading = true;
+            try {
+                await axios.post("/cs/directQueue/onDone", {
+                    queue_no: this.selected_queue
+                });
+                this.isOnCall = false;
+            } catch (error) {
+                alert(error.response.data.message);
+            }
+            this.isLoading = false;
         },
         async onRequeue() {
             this.isLoading = true;
