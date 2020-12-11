@@ -30,7 +30,7 @@
                                             type="text"
                                             class="form-control"
                                             placeholder="Input here"
-                                            v-model="selected_queue.queue_no"
+                                            v-model="selected_queue"
                                         />
                                     </div>
                                 </div>
@@ -38,7 +38,7 @@
                                     <button
                                         class="btn btn-primary fullwidth mb-2"
                                         @click="onCall"
-                                        :disabled="!selected_queue.queue_no"
+                                        :disabled="!selected_queue"
                                     >
                                         CALL
                                     </button>
@@ -121,7 +121,9 @@
                                             <tr
                                                 v-for="queue in queues"
                                                 :key="queue.id"
-                                                @click="selectQueue(queue)"
+                                                @click="
+                                                    selectQueue(queue.queue_no)
+                                                "
                                                 class="pointer"
                                             >
                                                 <td>{{ queue.queue_no }}</td>
@@ -166,7 +168,7 @@ export default {
             keyword: "",
             debounce: null,
             queues: [],
-            selected_queue: {},
+            selected_queue: "",
             isOnCall: false
         };
     },
@@ -189,17 +191,16 @@ export default {
                 this.getQueues();
             }, 500);
         },
-        selectQueue(queue) {
-            this.selected_queue = queue;
+        selectQueue(queue_no) {
+            this.selected_queue = queue_no;
         },
         async onCall() {
-            this.isOnCall = true;
             this.isLoading = true;
             try {
-                const data = await axios.post("/cs/directQueue/onCall", {
-                    id: this.selected_queue.id
+                await axios.post("/cs/directQueue/onCall", {
+                    queue_no: this.selected_queue
                 });
-                console.log(data);
+                this.isOnCall = true;
             } catch (error) {
                 alert(error.response.data.message);
             }
@@ -223,6 +224,11 @@ export default {
         },
         onTransfer() {
             alert("on onTransfer");
+            this.isOnCall = false;
+        }
+    },
+    watch: {
+        selected_queue() {
             this.isOnCall = false;
         }
     }

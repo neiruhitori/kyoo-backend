@@ -111,7 +111,7 @@ class DirectQueueController extends Controller
     public function onCall(Request $request)
     {
         $rules = [
-            'id' => 'required|integer|min:1|exists:direct_queues,id'
+            'queue_no' => 'required|integer|min:1|exists:direct_queues'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -122,7 +122,14 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::find($request->id);
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        if (!$directQueue) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Queue not found',
+                'data' => $validation->errors()
+            ], 404);
+        }
         $directQueue->status = 'call';
         $directQueue->called_at = Date('Y-m-d H:m:s');
         $directQueue->save();
