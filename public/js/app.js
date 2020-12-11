@@ -2086,6 +2086,49 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // Import component
  // Import stylesheet
 
@@ -39606,6 +39649,93 @@ var render = function() {
                                         _vm._s(queue.service.name) +
                                         "\n                                            "
                                     )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "span",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "show",
+                                            rawName: "v-show",
+                                            value: queue.status == "waiting",
+                                            expression:
+                                              "\n                                                        queue.status ==\n                                                            'waiting'\n                                                    "
+                                          }
+                                        ],
+                                        staticClass: "badge badge-secondary"
+                                      },
+                                      [_vm._v("Waiting")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "span",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "show",
+                                            rawName: "v-show",
+                                            value: queue.status == "call",
+                                            expression:
+                                              "\n                                                        queue.status ==\n                                                            'call'\n                                                    "
+                                          }
+                                        ],
+                                        staticClass: "badge badge-info"
+                                      },
+                                      [_vm._v("On Call")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "span",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "show",
+                                            rawName: "v-show",
+                                            value: queue.status == "requeue",
+                                            expression:
+                                              "\n                                                        queue.status ==\n                                                            'requeue'\n                                                    "
+                                          }
+                                        ],
+                                        staticClass: "badge badge-warning"
+                                      },
+                                      [_vm._v("Re-queue")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "span",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "show",
+                                            rawName: "v-show",
+                                            value: queue.status == "unattend",
+                                            expression:
+                                              "\n                                                        queue.status ==\n                                                            'unattend'\n                                                    "
+                                          }
+                                        ],
+                                        staticClass: "badge badge-danger"
+                                      },
+                                      [_vm._v("Unattend")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "span",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "show",
+                                            rawName: "v-show",
+                                            value: queue.status == "done",
+                                            expression:
+                                              "\n                                                        queue.status ==\n                                                            'done'\n                                                    "
+                                          }
+                                        ],
+                                        staticClass: "badge badge-success"
+                                      },
+                                      [_vm._v("Done")]
+                                    )
                                   ])
                                 ]
                               )
@@ -39646,7 +39776,9 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Name")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Service Name")])
+        _c("th", [_vm._v("Service Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Status")])
       ])
     ])
   },

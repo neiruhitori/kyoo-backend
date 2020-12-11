@@ -114,6 +114,7 @@
                                             <th>Queue No</th>
                                             <th>Name</th>
                                             <th>Service Name</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -130,6 +131,48 @@
                                                 <td>{{ queue.name }}</td>
                                                 <td>
                                                     {{ queue.service.name }}
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="badge badge-secondary"
+                                                        v-show="
+                                                            queue.status ==
+                                                                'waiting'
+                                                        "
+                                                        >Waiting</span
+                                                    >
+                                                    <span
+                                                        class="badge badge-info"
+                                                        v-show="
+                                                            queue.status ==
+                                                                'call'
+                                                        "
+                                                        >On Call</span
+                                                    >
+                                                    <span
+                                                        class="badge badge-warning"
+                                                        v-show="
+                                                            queue.status ==
+                                                                'requeue'
+                                                        "
+                                                        >Re-queue</span
+                                                    >
+                                                    <span
+                                                        class="badge badge-danger"
+                                                        v-show="
+                                                            queue.status ==
+                                                                'unattend'
+                                                        "
+                                                        >Unattend</span
+                                                    >
+                                                    <span
+                                                        class="badge badge-success"
+                                                        v-show="
+                                                            queue.status ==
+                                                                'done'
+                                                        "
+                                                        >Done</span
+                                                    >
                                                 </td>
                                             </tr>
                                         </template>
