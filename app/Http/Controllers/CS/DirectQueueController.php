@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CS\StoreDirectQueue;
 use Auth;
+use App\Events\DirectQueue as DirectQueueEvent;
 
 class DirectQueueController extends Controller
 {
@@ -29,7 +30,7 @@ class DirectQueueController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get all direct queues by today',
-            'data' => $directQueues->get()
+            'data' => $directQueues->latest()->get()
         ]);
     }
 
@@ -59,6 +60,7 @@ class DirectQueueController extends Controller
         $input['workstation_id'] = $workstationService->workstation_id;
         $input['service_id'] = $workstationService->service_id;
         $directQueue = DirectQueue::create($input);
+        event(new DirectQueueEvent());
         $request->session()->flash('success', "Direct Queue Has Been Created, Queue no: {$directQueue->queue_no}");
         return redirect(route('cs.directQueue.create'));
     }

@@ -38,7 +38,10 @@
                                     <button
                                         class="btn btn-primary fullwidth mb-2"
                                         @click="onCall"
-                                        :disabled="!selected_queue"
+                                        :disabled="
+                                            !selected_queue ||
+                                                selected_queue.status
+                                        "
                                     >
                                         CALL
                                     </button>
@@ -243,6 +246,16 @@ export default {
     },
     mounted() {
         this.getQueues();
+    },
+    created() {
+        Echo.channel("event_direct_queue").listen(
+            "DirectQueue",
+            directQueues => {
+                this.loading = true;
+                this.queues = directQueues.directQueues.data;
+                this.loading = false;
+            }
+        );
     },
     methods: {
         async getQueues() {
