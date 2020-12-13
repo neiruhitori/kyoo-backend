@@ -2163,6 +2163,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     allow_transfer: {
       type: Boolean,
       "default": false
+    },
+    auth: {
+      type: Object,
+      required: true
     }
   },
   data: function data() {
@@ -2182,7 +2186,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   created: function created() {
     var _this = this;
 
-    Echo.channel("event_direct_queue").listen("DirectQueue", function (directQueues) {
+    Echo["private"]("event_direct_queue.".concat(this.auth.id)).listen("DirectQueue", function (directQueues) {
       _this.loading = true;
       _this.queues = directQueues.directQueues.data;
       _this.loading = false;

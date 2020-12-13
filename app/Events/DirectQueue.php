@@ -40,6 +40,6 @@ class DirectQueue implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('event_direct_queue');
+        return new PrivateChannel('event_direct_queue.'.Auth::id());
     }
 }

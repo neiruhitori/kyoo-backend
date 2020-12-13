@@ -231,6 +231,10 @@ export default {
         allow_transfer: {
             type: Boolean,
             default: false
+        },
+        auth: {
+            type: Object,
+            required: true
         }
     },
     data() {
@@ -248,7 +252,7 @@ export default {
         this.getQueues();
     },
     created() {
-        Echo.channel("event_direct_queue").listen(
+        Echo.private(`event_direct_queue.${this.auth.id}`).listen(
             "DirectQueue",
             directQueues => {
                 this.loading = true;
