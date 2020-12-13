@@ -25,6 +25,7 @@ class CreateDirectQueuesTable extends Migration
             $table->string('direct_queue_channel', 100)->default('web')->comment('where the direct queue created from (web / apps)');
             $table->string('status', 20)->default('waiting')->comment('statuses are waiting, call, requeue, unattend, done');
             $table->smallInteger('recall_count')->default(0);
+            $table->smallInteger('requeue_count')->default(0);
             $table->timestamp('called_at')->nullable();
             $table->timestamp('done_at')->nullable();
             $table->timestamps();

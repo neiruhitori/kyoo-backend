@@ -2129,6 +2129,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // Import component
  // Import stylesheet
 
@@ -2137,6 +2148,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   components: {
     Loading: vue_loading_overlay__WEBPACK_IMPORTED_MODULE_1___default.a
   },
+  props: {
+    max_recall: {
+      type: Number,
+      "default": 0
+    },
+    max_requeue: {
+      type: Number,
+      "default": 0
+    },
+    allow_transfer: {
+      type: Boolean,
+      "default": false
+    }
+  },
   data: function data() {
     return {
       isLoading: true,
@@ -2144,7 +2169,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       debounce: null,
       queues: [],
       selected_queue: "",
-      isOnCall: false
+      isOnCall: false,
+      onCallQueue: {}
     };
   },
   mounted: function mounted() {
@@ -2194,6 +2220,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var queue;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -2206,30 +2233,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 4:
+                queue = _context2.sent;
+                _this3.onCallQueue = queue.data.data;
                 _this3.isOnCall = true;
-                _context2.next = 10;
+
+                _this3.getQueues();
+
+                _context2.next = 14;
                 break;
 
-              case 7:
-                _context2.prev = 7;
+              case 10:
+                _context2.prev = 10;
                 _context2.t0 = _context2["catch"](1);
+
+                _this3.getQueues();
+
                 alert(_context2.t0.response.data.message);
 
-              case 10:
+              case 14:
                 _this3.isLoading = false;
 
-              case 11:
+              case 15:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[1, 7]]);
+        }, _callee2, null, [[1, 10]]);
       }))();
     },
     onRecall: function onRecall() {
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var queue;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -2242,30 +2278,41 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 4:
-                _this4.isOnCall = false;
-                _context3.next = 10;
+                queue = _context3.sent;
+                _this4.onCallQueue = queue.data.data;
+
+                if (_this4.onCallQueue.recall_count >= _this4.max_recall) {
+                  _this4.isOnCall = false;
+                } else {
+                  _this4.isOnCall = true;
+                }
+
+                _this4.getQueues();
+
+                _context3.next = 13;
                 break;
 
-              case 7:
-                _context3.prev = 7;
+              case 10:
+                _context3.prev = 10;
                 _context3.t0 = _context3["catch"](1);
                 alert(_context3.t0.response.data.message);
 
-              case 10:
+              case 13:
                 _this4.isLoading = false;
 
-              case 11:
+              case 14:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3, null, [[1, 7]]);
+        }, _callee3, null, [[1, 10]]);
       }))();
     },
     onDone: function onDone() {
       var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        var queue;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -2278,30 +2325,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 4:
+                queue = _context4.sent;
+                _this5.onCallQueue = queue.data.data;
                 _this5.isOnCall = false;
-                _context4.next = 10;
+
+                _this5.getQueues();
+
+                _context4.next = 13;
                 break;
 
-              case 7:
-                _context4.prev = 7;
+              case 10:
+                _context4.prev = 10;
                 _context4.t0 = _context4["catch"](1);
                 alert(_context4.t0.response.data.message);
 
-              case 10:
+              case 13:
                 _this5.isLoading = false;
 
-              case 11:
+              case 14:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee4, null, [[1, 7]]);
+        }, _callee4, null, [[1, 10]]);
       }))();
     },
     onRequeue: function onRequeue() {
       var _this6 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+        var queue;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
@@ -2314,30 +2367,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 4:
+                queue = _context5.sent;
+                _this6.onCallQueue = queue.data.data;
                 _this6.isOnCall = false;
-                _context5.next = 10;
+
+                _this6.getQueues();
+
+                _context5.next = 13;
                 break;
 
-              case 7:
-                _context5.prev = 7;
+              case 10:
+                _context5.prev = 10;
                 _context5.t0 = _context5["catch"](1);
                 alert(_context5.t0.response.data.message);
 
-              case 10:
+              case 13:
                 _this6.isLoading = false;
 
-              case 11:
+              case 14:
               case "end":
                 return _context5.stop();
             }
           }
-        }, _callee5, null, [[1, 7]]);
+        }, _callee5, null, [[1, 10]]);
       }))();
     },
     onUnattend: function onUnattend() {
       var _this7 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+        var queue;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
           while (1) {
             switch (_context6.prev = _context6.next) {
@@ -2350,24 +2409,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 4:
+                queue = _context6.sent;
+                _this7.onCallQueue = queue.data.data;
                 _this7.isOnCall = false;
-                _context6.next = 10;
+
+                _this7.getQueues();
+
+                _context6.next = 13;
                 break;
 
-              case 7:
-                _context6.prev = 7;
+              case 10:
+                _context6.prev = 10;
                 _context6.t0 = _context6["catch"](1);
                 alert(_context6.t0.response.data.message);
 
-              case 10:
+              case 13:
                 _this7.isLoading = false;
 
-              case 11:
+              case 14:
               case "end":
                 return _context6.stop();
             }
           }
-        }, _callee6, null, [[1, 7]]);
+        }, _callee6, null, [[1, 10]]);
       }))();
     },
     onTransfer: function onTransfer() {
@@ -39520,6 +39584,12 @@ var render = function() {
                               "button",
                               {
                                 staticClass: "btn btn-info fullwidth mb-2",
+                                attrs: {
+                                  disabled:
+                                    _vm.onCallQueue &&
+                                    _vm.onCallQueue.recall_count >=
+                                      _vm.max_recall
+                                },
                                 on: { click: _vm.onRecall }
                               },
                               [
@@ -39550,6 +39620,12 @@ var render = function() {
                               "button",
                               {
                                 staticClass: "btn btn-secondary fullwidth mb-2",
+                                attrs: {
+                                  disabled:
+                                    _vm.onCallQueue &&
+                                    _vm.onCallQueue.requeue_count >=
+                                      _vm.max_requeue
+                                },
                                 on: { click: _vm.onRequeue }
                               },
                               [
@@ -39580,6 +39656,7 @@ var render = function() {
                               "button",
                               {
                                 staticClass: "btn btn-warning fullwidth mb-2",
+                                attrs: { disabled: !_vm.allow_transfer },
                                 on: { click: _vm.onTransfer }
                               },
                               [

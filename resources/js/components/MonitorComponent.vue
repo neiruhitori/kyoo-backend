@@ -48,6 +48,11 @@
                                         <button
                                             class="btn btn-info fullwidth mb-2"
                                             @click="onRecall"
+                                            :disabled="
+                                                onCallQueue &&
+                                                    onCallQueue.recall_count >=
+                                                        max_recall
+                                            "
                                         >
                                             RECALL
                                         </button>
@@ -64,6 +69,11 @@
                                         <button
                                             class="btn btn-secondary fullwidth mb-2"
                                             @click="onRequeue"
+                                            :disabled="
+                                                onCallQueue &&
+                                                    onCallQueue.requeue_count >=
+                                                        max_requeue
+                                            "
                                         >
                                             REQUEUE
                                         </button>
@@ -80,6 +90,7 @@
                                         <button
                                             class="btn btn-warning fullwidth mb-2"
                                             @click="onTransfer"
+                                            :disabled="!allow_transfer"
                                         >
                                             TRANSFER
                                         </button>
@@ -205,6 +216,20 @@ export default {
     components: {
         Loading
     },
+    props: {
+        max_recall: {
+            type: Number,
+            default: 0
+        },
+        max_requeue: {
+            type: Number,
+            default: 0
+        },
+        allow_transfer: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             isLoading: true,
@@ -212,7 +237,8 @@ export default {
             debounce: null,
             queues: [],
             selected_queue: "",
-            isOnCall: false
+            isOnCall: false,
+            onCallQueue: {}
         };
     },
     mounted() {
@@ -240,11 +266,14 @@ export default {
         async onCall() {
             this.isLoading = true;
             try {
-                await axios.post("/cs/directQueue/onCall", {
+                const queue = await axios.post("/cs/directQueue/onCall", {
                     queue_no: this.selected_queue
                 });
+                this.onCallQueue = queue.data.data;
                 this.isOnCall = true;
+                this.getQueues();
             } catch (error) {
+                this.getQueues();
                 alert(error.response.data.message);
             }
             this.isLoading = false;
@@ -252,10 +281,16 @@ export default {
         async onRecall() {
             this.isLoading = true;
             try {
-                await axios.post("/cs/directQueue/onRecall", {
+                const queue = await axios.post("/cs/directQueue/onRecall", {
                     queue_no: this.selected_queue
                 });
-                this.isOnCall = false;
+                this.onCallQueue = queue.data.data;
+                if (this.onCallQueue.recall_count >= this.max_recall) {
+                    this.isOnCall = false;
+                } else {
+                    this.isOnCall = true;
+                }
+                this.getQueues();
             } catch (error) {
                 alert(error.response.data.message);
             }
@@ -264,10 +299,12 @@ export default {
         async onDone() {
             this.isLoading = true;
             try {
-                await axios.post("/cs/directQueue/onDone", {
+                const queue = await axios.post("/cs/directQueue/onDone", {
                     queue_no: this.selected_queue
                 });
+                this.onCallQueue = queue.data.data;
                 this.isOnCall = false;
+                this.getQueues();
             } catch (error) {
                 alert(error.response.data.message);
             }
@@ -276,10 +313,16 @@ export default {
         async onRequeue() {
             this.isLoading = true;
             try {
-                await axios.post("/cs/directQueue/onRequeue", {
+                const queue = await axios.post("/cs/directQueue/onRequeue", {
                     queue_no: this.selected_queue
                 });
-                this.isOnCall = false;
+                this.onCallQueue = queue.data.data;
+                if (this.onCallQueue.requeue_count >= this.max_requeue) {
+                    this.isOnCall = false;
+                } else {
+                    this.isOnCall = true;
+                }
+                this.getQueues();
             } catch (error) {
                 alert(error.response.data.message);
             }
@@ -288,10 +331,12 @@ export default {
         async onUnattend() {
             this.isLoading = true;
             try {
-                await axios.post("/cs/directQueue/onUnattend", {
+                const queue = await axios.post("/cs/directQueue/onUnattend", {
                     queue_no: this.selected_queue
                 });
+                this.onCallQueue = queue.data.data;
                 this.isOnCall = false;
+                this.getQueues();
             } catch (error) {
                 alert(error.response.data.message);
             }

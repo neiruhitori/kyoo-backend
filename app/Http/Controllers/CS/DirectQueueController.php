@@ -122,15 +122,28 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
+        // check the queue no with created date is today
         $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
                 'message' => 'Queue not found',
-                'data' => $validation->errors()
+                'data' => null
             ], 404);
         }
+        // check if queue recall_count on limit
+        if ($directQueue->recall_count >= Auth::user()->Branch->BranchConfiguration->maximum_recall) {
+            $directQueue->status = 'unattend';
+            $directQueue->done_at = Date('Y-m-d H:m:s');
+            $directQueue->save();
+            return response()->json([
+                'success' => false,
+                'message' => 'Queue recall has on limited',
+                'data' => null
+            ], 400);
+        }
         $directQueue->status = 'call';
+        $directQueue->recall_count = $directQueue->recall_count > 0 ? $directQueue->recall_count + 1 : 0;
         $directQueue->called_at = Date('Y-m-d H:m:s');
         $directQueue->save();
 
@@ -163,9 +176,20 @@ class DirectQueueController extends Controller
                 'data' => $validation->errors()
             ], 404);
         }
-        $directQueue->status = 'call';
-        $directQueue->called_at = Date('Y-m-d H:m:s');
+        // check if queue recall_count on limit
+        if ($directQueue->recall_count >= Auth::user()->Branch->BranchConfiguration->maximum_recall) {
+            $directQueue->status = 'unattend';
+            $directQueue->done_at = Date('Y-m-d H:m:s');
+            $directQueue->save();
+            return response()->json([
+                'success' => false,
+                'message' => 'Queue recall has on limited',
+                'data' => $directQueue
+            ], 400);
+        }
+        $directQueue->status = $directQueue->recall_count + 1 >= Auth::user()->Branch->BranchConfiguration->maximum_recall ? 'unattend' : 'call';
         $directQueue->recall_count = $directQueue->recall_count + 1;
+        $directQueue->called_at = Date('Y-m-d H:m:s');
         $directQueue->save();
 
         return response()->json([
@@ -200,6 +224,7 @@ class DirectQueueController extends Controller
         $directQueue->status = 'requeue';
         $directQueue->called_at = Date('Y-m-d H:m:s');
         $directQueue->recall_count = 0;
+        $directQueue->requeue_count = 0;
         $directQueue->save();
 
         return response()->json([
