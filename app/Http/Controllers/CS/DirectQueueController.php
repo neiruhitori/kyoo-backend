@@ -60,6 +60,8 @@ class DirectQueueController extends Controller
         $input['workstation_id'] = $workstationService->workstation_id;
         $input['service_id'] = $workstationService->service_id;
         $directQueue = DirectQueue::create($input);
+
+        // send event to update Direct Queue Monitor
         event(new DirectQueueEvent());
         $request->session()->flash('success', "Direct Queue Has Been Created, Queue no: {$directQueue->queue_no}");
         return redirect(route('cs.directQueue.create'));
@@ -125,7 +127,7 @@ class DirectQueueController extends Controller
         }
 
         // check the queue no with created date is today
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereNotIn('status', ['unattend', 'done'])->whereDate('created_at', Date('Y-m-d'))->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
