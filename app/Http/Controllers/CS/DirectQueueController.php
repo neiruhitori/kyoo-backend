@@ -21,7 +21,7 @@ class DirectQueueController extends Controller
      */
     public function index(Request $request)
     {
-        $directQueues = DirectQueue::query()->with('Service')->whereDate('created_at', Date('Y-m-d'));
+        $directQueues = DirectQueue::query()->with('Service')->where('vct_id', Auth::id())->whereDate('created_at', Date('Y-m-d'));
         $directQueues->when($request->keyword, function($query) use ($request){
             return $query->where(function($query) use ($request){
                 return $query->where('name', 'ilike', '%'.$request->keyword.'%')->orWhere('queue_no', (int) $request->keyword);
