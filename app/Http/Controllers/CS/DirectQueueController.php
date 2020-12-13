@@ -112,6 +112,11 @@ class DirectQueueController extends Controller
         //
     }
 
+    public function monitor()
+    {
+        return view('cs.directQueue.monitor');
+    }
+
     public function onCall(Request $request)
     {
         $rules = [

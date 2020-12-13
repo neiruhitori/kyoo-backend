@@ -16,17 +16,25 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" href="{{route('cs.directQueue.create')}}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           <i class="fas fa-fw fa-edit"></i>
-          <span>Direct Queue</span></a>
+          <span>Direct Queue</span>
+        </a>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Submenu:</h6>
+            <a class="collapse-item" href="{{route('cs.directQueue.create')}}">Add Queue</a>
+            <a class="collapse-item" href="{{route('cs.directQueue.monitor')}}">Queue Monitor</a>
+          </div>
+        </div>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-list-ul"></i>
           <span>Report</span>
         </a>
-        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Submenu:</h6>
             <a class="collapse-item" href="{{route('cs.report.daily')}}">Daily Report</a>

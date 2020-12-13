@@ -112,9 +112,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     Route::post('appointment/create', 'HomeController@storeAppointment')->name('appointment.store');
 
     // Direct Queue
-    Route::get('directQueue/monitor', function(){
-        return view('cs.directQueue.monitor');
-    });
+    Route::get('directQueue/monitor', 'DirectQueueController@monitor')->name('directQueue.monitor');
     Route::resource('directQueue', 'DirectQueueController');
     Route::post('directQueue/onCall', 'DirectQueueController@onCall');
     Route::post('directQueue/onRecall', 'DirectQueueController@onRecall');
