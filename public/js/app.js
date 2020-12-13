@@ -2369,7 +2369,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 4:
                 queue = _context5.sent;
                 _this6.onCallQueue = queue.data.data;
-                _this6.isOnCall = false;
+
+                if (_this6.onCallQueue.requeue_count >= _this6.max_requeue) {
+                  _this6.isOnCall = false;
+                } else {
+                  _this6.isOnCall = true;
+                }
 
                 _this6.getQueues();
 

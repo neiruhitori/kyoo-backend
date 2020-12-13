@@ -221,10 +221,21 @@ class DirectQueueController extends Controller
                 'data' => $validation->errors()
             ], 404);
         }
-        $directQueue->status = 'requeue';
-        $directQueue->called_at = Date('Y-m-d H:m:s');
+        // check if queue requeue_count on limit
+        if ($directQueue->requeue_count >= Auth::user()->Branch->BranchConfiguration->maximum_requeue_count) {
+            $directQueue->status = 'unattend';
+            $directQueue->done_at = Date('Y-m-d H:m:s');
+            $directQueue->save();
+            return response()->json([
+                'success' => false,
+                'message' => 'Queue requeue has on limited',
+                'data' => $directQueue
+            ], 400);
+        }
+        $directQueue->status = $directQueue->requeue_count + 1 >= Auth::user()->Branch->BranchConfiguration->maximum_requeue_count ? 'unattend' : 'requeue';
+        $directQueue->requeue_count = $directQueue->requeue_count + 1;
         $directQueue->recall_count = 0;
-        $directQueue->requeue_count = 0;
+        $directQueue->called_at = Date('Y-m-d H:m:s');
         $directQueue->save();
 
         return response()->json([
