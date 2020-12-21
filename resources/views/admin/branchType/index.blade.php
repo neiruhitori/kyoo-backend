@@ -29,7 +29,7 @@
                                             <th>Code</th>
                                             <th>Name</th>
                                             <th>Is Premium</th>
-                                            <th>Is Appointment</th>
+                                            <th>Is Appointment Service</th>
                                             <th>Is Direct Queue</th>
                                             <th>Action</th>
                                         </tr>

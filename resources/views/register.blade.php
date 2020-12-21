@@ -64,9 +64,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="queue_type">Queue Type (*)</label>
+                                        <br>
+                                        <small>explanation otw</small>
                                         <select name="queue_type" id="queue_type" class="form-control @error('queue_type') is-invalid @enderror" required>
+                                            <option value="direct_queue">Direct Queue (Go Show)</option>
                                             <option value="appointment_queue">Appointment Queue</option>
-                                            <option value="direct_queue">Direct Queue</option>
                                         </select>
                                         @include('layouts.inputError', ['errorName' => 'industry_category_id'])
                                     </div>
