@@ -10,6 +10,9 @@ use App\User;
 use App\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Branch\Registration\Verified;
+use App\Mail\Branch\Registration\Rejected;
 use Auth;
 
 class RegistrationBranchController extends Controller
@@ -94,6 +97,9 @@ class RegistrationBranchController extends Controller
             'branch_id' => $branch->id
         ]);
 
+        // sending email
+        Mail::to($branch->email)->send(new Verified($branch));
+
         // duplicate to users table
         $input['password'] = Crypt::decryptString($registrationBranch->makeVisible('attribute')->password);
         $input['role'] = 'admin_branch';
@@ -116,6 +122,8 @@ class RegistrationBranchController extends Controller
     public function destroy(Request $request, RegistrationBranch $registrationBranch)
     {
         $registrationBranch->delete();
+        // sending email
+        Mail::to($registrationBranch->email)->send(new Rejected($registrationBranch));
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Remove Branch Registration'

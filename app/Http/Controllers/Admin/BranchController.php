@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Countries;
 use App\Models\Province;
 use App\Mail\RegisteredBranchMail;
+use App\Mail\Branch\Registration\Verified;
 use Illuminate\Support\Facades\Mail;
 
 use Storage;
@@ -221,6 +222,9 @@ class BranchController extends Controller
           $branch->status = $request->status;
           $branch->save();
           if ($request->status == 'verified') {
+              // sending email
+              Mail::to($branch->email)->send(new Verified($branch));
+
               Log::create([
                     'user_id' => Auth::id(),
                     'description' => 'Success Verify Branch'
