@@ -15,7 +15,7 @@ class CreateDirectQueuesTable extends Migration
     {
         Schema::create('direct_queues', function (Blueprint $table) {
             $table->id();
-            $table->integer('queue_no')->unsigned();
+            $table->string('queue_no', 10);
             $table->foreignId('user_id')->nullable();
             $table->foreignId('vct_id');
             $table->foreignId('workstation_id');

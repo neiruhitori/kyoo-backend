@@ -55,10 +55,11 @@ class DirectQueueController extends Controller
      */
     public function store(StoreDirectQueue $request)
     {
-        $lastDirectQueue = DirectQueue::whereDate('created_at', Date('Y-m-d'))->latest('created_at')->first();
         $workstationService = WorkstationService::find($request->workstation_service_id);
+        $lastDirectQueue = DirectQueue::whereServiceId($workstationService->service_id)->whereDate('created_at', Date('Y-m-d'))->count();
+
         $input = $request->all();
-        $input['queue_no'] = $lastDirectQueue ? $lastDirectQueue->queue_no + 1 : 1;
+        $input['queue_no'] = $workstationService->service_id . sprintf('%04s', $lastDirectQueue + 1);
         $input['workstation_id'] = $workstationService->workstation_id;
         $input['service_id'] = $workstationService->service_id;
         $directQueue = DirectQueue::create($input);
