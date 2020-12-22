@@ -17,6 +17,6 @@ class Workstation extends Model
 
     public function WorkstationService()
     {
-        return $this->hasMany('App\WorkstationService');
+        return $this->hasMany('App\WorkstationService')->orderBy('priority', 'DESC');
     }
 }

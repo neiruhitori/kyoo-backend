@@ -14,6 +14,7 @@ use App\Events\DirectQueue as DirectQueueEvent;
 
 class DirectQueueController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *
@@ -21,18 +22,17 @@ class DirectQueueController extends Controller
      */
     public function index(Request $request)
     {
-        $directQueues = DirectQueue::query()->with(['Service', 'Workstation.WorkstationService' => function($query){
-            return $query->orderBy('priority', 'DESC');
-        }])->where('vct_id', Auth::id())->whereDate('created_at', Date('Y-m-d'));
+        $directQueues = DirectQueue::query()->with(['Service', 'Workstation.WorkstationService'])->where('vct_id', Auth::id())->whereDate('created_at', Date('Y-m-d'));
         $directQueues->when($request->keyword, function($query) use ($request){
             return $query->where(function($query) use ($request){
                 return $query->where('name', 'ilike', '%'.$request->keyword.'%')->orWhere('queue_no', (int) $request->keyword);
             });
         });
+
         return response()->json([
             'success' => true,
             'message' => 'get all direct queues by today',
-            'data' => $directQueues->latest()->get()
+            'data' => $directQueues->get()
         ]);
     }
 
