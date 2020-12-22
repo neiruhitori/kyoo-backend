@@ -16,7 +16,7 @@
                                 @csrf
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
+                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: 'Service 1'}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
                                 <div class="form-group">

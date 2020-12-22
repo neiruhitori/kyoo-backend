@@ -13,7 +13,7 @@
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
-                    @if (count(Auth::user()->Branch->CS) < 1)
+                    @if (Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->CS) < 1)
                         <div class="row">
                             <div class="col-md-12 text-right">
                                 <a href="{{route('adminBranch.user.create')}}" class="btn btn-primary"">
