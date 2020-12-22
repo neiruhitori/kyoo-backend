@@ -72,8 +72,8 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
         Route::put('branch', 'BranchController@update')->name('branch.update');
 
         // Branch Configuration routes
-        Route::get('branchConfiguration', 'BranchConfigurationController@edit')->name('branchConfiguration.edit');
-        Route::put('branchConfiguration', 'BranchConfigurationController@update')->name('branchConfiguration.update');
+        Route::get('branchConfiguration', 'BranchConfigurationController@edit')->name('branchConfiguration.edit')->middleware('checkDirectQueue');
+        Route::put('branchConfiguration', 'BranchConfigurationController@update')->name('branchConfiguration.update')->middleware('checkDirectQueue');
 
         // Department routes
         Route::resource('department', 'DepartmentController');

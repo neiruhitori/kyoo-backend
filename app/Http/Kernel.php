@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'checkAdminBranch' => \App\Http\Middleware\CheckAdminBranch::class,
         'checkAdminBranchPassword' => \App\Http\Middleware\CheckAdminBranchPassword::class,
         'checkCS' => \App\Http\Middleware\CheckCS::class,
+        'checkDirectQueue' => \App\Http\Middleware\CheckDirectQueue::class,
     ];
 }
