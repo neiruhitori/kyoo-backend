@@ -17,7 +17,7 @@
                                 <input type="hidden" name="branch_id" value="{{Auth::user()->branch_id}}">
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
+                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: 'Department 1'}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
                                 <button class="btn btn-primary">Insert</button>

@@ -13,8 +13,7 @@
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
-                    {{-- for MVP only one department can be created --}}
-                    @if (count($departments) < 1)
+                    @if (Auth::user()->Branch->BranchType->is_premium || count($departments) < 1)
                         <div class="row">
                             <div class="col-md-12 text-right">
                                 <a href="{{route('adminBranch.department.create')}}" class="btn btn-primary"">
@@ -38,17 +37,16 @@
                                             <tr>
                                                 <td>{{$department->name}}</td>
                                                 <td>
-                                                    {{-- for MVP not able to edit --}}
-                                                    {{-- <a href="{{route('adminBranch.department.edit', $department->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit department">
+                                                    <a href="{{route('adminBranch.department.edit', $department->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit department">
                                                         <i class="fas fa-fw fa-edit"></i>
-                                                    </a> --}}
-                                                    <form action="{{route('adminBranch.department.destroy', $department->id)}}" method="post" style="display: inline">
+                                                    </a>
+                                                    {{-- <form action="{{route('adminBranch.department.destroy', $department->id)}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove department">
                                                             <i class="fas fa-fw fa-trash"></i>
                                                         </button>
-                                                    </form>
+                                                    </form> --}}
                                                 </td>
                                             </tr>
                                         @endforeach

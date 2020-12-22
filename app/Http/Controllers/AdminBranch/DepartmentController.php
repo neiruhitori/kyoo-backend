@@ -30,10 +30,10 @@ class DepartmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         // for MVP
-        if (count(Auth::user()->Branch->Departments) > 0) {
+        if (!Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->Departments) > 0) {
             $request->session()->flash('warning', 'Only one department can be created!');
             return redirect(route('adminBranch.department.index'));
         }
@@ -49,7 +49,7 @@ class DepartmentController extends Controller
     public function store(StoreDepartment $request)
     {
         // for MVP
-        if (count(Auth::user()->Branch->Departments) > 0) {
+        if (!Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->Departments) > 0) {
             $request->session()->flash('warning', 'Only one department can be created!');
             return redirect(route('adminBranch.department.index'));
         }
@@ -125,6 +125,9 @@ class DepartmentController extends Controller
      */
     public function destroy(Request $request, Department $department)
     {
+        // in MVP, can not destroy
+        return redirect(route('adminBranch.department.index'));
+        
         // gate
         if ($department->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
