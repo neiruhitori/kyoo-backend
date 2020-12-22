@@ -33,7 +33,7 @@ class DepartmentController extends Controller
     public function create(Request $request)
     {
         // for MVP
-        if (!Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->Departments) > 0) {
+        if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->Departments) > 0) {
             $request->session()->flash('warning', 'Only one department can be created!');
             return redirect(route('adminBranch.department.index'));
         }
@@ -49,7 +49,7 @@ class DepartmentController extends Controller
     public function store(StoreDepartment $request)
     {
         // for MVP
-        if (!Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->Departments) > 0) {
+        if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->Departments) > 0) {
             $request->session()->flash('warning', 'Only one department can be created!');
             return redirect(route('adminBranch.department.index'));
         }

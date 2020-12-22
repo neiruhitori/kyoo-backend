@@ -34,7 +34,7 @@ class WorkstationController extends Controller
     public function create(Request $request)
     {
         // for MVP
-        if (!Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->Workstations) > 0) {
+        if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->Workstations) > 0) {
             $request->session()->flash('warning', 'Only one workstations can be created!');
             return redirect(route('adminBranch.workstation.index'));
         }
@@ -51,7 +51,7 @@ class WorkstationController extends Controller
     public function store(StoreWorkstation $request)
     {
         // for MVP
-        if (!Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->Workstations) > 0) {
+        if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->Workstations) > 0) {
             $request->session()->flash('warning', 'Only one workstations can be created!');
             return redirect(route('adminBranch.workstation.index'));
         }
