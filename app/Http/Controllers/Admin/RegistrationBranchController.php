@@ -92,9 +92,13 @@ class RegistrationBranchController extends Controller
         // duplicate to branches table
         $input['mobile_phone'] = $registrationBranch->phone;
         $branch = Branch::create($input);
+        
         // create branch configuration
         BranchConfiguration::create([
-            'branch_id' => $branch->id
+            'branch_id' => $branch->id,
+            'maximum_recall' => 2,
+            'maximum_requeue_count' => 2,
+            'allow_transfer' => false
         ]);
 
         // sending email

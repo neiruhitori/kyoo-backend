@@ -89,7 +89,10 @@ class BranchController extends Controller
 
         // create branch configuration
         BranchConfiguration::create([
-            'branch_id' => $branch->id
+            'branch_id' => $branch->id,
+            'maximum_recall' => 2,
+            'maximum_requeue_count' => 2,
+            'allow_transfer' => false
         ]);
 
         // create admin branch
