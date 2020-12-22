@@ -32,6 +32,9 @@ class HomeController extends Controller
 
     public function index()
     {
+        if (!Auth::user()->Branch->BranchType->is_appointment) {
+            return redirect(route('cs.directQueue.monitor'));
+        }
         $dateNow = date('Y-m-d');
         
         $appointments = Appointment::whereHas('Slot.Service', function($query) {

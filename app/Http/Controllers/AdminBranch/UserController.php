@@ -30,10 +30,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        if (!Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->CS) > 0) {
-            $request->session()->flash('error', 'You only able insert one account!');
+        if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->CS) > 0) {
+            $request->session()->flash('warning', 'You only able insert one account!');
             return redirect(route('adminBranch.user.index'));
         }
         $workstations = Workstation::whereHas('Department', function($query){
@@ -50,7 +50,7 @@ class UserController extends Controller
      */
     public function store(StoreUser $request)
     {
-        if (!Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->CS) > 0) {
+        if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->CS) > 0) {
             $request->session()->flash('error', 'You only able insert one account!');
             return redirect(route('adminBranch.user.index'));
         }

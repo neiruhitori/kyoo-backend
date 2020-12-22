@@ -24,7 +24,6 @@
                         <div class="col-md-12 form-group">
                             <label for="workstation_service_id">Services</label>
                             <select name="workstation_service_id" id="workstation_service_id" class="form-control">
-                                <option value="" selected disabled>- Choose Services -</option>
                                 @foreach ($services as $service)
                                     <option value="{{ $service->id }}">{{ $service->Service->name }}</option>
                                 @endforeach

@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 
-class CheckDirectQueue
+class CheckAppointmentQueue
 {
     /**
      * Handle an incoming request.
@@ -16,11 +16,7 @@ class CheckDirectQueue
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->role == 'admin_branch') {
-            $request->session()->flash('warning', 'Only Direct Queue Branch can access this page!');
-            return redirect(route('adminBranch.home'));
-        }
-        if (!Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->role == 'cs') {
+        if (!Auth::user()->Branch->BranchType->is_appointment) {
             $request->session()->flash('warning', 'Only Direct Queue Branch can access this page!');
             return redirect(route('cs.home'));
         }

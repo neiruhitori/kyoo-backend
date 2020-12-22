@@ -104,21 +104,21 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
 
 Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {
     Route::get('home', 'HomeController@index')->name('home');
-    Route::put('appointment/{appointment}', 'HomeController@updateAppointment')->name('appointment.update');
+    Route::put('appointment/{appointment}', 'HomeController@updateAppointment')->name('appointment.update')->middleware('checkAppointmentQueue');
     Route::get('mini-report', 'HomeController@miniReport')->name('miniReport');
 
     // Appointment
-    Route::get('appointment/create', 'HomeController@createAppointment')->name('appointment.create');
-    Route::post('appointment/create', 'HomeController@storeAppointment')->name('appointment.store');
+    Route::get('appointment/create', 'HomeController@createAppointment')->name('appointment.create')->middleware('checkAppointmentQueue');
+    Route::post('appointment/create', 'HomeController@storeAppointment')->name('appointment.store')->middleware('checkAppointmentQueue');
 
     // Direct Queue
-    Route::get('directQueue/monitor', 'DirectQueueController@monitor')->name('directQueue.monitor');
-    Route::resource('directQueue', 'DirectQueueController');
-    Route::post('directQueue/onCall', 'DirectQueueController@onCall');
-    Route::post('directQueue/onRecall', 'DirectQueueController@onRecall');
-    Route::post('directQueue/onRequeue', 'DirectQueueController@onRequeue');
-    Route::post('directQueue/onDone', 'DirectQueueController@onDone');
-    Route::post('directQueue/onUnattend', 'DirectQueueController@onUnattend');
+    Route::get('directQueue/monitor', 'DirectQueueController@monitor')->name('directQueue.monitor')->middleware('checkDirectQueue');
+    Route::resource('directQueue', 'DirectQueueController')->middleware('checkDirectQueue');
+    Route::post('directQueue/onCall', 'DirectQueueController@onCall')->middleware('checkDirectQueue');
+    Route::post('directQueue/onRecall', 'DirectQueueController@onRecall')->middleware('checkDirectQueue');
+    Route::post('directQueue/onRequeue', 'DirectQueueController@onRequeue')->middleware('checkDirectQueue');
+    Route::post('directQueue/onDone', 'DirectQueueController@onDone')->middleware('checkDirectQueue');
+    Route::post('directQueue/onUnattend', 'DirectQueueController@onUnattend')->middleware('checkDirectQueue');
 
     // Report routes
     Route::get('report/daily', 'ReportController@daily')->name('report.daily');
