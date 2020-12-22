@@ -2143,6 +2143,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // Import component
  // Import stylesheet
 
@@ -2231,6 +2240,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     selectQueue: function selectQueue(queue_no) {
       this.selected_queue = queue_no;
+      this.onCall();
     },
     onCall: function onCall() {
       var _this4 = this;
@@ -45643,6 +45653,8 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
+            _vm._m(1),
+            _vm._v(" "),
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-md-4" }, [
                 _c("b", { staticClass: "text-primary" }, [
@@ -45824,7 +45836,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
                   _c("table", { staticClass: "table" }, [
-                    _vm._m(1),
+                    _vm._m(2),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -45845,7 +45857,7 @@ var render = function() {
                                 [
                                   _c("td", [_vm._v(_vm._s(queue.queue_no))]),
                                   _vm._v(" "),
-                                  _c("td", [_vm._v(_vm._s(queue.name))]),
+                                  _c("td", [_vm._v(_vm._s(queue.name || "-"))]),
                                   _vm._v(" "),
                                   _c("td", [
                                     _vm._v(
@@ -45944,7 +45956,7 @@ var render = function() {
                                 ]
                               )
                             })
-                          : _c("tr", [_vm._m(2)])
+                          : _c("tr", [_vm._m(3)])
                       ],
                       2
                     )
@@ -45967,6 +45979,23 @@ var staticRenderFns = [
     return _c("div", { staticClass: "card-header py-3" }, [
       _c("h6", { staticClass: "m-0 font-weight-bold text-primary" }, [
         _vm._v("\n                    Direct Queue Monitor\n                ")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-12 text-right" }, [
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-primary",
+            attrs: { href: "/cs/directQueue/create" }
+          },
+          [_vm._v("Create Direct Queue")]
+        )
       ])
     ])
   },

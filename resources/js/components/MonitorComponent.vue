@@ -16,6 +16,15 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        <div class="col-md-12 text-right">
+                            <a
+                                href="/cs/directQueue/create"
+                                class="btn btn-primary"
+                                >Create Direct Queue</a
+                            >
+                        </div>
+                    </div>
+                    <div class="row">
                         <!-- START DIRECT QUEUE CALLER -->
                         <div class="col-md-4">
                             <b class="text-primary">Direct Queue Caller</b>
@@ -142,7 +151,7 @@
                                                 class="pointer"
                                             >
                                                 <td>{{ queue.queue_no }}</td>
-                                                <td>{{ queue.name }}</td>
+                                                <td>{{ queue.name || "-" }}</td>
                                                 <td>
                                                     {{ queue.service.name }}
                                                 </td>
@@ -279,6 +288,7 @@ export default {
         },
         selectQueue(queue_no) {
             this.selected_queue = queue_no;
+            this.onCall();
         },
         async onCall() {
             this.isLoading = true;

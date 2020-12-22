@@ -20,7 +20,7 @@ class CreateDirectQueuesTable extends Migration
             $table->foreignId('vct_id');
             $table->foreignId('workstation_id');
             $table->foreignId('service_id');
-            $table->string('name', 100);
+            $table->string('name', 100)->nullable();
             $table->string('phone', 20)->nullable();
             $table->string('direct_queue_channel', 100)->default('web')->comment('where the direct queue created from (web / apps)');
             $table->string('status', 20)->default('waiting')->comment('statuses are waiting, call, requeue, unattend, done');

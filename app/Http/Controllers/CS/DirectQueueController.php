@@ -21,7 +21,9 @@ class DirectQueueController extends Controller
      */
     public function index(Request $request)
     {
-        $directQueues = DirectQueue::query()->with('Service')->where('vct_id', Auth::id())->whereDate('created_at', Date('Y-m-d'));
+        $directQueues = DirectQueue::query()->with(['Service', 'Workstation.WorkstationService' => function($query){
+            return $query->orderBy('priority', 'DESC');
+        }])->where('vct_id', Auth::id())->whereDate('created_at', Date('Y-m-d'));
         $directQueues->when($request->keyword, function($query) use ($request){
             return $query->where(function($query) use ($request){
                 return $query->where('name', 'ilike', '%'.$request->keyword.'%')->orWhere('queue_no', (int) $request->keyword);
@@ -245,6 +247,7 @@ class DirectQueueController extends Controller
         $directQueue->requeue_count = $directQueue->requeue_count + 1;
         $directQueue->recall_count = 0;
         $directQueue->called_at = Date('Y-m-d H:m:s');
+        $directQueue->queue_no = DirectQueue::where('vct_id', Auth::id())->where('created_at', Date('Y-m-d'))->count() + 1;
         $directQueue->save();
 
         return response()->json([

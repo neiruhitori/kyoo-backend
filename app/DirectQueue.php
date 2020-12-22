@@ -12,4 +12,9 @@ class DirectQueue extends Model
     {
         return $this->belongsTo('App\Service');
     }
+
+    public function Workstation()
+    {
+        return $this->belongsTo('App\Workstation');
+    }
 }

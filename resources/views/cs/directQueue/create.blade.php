@@ -31,7 +31,7 @@
                         </div>
                         <div class="col-md-12 form-group">
                             <label for="name">Name</label>
-                            <input type="text" name="name" id="" class="form-control" value="{{ old('name') }}" required>
+                            <input type="text" name="name" id="" class="form-control" value="{{ old('name') }}">
                         </div>
                         <div class="col-md-12 form-group">
                             <label for="phone">Phone Number</label>

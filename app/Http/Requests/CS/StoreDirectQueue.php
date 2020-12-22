@@ -27,7 +27,7 @@ class StoreDirectQueue extends FormRequest
         return [
             'vct_id' => 'required|exists:users,id',
             'workstation_service_id' => 'required|exists:workstation_services,id',
-            'name' => 'required|string|max:100',
+            'name' => 'nullable|string|max:100',
             'phone' => 'nullable'
         ];
     }
