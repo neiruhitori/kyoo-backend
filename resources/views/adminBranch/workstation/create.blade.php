@@ -17,7 +17,6 @@
                                 <div class="form-group">
                                     <label for="department_id">Department</label>
                                     <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror">
-                                        <option value="">- Select Department -</option>
                                         @foreach ($departments as $department)
                                             <option value="{{$department->id}}">{{$department->name}}</option>
                                         @endforeach
@@ -31,7 +30,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="label">Label</label>
-                                    <input name="label" type="text" class="form-control @error('label') is-invalid @enderror" value="{{old('label')}}" required>
+                                    <input name="label" type="text" class="form-control @error('label') is-invalid @enderror" value="{{old('label') ?: 'Counter 1'}}" required>
                                     @include('layouts.inputError', ['errorName' => 'label'])
                                 </div>
                                 <div class="form-group">

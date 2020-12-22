@@ -77,4 +77,9 @@ class Branch extends Model
     {
         return $this->hasMany('App\Department');
     }
+
+    public function Workstations()
+    {
+        return $this->hasManyThrough('App\Workstation', 'App\Department');
+    }
 }

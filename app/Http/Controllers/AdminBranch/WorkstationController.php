@@ -31,8 +31,13 @@ class WorkstationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        // for MVP
+        if (!Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->Workstations) > 0) {
+            $request->session()->flash('warning', 'Only one workstations can be created!');
+            return redirect(route('adminBranch.workstation.index'));
+        }
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         return view('adminBranch.workstation.create')->withDepartments($departments);
     }
@@ -45,6 +50,11 @@ class WorkstationController extends Controller
      */
     public function store(StoreWorkstation $request)
     {
+        // for MVP
+        if (!Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->Workstations) > 0) {
+            $request->session()->flash('warning', 'Only one workstations can be created!');
+            return redirect(route('adminBranch.workstation.index'));
+        }
         Workstation::create($request->all());
         Log::create([
             'user_id' => Auth::id(),
