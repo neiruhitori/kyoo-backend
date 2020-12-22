@@ -6,15 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class DirectQueue extends Model
 {
-    protected $fillable = ['queue_no', 'user_id', 'vct_id', 'workstation_id', 'service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count'];
+    protected $fillable = ['queue_no', 'user_id', 'vct_id', 'workstation_service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count'];
 
-    public function Service()
+    public function WorkstationService()
     {
-        return $this->belongsTo('App\Service');
-    }
-
-    public function Workstation()
-    {
-        return $this->belongsTo('App\Workstation');
+        return $this->belongsTo('App\WorkstationService');
     }
 }

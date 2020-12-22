@@ -22,7 +22,9 @@ class DirectQueueController extends Controller
      */
     public function index(Request $request)
     {
-        $directQueues = DirectQueue::query()->with(['Service', 'Workstation.WorkstationService'])->where('vct_id', Auth::id())->whereDate('created_at', Date('Y-m-d'));
+        $directQueues = DirectQueue::query()->join('workstation_services', 'workstation_services.id', '=', 'direct_queues.workstation_service_id')->with(['WorkstationService.Service'])->where('vct_id', Auth::id())->whereDate('direct_queues.created_at', Date('Y-m-d'))
+                        ->orderBy('workstation_services.priority', 'DESC')->orderBy('direct_queues.created_at', 'desc');
+                        
         $directQueues->when($request->keyword, function($query) use ($request){
             return $query->where(function($query) use ($request){
                 return $query->where('name', 'ilike', '%'.$request->keyword.'%')->orWhere('queue_no', (int) $request->keyword);
@@ -56,12 +58,10 @@ class DirectQueueController extends Controller
     public function store(StoreDirectQueue $request)
     {
         $workstationService = WorkstationService::find($request->workstation_service_id);
-        $lastDirectQueue = DirectQueue::whereServiceId($workstationService->service_id)->whereDate('created_at', Date('Y-m-d'))->count();
+        $lastDirectQueue = DirectQueue::whereWorkstationServiceId($workstationService->id)->whereDate('created_at', Date('Y-m-d'))->count();
 
         $input = $request->all();
         $input['queue_no'] = $workstationService->service_id . sprintf('%04s', $lastDirectQueue + 1);
-        $input['workstation_id'] = $workstationService->workstation_id;
-        $input['service_id'] = $workstationService->service_id;
         $directQueue = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor

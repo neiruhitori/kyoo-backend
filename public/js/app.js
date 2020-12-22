@@ -2152,6 +2152,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
 // Import component
  // Import stylesheet
 
@@ -45862,7 +45866,9 @@ var render = function() {
                                   _c("td", [
                                     _vm._v(
                                       "\n                                                " +
-                                        _vm._s(queue.service.name) +
+                                        _vm._s(
+                                          queue.workstation_service.service.name
+                                        ) +
                                         "\n                                            "
                                     )
                                   ]),

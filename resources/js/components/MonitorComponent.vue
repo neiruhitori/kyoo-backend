@@ -153,7 +153,11 @@
                                                 <td>{{ queue.queue_no }}</td>
                                                 <td>{{ queue.name || "-" }}</td>
                                                 <td>
-                                                    {{ queue.service.name }}
+                                                    {{
+                                                        queue
+                                                            .workstation_service
+                                                            .service.name
+                                                    }}
                                                 </td>
                                                 <td>
                                                     <span
