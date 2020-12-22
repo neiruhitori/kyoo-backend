@@ -13,13 +13,15 @@
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
-                    <div class="row">
-                        <div class="col-md-12 text-right">
-                            <a href="{{route('adminBranch.workstation.workstationService.create', $workstation->id)}}" class="btn btn-primary"">
-                                Insert Workstation Service
-                            </a>
+                    @if (Auth::user()->Branch->BranchType->is_premium || count($workstation->WorkstationService) < 1)
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <a href="{{route('adminBranch.workstation.workstationService.create', $workstation->id)}}" class="btn btn-primary"">
+                                    Insert Workstation Service
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">

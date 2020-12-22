@@ -18,7 +18,6 @@
                                 <div class="form-group">
                                     <label for="service_id">Service</label>
                                     <select name="service_id" id="service_id" class="form-control @error('service_id') is-invalid @enderror">
-                                        <option value="">- Select Service -</option>
                                         @foreach ($services as $service)
                                             <option value="{{$service->id}}">{{$service->name}}</option>
                                         @endforeach
@@ -28,7 +27,6 @@
                                 <div class="form-group">
                                     <label for="priority">Priority</label>
                                     <select name="priority" id="priority" class="form-control @error('priority') is-invalid @enderror">
-                                        <option value="">- Select Priority -</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>

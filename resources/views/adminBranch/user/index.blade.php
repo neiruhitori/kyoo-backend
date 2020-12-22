@@ -40,7 +40,7 @@
                                         @foreach (Auth::user()->Branch->CS as $user)
                                             <tr>
                                                 <td>{{$user->id}}</td>
-                                                <td>{{$user->WorkstationVct->Workstation->name}}</td>
+                                                <td>{{$user->WorkstationVct && $user->WorkstationVct->Workstation ? $user->WorkstationVct->Workstation->name : '-'}}</td>
                                                 <td>{{$user->username}}</td>
                                                 <td>Counter</td>
                                                 <td>
