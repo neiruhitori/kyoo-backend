@@ -143,8 +143,8 @@
                                     <tbody>
                                         <template v-if="queues.length > 0">
                                             <tr
-                                                v-for="queue in queues"
-                                                :key="queue.id"
+                                                v-for="(queue, index) in queues"
+                                                :key="index"
                                                 @click="
                                                     selectQueue(queue.queue_no)
                                                 "
@@ -296,7 +296,6 @@ export default {
             const selected_queue = this.queues.filter(
                 queue => queue.queue_no === this.selected_queue
             );
-            console.log(selected_queue);
             if (
                 selected_queue[0]?.status != "waiting" &&
                 selected_queue[0]?.status != "call" &&

@@ -2258,51 +2258,50 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 selected_queue = _this4.queues.filter(function (queue) {
                   return queue.queue_no === _this4.selected_queue;
                 });
-                console.log(selected_queue);
 
                 if (!(((_selected_queue$ = selected_queue[0]) === null || _selected_queue$ === void 0 ? void 0 : _selected_queue$.status) != "waiting" && ((_selected_queue$2 = selected_queue[0]) === null || _selected_queue$2 === void 0 ? void 0 : _selected_queue$2.status) != "call" && ((_selected_queue$3 = selected_queue[0]) === null || _selected_queue$3 === void 0 ? void 0 : _selected_queue$3.status) != "requeue")) {
-                  _context2.next = 5;
+                  _context2.next = 4;
                   break;
                 }
 
                 alert("Queue status incorrect");
                 return _context2.abrupt("return");
 
-              case 5:
+              case 4:
                 _this4.isLoading = true;
-                _context2.prev = 6;
-                _context2.next = 9;
+                _context2.prev = 5;
+                _context2.next = 8;
                 return axios.post("/cs/directQueue/onCall", {
                   queue_no: _this4.selected_queue
                 });
 
-              case 9:
+              case 8:
                 queue = _context2.sent;
                 _this4.onCallQueue = queue.data.data;
                 _this4.isOnCall = true;
 
                 _this4.getQueues();
 
-                _context2.next = 19;
+                _context2.next = 18;
                 break;
 
-              case 15:
-                _context2.prev = 15;
-                _context2.t0 = _context2["catch"](6);
+              case 14:
+                _context2.prev = 14;
+                _context2.t0 = _context2["catch"](5);
 
                 _this4.getQueues();
 
                 alert(_context2.t0.response.data.message);
 
-              case 19:
+              case 18:
                 _this4.isLoading = false;
 
-              case 20:
+              case 19:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[6, 15]]);
+        }, _callee2, null, [[5, 14]]);
       }))();
     },
     onRecall: function onRecall() {
@@ -45860,11 +45859,11 @@ var render = function() {
                       "tbody",
                       [
                         _vm.queues.length > 0
-                          ? _vm._l(_vm.queues, function(queue) {
+                          ? _vm._l(_vm.queues, function(queue, index) {
                               return _c(
                                 "tr",
                                 {
-                                  key: queue.id,
+                                  key: index,
                                   staticClass: "pointer",
                                   on: {
                                     click: function($event) {
