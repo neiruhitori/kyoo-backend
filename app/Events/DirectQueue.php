@@ -23,9 +23,9 @@ class DirectQueue implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($directQueue)
     {
-        $directQueues = DirectQueueModel::with('WorkstationService.Service')->where('vct_id', Auth::id())->whereDate('created_at', Date('Y-m-d'))->latest()->get();
+        $directQueues = $directQueue;
         $this->directQueues = [
             'success' => true,
             'message' => 'realtime direct queue',

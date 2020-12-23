@@ -71,7 +71,8 @@ class DirectQueueController extends Controller
         $directQueue = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor
-        event(new DirectQueueEvent());
+        event(new DirectQueueEvent($directQueue));
+
         $request->session()->flash('success', "Direct Queue Has Been Created, Queue no: {$directQueue->queue_no}");
         return redirect(route('cs.directQueue.create'));
     }
@@ -126,6 +127,18 @@ class DirectQueueController extends Controller
         return view('cs.directQueue.monitor');
     }
 
+    private function checkPreviousQueue($queueNo)
+    {
+        $queues = $this->InitQuery()->get()->toArray();
+        $arrayIndex = array_search($queueNo, array_column($queues, 'queue_no'));
+        if ($arrayIndex > 0) {
+            if ($queues[$arrayIndex - 1]['status'] != 'done' && $queues[$arrayIndex - 1]['status'] != 'unattend') {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function onCall(Request $request)
     {
         $rules = [
@@ -149,6 +162,16 @@ class DirectQueueController extends Controller
                 'data' => null
             ], 404);
         }
+
+        // check queue can called if previous queue done
+        if (!$this->checkPreviousQueue($request->queue_no)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Previous queue not finished',
+                'data' => null
+            ], 400);
+        }
+
         // check if queue recall_count on limit
         if ($directQueue->recall_count >= Auth::user()->Branch->BranchConfiguration->maximum_recall) {
             $directQueue->status = 'unattend';
@@ -205,6 +228,16 @@ class DirectQueueController extends Controller
                 'data' => $directQueue
             ], 400);
         }
+
+        // check queue can called if previous queue done
+        if (!$this->checkPreviousQueue($request->queue_no)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Previous queue not finished',
+                'data' => null
+            ], 400);
+        }
+
         $directQueue->status = $directQueue->recall_count + 1 >= Auth::user()->Branch->BranchConfiguration->maximum_recall ? 'unattend' : 'call';
         $directQueue->recall_count = $directQueue->recall_count + 1;
         $directQueue->called_at = Date('Y-m-d H:m:s');
