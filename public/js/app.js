@@ -2200,9 +2200,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var _this = this;
 
     Echo["private"]("event_direct_queue.".concat(this.auth.id)).listen("DirectQueue", function (directQueues) {
-      _this.loading = true;
-      _this.queues = directQueues.directQueues.data;
-      _this.loading = false;
+      _this.getQueues();
     });
   },
   methods: {

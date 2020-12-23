@@ -15,6 +15,13 @@ use App\Events\DirectQueue as DirectQueueEvent;
 class DirectQueueController extends Controller
 {
     
+    private function InitQuery()
+    {
+        return DirectQueue::query()->join('workstation_services', 'workstation_services.id', '=', 'direct_queues.workstation_service_id')
+                    ->with(['WorkstationService.Service'])->where('vct_id', Auth::id())->whereDate('direct_queues.created_at', Date('Y-m-d'))
+                    ->orderBy('workstation_services.priority', 'DESC')->orderBy('direct_queues.created_at', 'ASC');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -22,9 +29,8 @@ class DirectQueueController extends Controller
      */
     public function index(Request $request)
     {
-        $directQueues = DirectQueue::query()->join('workstation_services', 'workstation_services.id', '=', 'direct_queues.workstation_service_id')->with(['WorkstationService.Service'])->where('vct_id', Auth::id())->whereDate('direct_queues.created_at', Date('Y-m-d'))
-                        ->orderBy('workstation_services.priority', 'DESC')->orderBy('direct_queues.created_at', 'desc');
-                        
+        $directQueues = $this->InitQuery();
+
         $directQueues->when($request->keyword, function($query) use ($request){
             return $query->where(function($query) use ($request){
                 return $query->where('name', 'ilike', '%'.$request->keyword.'%')->orWhere('queue_no', (int) $request->keyword);

@@ -268,9 +268,7 @@ export default {
         Echo.private(`event_direct_queue.${this.auth.id}`).listen(
             "DirectQueue",
             directQueues => {
-                this.loading = true;
-                this.queues = directQueues.directQueues.data;
-                this.loading = false;
+                this.getQueues();
             }
         );
     },
