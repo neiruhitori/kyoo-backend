@@ -98,7 +98,8 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
         Route::resource('user', 'UserController');
 
         // Report routes
-        Route::get('report/daily', 'ReportController@daily')->name('report.daily');
+        Route::get('report/daily', 'ReportController@daily')->name('report.daily')->middleware('checkAppointmentQueue');
+        Route::get('report/directQueue/daily', 'ReportController@directQueueDaily')->name('report.directQueue.daily')->middleware('checkDirectQueue');
     });
 });
 
