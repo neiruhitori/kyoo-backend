@@ -293,6 +293,18 @@ export default {
             this.onCall();
         },
         async onCall() {
+            const selected_queue = this.queues.filter(
+                queue => queue.queue_no === this.selected_queue
+            );
+            console.log(selected_queue);
+            if (
+                selected_queue[0]?.status != "waiting" &&
+                selected_queue[0]?.status != "call" &&
+                selected_queue[0]?.status != "requeue"
+            ) {
+                alert("Queue status incorrect");
+                return;
+            }
             this.isLoading = true;
             try {
                 const queue = await axios.post("/cs/directQueue/onCall", {

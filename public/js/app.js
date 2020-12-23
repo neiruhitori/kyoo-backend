@@ -2248,45 +2248,61 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        var queue;
+        var _selected_queue$, _selected_queue$2, _selected_queue$3;
+
+        var selected_queue, queue;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
+                selected_queue = _this4.queues.filter(function (queue) {
+                  return queue.queue_no === _this4.selected_queue;
+                });
+                console.log(selected_queue);
+
+                if (!(((_selected_queue$ = selected_queue[0]) === null || _selected_queue$ === void 0 ? void 0 : _selected_queue$.status) != "waiting" && ((_selected_queue$2 = selected_queue[0]) === null || _selected_queue$2 === void 0 ? void 0 : _selected_queue$2.status) != "call" && ((_selected_queue$3 = selected_queue[0]) === null || _selected_queue$3 === void 0 ? void 0 : _selected_queue$3.status) != "requeue")) {
+                  _context2.next = 5;
+                  break;
+                }
+
+                alert("Queue status incorrect");
+                return _context2.abrupt("return");
+
+              case 5:
                 _this4.isLoading = true;
-                _context2.prev = 1;
-                _context2.next = 4;
+                _context2.prev = 6;
+                _context2.next = 9;
                 return axios.post("/cs/directQueue/onCall", {
                   queue_no: _this4.selected_queue
                 });
 
-              case 4:
+              case 9:
                 queue = _context2.sent;
                 _this4.onCallQueue = queue.data.data;
                 _this4.isOnCall = true;
 
                 _this4.getQueues();
 
-                _context2.next = 14;
+                _context2.next = 19;
                 break;
 
-              case 10:
-                _context2.prev = 10;
-                _context2.t0 = _context2["catch"](1);
+              case 15:
+                _context2.prev = 15;
+                _context2.t0 = _context2["catch"](6);
 
                 _this4.getQueues();
 
                 alert(_context2.t0.response.data.message);
 
-              case 14:
+              case 19:
                 _this4.isLoading = false;
 
-              case 15:
+              case 20:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[1, 10]]);
+        }, _callee2, null, [[6, 15]]);
       }))();
     },
     onRecall: function onRecall() {
