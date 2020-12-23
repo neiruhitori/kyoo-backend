@@ -295,7 +295,6 @@
                 directQueueLabels.push(directQueue.day)
                 directQueueData.push(directQueue.total)
             });
-            console.log({directQueueLabels, directQueueData});
             // Area Chart Example
             var ctxDirectQueue = document.getElementById("myAreaChartDirectQueue");
             var myLineChartDirectQueue = new Chart(ctxDirectQueue, {

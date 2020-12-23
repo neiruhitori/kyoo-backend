@@ -63,8 +63,8 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
     Route::get('profile', 'HomeController@edit')->name('profile.edit');
     Route::put('profile', 'HomeController@update')->name('profile.update');
 
-    Route::middleware('auth', 'checkAdminBranchPassword')->group(function () {
-        Route::get('export', 'HomeController@exportExcel')->name('export');
+    Route::middleware('checkAdminBranchPassword')->group(function () {
+        Route::get('export', 'HomeController@exportExcel')->name('export')->middleware('checkAppointmentQueue');
         Route::get('qr', 'HomeController@qr')->name('qr');
 
         // Branch routes
