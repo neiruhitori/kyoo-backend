@@ -30,7 +30,7 @@
                             <b class="text-primary">Direct Queue Caller</b>
                             <hr />
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-12" v-if="!isOnTransfer">
                                     <div class="form-group">
                                         <label for="search-by"
                                             >Input Queue No</label
@@ -43,70 +43,130 @@
                                         />
                                     </div>
                                 </div>
-                                <div class="col-md-12" v-if="!isOnCall">
-                                    <button
-                                        class="btn btn-primary fullwidth mb-2"
-                                        @click="onCall"
-                                        :disabled="
-                                            !selected_queue ||
-                                                selected_queue.status
-                                        "
-                                    >
-                                        CALL
-                                    </button>
+                                <div class="col-md-12" v-else>
+                                    <h5>
+                                        Transfer Queue: {{ selected_queue }}
+                                    </h5>
+                                    <form @submit.prevent="onSubmitTransfer">
+                                        <input
+                                            type="hidden"
+                                            name="queue_no"
+                                            v-model="selected_queue"
+                                        />
+                                        <div class="form-group">
+                                            <label for="services"
+                                                >select workstation
+                                                service</label
+                                            >
+                                            <select
+                                                name="workstation_service_id"
+                                                id="workstation_service_id"
+                                                class="form-control"
+                                            >
+                                                <option
+                                                    v-for="workstationService in workstationServices"
+                                                    :key="workstationService.id"
+                                                    :value="
+                                                        workstationService.id
+                                                    "
+                                                    >{{
+                                                        workstationService
+                                                            .service.name
+                                                    }}</option
+                                                >
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <button
+                                                        class="btn btn-danger fullwidth"
+                                                        type="button"
+                                                        @click="
+                                                            isOnTransfer = false
+                                                        "
+                                                    >
+                                                        CANCEL
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <button
+                                                        class="btn btn-success fullwidth"
+                                                        type="submit"
+                                                    >
+                                                        SAVE
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
-                                <template v-else>
-                                    <div class="col-md-6">
+                                <template v-if="!isOnTransfer">
+                                    <div class="col-md-12" v-if="!isOnCall">
                                         <button
-                                            class="btn btn-info fullwidth mb-2"
-                                            @click="onRecall"
+                                            class="btn btn-primary fullwidth mb-2"
+                                            @click="onCall"
                                             :disabled="
-                                                onCallQueue &&
-                                                    onCallQueue.recall_count >=
-                                                        max_recall
+                                                !selected_queue ||
+                                                    selected_queue.status
                                             "
                                         >
-                                            RECALL
+                                            CALL
                                         </button>
                                     </div>
-                                    <div class="col-md-6">
-                                        <button
-                                            class="btn btn-success fullwidth mb-2"
-                                            @click="onDone"
-                                        >
-                                            DONE
-                                        </button>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <button
-                                            class="btn btn-secondary fullwidth mb-2"
-                                            @click="onRequeue"
-                                            :disabled="
-                                                onCallQueue &&
-                                                    onCallQueue.requeue_count >=
-                                                        max_requeue
-                                            "
-                                        >
-                                            REQUEUE
-                                        </button>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <button
-                                            class="btn btn-danger fullwidth mb-2"
-                                            @click="onUnattend"
-                                        >
-                                            UNATTEND
-                                        </button>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <button
-                                            class="btn btn-warning fullwidth mb-2"
-                                            @click="onTransfer"
-                                            :disabled="!allow_transfer"
-                                        >
-                                            TRANSFER
-                                        </button>
-                                    </div>
+                                    <template v-else>
+                                        <div class="col-md-6">
+                                            <button
+                                                class="btn btn-info fullwidth mb-2"
+                                                @click="onRecall"
+                                                :disabled="
+                                                    onCallQueue &&
+                                                        onCallQueue.recall_count >=
+                                                            max_recall
+                                                "
+                                            >
+                                                RECALL
+                                            </button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button
+                                                class="btn btn-success fullwidth mb-2"
+                                                @click="onDone"
+                                            >
+                                                DONE
+                                            </button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button
+                                                class="btn btn-secondary fullwidth mb-2"
+                                                @click="onRequeue"
+                                                :disabled="
+                                                    onCallQueue &&
+                                                        onCallQueue.requeue_count >=
+                                                            max_requeue
+                                                "
+                                            >
+                                                REQUEUE
+                                            </button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button
+                                                class="btn btn-danger fullwidth mb-2"
+                                                @click="onUnattend"
+                                            >
+                                                UNATTEND
+                                            </button>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button
+                                                class="btn btn-warning fullwidth mb-2"
+                                                @click="onTransfer"
+                                                :disabled="!allow_transfer"
+                                            >
+                                                TRANSFER
+                                            </button>
+                                        </div>
+                                    </template>
                                 </template>
                             </div>
                         </div>
@@ -115,7 +175,7 @@
                         <div class="col-md-8">
                             <b class="text-primary">Direct Queue List</b>
                             <hr />
-                            <div class="row">
+                            <!-- <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="search-by"
@@ -129,7 +189,7 @@
                                         />
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="row">
                                 <table class="table">
                                     <thead>
@@ -258,7 +318,9 @@ export default {
             queues: [],
             selected_queue: "",
             isOnCall: false,
-            onCallQueue: {}
+            onCallQueue: {},
+            isOnTransfer: false,
+            workstationServices: []
         };
     },
     mounted() {
@@ -382,9 +444,39 @@ export default {
             }
             this.isLoading = false;
         },
-        onTransfer() {
-            alert("on onTransfer");
-            this.isOnCall = false;
+        async onTransfer() {
+            this.isLoading = true;
+            try {
+                const workstationServices = await axios.get(
+                    "/cs/directQueue/workstationServices"
+                );
+                this.workstationServices = workstationServices.data.data;
+                this.isOnTransfer = true;
+            } catch (error) {
+                alert(error.response.data.message);
+            }
+            this.isLoading = false;
+        },
+        async onSubmitTransfer(e) {
+            this.isLoading = true;
+            try {
+                const data = {
+                    queue_no: e.target.queue_no.value,
+                    workstation_service_id:
+                        e.target.workstation_service_id.value
+                };
+                const queue = await axios.post(
+                    "/cs/directQueue/onTransfer",
+                    data
+                );
+                this.isOnCall = false;
+                this.isOnTransfer = false;
+                this.selected_queue = "";
+                this.getQueues();
+            } catch (error) {
+                alert(error.response.data.message);
+            }
+            this.isLoading = false;
         }
     },
     watch: {

@@ -114,12 +114,14 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 
     // Direct Queue
     Route::get('directQueue/monitor', 'DirectQueueController@monitor')->name('directQueue.monitor')->middleware('checkDirectQueue');
-    Route::resource('directQueue', 'DirectQueueController')->middleware('checkDirectQueue');
+    Route::resource('directQueue', 'DirectQueueController')->except(['store', 'show'])->middleware('checkDirectQueue');
     Route::post('directQueue/onCall', 'DirectQueueController@onCall')->middleware('checkDirectQueue');
     Route::post('directQueue/onRecall', 'DirectQueueController@onRecall')->middleware('checkDirectQueue');
     Route::post('directQueue/onRequeue', 'DirectQueueController@onRequeue')->middleware('checkDirectQueue');
     Route::post('directQueue/onDone', 'DirectQueueController@onDone')->middleware('checkDirectQueue');
     Route::post('directQueue/onUnattend', 'DirectQueueController@onUnattend')->middleware('checkDirectQueue');
+    Route::post('directQueue/onTransfer', 'DirectQueueController@onTransfer')->middleware('checkDirectQueue');
+    Route::get('directQueue/workstationServices', 'DirectQueueController@workstationServices')->middleware('checkDirectQueue');
 
     // Report routes
     Route::get('report/daily', 'ReportController@daily')->name('report.daily');

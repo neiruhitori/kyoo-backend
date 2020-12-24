@@ -57,6 +57,19 @@ class DirectQueueController extends Controller
         return view('cs.directQueue.create')->withServices($workstationServices);
     }
 
+    public function workstationServices()
+    {
+        $workstationServices = WorkstationService::whereHas('Workstation.WorkstationVct', function($query){
+            return $query->whereVctId(Auth::id());
+        })->with('Service')->get();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'get all workstation service',
+            'data' => $workstationServices
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -362,6 +375,45 @@ class DirectQueueController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on Call',
+            'data' => $directQueue
+        ]);
+    }
+
+    public function onTransfer(Request $request)
+    {
+        $rules = [
+            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'workstation_service_id' => 'required|integer|min:1|exists:workstation_services,id'
+        ];
+        $validation = Validator::make($request->all(), $rules);
+        if ($validation->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error validation',
+                'data' => $validation->errors()
+            ], 400);
+        }
+
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        if (!$directQueue) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Queue not found',
+                'data' => $validation->errors()
+            ], 404);
+                }
+
+        $lastDirectQueue = DirectQueue::whereWorkstationServiceId($request->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->count();
+        $workstationService = WorkstationService::find($request->workstation_service_id);
+        $queue_no = $workstationService->service_id . sprintf('%04s', $lastDirectQueue + 1);
+        $directQueue->queue_no = $queue_no;
+        $directQueue->workstation_service_id = $request->workstation_service_id;
+        $directQueue->status = 'waiting';
+        $directQueue->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Direct Queue on Transfer',
             'data' => $directQueue
         ]);
     }
