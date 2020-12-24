@@ -18,7 +18,9 @@ class DirectQueueController extends Controller
     private function InitQuery()
     {
         return DirectQueue::query()->join('workstation_services', 'workstation_services.id', '=', 'direct_queues.workstation_service_id')
-                    ->with(['WorkstationService.Service'])->where('vct_id', Auth::id())->whereDate('direct_queues.created_at', Date('Y-m-d'))
+                    ->with(['WorkstationService.Service'])
+                    ->where('vct_id', Auth::id())->whereDate('direct_queues.created_at', Date('Y-m-d'))
+                    ->whereNotIn('status', ['done', 'unattend'])
                     ->orderBy('workstation_services.priority', 'DESC')->orderBy('direct_queues.queue_no', 'ASC');
     }
 
