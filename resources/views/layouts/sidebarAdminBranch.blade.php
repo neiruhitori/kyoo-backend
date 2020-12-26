@@ -15,6 +15,14 @@
           <span>Dashboard</span></a>
       </li>
 
+      @if (Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+          <li class="nav-item">
+            <a class="nav-link" href="{{route('adminBranch.directQueue.monitor')}}" target="_blank">
+              <i class="fas fa-fw fa-tv"></i>
+              <span>Direct Queue Monitor</span></a>
+          </li>
+      @endif
+
       <li class="nav-item">
         <a class="nav-link" href="{{route('adminBranch.qr')}}" target="_blank">
           <i class="fas fa-fw fa-qrcode"></i>

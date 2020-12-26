@@ -34,6 +34,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Appointment Status
 Route::get('/appointment/status/{id}', 'AppointmentController@status')->name('appointment.status');
 
+// Direct Queue Monitor
+Route::get('/direct-queue/monitor/{branch_id}', 'DirectQueueController@monitor')->name('directQueue.monitor')->middleware('signed');
+Route::get('/direct-queue/branch/{branch_id}/list', 'DirectQueueController@branchList')->name('directQueue.branch.list');
+
 // success state from API
 Route::get('/changeEmail/{id}', 'API\UserController@changeEmail')->name('user.changeEmail');
 Route::get('/userRegister/{id}', 'API\UserController@userRegister')->name('user.userRegister');
@@ -65,6 +69,7 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
 
     Route::middleware('checkAdminBranchPassword')->group(function () {
         Route::get('export', 'HomeController@exportExcel')->name('export')->middleware('checkAppointmentQueue');
+        Route::get('directQueue/monitor', 'HomeController@directQueueMonitor')->name('directQueue.monitor')->middleware('checkDirectQueue');
         Route::get('qr', 'HomeController@qr')->name('qr');
 
         // Branch routes
@@ -114,7 +119,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 
     // Direct Queue
     Route::get('directQueue/monitor', 'DirectQueueController@monitor')->name('directQueue.monitor')->middleware('checkDirectQueue');
-    Route::resource('directQueue', 'DirectQueueController')->except(['store', 'show'])->middleware('checkDirectQueue');
+    Route::resource('directQueue', 'DirectQueueController')->except(['show'])->middleware('checkDirectQueue');
     Route::post('directQueue/onCall', 'DirectQueueController@onCall')->middleware('checkDirectQueue');
     Route::post('directQueue/onRecall', 'DirectQueueController@onRecall')->middleware('checkDirectQueue');
     Route::post('directQueue/onRequeue', 'DirectQueueController@onRequeue')->middleware('checkDirectQueue');

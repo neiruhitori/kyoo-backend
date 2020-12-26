@@ -12,6 +12,8 @@ use Auth;
 use DB;
 use App\Exports\AdminBranch\ReportExport;
 use Excel;
+use Crypt;
+use URL;
 
 class HomeController extends Controller
 {
@@ -80,5 +82,17 @@ class HomeController extends Controller
                          ->size(500)->errorCorrection('H')
                          ->generate($id);
       return response($image)->header('Content-type','image/png');
+    }
+
+    public function directQueueMonitor(Request $request)
+    {
+        if (!Auth::user()->Branch->BranchType->is_premium) {
+            $request->session()->flash('warning', 'This feature for premium account only!');
+            return redirect()->back();
+        }
+
+        $branchId = Crypt::encrypt(Auth::user()->branch_id);
+        $url = URL::temporarySignedRoute('directQueue.monitor', now()->addDays(1), ['branch_id' => $branchId]);
+        return redirect($url);
     }
 }
