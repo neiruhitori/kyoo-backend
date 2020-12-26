@@ -53,7 +53,7 @@
 <body class="bg-gradient-primary">
     <div id="app">
         <branch-monitor-component 
-            :branch_id="{{$branchId}}"
+            :branch="{{$branch}}"
             branch_id_encrypted="{{$branchIdEncrypted}}"
         />
     </div>

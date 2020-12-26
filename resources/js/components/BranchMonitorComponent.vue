@@ -1,8 +1,19 @@
 <template>
     <div class="container-fluid">
+        <loading
+            :active.sync="isLoading"
+            color="#189DCD"
+            :is-full-page="true"
+            :width="64"
+            :height="64"
+        />
         <div class="row mt-5">
             <div class="col-12 text-center">
-                <img src="/img/logo.svg" alt="branch logo" />
+                <img
+                    :src="`/storage/${branch.logo}`"
+                    alt="branch logo"
+                    class="branch-logo"
+                />
             </div>
         </div>
         <div class="row mt-5">
@@ -70,10 +81,18 @@
 </template>
 
 <script>
+// Import component
+import Loading from "vue-loading-overlay";
+// Import stylesheet
+import "vue-loading-overlay/dist/vue-loading.css";
+
 export default {
+    components: {
+        Loading
+    },
     props: {
-        branch_id: {
-            type: Number,
+        branch: {
+            type: Object,
             required: true
         },
         branch_id_encrypted: {
@@ -83,16 +102,41 @@ export default {
     },
     data() {
         return {
+            isLoading: false,
             queues: []
         };
     },
-    async mounted() {
-        const data = await axios.get(
-            `/direct-queue/branch/${this.$props.branch_id_encrypted}/list`
+    created() {
+        Echo.channel(`event_direct_queue_general.${this.branch.id}`).listen(
+            "DirectQueue",
+            directQueues => {
+                this.getQueues();
+            }
         );
-        this.queues = data.data.data;
+    },
+    mounted() {
+        this.getQueues();
+    },
+    methods: {
+        async getQueues() {
+            this.isLoading = true;
+            try {
+                const data = await axios.get(
+                    `/direct-queue/branch/${this.$props.branch_id_encrypted}/list`
+                );
+                this.queues = data.data.data;
+            } catch (error) {
+                alert(error.response.data.message);
+            }
+            this.isLoading = false;
+        }
     }
 };
 </script>
 
-<style></style>
+<style scoped>
+.branch-logo {
+    height: 100px;
+    width: 100px;
+}
+</style>

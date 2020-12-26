@@ -328,7 +328,7 @@ export default {
     },
     created() {
         Echo.private(`event_direct_queue.${this.auth.id}`).listen(
-            "DirectQueue",
+            "VCTDirectQueue",
             directQueues => {
                 this.getQueues();
             }

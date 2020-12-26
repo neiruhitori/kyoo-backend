@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CS\StoreDirectQueue;
 use Auth;
+use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 use App\Events\DirectQueue as DirectQueueEvent;
 
 class DirectQueueController extends Controller
@@ -86,6 +87,7 @@ class DirectQueueController extends Controller
         $directQueue = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor
+        event(new VCTDirectQueueEvent($directQueue));
         event(new DirectQueueEvent($directQueue));
 
         $request->session()->flash('success', "Direct Queue Has Been Created, Queue no: {$directQueue->queue_no}");

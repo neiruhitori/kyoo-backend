@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use App\DirectQueue as DirectQueueModel;
 use Auth;
 
-class DirectQueue implements ShouldBroadcast
+class VCTDirectQueue implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -40,6 +40,6 @@ class DirectQueue implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('event_direct_queue_general.'.Auth::user()->branch_id);
+        return new PrivateChannel('event_direct_queue.'.Auth::id());
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\DirectQueue;
+use App\Branch;
 use Crypt;
 
 class DirectQueueController extends Controller
@@ -20,8 +21,9 @@ class DirectQueueController extends Controller
 
     public function monitor(Request $request, $branch_id)
     {
+        $branch = Branch::findOrFail(Crypt::decrypt($branch_id));
         return view('directQueue.monitor', [
-            'branchId' => Crypt::decrypt($branch_id),
+            'branch' => $branch,
             'branchIdEncrypted' => $branch_id,
         ]);
     }
