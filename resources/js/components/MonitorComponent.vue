@@ -284,9 +284,15 @@
 
 <script>
 // Import component
+import Vue from "vue";
+// Loading component
 import Loading from "vue-loading-overlay";
-// Import stylesheet
 import "vue-loading-overlay/dist/vue-loading.css";
+// Toast component
+import VueToast from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
+
+Vue.use(VueToast);
 
 export default {
     components: {
@@ -330,6 +336,12 @@ export default {
         Echo.private(`event_direct_queue.${this.auth.id}`).listen(
             "VCTDirectQueue",
             directQueues => {
+                this.$toast.open({
+                    message: "New queue created",
+                    type: "info",
+                    duration: 3000,
+                    dismissible: true
+                });
                 this.getQueues();
             }
         );

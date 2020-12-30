@@ -26,6 +26,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "vue-loading-overlay": "^3.4.2"
+        "vue-loading-overlay": "^3.4.2",
+        "vue-toast-notification": "^0.6.0"
     }
 }
