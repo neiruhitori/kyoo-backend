@@ -55,6 +55,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
     Route::get('appointment-upcoming', 'API\AppointmentController@upcoming');
 
+    // direct queue routes
+    Route::get('direct-queue/{branch}', 'API\DirectQueueController@index');
+
     // favorite routes
     Route::get('favorite', 'API\FavoriteController@index');
     Route::post('favorite', 'API\FavoriteController@store');
