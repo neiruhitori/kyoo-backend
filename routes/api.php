@@ -57,6 +57,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     // direct queue routes
     Route::get('direct-queue/{branch}', 'API\DirectQueueController@index');
+    Route::post('direct-queue', 'API\DirectQueueController@store');
 
     // favorite routes
     Route::get('favorite', 'API\FavoriteController@index');
