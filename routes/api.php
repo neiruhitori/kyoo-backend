@@ -56,6 +56,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('appointment-upcoming', 'API\AppointmentController@upcoming');
 
     // direct queue routes
+    Route::get('direct-queue/upcomming', 'API\DirectQueueController@upcomming');
     Route::get('direct-queue/{branch}', 'API\DirectQueueController@index');
     Route::post('direct-queue', 'API\DirectQueueController@store');
 

@@ -10,6 +10,7 @@ use App\WorkstationService;
 
 use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
 use App\Http\Resources\DirectQueue\All as DirectQueueAll;
+use App\Http\Resources\DirectQueue\Detail as DirectQueueDetail;
 use Auth;
 
 class DirectQueueController extends Controller
@@ -44,6 +45,16 @@ class DirectQueueController extends Controller
             'success' => true,
             'message' => 'direct queue created',
             'data' => $workstation
+        ]);
+    }
+
+    public function upcomming()
+    {
+        $directQueues = DirectQueue::whereUserId(Auth::id())->whereStatus('waiting')->get();
+        return response()->json([
+            'success' => true,
+            'message' => 'get upcomming direct queues',
+            'data' => DirectQueueDetail::collection($directQueues)
         ]);
     }
 }
