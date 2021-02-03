@@ -194,6 +194,7 @@ class DirectQueueController extends Controller
 
         // check if queue recall_count on limit
         if ($directQueue->recall_count >= Auth::user()->Branch->BranchConfiguration->maximum_recall) {
+            $directQueue->vct_id = Auth::id();
             $directQueue->status = 'unattend';
             $directQueue->done_at = Date('Y-m-d H:m:s');
             $directQueue->save();
