@@ -48,7 +48,7 @@ class DirectQueueController extends Controller
         ]);
     }
 
-    public function upcomming()
+    public function upcoming()
     {
         $directQueues = DirectQueue::whereUserId(Auth::id())->whereStatus('waiting')->get();
         return response()->json([

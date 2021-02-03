@@ -10,8 +10,10 @@ use App\Appointment;
 use App\Slot;
 use App\Schedule;
 use App\ScheduleTemplateDetail;
+use App\DirectQueue;
 use App\Http\Resources\Appointment as AppointmentCollection;
 use Auth;
+use Collection;
 
 class AppointmentController extends Controller
 {
@@ -122,12 +124,23 @@ class AppointmentController extends Controller
     
     public function history()
     {
-        $appointments = Appointment::where('user_id', Auth::id())->whereIn('status', ['no show', 'end served'])->orderBy('date', 'desc')->get();
-        
+        $appointments = Appointment::where('user_id', Auth::id())->whereIn('status', ['no show', 'end served'])->orderBy('date', 'desc')->get()->toArray();
+        foreach ($appointments as $key => $appointment) {
+            $appointments[$key]['is_direct_queue'] = false;
+            $appointments[$key]['sorting_date'] = $appointment['date'];
+        }
+
+        $directQueues = DirectQueue::whereUserId(Auth::id())->where('status', '!=', 'waiting')->orderBy('created_at', 'desc')->get()->toArray();
+        foreach ($directQueues as $key => $directQueue) {
+            $directQueues[$key]['is_direct_queue'] = true;
+            $directQueues[$key]['sorting_date'] = date('Y-m-d', strtotime($directQueue['created_at']));
+        }
+        $histories = array_merge($directQueues, $appointments);
+        usort($histories, function($a, $b) {return strcmp($a['sorting_date'], $b['sorting_date']);});
         return response()->json([
             'success' => true,
             'message' => 'get all history appointment',
-            'data' => AppointmentCollection::collection($appointments)
+            'data' => AppointmentCollection::collection($histories)
         ]);
     }
 
