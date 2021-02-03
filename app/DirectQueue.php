@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DirectQueue extends Model
 {
-    protected $fillable = ['queue_no', 'user_id', 'vct_id', 'workstation_service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count'];
+    protected $fillable = ['queue_no', 'user_id', 'vct_id', 'workstation_service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count', 'rating', 'is_liked'];
 
     public function WorkstationService()
     {

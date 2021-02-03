@@ -9,6 +9,7 @@ use App\Branch;
 use App\WorkstationService;
 
 use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
+use App\Http\Requests\API\DirectQueue\Feedback as DirectQueueFeedback;
 use App\Http\Resources\DirectQueue\All as DirectQueueAll;
 use App\Http\Resources\DirectQueue\Detail as DirectQueueDetail;
 use Auth;
@@ -53,8 +54,22 @@ class DirectQueueController extends Controller
         $directQueues = DirectQueue::whereUserId(Auth::id())->whereStatus('waiting')->get();
         return response()->json([
             'success' => true,
-            'message' => 'get upcomming direct queues',
+            'message' => 'get upcoming direct queues',
             'data' => DirectQueueDetail::collection($directQueues)
+        ]);
+    }
+
+    public function feedback(DirectQueue $directQueue, DirectQueueFeedback $request)
+    {
+        $directQueue->update([
+            'rating' => $request->rating,
+            'is_liked' => $request->is_liked,
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'success give feedback direct queue',
+            'data' => $directQueue
         ]);
     }
 }
