@@ -28,6 +28,8 @@ class Appointment extends JsonResource
                 'name' => $directQueue->name,
                 'phone' => $directQueue->phone,
                 'queue_no' => $directQueue->queue_no,
+                'rating' => $directQueue->rating,
+                'is_liked' => $directQueue->is_liked,
                 'type' => 'direct_queue'
             ];
         }else{
