@@ -18,7 +18,8 @@ class All extends JsonResource
         return [
             'workstation_service_id' => $this->id,
             'service' => $this->Service,
-            'total_queue' => DirectQueue::whereWorkstationServiceId($this->id)->whereStatus('waiting')->whereDate('created_at', date('Y-m-d'))->count(),
+            'total_queue' => DirectQueue::whereWorkstationServiceId($this->id)->whereDate('created_at', date('Y-m-d'))->count(),
+            'total_waiting' => DirectQueue::whereWorkstationServiceId($this->id)->whereStatus('waiting')->whereDate('created_at', date('Y-m-d'))->count(),
         ];
     }
 }

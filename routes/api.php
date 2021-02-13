@@ -58,7 +58,6 @@ Route::middleware(['auth:api'])->group(function () {
     // direct queue routes
     Route::get('direct-queue/upcoming', 'API\DirectQueueController@upcoming');
     Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
-    Route::get('direct-queue/{branch}', 'API\DirectQueueController@index');
     Route::post('direct-queue', 'API\DirectQueueController@store');
 
     // favorite routes
@@ -69,3 +68,6 @@ Route::middleware(['auth:api'])->group(function () {
     // notification routes
     Route::get('notification', 'API\NotificationController@index');
 });
+
+// guest can be get the data
+Route::get('direct-queue/{branch}', 'API\DirectQueueController@index');
