@@ -16,9 +16,15 @@ class Appointment extends JsonResource
      */
     public function toArray($request)
     {
+        $data = [
+            'type' => $this['is_direct_queue'] ? 'direct_queue' : 'appointment',
+            'appointment' => null,
+            'direct_queue' => null,
+        ];
+        
         if ($this['is_direct_queue']) {
             $directQueue = DirectQueue::find($this['id']);
-            return [
+            $data['direct_queue'] = [
                 'id' => $directQueue->id,
                 'date' => $directQueue->created_at,
                 'branch_id' => $directQueue->WorkstationService->Service->Branch->id,
@@ -30,12 +36,11 @@ class Appointment extends JsonResource
                 'queue_no' => $directQueue->queue_no,
                 'rating' => $directQueue->rating,
                 'is_liked' => $directQueue->is_liked,
-                'type' => 'direct_queue'
             ];
         }else{
             $appointment = AppointmentModel::find($this['id']);
             $currently_attending = AppointmentModel::select('number')->where('slot_id', $appointment->slot_id)->where('date', $appointment->date)->where('status', 'served')->first();
-            return [
+            $data['appointment'] = [
                 'id' => $appointment->id,
                 'branch_id' => $appointment->Slot->Service->Branch->id,
                 'branch_name' => $appointment->Slot->Service->Branch->name,
@@ -56,8 +61,9 @@ class Appointment extends JsonResource
                 'queue_no' => (int) $appointment->number,
                 'total_waiting' => AppointmentModel::where('slot_id', $appointment->slot_id)->where('date', $appointment->date)->where('number', '<', $appointment->number)->whereIn('status', ['book', 'check in'])->get()->count(),
                 'currently_attending' => isset($currently_attending) ? intval($currently_attending->number) : 0,
-                'type' => 'appointment'
             ];
         }
+
+        return $data;
     }
 }

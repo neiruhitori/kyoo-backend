@@ -158,6 +158,18 @@ class AppointmentController extends Controller
     {
         $dateNow = date('Y-m-d');
         $appointments = Appointment::where('user_id', Auth::id())->where('date', '>=', $dateNow)->where('status', 'book')->orderBy('date', 'desc')->get()->toArray();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'get upcoming appointment',
+            'data' => $appointments
+        ]);
+    }
+
+    public function upcomingCombine()
+    {
+        $dateNow = date('Y-m-d');
+        $appointments = Appointment::where('user_id', Auth::id())->where('date', '>=', $dateNow)->where('status', 'book')->orderBy('date', 'desc')->get()->toArray();
         foreach ($appointments as $key => $appointment) {
             $appointments[$key]['is_direct_queue'] = false;
             $appointments[$key]['sorting_date'] = $appointment['date'];
