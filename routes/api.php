@@ -56,6 +56,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('appointment-upcoming', 'API\AppointmentController@upcoming');
 
     // direct queue routes
+    Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
     Route::get('direct-queue/upcoming', 'API\DirectQueueController@upcoming');
     Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
     Route::post('direct-queue', 'API\DirectQueueController@store');
@@ -70,4 +71,4 @@ Route::middleware(['auth:api'])->group(function () {
 });
 
 // guest can be get the data
-Route::get('direct-queue/{branch}', 'API\DirectQueueController@index');
+Route::get('direct-queue-by-branch/{branch}', 'API\DirectQueueController@index');

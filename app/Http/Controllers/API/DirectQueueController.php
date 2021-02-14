@@ -29,6 +29,15 @@ class DirectQueueController extends Controller
         ]);
     }
 
+    public function show(DirectQueue $directQueue)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'get detail direct queues',
+            'data' => new DirectQueueDetail($directQueue)
+        ]);
+    }
+
     public function store(DirectQueueStore $request)
     {
         $input = $request->all();
