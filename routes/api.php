@@ -57,7 +57,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     // direct queue routes
     Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
-    Route::get('direct-queue/upcoming', 'API\DirectQueueController@upcoming');
+    Route::get('direct-queue-upcoming', 'API\DirectQueueController@upcoming');
     Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
     Route::post('direct-queue', 'API\DirectQueueController@store');
 
