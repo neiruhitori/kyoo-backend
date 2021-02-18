@@ -25,6 +25,8 @@ class Detail extends JsonResource
             'name' => $directQueue->name,
             'phone' => $directQueue->phone,
             'queue_no' => $directQueue->queue_no,
+            'is_liked' => $directQueue->is_liked,
+            'rating' => $directQueue->rating,
         ];
     }
 }
