@@ -36,6 +36,7 @@ class Appointment extends JsonResource
                 'queue_no' => $directQueue->queue_no,
                 'rating' => $directQueue->rating,
                 'is_liked' => $directQueue->is_liked,
+                'status' => $directQueue->status,
             ];
         }else{
             $appointment = AppointmentModel::find($this['id']);
