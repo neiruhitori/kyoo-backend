@@ -19,9 +19,12 @@ class Detail extends JsonResource
         return [
             'id' => $directQueue->id,
             'date' => $directQueue->created_at,
+            'branch_id' => $directQueue->WorkstationService->Service->Branch->id,
             'branch_name' => $directQueue->WorkstationService->Service->Branch->name,
+            'service_id' => $directQueue->WorkstationService->Service->id,
             'service_name' => $directQueue->WorkstationService->Service->name,
             'total_waiting' => DirectQueue::whereWorkstationServiceId($this->workstation_service_id)->whereStatus('waiting')->where('queue_no', '<', $directQueue->queue_no)->whereDate('created_at', date('Y-m-d'))->count(),
+            'currently_attending' => DirectQueue::whereWorkstationServiceId($this->workstation_service_id)->where('status', '!=', 'waiting')->where('queue_no', '<', $directQueue->queue_no)->whereDate('created_at', date('Y-m-d'))->count(),
             'name' => $directQueue->name,
             'phone' => $directQueue->phone,
             'queue_no' => $directQueue->queue_no,
