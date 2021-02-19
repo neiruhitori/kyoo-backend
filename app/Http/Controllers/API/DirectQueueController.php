@@ -60,7 +60,7 @@ class DirectQueueController extends Controller
 
     public function upcoming()
     {
-        $directQueues = DirectQueue::whereUserId(Auth::id())->whereStatus('waiting')->get();
+        $directQueues = DirectQueue::whereUserId(Auth::id())->whereStatus('waiting')->whereDate('created_at', '>=', date('Y-m-d'))->get();
         return response()->json([
             'success' => true,
             'message' => 'get upcoming direct queues',

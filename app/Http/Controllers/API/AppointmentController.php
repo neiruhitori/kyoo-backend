@@ -175,7 +175,7 @@ class AppointmentController extends Controller
             $appointments[$key]['sorting_date'] = $appointment['date'];
         }
 
-        $directQueues = DirectQueue::whereUserId(Auth::id())->where('status', 'waiting')->orderBy('created_at', 'desc')->get()->toArray();
+        $directQueues = DirectQueue::whereUserId(Auth::id())->where('status', 'waiting')->whereDate('created_at', '>=', date('Y-m-d'))->orderBy('created_at', 'desc')->get()->toArray();
         foreach ($directQueues as $key => $directQueue) {
             $directQueues[$key]['is_direct_queue'] = true;
             $directQueues[$key]['sorting_date'] = date('Y-m-d', strtotime($directQueue['created_at']));
