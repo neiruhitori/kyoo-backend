@@ -181,6 +181,11 @@ class AppointmentController extends Controller
             $directQueues[$key]['sorting_date'] = date('Y-m-d', strtotime($directQueue['created_at']));
         }
 
+        return [
+            'appointment' => $appointments,
+            'directQueue' => $directQueue,
+        ];
+        
         $histories = array_merge($directQueues, $appointments);
         usort($histories, function($a, $b) {return strcmp($a['sorting_date'], $b['sorting_date']);});
 
