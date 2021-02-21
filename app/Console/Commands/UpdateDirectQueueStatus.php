@@ -39,7 +39,7 @@ class UpdateDirectQueueStatus extends Command
     public function handle()
     {
         DirectQueue::whereStatus('waiting')->whereDate('created_at', '<', date('Y-m-d'))->update([
-            'status' => 'unattend'
+            'status' => 'no show'
         ]);
     }
 }
