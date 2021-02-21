@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -52,6 +53,15 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
             return redirect()->route('login');
+        }
+        if ($exception instanceof NotFoundHttpException) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'data or page not found',
+                    'data' => null
+                ], 404);
+            }
         }
         return parent::render($request, $exception);
     }
