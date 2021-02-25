@@ -15,7 +15,7 @@ class DirectQueueController extends Controller
         return DirectQueue::query()->join('workstation_services', 'workstation_services.id', '=', 'direct_queues.workstation_service_id')
                     ->with(['WorkstationService.Service', 'WorkstationService.Workstation'])
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
-                    ->whereNotIn('status', ['done', 'no show'])
+                    ->whereNotIn('status', ['end served', 'no show'])
                     ->orderBy('workstation_services.priority', 'DESC')->orderBy('direct_queues.queue_no', 'ASC');
     }
 

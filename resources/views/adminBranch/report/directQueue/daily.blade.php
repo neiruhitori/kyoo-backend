@@ -64,7 +64,7 @@
                                         <th>Queue Number</th>
                                         <th>Name</th>
                                         <th>Called At</th>
-                                        <th>Done At</th>
+                                        <th>End Served At</th>
                                         <th>Workstation</th>
                                         <th>Service</th>
                                         <th>Status</th>

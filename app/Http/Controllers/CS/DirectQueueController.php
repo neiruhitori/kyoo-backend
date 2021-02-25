@@ -24,7 +24,7 @@ class DirectQueueController extends Controller
                         $query->where('vct_id', Auth::id())->orWhere('vct_id', null);
                     })
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
-                    ->whereNotIn('status', ['done', 'no show'])
+                    ->whereNotIn('status', ['end served', 'no show'])
                     ->orderBy('workstation_services.priority', 'DESC')->orderBy('direct_queues.queue_no', 'ASC');
     }
 
@@ -152,7 +152,7 @@ class DirectQueueController extends Controller
         $queues = $this->InitQuery()->get()->toArray();
         $arrayIndex = array_search($queueNo, array_column($queues, 'queue_no'));
         if ($arrayIndex > 0) {
-            if ($queues[$arrayIndex - 1]['status'] != 'done' && $queues[$arrayIndex - 1]['status'] != 'no show') {
+            if ($queues[$arrayIndex - 1]['status'] != 'end served' && $queues[$arrayIndex - 1]['status'] != 'no show') {
                 return false;
             }
         }
@@ -174,7 +174,7 @@ class DirectQueueController extends Controller
         }
 
         // check the queue no with created date is today
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereNotIn('status', ['no show', 'done'])->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereNotIn('status', ['no show', 'end served'])->whereDate('created_at', Date('Y-m-d'))->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -183,7 +183,7 @@ class DirectQueueController extends Controller
             ], 404);
         }
 
-        // check queue can called if previous queue done
+        // check queue can called if previous queue end served
         if (!$this->checkPreviousQueue($request->queue_no)) {
             return response()->json([
                 'success' => false,
@@ -250,7 +250,7 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        // check queue can called if previous queue done
+        // check queue can called if previous queue end served
         if (!$this->checkPreviousQueue($request->queue_no)) {
             return response()->json([
                 'success' => false,
@@ -319,7 +319,7 @@ class DirectQueueController extends Controller
         ]);
     }
 
-    public function onDone(Request $request)
+    public function onEndServed(Request $request)
     {
         $rules = [
             'queue_no' => 'required|integer|min:1|exists:direct_queues'
@@ -341,7 +341,7 @@ class DirectQueueController extends Controller
                 'data' => $validation->errors()
             ], 404);
         }
-        $directQueue->status = 'done';
+        $directQueue->status = 'end served';
         $directQueue->done_at = Date('Y-m-d H:m:s');
         $directQueue->save();
 

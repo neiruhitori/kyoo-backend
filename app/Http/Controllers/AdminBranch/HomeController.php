@@ -49,7 +49,7 @@ class HomeController extends Controller
             'totalNoShow' => $isAppointment ? count($appointments->where('status', 'no show')) : 0,
             'appointmentGraph' => $isAppointment ? $appointmentGraph : [],
             'totalDirectQueue' => $isDirectQueue ? count($directQueues) : 0,
-            'totalDirectQueueServed' => $isDirectQueue ? count($directQueues->where('status', 'done')) : 0,
+            'totalDirectQueueServed' => $isDirectQueue ? count($directQueues->where('status', 'end served')) : 0,
             'totalDirectQueueNoShow' => $isDirectQueue ? count($directQueues->where('status', 'no show')) : 0,
             'directQueueGraph' => $isDirectQueue ? $directQueueGraph : [],
         ]);

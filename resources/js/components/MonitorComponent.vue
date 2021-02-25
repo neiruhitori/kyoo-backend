@@ -111,9 +111,9 @@
                     <div class="col-md-6">
                       <button
                         class="btn btn-success fullwidth mb-2"
-                        @click="onDone"
+                        @click="onEndServed"
                       >
-                        DONE
+                        END SERVED
                       </button>
                     </div>
                     <div class="col-md-6">
@@ -215,8 +215,8 @@
                           >
                           <span
                             class="badge badge-success"
-                            v-show="queue.status == 'done'"
-                            >Done</span
+                            v-show="queue.status == 'end served'"
+                            >End Served</span
                           >
                         </td>
                       </tr>
@@ -364,10 +364,10 @@ export default {
       }
       this.isLoading = false;
     },
-    async onDone() {
+    async onEndServed() {
       this.isLoading = true;
       try {
-        const queue = await axios.post("/cs/directQueue/onDone", {
+        const queue = await axios.post("/cs/directQueue/onEndServed", {
           queue_no: this.selected_queue,
         });
         this.onCallQueue = queue.data.data;
