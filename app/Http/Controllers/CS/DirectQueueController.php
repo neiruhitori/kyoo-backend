@@ -159,7 +159,7 @@ class DirectQueueController extends Controller
         return true;
     }
 
-    public function onCall(Request $request)
+    public function onServed(Request $request)
     {
         $rules = [
             'queue_no' => 'required|integer|min:1|exists:direct_queues'
@@ -204,14 +204,14 @@ class DirectQueueController extends Controller
                 'data' => null
             ], 400);
         }
-        $directQueue->status = 'call';
+        $directQueue->status = 'served';
         $directQueue->recall_count = $directQueue->recall_count > 0 ? $directQueue->recall_count + 1 : 0;
         $directQueue->called_at = Date('Y-m-d H:m:s');
         $directQueue->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Direct Queue on Call',
+            'message' => 'Direct Queue on Served',
             'data' => $directQueue
         ]);
     }
@@ -259,14 +259,14 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue->status = $directQueue->recall_count + 1 >= Auth::user()->Branch->BranchConfiguration->maximum_recall ? 'no show' : 'call';
+        $directQueue->status = $directQueue->recall_count + 1 >= Auth::user()->Branch->BranchConfiguration->maximum_recall ? 'no show' : 'served';
         $directQueue->recall_count = $directQueue->recall_count + 1;
         $directQueue->called_at = Date('Y-m-d H:m:s');
         $directQueue->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Direct Queue on Call',
+            'message' => 'Direct Queue on Served',
             'data' => $directQueue
         ]);
     }
@@ -314,7 +314,7 @@ class DirectQueueController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Direct Queue on Call',
+            'message' => 'Direct Queue on Served',
             'data' => $directQueue
         ]);
     }
@@ -347,7 +347,7 @@ class DirectQueueController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Direct Queue on Call',
+            'message' => 'Direct Queue on Served',
             'data' => $directQueue
         ]);
     }
@@ -380,7 +380,7 @@ class DirectQueueController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Direct Queue on Call',
+            'message' => 'Direct Queue on Served',
             'data' => $directQueue
         ]);
     }

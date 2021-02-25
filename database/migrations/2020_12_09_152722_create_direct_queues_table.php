@@ -22,7 +22,7 @@ class CreateDirectQueuesTable extends Migration
             $table->string('name', 100)->nullable();
             $table->string('phone', 20)->nullable();
             $table->string('direct_queue_channel', 100)->default('web')->comment('where the direct queue created from (web / apps)');
-            $table->string('status', 20)->default('waiting')->comment('statuses are waiting, call, requeue, no show, end served');
+            $table->string('status', 20)->default('waiting')->comment('statuses are waiting, served, requeue, no show, end served');
             $table->smallInteger('recall_count')->default(0);
             $table->smallInteger('requeue_count')->default(0);
             $table->timestamp('called_at')->nullable();

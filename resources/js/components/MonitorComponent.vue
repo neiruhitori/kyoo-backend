@@ -87,13 +87,13 @@
                   </form>
                 </div>
                 <template v-if="!isOnTransfer">
-                  <div class="col-md-12" v-if="!isOnCall">
+                  <div class="col-md-12" v-if="!isOnServed">
                     <button
                       class="btn btn-primary fullwidth mb-2"
-                      @click="onCall"
+                      @click="onServed"
                       :disabled="!selected_queue || selected_queue.status"
                     >
-                      CALL
+                      Served
                     </button>
                   </div>
                   <template v-else>
@@ -102,7 +102,8 @@
                         class="btn btn-info fullwidth mb-2"
                         @click="onRecall"
                         :disabled="
-                          onCallQueue && onCallQueue.recall_count >= max_recall
+                          onServedQueue &&
+                          onServedQueue.recall_count >= max_recall
                         "
                       >
                         RECALL
@@ -121,8 +122,8 @@
                         class="btn btn-secondary fullwidth mb-2"
                         @click="onRequeue"
                         :disabled="
-                          onCallQueue &&
-                          onCallQueue.requeue_count >= max_requeue
+                          onServedQueue &&
+                          onServedQueue.requeue_count >= max_requeue
                         "
                       >
                         REQUEUE
@@ -200,8 +201,8 @@
                           >
                           <span
                             class="badge badge-info"
-                            v-show="queue.status == 'call'"
-                            >On Call</span
+                            v-show="queue.status == 'served'"
+                            >On Served</span
                           >
                           <span
                             class="badge badge-warning"
@@ -279,8 +280,8 @@ export default {
       debounce: null,
       queues: [],
       selected_queue: "",
-      isOnCall: false,
-      onCallQueue: {},
+      isOnServed: false,
+      onServedQueue: {},
       isOnTransfer: false,
       workstationServices: [],
     };
@@ -318,15 +319,15 @@ export default {
     },
     selectQueue(queue_no) {
       this.selected_queue = queue_no;
-      this.onCall();
+      this.onServed();
     },
-    async onCall() {
+    async onServed() {
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
       );
       if (
         selected_queue[0]?.status != "waiting" &&
-        selected_queue[0]?.status != "call" &&
+        selected_queue[0]?.status != "served" &&
         selected_queue[0]?.status != "requeue"
       ) {
         alert("Queue status incorrect");
@@ -334,11 +335,11 @@ export default {
       }
       this.isLoading = true;
       try {
-        const queue = await axios.post("/cs/directQueue/onCall", {
+        const queue = await axios.post("/cs/directQueue/onServed", {
           queue_no: this.selected_queue,
         });
-        this.onCallQueue = queue.data.data;
-        this.isOnCall = true;
+        this.onServedQueue = queue.data.data;
+        this.isOnServed = true;
         this.getQueues();
       } catch (error) {
         this.getQueues();
@@ -352,11 +353,11 @@ export default {
         const queue = await axios.post("/cs/directQueue/onRecall", {
           queue_no: this.selected_queue,
         });
-        this.onCallQueue = queue.data.data;
-        if (this.onCallQueue.recall_count >= this.max_recall) {
-          this.isOnCall = false;
+        this.onServedQueue = queue.data.data;
+        if (this.onServedQueue.recall_count >= this.max_recall) {
+          this.isOnServed = false;
         } else {
-          this.isOnCall = true;
+          this.isOnServed = true;
         }
         this.getQueues();
       } catch (error) {
@@ -370,8 +371,8 @@ export default {
         const queue = await axios.post("/cs/directQueue/onEndServed", {
           queue_no: this.selected_queue,
         });
-        this.onCallQueue = queue.data.data;
-        this.isOnCall = false;
+        this.onServedQueue = queue.data.data;
+        this.isOnServed = false;
         this.getQueues();
       } catch (error) {
         alert(error.response.data.message);
@@ -384,11 +385,11 @@ export default {
         const queue = await axios.post("/cs/directQueue/onRequeue", {
           queue_no: this.selected_queue,
         });
-        this.onCallQueue = queue.data.data;
-        if (this.onCallQueue.requeue_count >= this.max_requeue) {
-          this.isOnCall = false;
+        this.onServedQueue = queue.data.data;
+        if (this.onServedQueue.requeue_count >= this.max_requeue) {
+          this.isOnServed = false;
         } else {
-          this.isOnCall = true;
+          this.isOnServed = true;
         }
         this.getQueues();
       } catch (error) {
@@ -402,8 +403,8 @@ export default {
         const queue = await axios.post("/cs/directQueue/onNoShow", {
           queue_no: this.selected_queue,
         });
-        this.onCallQueue = queue.data.data;
-        this.isOnCall = false;
+        this.onServedQueue = queue.data.data;
+        this.isOnServed = false;
         this.getQueues();
       } catch (error) {
         alert(error.response.data.message);
@@ -431,7 +432,7 @@ export default {
           workstation_service_id: e.target.workstation_service_id.value,
         };
         const queue = await axios.post("/cs/directQueue/onTransfer", data);
-        this.isOnCall = false;
+        this.isOnServed = false;
         this.isOnTransfer = false;
         this.selected_queue = "";
         this.getQueues();
@@ -443,7 +444,7 @@ export default {
   },
   watch: {
     selected_queue() {
-      this.isOnCall = false;
+      this.isOnServed = false;
     },
   },
 };
