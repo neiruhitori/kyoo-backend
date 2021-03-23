@@ -2002,18 +2002,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 // Import component
  // Import stylesheet
 
@@ -7371,7 +7359,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.branch-logo[data-v-08682830] {\n    height: 100px;\n    width: 100px;\n}\n", ""]);
+exports.push([module.i, "\n.branch-logo[data-v-08682830] {\n  height: 100px;\n  width: 100px;\n}\n", ""]);
 
 // exports
 
@@ -46067,9 +46055,9 @@ var render = function() {
                           _c("td", [
                             _c("h3", { staticClass: "text-primary" }, [
                               _vm._v(
-                                "\n                                                " +
+                                "\n                        " +
                                   _vm._s(queue.queue_no) +
-                                  "\n                                            "
+                                  "\n                      "
                               )
                             ])
                           ]),
@@ -46077,12 +46065,12 @@ var render = function() {
                           _c("td", [
                             _c("h3", { staticClass: "text-warning" }, [
                               _vm._v(
-                                "\n                                                " +
+                                "\n                        " +
                                   _vm._s(
                                     queue.workstation_service.workstation
                                       .display_id
                                   ) +
-                                  "\n                                            "
+                                  "\n                      "
                               )
                             ])
                           ])
