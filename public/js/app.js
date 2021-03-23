@@ -2408,7 +2408,7 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
   created: function created() {
     var _this = this;
 
-    Echo["private"]("event_direct_queue.".concat(this.auth.id)).listen("VCTDirectQueue", function (directQueues) {
+    Echo["private"]("event_direct_queue.".concat(this.auth.id)).listen("VCTDirectQueue", function (data) {
       _this.$toast.open({
         message: "New queue created",
         type: "info",
@@ -59046,10 +59046,6 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   key: "7ed71029b7bb7a53f030",
   cluster: "ap1",
   forceTLS: true
-});
-var channel = window.Echo.channel("my-channel");
-channel.listen(".my-event", function (data) {
-  alert(JSON.stringify(data));
 });
 
 /***/ }),

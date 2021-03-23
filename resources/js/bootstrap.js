@@ -39,8 +39,3 @@ window.Echo = new Echo({
     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
     forceTLS: true
 });
-
-var channel = window.Echo.channel("my-channel");
-channel.listen(".my-event", function(data) {
-    alert(JSON.stringify(data));
-});

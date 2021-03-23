@@ -292,7 +292,7 @@ export default {
   created() {
     Echo.private(`event_direct_queue.${this.auth.id}`).listen(
       "VCTDirectQueue",
-      (directQueues) => {
+      (data) => {
         this.$toast.open({
           message: "New queue created",
           type: "info",
