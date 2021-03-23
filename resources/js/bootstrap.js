@@ -37,10 +37,10 @@ window.Echo = new Echo({
     broadcaster: "pusher",
     key: process.env.MIX_PUSHER_APP_KEY,
     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    encrypted: true,
-    forceTLS: true,
-    wsHost: window.location.hostname,
-    wsPort: 6001,
-    wssPort: 6001,
-    disableStats: true
+    forceTLS: true
+});
+
+var channel = window.Echo.channel("my-channel");
+channel.listen(".my-event", function(data) {
+    alert(JSON.stringify(data));
 });
