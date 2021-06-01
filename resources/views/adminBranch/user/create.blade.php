@@ -4,7 +4,7 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Create CS Account</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Create User Counter</h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
@@ -27,7 +27,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">KY{{Auth::user()->branch_id}}_</span>
                                         </div>
-                                        <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{{old('username')}}" required>
+                                        <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{{old('username') ?: (!Auth::user()->Branch->BranchType->is_premium ? 'counter1' : '')}}" required>
                                     </div>
                                     @include('layouts.inputError', ['errorName' => 'username'])
                                 </div>

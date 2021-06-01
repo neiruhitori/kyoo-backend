@@ -44,7 +44,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Served</div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Served</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalServed)}}</div>
                         </div>
                         <div class="col-auto">
@@ -59,7 +59,7 @@
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total No Show</div>
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">No Show</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalNoShow)}}</div>
                             </div>
                             <div class="col-auto">
@@ -115,7 +115,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Visit Served</div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Served</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalDirectQueueServed)}}</div>
                         </div>
                         <div class="col-auto">
@@ -130,7 +130,7 @@
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Visit No Show</div>
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">No Show</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalDirectQueueNoShow)}}</div>
                             </div>
                             <div class="col-auto">
