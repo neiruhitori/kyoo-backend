@@ -47,8 +47,8 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <p>Thanks for registering your branch</p>
-                                <p>Please check your email to next verification step</p>
-                                <a href="/" class="btn btn-sm btn-primary">Back</a>
+                                <p>Let's login to KYOO and update branch profile and virtual counter user to start the Queue</p>
+                                <a href="{{route('login')}}" class="btn btn-sm btn-primary">Login</a>
                             </div>
                         </div>
                     </div>
