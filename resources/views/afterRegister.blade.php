@@ -46,9 +46,9 @@
                         <img src="{{asset('img/store.svg')}}" alt="" class="mb-3" style="max-height: 200px">
                         <div class="row">
                             <div class="col-md-12">
-                                <p>Thanks for registering your branch</p>
-                                <p>Let's login to KYOO and update branch profile and virtual counter user to start the Queue</p>
-                                <a href="{{route('login')}}" class="btn btn-sm btn-primary">Login</a>
+                                <p>Your email was registered</p>
+                                <p>Please wait for admin verification, thanks!</p>
+                                <a href="/" class="btn btn-sm btn-primary">Back</a>
                             </div>
                         </div>
                     </div>
