@@ -47,7 +47,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <p>Your email was registered</p>
-                                <p>Please wait for admin verification, thanks!</p>
+                                <p>Please check your email to next verification step</p>
                                 <a href="/" class="btn btn-sm btn-primary">Back</a>
                             </div>
                         </div>
