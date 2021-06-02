@@ -2,7 +2,7 @@
     <span class="badge badge-warning">Step 1 of 2</span>
 </h5>
 <div class="form-group">
-    <label for="name">Name</label>
+    <label for="name">Branch Name</label>
     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: $branch->name}}" >
     @include('layouts.inputError', ['errorName' => 'name'])
 </div>
