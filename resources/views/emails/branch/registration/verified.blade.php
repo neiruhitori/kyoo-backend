@@ -3,9 +3,10 @@
 
 Hi {{$branch->name}}, thank you for register your branch to Kyoo.id. Now your branch has been verified.
 <br>
-<br>
-<p>Let's login to KYOO and update branch profile and virtual counter user to start the Queue</p>
-<a href="{{route('login')}}" class="btn btn-sm btn-primary">Login</a>
+Let's login to KYOO and update branch profile and virtual counter user to start the Queue
+@component('mail::button', ['url' => route('login')])
+Login
+@endcomponent
 
 Thank You,<br>
 {{ config('app.name') }}
