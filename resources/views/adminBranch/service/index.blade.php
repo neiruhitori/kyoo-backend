@@ -28,7 +28,9 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Department</th>
-                                            <th>Total Slot Time Interval</th>
+                                            @if (Auth::user()->Branch->BranchType->is_appointment)
+                                                <th>Total Slot Time Interval</th>
+                                            @endif
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -43,13 +45,17 @@
                                                         -
                                                     @endif
                                                 </td>
+                                                @if (Auth::user()->Branch->BranchType->is_appointment)
+                                                    <td>
+                                                        {{count($service->Slot)}}
+                                                    </td>
+                                                @endif
                                                 <td>
-                                                    {{count($service->Slot)}}
-                                                </td>
-                                                <td>
-                                                    <a href="{{route('adminBranch.service.slot.index', $service->id)}}" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Slot Time Interval">
-                                                        <i class="fas fa-fw fa-th-list"></i>
-                                                    </a>
+                                                    @if (Auth::user()->Branch->BranchType->is_appointment)
+                                                        <a href="{{route('adminBranch.service.slot.index', $service->id)}}" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Slot Time Interval">
+                                                            <i class="fas fa-fw fa-th-list"></i>
+                                                        </a>
+                                                    @endif
                                                     <a href="{{route('adminBranch.service.edit', $service->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Service">
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>

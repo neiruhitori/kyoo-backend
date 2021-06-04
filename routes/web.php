@@ -92,7 +92,7 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
         Route::resource('service', 'ServiceController');
 
         // Slot routes
-        Route::resource('service.slot', 'SlotController')->shallow();
+        Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
 
         // Workstation routes
         Route::resource('workstation', 'WorkstationController');
