@@ -18,6 +18,7 @@ use App\Models\Province;
 use App\Mail\RegisteredBranchMail;
 use App\Mail\Branch\Registration\Verified;
 use Illuminate\Support\Facades\Mail;
+use App\Helpers\AutoPopulate;
 
 use Storage;
 use Auth;
@@ -116,6 +117,8 @@ class BranchController extends Controller
         ]);
         // sending email
         Mail::to($user->email)->send(new RegisteredBranchMail($branch, $password));
+
+        AutoPopulate::create($branch->id);
 
         $request->session()->flash('success', 'Branch '.$request->name.' has been inserted!');
         return redirect(route('admin.branch.index'));

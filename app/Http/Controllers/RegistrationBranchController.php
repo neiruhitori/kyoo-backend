@@ -14,6 +14,7 @@ use App\User;
 use App\Customer;
 use App\Branch;
 use App\BranchConfiguration;
+use App\Helpers\AutoPopulate;
 
 class RegistrationBranchController extends Controller
 {
@@ -108,6 +109,7 @@ class RegistrationBranchController extends Controller
         $registrationBranch->save();
         $registrationBranch->delete();
 
+        AutoPopulate::create($branch->id);
         return redirect(route('registrationBranch.afterVerified'));
     }
 
