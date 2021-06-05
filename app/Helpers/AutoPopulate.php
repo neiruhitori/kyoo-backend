@@ -2,9 +2,12 @@
 namespace App\Helpers;
 
 use App\Schedule;
+use App\User;
 use App\Department;
 use App\Service;
 use App\Workstation;
+use App\WorkstationVct;
+use Str;
 
 class AutoPopulate {
     public static function create($branch_id)
@@ -30,6 +33,7 @@ class AutoPopulate {
         // auto populate service
         Service::create([
             'branch_id' => $branch_id,
+            'department_id' => $department->id,
             'name' => 'Service 1'
         ]);
 
@@ -39,6 +43,22 @@ class AutoPopulate {
             'name' => 'Counter 1',
             'label' => 'Counter 1',
             'display_id' => 'Counter 1',
+        ]);
+
+        // auto populate workstation vct
+        $vct = User::create([
+            'name' => "KY{$branch_id}_",
+            'email' => null,
+            'email_verified_at' => date(),
+            'password' => Str::random(),
+            'role' => 'cs',
+            'branch_id' => $branch_id,
+            'is_password_changed' => false
+        ]);
+
+        WorkstationVct::create([
+            'workstation_id' => $workstation->id,
+            'vct_id' => $vct->id
         ]);
     }
 }

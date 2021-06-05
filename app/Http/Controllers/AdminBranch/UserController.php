@@ -59,6 +59,7 @@ class UserController extends Controller
         $input['role'] = 'cs';
         $input['name'] = "KY{$input['branch_id']}_".$request->username;
         $input['username'] = "KY{$input['branch_id']}_".$request->username;
+        $input['is_password_changed'] = true;
         $user = User::create($input);
         WorkstationVct::create([
             'workstation_id' => $request->workstation_id,
@@ -111,13 +112,14 @@ class UserController extends Controller
             return redirect(route('unauthorized'));
         }
 
-        if (!Hash::check($request->old_password, $user->password)) {
+        if ($user->is_password_changed && !Hash::check($request->old_password, $user->password)) {
             $request->session()->flash('error', 'Please insert correct old password!');
             return redirect()->back();
         }
         $input = $request->all();
         $input['name'] = "KY{$user['branch_id']}_".$request->username;
         $input['username'] = "KY{$user['branch_id']}_".$request->username;
+        $input['is_password_changed'] = true;
         if (!$request->password) {
             unset($input['password']);
         }

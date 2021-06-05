@@ -28,7 +28,7 @@ class UpdateUser extends FormRequest
             'workstation_id' => 'required|exists:workstations,id',
             'username' => 'required|unique:users,username,'.$this->user_id,
             'old_password' => [
-                'required',
+                'sometimes',
                 'min:8',             // must be at least 8 characters in length
                 'regex:/[a-z]/',      // must contain at least one lowercase letter
                 'regex:/[A-Z]/',      // must contain at least one uppercase letter

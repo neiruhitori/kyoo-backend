@@ -30,15 +30,17 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">KY{{Auth::user()->branch_id}}_</span>
                                         </div>
-                                        <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{!!old('username') ?: explode('_', $user->username)[1]!!}" required>
+                                        <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{!!old('username') ?: (count(explode("_", $user->username)) > 1 ? explode("_", $user->username)[1] : '')!!}" required>
                                     </div>
                                     @include('layouts.inputError', ['errorName' => 'username'])
                                 </div>
-                                <div class="form-group">
-                                    <label for="password_confirmation">Old Password</label>
-                                    <input name="old_password" type="password" class="form-control @error('old_password') is-invalid @enderror" value="{{old('old_password')}}" required>
-                                    @include('layouts.inputError', ['errorName' => 'old_password'])
-                                </div>
+                                @if ($user->is_password_changed)
+                                    <div class="form-group">
+                                        <label for="password_confirmation">Old Password</label>
+                                        <input name="old_password" type="password" class="form-control @error('old_password') is-invalid @enderror" value="{{old('old_password')}}" required>
+                                        @include('layouts.inputError', ['errorName' => 'old_password'])
+                                    </div>
+                                @endif
                                 <div class="form-group">
                                     <label for="password">Password</label>
                                     <br>
