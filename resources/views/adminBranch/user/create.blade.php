@@ -27,7 +27,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">KY{{Auth::user()->branch_id}}_</span>
                                         </div>
-                                        <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{{old('username') ?: (!Auth::user()->Branch->BranchType->is_premium ? 'counter1' : '')}}" required>
+                                        <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{{old('username')}}" required>
                                     </div>
                                     @include('layouts.inputError', ['errorName' => 'username'])
                                 </div>
