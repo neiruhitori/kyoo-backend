@@ -7,6 +7,7 @@ use App\Department;
 use App\Service;
 use App\Workstation;
 use App\WorkstationVct;
+use App\WorkstationService;
 use Str;
 
 class AutoPopulate {
@@ -31,7 +32,7 @@ class AutoPopulate {
         ]);
 
         // auto populate service
-        Service::create([
+        $service = Service::create([
             'branch_id' => $branch_id,
             'department_id' => $department->id,
             'name' => 'Service 1'
@@ -59,6 +60,13 @@ class AutoPopulate {
         WorkstationVct::create([
             'workstation_id' => $workstation->id,
             'vct_id' => $vct->id
+        ]);
+
+        // auto populate workstation service
+        WorkstationService::create([
+            'workstation_id' => $workstation->id,
+            'service_id' => $service->id,
+            'priority' => 1
         ]);
     }
 }
