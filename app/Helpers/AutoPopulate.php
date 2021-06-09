@@ -50,7 +50,7 @@ class AutoPopulate {
         $vct = User::create([
             'name' => "KY{$branch_id}_",
             'email' => null,
-            'email_verified_at' => date(),
+            'email_verified_at' => date('Y-m-d h:i:s'),
             'password' => Str::random(),
             'role' => 'cs',
             'branch_id' => $branch_id,
