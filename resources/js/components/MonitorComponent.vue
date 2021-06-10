@@ -101,10 +101,7 @@
                       <button
                         class="btn btn-info fullwidth mb-2"
                         @click="onRecall"
-                        :disabled="
-                          onServedQueue &&
-                          onServedQueue.recall_count >= max_recall
-                        "
+                        disabled
                       >
                         RECALL
                       </button>
@@ -155,21 +152,27 @@
             <div class="col-md-8">
               <b class="text-primary">Direct Queue List</b>
               <hr />
-              <!-- <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="search-by"
-                                            >Search By Queue No or Name</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            placeholder="Search"
-                                            @input="debounceSearch"
-                                        />
-                                    </div>
-                                </div>
-                            </div> -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-md-8">
+                        <label for="search-by"
+                          >Search By Queue No or Name</label
+                        >
+                      </div>
+                      <div class="col-md-4">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="Search"
+                          @input="debounceSearch"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="row">
                 <table class="table">
                   <thead>
@@ -308,6 +311,7 @@ export default {
       this.isLoading = true;
       const data = await axios.get(`/cs/directQueue?keyword=${this.keyword}`);
       this.queues = data.data.data;
+      this.selected_queue = this.queues[0]?.queue_no;
       this.isLoading = false;
     },
     debounceSearch(event) {
@@ -319,7 +323,6 @@ export default {
     },
     selectQueue(queue_no) {
       this.selected_queue = queue_no;
-      this.onServed();
     },
     async onServed() {
       const selected_queue = this.queues.filter(

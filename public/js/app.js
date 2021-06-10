@@ -2346,6 +2346,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 // Import component
  // Loading component
 
@@ -2412,6 +2415,8 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var _this2$queues$;
+
         var data;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
@@ -2424,9 +2429,10 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
               case 3:
                 data = _context.sent;
                 _this2.queues = data.data.data;
+                _this2.selected_queue = (_this2$queues$ = _this2.queues[0]) === null || _this2$queues$ === void 0 ? void 0 : _this2$queues$.queue_no;
                 _this2.isLoading = false;
 
-              case 6:
+              case 7:
               case "end":
                 return _context.stop();
             }
@@ -2446,7 +2452,6 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
     },
     selectQueue: function selectQueue(queue_no) {
       this.selected_queue = queue_no;
-      this.onServed();
     },
     onServed: function onServed() {
       var _this4 = this;
@@ -46365,12 +46370,7 @@ var render = function() {
                                     {
                                       staticClass:
                                         "btn btn-info fullwidth mb-2",
-                                      attrs: {
-                                        disabled:
-                                          _vm.onServedQueue &&
-                                          _vm.onServedQueue.recall_count >=
-                                            _vm.max_recall
-                                      },
+                                      attrs: { disabled: "" },
                                       on: { click: _vm.onRecall }
                                     },
                                     [
@@ -46467,8 +46467,26 @@ var render = function() {
                 _c("hr"),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("div", { staticClass: "row" }, [
+                        _vm._m(3),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-4" }, [
+                          _c("input", {
+                            staticClass: "form-control",
+                            attrs: { type: "text", placeholder: "Search" },
+                            on: { input: _vm.debounceSearch }
+                          })
+                        ])
+                      ])
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
                   _c("table", { staticClass: "table" }, [
-                    _vm._m(3),
+                    _vm._m(4),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -46590,7 +46608,7 @@ var render = function() {
                                 ]
                               )
                             })
-                          : _c("tr", [_vm._m(4)])
+                          : _c("tr", [_vm._m(5)])
                       ],
                       2
                     )
@@ -46643,6 +46661,16 @@ var staticRenderFns = [
         { staticClass: "btn btn-success fullwidth", attrs: { type: "submit" } },
         [_vm._v("\n                          SAVE\n                        ")]
       )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-8" }, [
+      _c("label", { attrs: { for: "search-by" } }, [
+        _vm._v("Search By Queue No or Name")
+      ])
     ])
   },
   function() {
