@@ -26,6 +26,7 @@ class ReportController extends Controller
         $appointments = Appointment::whereHas('Slot.Service', function($query) use ($request){
             $request->service_id ? $query->where('id', $request->service_id) : $query->where('branch_id', Auth::user()->branch_id);
         })->where('date', $date)->orderBy('number')->get();
+
         return view('cs.report.daily', [
             'appointments' => $appointments,
             'date' => $date,

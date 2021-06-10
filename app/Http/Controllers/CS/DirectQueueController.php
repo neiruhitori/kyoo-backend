@@ -184,15 +184,6 @@ class DirectQueueController extends Controller
             ], 404);
         }
 
-        // check queue can called if previous queue end served
-        if (!$this->checkPreviousQueue($request->queue_no)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Previous queue not finished',
-                'data' => null
-            ], 400);
-        }
-
         // check if queue recall_count on limit
         if ($directQueue->recall_count >= Auth::user()->Branch->BranchConfiguration->maximum_recall) {
             $directQueue->vct_id = Auth::id();
@@ -248,15 +239,6 @@ class DirectQueueController extends Controller
                 'success' => false,
                 'message' => 'Queue recall has on limited',
                 'data' => $directQueue
-            ], 400);
-        }
-
-        // check queue can called if previous queue end served
-        if (!$this->checkPreviousQueue($request->queue_no)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Previous queue not finished',
-                'data' => null
             ], 400);
         }
 

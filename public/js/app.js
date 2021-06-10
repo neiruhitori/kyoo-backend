@@ -2415,9 +2415,10 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var _this2$queues$;
+        var _this2$onServedQueue;
 
-        var data;
+        var data, _this2$queues$;
+
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -2429,7 +2430,11 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
               case 3:
                 data = _context.sent;
                 _this2.queues = data.data.data;
-                _this2.selected_queue = (_this2$queues$ = _this2.queues[0]) === null || _this2$queues$ === void 0 ? void 0 : _this2$queues$.queue_no;
+
+                if (_this2.selected_queue != ((_this2$onServedQueue = _this2.onServedQueue) === null || _this2$onServedQueue === void 0 ? void 0 : _this2$onServedQueue.queue_no)) {
+                  _this2.selectQueue((_this2$queues$ = _this2.queues[0]) === null || _this2$queues$ === void 0 ? void 0 : _this2$queues$.queue_no);
+                }
+
                 _this2.isLoading = false;
 
               case 7:
@@ -2578,7 +2583,7 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
 
               case 4:
                 queue = _context4.sent;
-                _this6.onServedQueue = queue.data.data;
+                _this6.onServedQueue = null;
                 _this6.isOnServed = false;
 
                 _this6.getQueues();
@@ -2620,7 +2625,7 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
 
               case 4:
                 queue = _context5.sent;
-                _this7.onServedQueue = queue.data.data;
+                _this7.onServedQueue = null;
 
                 if (_this7.onServedQueue.requeue_count >= _this7.max_requeue) {
                   _this7.isOnServed = false;
@@ -2667,7 +2672,7 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
 
               case 4:
                 queue = _context6.sent;
-                _this8.onServedQueue = queue.data.data;
+                _this8.onServedQueue = null;
                 _this8.isOnServed = false;
 
                 _this8.getQueues();
@@ -2732,7 +2737,7 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
       var _this10 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee8() {
-        var data, queue;
+        var data;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee8$(_context8) {
           while (1) {
             switch (_context8.prev = _context8.next) {
@@ -2747,36 +2752,39 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_toast_notification__WEBPACK_I
                 return axios.post("/cs/directQueue/onTransfer", data);
 
               case 5:
-                queue = _context8.sent;
                 _this10.isOnServed = false;
                 _this10.isOnTransfer = false;
                 _this10.selected_queue = "";
 
                 _this10.getQueues();
 
-                _context8.next = 15;
+                _context8.next = 14;
                 break;
 
-              case 12:
-                _context8.prev = 12;
+              case 11:
+                _context8.prev = 11;
                 _context8.t0 = _context8["catch"](1);
                 alert(_context8.t0.response.data.message);
 
-              case 15:
+              case 14:
                 _this10.isLoading = false;
 
-              case 16:
+              case 15:
               case "end":
                 return _context8.stop();
             }
           }
-        }, _callee8, null, [[1, 12]]);
+        }, _callee8, null, [[1, 11]]);
       }))();
     }
   },
   watch: {
-    selected_queue: function selected_queue() {
-      this.isOnServed = false;
+    selected_queue: function selected_queue(next) {
+      var _this$onServedQueue;
+
+      if (next != ((_this$onServedQueue = this.onServedQueue) === null || _this$onServedQueue === void 0 ? void 0 : _this$onServedQueue.queue_no)) {
+        this.isOnServed = false;
+      }
     }
   }
 });

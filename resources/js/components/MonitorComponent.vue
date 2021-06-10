@@ -311,7 +311,9 @@ export default {
       this.isLoading = true;
       const data = await axios.get(`/cs/directQueue?keyword=${this.keyword}`);
       this.queues = data.data.data;
-      this.selected_queue = this.queues[0]?.queue_no;
+      if (this.selected_queue != this.onServedQueue?.queue_no) {
+        this.selectQueue(this.queues[0]?.queue_no);
+      }
       this.isLoading = false;
     },
     debounceSearch(event) {
@@ -374,7 +376,7 @@ export default {
         const queue = await axios.post("/cs/directQueue/onEndServed", {
           queue_no: this.selected_queue,
         });
-        this.onServedQueue = queue.data.data;
+        this.onServedQueue = null;
         this.isOnServed = false;
         this.getQueues();
       } catch (error) {
@@ -388,7 +390,7 @@ export default {
         const queue = await axios.post("/cs/directQueue/onRequeue", {
           queue_no: this.selected_queue,
         });
-        this.onServedQueue = queue.data.data;
+        this.onServedQueue = null;
         if (this.onServedQueue.requeue_count >= this.max_requeue) {
           this.isOnServed = false;
         } else {
@@ -406,7 +408,7 @@ export default {
         const queue = await axios.post("/cs/directQueue/onNoShow", {
           queue_no: this.selected_queue,
         });
-        this.onServedQueue = queue.data.data;
+        this.onServedQueue = null;
         this.isOnServed = false;
         this.getQueues();
       } catch (error) {
@@ -434,7 +436,7 @@ export default {
           queue_no: e.target.queue_no.value,
           workstation_service_id: e.target.workstation_service_id.value,
         };
-        const queue = await axios.post("/cs/directQueue/onTransfer", data);
+        await axios.post("/cs/directQueue/onTransfer", data);
         this.isOnServed = false;
         this.isOnTransfer = false;
         this.selected_queue = "";
@@ -446,8 +448,10 @@ export default {
     },
   },
   watch: {
-    selected_queue() {
-      this.isOnServed = false;
+    selected_queue(next) {
+      if (next != this.onServedQueue?.queue_no) {
+        this.isOnServed = false;
+      }
     },
   },
 };
