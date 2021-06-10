@@ -390,14 +390,15 @@ export default {
         const queue = await axios.post("/cs/directQueue/onRequeue", {
           queue_no: this.selected_queue,
         });
-        this.onServedQueue = null;
         if (this.onServedQueue.requeue_count >= this.max_requeue) {
           this.isOnServed = false;
         } else {
           this.isOnServed = true;
         }
+        this.onServedQueue = queue.data.data;
         this.getQueues();
       } catch (error) {
+        console.log({ error });
         alert(error.response.data.message);
       }
       this.isLoading = false;
