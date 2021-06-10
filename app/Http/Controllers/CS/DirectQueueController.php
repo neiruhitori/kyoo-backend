@@ -83,10 +83,11 @@ class DirectQueueController extends Controller
     public function store(StoreDirectQueue $request)
     {
         $workstationService = WorkstationService::find($request->workstation_service_id);
+        $serviceOrderNumber = Service::where('branch_id', $workstationService->Service->branch_id)->where('id', '<=', $workstationService->service_id)->count();
         $lastDirectQueue = DirectQueue::whereWorkstationServiceId($workstationService->id)->whereDate('created_at', Date('Y-m-d'))->count();
 
         $input = $request->all();
-        $input['queue_no'] = $workstationService->service_id . sprintf('%04s', $lastDirectQueue + 1);
+        $input['queue_no'] = $serviceOrderNumber . sprintf('%03s', $lastDirectQueue + 1);
         $directQueue = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor
