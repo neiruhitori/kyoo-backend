@@ -81,6 +81,13 @@ class BranchController extends Controller
      */
     public function store(StoreBranch $request)
     {
+        // validation max counter
+        $branchType = BranchType::whereId($request->branch_type_id)->whereIsPremium(true)->first();
+        if (!$branchType &&  $request->max_counter > 1) {
+            $request->session()->flash('error', 'Free License only able to set max counter 1!');
+            return redirect(route('admin.branch.create'))->withInput();
+        }
+        
         // create branch
         $input = $request->all();
         $input['logo'] = Storage::disk('public')->put('branch_logos', $request->logo);
@@ -167,6 +174,13 @@ class BranchController extends Controller
      */
     public function update(UpdateBranch $request, Branch $branch)
     {
+        // validation max counter
+        $branchType = BranchType::whereId($request->branch_type_id)->whereIsPremium(true)->first();
+        if (!$branchType &&  $request->max_counter > 1) {
+            $request->session()->flash('error', 'Free License only able to set max counter 1!');
+            return redirect(route('admin.branch.create'))->withInput();
+        }
+        
         $input = $request->all();
         if (isset($request->logo)) {
             Storage::disk('public')->delete($branch->logo);

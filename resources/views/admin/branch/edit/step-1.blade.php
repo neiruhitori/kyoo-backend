@@ -25,6 +25,11 @@
     @include('layouts.inputError', ['errorName' => 'branch_type_id'])
 </div>
 <div class="form-group">
+    <label for="max_counter">Max Counter </label>
+    <input name="max_counter" type="number" class="form-control @error('max_counter') is-invalid @enderror" value="{{old('max_counter') ?: $branch->max_counter}}" min="1" max="20">
+    @include('layouts.inputError', ['errorName' => 'max_counter'])
+</div>
+<div class="form-group">
     <label for="description">Description</label>
     <textarea name="description" id="" cols="" rows="" class="form-control @error('description') is-invalid @enderror">{{old('description') ?: $branch->description}}</textarea>
     @include('layouts.inputError', ['errorName' => 'description'])
