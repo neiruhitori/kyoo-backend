@@ -84,10 +84,17 @@ class DirectQueueController extends Controller
     {
         $workstationService = WorkstationService::find($request->workstation_service_id);
         $serviceOrderNumber = Service::where('branch_id', $workstationService->Service->branch_id)->where('id', '<=', $workstationService->service_id)->count();
-        $lastDirectQueue = DirectQueue::whereWorkstationServiceId($workstationService->id)->whereDate('created_at', Date('Y-m-d'))->count();
+        $lastDirectQueue = DirectQueue::where('vct_id', Auth::id())->where('workstation_service_id', $workstationService->id)->whereDate('created_at', Date('Y-m-d'))->count();
+
+        if ($lastDirectQueue > 0) {
+            $lastDirectQueue = DirectQueue::where('vct_id', Auth::id())->where('workstation_service_id', $request->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->orderBy('queue_no', 'desc')->first();
+            $queueNo = (int) $lastDirectQueue->queue_no + 1;
+        }else{
+            $queueNo = $serviceOrderNumber . sprintf('%03s', ++$lastDirectQueue);
+        }
 
         $input = $request->all();
-        $input['queue_no'] = $serviceOrderNumber . sprintf('%03s', $lastDirectQueue + 1);
+        $input['queue_no'] = $queueNo;
         $directQueue = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor
@@ -259,6 +266,7 @@ class DirectQueueController extends Controller
         $rules = [
             'queue_no' => 'required|integer|min:1|exists:direct_queues,queue_no'
         ];
+        
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
             return response()->json([
@@ -276,21 +284,20 @@ class DirectQueueController extends Controller
                 'data' => $validation->errors()
             ], 404);
         }
+
         // check if queue requeue_count on limit
         if ($directQueue->requeue_count >= Auth::user()->Branch->BranchConfiguration->maximum_requeue_count) {
-            $directQueue->status = 'no show';
-            $directQueue->done_at = Date('Y-m-d H:m:s');
-            $directQueue->save();
             return response()->json([
                 'success' => false,
                 'message' => 'Queue requeue has on limited',
                 'data' => $directQueue
             ], 400);
         }
-        $directQueue->status = $directQueue->requeue_count + 1 >= Auth::user()->Branch->BranchConfiguration->maximum_requeue_count ? 'no show' : 'requeue';
+
+        $directQueue->status = 'requeue';
         $directQueue->requeue_count = $directQueue->requeue_count + 1;
         $directQueue->recall_count = 0;
-        $directQueue->called_at = Date('Y-m-d H:m:s');
+        $directQueue->called_at = Date('Y-m-d H:m:i');
         $lastQueue = DirectQueue::where('vct_id', Auth::id())->where('workstation_service_id', $directQueue->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->orderBy('queue_no', 'desc')->first();
         $directQueue['queue_no'] = (int) $lastQueue->queue_no + 1;
         $directQueue->save();
