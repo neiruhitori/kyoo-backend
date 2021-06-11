@@ -73,7 +73,7 @@
                                         <td>{{$branch->IndustryCategory->name}}</td>
                                     </tr>
                                     <tr>
-                                        <th>Branch Type</th>
+                                        <th>Branch License</th>
                                         <td>
                                             <span class="badge badge-primary">
                                                 {{$branch->BranchType->code}} - {{$branch->BranchType->name}}

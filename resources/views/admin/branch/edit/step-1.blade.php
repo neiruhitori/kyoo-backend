@@ -16,7 +16,7 @@
     @include('layouts.inputError', ['errorName' => 'industry_category_id'])
 </div>
 <div class="form-group">
-    <label for="branch_type_id">Branch Type (*)</label>
+    <label for="branch_type_id">Branch License (*)</label>
     <select name="branch_type_id" id="branch_type_id" class="form-control @error('branch_type_id') is-invalid @enderror" >
         @foreach ($branchTypes as $branchType)
             <option value="{{$branchType->id}}">{{$branchType->code}} - {{$branchType->name}}</option>

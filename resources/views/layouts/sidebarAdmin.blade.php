@@ -48,7 +48,7 @@
       <li class="nav-item">
         <a class="nav-link" href="{{route('admin.branchType.index')}}">
           <i class="fas fa-fw fa-building"></i>
-          <span>Branch Type</span>
+          <span>Branch License</span>
         </a>
       </li>
 
