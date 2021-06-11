@@ -54,6 +54,15 @@ class UserController extends Controller
             $request->session()->flash('error', 'You only able insert one account!');
             return redirect(route('adminBranch.user.index'));
         }
+
+        // validate max counter
+        $totalCS = count(Auth::user()->Branch->CS);
+        $maxCounter = Auth::user()->Branch->max_counter;
+        if ($totalCS >= $maxCounter) {
+            $request->session()->flash('error', 'Counter creation has reach the limit!');
+            return redirect(route('adminBranch.user.create'))->withInput();
+        }
+
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
         $input['role'] = 'cs';
