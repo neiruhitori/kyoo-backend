@@ -16,13 +16,18 @@
     @include('layouts.inputError', ['errorName' => 'industry_category_id'])
 </div>
 <div class="form-group">
-    <label for="branch_type_id">Branch Type</label>
+    <label for="branch_type_id">Branch License</label>
     <select name="branch_type_id" id="branch_type_id" class="form-control @error('branch_type_id') is-invalid @enderror" disabled>
         @foreach ($branchTypes as $branchType)
             <option value="{{$branchType->id}}">{{$branchType->code}} - {{$branchType->name}}</option>
         @endforeach
     </select>
     @include('layouts.inputError', ['errorName' => 'branch_type_id'])
+</div>
+<div class="form-group">
+    <label for="max_counter">Max Counter </label>
+    <input name="max_counter" type="number" class="form-control @error('max_counter') is-invalid @enderror" value="{{$branch->max_counter}}" disabled>
+    @include('layouts.inputError', ['errorName' => 'max_counter'])
 </div>
 <div class="form-group">
     <label for="description">Description</label>

@@ -58,7 +58,7 @@ class UserController extends Controller
         // validate max counter
         $totalCS = count(Auth::user()->Branch->CS);
         $maxCounter = Auth::user()->Branch->max_counter;
-        if ($totalCS >= $maxCounter) {
+        if ($totalCS > $maxCounter) {
             $request->session()->flash('error', 'Counter creation has reach the limit!');
             return redirect(route('adminBranch.user.create'))->withInput();
         }
