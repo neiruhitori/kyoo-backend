@@ -35,7 +35,8 @@
                       type="text"
                       class="form-control"
                       placeholder="Input here"
-                      v-model="selected_queue"
+                      v-model.lazy="selected_queue"
+                      @change="manualInput = true"
                     />
                   </div>
                 </div>
@@ -287,6 +288,7 @@ export default {
       onServedQueue: {},
       isOnTransfer: false,
       workstationServices: [],
+      manualInput: false,
     };
   },
   mounted() {
@@ -324,6 +326,7 @@ export default {
       }, 500);
     },
     selectQueue(queue_no) {
+      this.manualInput = false;
       this.selected_queue = queue_no;
     },
     async onServed() {
@@ -342,6 +345,7 @@ export default {
       try {
         const queue = await axios.post("/cs/directQueue/onServed", {
           queue_no: this.selected_queue,
+          is_skip: this.manualInput,
         });
         this.onServedQueue = queue.data.data;
         this.isOnServed = true;

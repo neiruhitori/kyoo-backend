@@ -155,23 +155,49 @@ class DirectQueueController extends Controller
         return view('cs.directQueue.monitor');
     }
 
-    private function checkPreviousQueue($queueNo)
+    private function checkPreviousQueue_old($queueNo, $isSkip = false)
     {
         $queues = $this->InitQuery()->get()->toArray();
         $arrayIndex = array_search($queueNo, array_column($queues, 'queue_no'));
         if ($arrayIndex > 0) {
-            if ($queues[$arrayIndex - 1]['status'] != 'end served' && $queues[$arrayIndex - 1]['status'] != 'no show') {
-                return false;
+            if (!$isSkip) {
+                if ($queues[$arrayIndex - 1]['status'] != 'end served' && $queues[$arrayIndex - 1]['status'] != 'no show') {
+                    return false;
+                }
+            } else {
+                if ($queues[$arrayIndex - 1]['status'] == 'served') {
+                    return false;
+                }
             }
+            
         }
         return true;
+    }
+
+    private function checkPreviousQueue($directQueue, $isSkip = false)
+    {
+        $query = DirectQueue::query()
+                                ->where('id', '!=', $directQueue->id)
+                                ->where('vct_id', Auth::id())
+                                ->where('workstation_service_id', $directQueue->workstation_service_id)
+                                ->whereDate('created_at', Date('Y-m-d'));
+
+        if ($isSkip) {
+            $queues = $query->whereStatus('served');
+        } else {
+            $queues = $query->whereNotIn('status', ['end served', 'no show']);
+        }
+        
+        return $queues->exists();
     }
 
     public function onServed(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues'
+            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'is_skip' => 'nullable|boolean'
         ];
+
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
             return response()->json([
@@ -189,6 +215,15 @@ class DirectQueueController extends Controller
                 'message' => 'Queue not found',
                 'data' => null
             ], 404);
+        }
+
+        // check queue can called if previous queue end served
+        if ($this->checkPreviousQueue($directQueue, $request->is_skip)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Previous queue not finished',
+                'data' => null
+            ], 400);
         }
 
         // check if queue recall_count on limit
@@ -401,7 +436,7 @@ class DirectQueueController extends Controller
 
         $lastDirectQueue = DirectQueue::whereWorkstationServiceId($request->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->count();
         $workstationService = WorkstationService::find($request->workstation_service_id);
-        $queue_no = $workstationService->service_id . sprintf('%04s', $lastDirectQueue + 1);
+        $queue_no = $workstationService->service_id . sprintf('%03s', $lastDirectQueue + 1);
         $directQueue->queue_no = $queue_no;
         $directQueue->workstation_service_id = $request->workstation_service_id;
         $directQueue->status = 'waiting';

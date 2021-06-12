@@ -9,27 +9,29 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      @if (Auth::user()->Branch->BranchType->is_appointment)
-          <li class="nav-item">
-            <a class="nav-link" href="{{route('home')}}">
-              <i class="fas fa-fw fa-users"></i>
-              <span>Virtual Counter</span></a>
-          </li>
-      @endif
-
-      @if (Auth::user()->Branch->BranchType->is_direct_queue)
-          <li class="nav-item">
-            <a class="nav-link" href="{{route('cs.directQueue.monitor')}}">
-              <i class="fas fa-fw fa-users"></i>
-              <span>Virtual Counter</span></a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="{{route('cs.directQueue.create')}}">
-              <i class="fas fa-fw fa-edit"></i>
-              <span>Add Direct Queue</span></a>
-          </li>
-      @endif
+      <li class="nav-item">
+        <a class="nav-link" href="{{route('cs.directQueue.create')}}">
+          <i class="fas fa-fw fa-edit"></i>
+          <span>Add Direct Queue</span></a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          <i class="fas fa-list-ul"></i>
+          <span>Virtual Counter</span>
+        </a>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Submenu:</h6>
+            @if (Auth::user()->Branch->BranchType->is_appointment)
+                <a class="collapse-item" href="{{route('cs.directQueue.monitor')}}">Appointment</a>
+            @endif
+            @if (Auth::user()->Branch->BranchType->is_direct_queue)
+                <a class="collapse-item" href="{{route('cs.directQueue.monitor')}}">Direct Queue</a>
+            @endif
+          </div>
+        </div>
+      </li>
 
       @if (Auth::user()->Branch->BranchType->is_appointment)
           <li class="nav-item">
