@@ -185,7 +185,7 @@ class DirectQueueController extends Controller
         if ($isSkip) {
             $queues = $query->whereStatus('served');
         } else {
-            $queues = $query->whereNotIn('status', ['end served', 'no show']);
+            $queues = $query->whereNotIn('status', ['end served', 'no show', 'waiting']);
         }
         
         return $queues->exists();
