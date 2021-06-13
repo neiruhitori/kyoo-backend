@@ -121,11 +121,11 @@
 
       @if (Auth::user()->Branch->BranchType->is_direct_queue)
           <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
               <i class="fas fa-list-ul"></i>
               <span>Report Direct Queue</span>
             </a>
-            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
+            <div id="collapseFour" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
               <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Submenu:</h6>
                 <a class="collapse-item" href="{{route('adminBranch.report.directQueue.daily')}}">Daily Report</a>
