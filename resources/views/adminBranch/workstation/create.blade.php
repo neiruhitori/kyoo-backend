@@ -25,17 +25,17 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input name="name" id="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: 'Counter 1'}}" onchange="onChangeName()" required>
+                                    <input name="name" id="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" onchange="onChangeName()" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
                                 <div class="form-group">
                                     <label for="label">Label</label>
-                                    <input name="label" type="text" class="form-control @error('label') is-invalid @enderror" value="{{old('label') ?: 'Counter 1'}}" required>
+                                    <input name="label" type="text" class="form-control @error('label') is-invalid @enderror" value="{{old('label')}}" required>
                                     @include('layouts.inputError', ['errorName' => 'label'])
                                 </div>
                                 <div class="form-group">
                                     <label for="display_id">Display ID</label>
-                                    <input name="display_id" id="display_id" type="text" class="form-control @error('display_id') is-invalid @enderror" value="{{old('display_id') ?: 'Counter 1'}}" required readonly>
+                                    <input name="display_id" id="display_id" type="text" class="form-control @error('display_id') is-invalid @enderror" value="{{old('display_id')}}" required readonly>
                                     @include('layouts.inputError', ['errorName' => 'display_id'])
                                 </div>
                                 <button class="btn btn-primary">Insert</button>

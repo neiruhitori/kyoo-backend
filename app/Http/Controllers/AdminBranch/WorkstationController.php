@@ -55,11 +55,22 @@ class WorkstationController extends Controller
             $request->session()->flash('warning', 'Only one workstations can be created!');
             return redirect(route('adminBranch.workstation.index'));
         }
+
+        // validate max counter
+        $totalWorkstations = count(Auth::user()->Branch->Workstations);
+        $maxCounter = Auth::user()->Branch->max_counter;
+        if ($totalWorkstations >= $maxCounter) {
+            $request->session()->flash('error', 'Counter creation has reach the limit!');
+            return redirect(route('adminBranch.workstation.create'))->withInput();
+        }
+
         Workstation::create($request->all());
+        
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Insert Workstation'
         ]);
+        
         $request->session()->flash('success', 'Workstation '.$request->name.' has been inserted!');
         return redirect(route('adminBranch.workstation.index'));
     }
