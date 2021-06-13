@@ -130,15 +130,15 @@
             "buttons": [
                 {
                     extend: 'excelHtml5',
-                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($directQueues) > 0 ? '('.$directQueues[0]->date.')' : '' }}"
+                    title: "Appointments {{ Auth::user()->Branch->name }} {{ $date ? '('.$date.')' : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($directQueues) > 0 ? '('.$directQueues[0]->date.')' : '' }}"
+                    title: "Appointments {{ Auth::user()->Branch->name }} {{ $date ? '('.$date.')' : '' }}"
                 },
                 {
                     extend: 'print',
-                    title: "Appointments {{ Auth::user()->Branch->name }} {{ count($directQueues) > 0 ? '('.$directQueues[0]->date.')' : '' }}"
+                    title: "Appointments {{ Auth::user()->Branch->name }} {{ $date ? '('.$date.')' : '' }}"
                 }
             ]
         })
