@@ -62,9 +62,9 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <th>Queue Number</th>
-                                        <th>Start Queue</th>
-                                        <th>Served</th>
-                                        <th>End Served</th>
+                                        <th>Name</th>
+                                        <th>Called At</th>
+                                        <th>End Served At</th>
                                         <th>Workstation</th>
                                         <th>Service</th>
                                         <th>Status</th>
@@ -73,17 +73,17 @@
                                         @forelse ($directQueues as $directQueue)
                                             <tr>
                                                 <td>{{ $directQueue->queue_no }}</td>
-                                                <td>{{ date('Y M d H:i:s', strtotime($directQueue->created_at)) }}</td>
+                                                <td>{{ $directQueue->name }}</td>
                                                 <td>
                                                     @if ($directQueue->called_at)
-                                                        {{ date('Y M d H:i:s', strtotime($directQueue->called_at)) }}
+                                                        {{ date('H:i:s', strtotime($directQueue->called_at)) }}
                                                     @else
                                                         -
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if ($directQueue->done_at)
-                                                        {{ date('Y M d H:i:s', strtotime($directQueue->done_at)) }}
+                                                        {{ date('H:i:s', strtotime($directQueue->done_at)) }}
                                                     @else
                                                         -
                                                     @endif
