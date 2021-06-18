@@ -199,4 +199,13 @@ class HomeController extends Controller
         $request->session()->flash('success', 'Appointment Has Been Created');
         return redirect(route('cs.appointment.create'));
     }
+
+    public function qr()
+    {
+        $id = base64_encode(Auth::user()->branch_id);
+        $image = \QrCode::format('png')
+                         ->size(500)->errorCorrection('H')
+                         ->generate($id);
+      return response($image)->header('Content-type','image/png');
+    }
 }
