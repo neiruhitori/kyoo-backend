@@ -25,7 +25,9 @@ class DirectQueueController extends Controller
                     })
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
                     ->whereNotIn('status', ['end served', 'no show'])
-                    ->orderBy('workstation_services.priority', 'DESC')->orderBy('direct_queues.queue_no', 'ASC');
+                    ->orderBy('workstation_services.priority', 'DESC')
+                    ->orderBy('direct_queues.requeue_count', 'ASC')
+                    ->orderBy('direct_queues.queue_no', 'ASC');
     }
 
     /**
@@ -332,8 +334,13 @@ class DirectQueueController extends Controller
         $directQueue->requeue_count = $directQueue->requeue_count + 1;
         $directQueue->recall_count = 0;
         $directQueue->called_at = Date('Y-m-d H:m:i');
-        $lastQueue = DirectQueue::where('vct_id', Auth::id())->where('workstation_service_id', $directQueue->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->orderBy('queue_no', 'desc')->first();
-        $directQueue['queue_no'] = (int) $lastQueue->queue_no + 1;
+
+        /**
+         * disabled this flow
+         */
+        // $lastQueue = DirectQueue::where('vct_id', Auth::id())->where('workstation_service_id', $directQueue->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->orderBy('queue_no', 'desc')->first();
+        // $directQueue['queue_no'] = (int) $lastQueue->queue_no + 1;
+
         $directQueue->save();
 
         return response()->json([
