@@ -238,6 +238,7 @@
             <!-- END DIRECT QUEUE LIST -->
           </div>
         </div>
+        <div class="card-footer text-muted">v1.0.0</div>
       </div>
     </div>
   </div>
