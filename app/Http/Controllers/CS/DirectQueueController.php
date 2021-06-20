@@ -20,9 +20,6 @@ class DirectQueueController extends Controller
     {
         return DirectQueue::query()->join('workstation_services', 'workstation_services.id', '=', 'direct_queues.workstation_service_id')
                     ->with(['WorkstationService.Service'])
-                    ->where(function($query){
-                        $query->where('vct_id', Auth::id())->orWhere('vct_id', null);
-                    })
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
                     ->whereNotIn('status', ['end served', 'no show'])
                     ->orderBy('workstation_services.priority', 'DESC')
@@ -179,7 +176,6 @@ class DirectQueueController extends Controller
     private function checkPreviousQueue($directQueue, $isSkip = false)
     {
         $query = DirectQueue::query()
-                                ->where('vct_id', Auth::id())
                                 ->where('workstation_service_id', $directQueue->workstation_service_id)
                                 ->whereDate('created_at', Date('Y-m-d'));
 
