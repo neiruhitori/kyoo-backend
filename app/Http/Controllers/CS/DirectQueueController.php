@@ -183,7 +183,9 @@ class DirectQueueController extends Controller
                                 ->where('workstation_service_id', $directQueue->workstation_service_id)
                                 ->whereDate('created_at', Date('Y-m-d'));
 
-        if ($isSkip) {
+        if ($directQueue->status == 'requeue' && !$isSkip) {
+            $queues = $query->whereIn('status', ['served', 'waiting'])->where('id', '!=', $directQueue->id);
+        }else if ($isSkip) {
             $queues = $query->whereStatus('served')->where('id', '!=', $directQueue->id);
         } else {
             $queues = $query->whereNotIn('status', ['end served', 'no show'])->where('id', '<', $directQueue->id);
