@@ -22,7 +22,7 @@ class DirectQueueController extends Controller
                     ->with(['WorkstationService.Service'])
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
                     ->whereNotIn('status', ['end served', 'no show'])
-                    ->orderBy('workstation_services.priority', 'DESC')
+                    ->orderBy('workstation_services.priority', 'ASC')
                     ->orderBy('direct_queues.requeue_count', 'ASC')
                     ->orderBy('direct_queues.queue_no', 'ASC');
     }
