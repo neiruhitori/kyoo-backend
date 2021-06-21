@@ -195,7 +195,7 @@
                         <td>{{ queue.queue_no }}</td>
                         <td>{{ queue.name || "-" }}</td>
                         <td>
-                          {{ queue.workstation_service.service.name }}
+                          {{ queue.service.name }}
                         </td>
                         <td>
                           <span
@@ -238,7 +238,7 @@
             <!-- END DIRECT QUEUE LIST -->
           </div>
         </div>
-        <div class="card-footer text-muted">v1.0.1</div>
+        <div class="card-footer text-muted">v1.0.2</div>
       </div>
     </div>
   </div>

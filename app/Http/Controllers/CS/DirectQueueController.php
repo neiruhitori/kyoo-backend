@@ -18,11 +18,19 @@ class DirectQueueController extends Controller
     
     private function InitQuery()
     {
-        return DirectQueue::query()->join('workstation_services', 'workstation_services.id', '=', 'direct_queues.workstation_service_id')
-                    ->with(['WorkstationService.Service'])
+        return DirectQueue::query()
+                    ->addSelect([
+                        'vct_priority' => WorkstationService::query()
+                                                                ->select('priority')
+                                                                ->whereColumn('service_id', 'direct_queues.service_id')
+                                                                ->where('workstation_id', Auth::user()->WorkstationVct->workstation_id)
+                                                                ->limit(1)
+                    ])
+                    ->join('workstation_services', 'workstation_services.id', '=', 'direct_queues.workstation_service_id')
+                    ->with('Service')
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
                     ->whereNotIn('status', ['end served', 'no show'])
-                    ->orderBy('workstation_services.priority', 'ASC')
+                    ->orderBy('vct_priority', 'ASC')
                     ->orderBy('direct_queues.requeue_count', 'ASC')
                     ->orderBy('direct_queues.queue_no', 'ASC');
     }
@@ -94,6 +102,7 @@ class DirectQueueController extends Controller
 
         $input = $request->all();
         $input['queue_no'] = $queueNo;
+        $input['service_id'] = $workstationService->service_id;
         $directQueue = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor
@@ -152,25 +161,6 @@ class DirectQueueController extends Controller
     public function monitor()
     {
         return view('cs.directQueue.monitor');
-    }
-
-    private function checkPreviousQueue_old($queueNo, $isSkip = false)
-    {
-        $queues = $this->InitQuery()->get()->toArray();
-        $arrayIndex = array_search($queueNo, array_column($queues, 'queue_no'));
-        if ($arrayIndex > 0) {
-            if (!$isSkip) {
-                if ($queues[$arrayIndex - 1]['status'] != 'end served' && $queues[$arrayIndex - 1]['status'] != 'no show') {
-                    return false;
-                }
-            } else {
-                if ($queues[$arrayIndex - 1]['status'] == 'served') {
-                    return false;
-                }
-            }
-            
-        }
-        return true;
     }
 
     private function checkPreviousQueue($directQueue, $isSkip = false)
