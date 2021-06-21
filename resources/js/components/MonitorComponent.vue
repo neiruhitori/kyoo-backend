@@ -238,7 +238,7 @@
             <!-- END DIRECT QUEUE LIST -->
           </div>
         </div>
-        <div class="card-footer text-muted">v1.0.0</div>
+        <div class="card-footer text-muted">v1.0.1</div>
       </div>
     </div>
   </div>
@@ -400,7 +400,8 @@ export default {
         } else {
           this.isOnServed = true;
         }
-        this.onServedQueue = queue.data.data;
+        this.onServedQueue = null;
+        this.isOnServed = false;
         this.getQueues();
       } catch (error) {
         console.log({ error });
@@ -418,6 +419,7 @@ export default {
         this.isOnServed = false;
         this.getQueues();
       } catch (error) {
+        console.log({ error });
         alert(error.response.data.message);
       }
       this.isLoading = false;
