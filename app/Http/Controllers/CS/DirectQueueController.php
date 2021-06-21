@@ -95,7 +95,7 @@ class DirectQueueController extends Controller
     {
         $workstationService = WorkstationService::find($request->workstation_service_id);
         $serviceOrderNumber = Service::where('branch_id', $workstationService->Service->branch_id)->where('id', '<=', $workstationService->service_id)->count();
-        $lastDirectQueue = DirectQueue::where('vct_id', Auth::id())->where('workstation_service_id', $workstationService->id)->whereDate('created_at', Date('Y-m-d'))->count();
+        $lastDirectQueue = DirectQueue::where('vct_id', Auth::id())->where('service_id', $workstationService->service_id)->whereDate('created_at', Date('Y-m-d'))->count();
 
         if ($lastDirectQueue > 0) {
             $lastDirectQueue = DirectQueue::where('vct_id', Auth::id())->where('workstation_service_id', $request->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->orderBy('queue_no', 'desc')->first();
@@ -173,16 +173,15 @@ class DirectQueueController extends Controller
         $query = $this->InitQuery();
 
         if ($directQueue->status == 'requeue' && !$isSkip) {
-            $queues = $query->whereIn('status', ['served', 'waiting'])->where('id', '!=', $directQueue->id);
+            $queues = $query->whereIn('status', ['served', 'waiting'])->where('id', '!=', $directQueue->id)->exists();
         }else if ($isSkip) {
-            $queues = $query->whereStatus('served')->where('id', '!=', $directQueue->id);
+            $queues = $query->whereStatus('served')->where('id', '!=', $directQueue->id)->exists();
         } else {
             $query->whereNotIn('status', ['end served', 'no show', 'requeue']);
             $queues = $query->get()->filter(function($item){
                 return $item->vct_priority;
             });
             $queues = $queues[0] ? $queues[0]->queue_no != $directQueue->queue_no : false;
-            return $queues;
         }
         
         return $queues;
@@ -227,8 +226,9 @@ class DirectQueueController extends Controller
         if ($directQueue->recall_count >= Auth::user()->Branch->BranchConfiguration->maximum_recall) {
             $directQueue->vct_id = Auth::id();
             $directQueue->status = 'no show';
-            $directQueue->done_at = Date('Y-m-d H:m:s');
+            $directQueue->done_at = Date('Y-m-d H:i:s');
             $directQueue->save();
+
             return response()->json([
                 'success' => false,
                 'message' => 'Queue recall has on limited',
@@ -237,7 +237,7 @@ class DirectQueueController extends Controller
         }
         $directQueue->status = 'served';
         $directQueue->recall_count = $directQueue->recall_count > 0 ? $directQueue->recall_count + 1 : 0;
-        $directQueue->called_at = Date('Y-m-d H:m:s');
+        $directQueue->called_at = Date('Y-m-d H:i:s');
         $directQueue->save();
 
         return response()->json([
@@ -272,7 +272,7 @@ class DirectQueueController extends Controller
         // check if queue recall_count on limit
         if ($directQueue->recall_count >= Auth::user()->Branch->BranchConfiguration->maximum_recall) {
             $directQueue->status = 'no show';
-            $directQueue->done_at = Date('Y-m-d H:m:s');
+            $directQueue->done_at = Date('Y-m-d H:i:s');
             $directQueue->save();
             return response()->json([
                 'success' => false,
@@ -283,7 +283,7 @@ class DirectQueueController extends Controller
 
         $directQueue->status = $directQueue->recall_count + 1 >= Auth::user()->Branch->BranchConfiguration->maximum_recall ? 'no show' : 'served';
         $directQueue->recall_count = $directQueue->recall_count + 1;
-        $directQueue->called_at = Date('Y-m-d H:m:s');
+        $directQueue->called_at = Date('Y-m-d H:i:s');
         $directQueue->save();
 
         return response()->json([
@@ -369,12 +369,12 @@ class DirectQueueController extends Controller
             ], 404);
         }
         $directQueue->status = 'end served';
-        $directQueue->done_at = Date('Y-m-d H:m:s');
+        $directQueue->done_at = Date('Y-m-d H:i:s');
         $directQueue->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Direct Queue on Served',
+            'message' => 'Direct Queue on End Served',
             'data' => $directQueue
         ]);
     }
@@ -402,12 +402,12 @@ class DirectQueueController extends Controller
             ], 404);
         }
         $directQueue->status = 'no show';
-        $directQueue->done_at = Date('Y-m-d H:m:s');
+        $directQueue->done_at = Date('Y-m-d H:i:s');
         $directQueue->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Direct Queue on Served',
+            'message' => 'Direct Queue on No Show',
             'data' => $directQueue
         ]);
     }
