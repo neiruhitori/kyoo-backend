@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class WorkstationService extends Model
 {
@@ -16,5 +17,15 @@ class WorkstationService extends Model
     public function Workstation()
     {
         return $this->belongsTo('App\Workstation');
+    }
+
+    /**
+     * Get all of the WorkstationVct for the WorkstationService
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function WorkstationVct(): HasMany
+    {
+        return $this->hasMany(WorkstationVct::class, 'workstation_id', 'workstation_id');
     }
 }

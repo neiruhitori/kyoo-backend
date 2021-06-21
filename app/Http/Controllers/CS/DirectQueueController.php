@@ -5,6 +5,7 @@ namespace App\Http\Controllers\CS;
 use App\DirectQueue;
 use App\Service;
 use App\WorkstationService;
+use App\WorkstationVct;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -26,7 +27,6 @@ class DirectQueueController extends Controller
                                                                 ->where('workstation_id', Auth::user()->WorkstationVct->workstation_id)
                                                                 ->limit(1)
                     ])
-                    ->join('workstation_services', 'workstation_services.id', '=', 'direct_queues.workstation_service_id')
                     ->with('Service')
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
                     ->whereNotIn('status', ['end served', 'no show'])
@@ -50,10 +50,14 @@ class DirectQueueController extends Controller
             });
         });
 
+        $data = $directQueues->get()->filter(function($directQueue){
+            return $directQueue->vct_priority;
+        });
+
         return response()->json([
             'success' => true,
             'message' => 'get all direct queues by today',
-            'data' => $directQueues->get()
+            'data' => $data
         ]);
     }
 
@@ -103,6 +107,7 @@ class DirectQueueController extends Controller
         $input = $request->all();
         $input['queue_no'] = $queueNo;
         $input['service_id'] = $workstationService->service_id;
+        $input['workstation_id'] = $workstationService->workstation_id;
         $directQueue = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor
