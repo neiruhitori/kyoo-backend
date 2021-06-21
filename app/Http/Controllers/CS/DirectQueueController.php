@@ -170,19 +170,22 @@ class DirectQueueController extends Controller
 
     private function checkPreviousQueue($directQueue, $isSkip = false)
     {
-        $query = DirectQueue::query()
-                                ->where('workstation_service_id', $directQueue->workstation_service_id)
-                                ->whereDate('created_at', Date('Y-m-d'));
+        $query = $this->InitQuery();
 
         if ($directQueue->status == 'requeue' && !$isSkip) {
             $queues = $query->whereIn('status', ['served', 'waiting'])->where('id', '!=', $directQueue->id);
         }else if ($isSkip) {
             $queues = $query->whereStatus('served')->where('id', '!=', $directQueue->id);
         } else {
-            $queues = $query->whereNotIn('status', ['end served', 'no show', 'requeue'])->where('id', '<', $directQueue->id);
+            $query->whereNotIn('status', ['end served', 'no show', 'requeue']);
+            $queues = $query->get()->filter(function($item){
+                return $item->vct_priority;
+            });
+            $queues = $queues[0] ? $queues[0]->queue_no != $directQueue->queue_no : false;
+            return $queues;
         }
         
-        return $queues->exists();
+        return $queues;
     }
 
     public function onServed(Request $request)
