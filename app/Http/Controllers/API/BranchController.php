@@ -44,6 +44,7 @@ class BranchController extends Controller
     {
         $branch->Schedule;
         $branch->IndustryCategory;
+        $branch->BranchType;
 
         $week = $this->getWeek();
 
