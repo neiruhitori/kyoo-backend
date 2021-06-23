@@ -112,6 +112,7 @@ class BranchController extends Controller
             'branch_id' => $branch->id,
             'name' => $input['admin_name'],
             'email' => $input['admin_email'],
+            'email_verified_at' => date('Y-m-d H:i:s'),
             'password' => $password,
             'is_password_changed' => false,
             'phone' => $input['admin_phone'],

@@ -102,6 +102,7 @@ class RegistrationBranchController extends Controller
         $input['password'] = Crypt::decryptString($registrationBranch->makeVisible('attribute')->password);
         $input['role'] = 'admin_branch';
         $input['branch_id'] = $branch->id;
+        $input['email_verified_at'] = date('Y-m-d H:i:s');
         $user = User::create($input);
 
         // remove registration branch
