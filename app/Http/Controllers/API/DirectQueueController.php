@@ -41,9 +41,12 @@ class DirectQueueController extends Controller
 
     public function index(Branch $branch)
     {
-        $workstationServices = WorkstationService::with('Service')->whereHas('Service', function($query) use ($branch){
-            $query->whereBranchId($branch->id);
-        })->get();
+        $workstationServices = WorkstationService::query()
+                                                    ->with('Service')
+                                                    ->whereHas('Service', function($query) use ($branch){
+                                                        $query->whereBranchId($branch->id);
+                                                    })
+                                                    ->get();
 
         return response()->json([
             'success' => true,
@@ -135,7 +138,7 @@ class DirectQueueController extends Controller
         event(new VCTDirectQueueEvent($directQueue));
         event(new DirectQueueEvent($directQueue));
 
-        $workstation['total_waiting'] = DirectQueue::whereWorkstationServiceId($directQueue->workstation_service_id)->whereStatus('waiting')->where('queue_no', '<' , $directQueue->queue_no)->count();
+        $workstation['total_waiting'] = DirectQueue::whereServiceId($directQueue->service_id)->whereStatus('waiting')->whereDate('created_at', date('Y-m-d'))->count();
 
         return response()->json([
             'success' => true,
