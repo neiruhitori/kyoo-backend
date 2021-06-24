@@ -95,11 +95,10 @@ class DirectQueueController extends Controller
     {
         $workstationService = WorkstationService::find($request->workstation_service_id);
         $serviceOrderNumber = Service::where('branch_id', $workstationService->Service->branch_id)->where('id', '<=', $workstationService->service_id)->count();
-        $lastDirectQueue = DirectQueue::where('service_id', $workstationService->service_id)->whereDate('created_at', Date('Y-m-d'))->count();
+        $lastDirectQueue = DirectQueue::where('service_id', $workstationService->service_id)->whereDate('created_at', Date('Y-m-d'))->orderBy('queue_no', 'desc')->get();
 
-        if ($lastDirectQueue > 0) {
-            $lastDirectQueue = DirectQueue::where('workstation_service_id', $request->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->orderBy('queue_no', 'desc')->first();
-            $queueNo = (int) $lastDirectQueue->queue_no + 1;
+        if (count($lastDirectQueue) > 0) {
+            $queueNo = (int) $lastDirectQueue[0]->queue_no + 1;
         }else{
             $queueNo = $serviceOrderNumber . sprintf('%03s', ++$lastDirectQueue);
         }
