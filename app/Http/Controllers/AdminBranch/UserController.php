@@ -10,8 +10,12 @@ use App\Log;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreUser;
 use App\Http\Requests\AdminBranch\UpdateUser;
+use App\Mail\CS\ResetPassword;
+use Mail;
 use Auth;
 use Hash;
+use Crypt;
+use Validator;
 
 class UserController extends Controller
 {
@@ -167,5 +171,55 @@ class UserController extends Controller
         ]);
         $request->session()->flash('success', 'Account '.$user->name.' has been restored!');
         return redirect(route('adminBranch.user.index'));
+    }
+
+    public function resetPassword(Request $request, User $user)
+    {
+        if ($user->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+        Mail::to(Auth::user()->email)->send(new ResetPassword($user));
+        $request->session()->flash('success', 'Please check your email to reset the password');
+        return redirect(route('adminBranch.user.index'));
+    }
+
+    public function reset($user_id)
+    {
+        $user = User::findOrFail(Crypt::decrypt($user_id));
+
+        return view('auth.passwords.resetCS', [
+            'token' => $user_id,
+            'user' => $user
+        ]);
+    }
+
+    public function updatePassword(Request $request, $user_id)
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',             // must be at least 8 characters in length
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',      // must contain at least one digit
+            ]
+        ]);
+        
+        if ($validator->fails()) {
+            $request->session()->flash('error', 'Please check password rules!');
+            return redirect(route('adminBranch.user.reset', $user_id));
+        }
+
+        $user = User::findOrFail(Crypt::decrypt($user_id));
+        $user->update([
+            'password' => bcrypt($request->password)
+        ]);
+        $request->session()->flash('success', "Password {$user->name} has been updated successfully!");
+        if (Auth::user()) {
+            return redirect(route('adminBranch.user.index'));
+        }
+        return redirect(route('login'));
     }
 }

@@ -27,6 +27,9 @@ Route::resource('registrationBranch', 'RegistrationBranchController')->only(['st
 Route::get('/register/success', 'RegistrationBranchController@afterRegister')->name('registrationBranch.afterRegister');
 Route::get('/register/verified', 'RegistrationBranchController@afterVerified')->name('registrationBranch.afterVerified');
 
+Route::get('/vct/reset-password/{user_id}', 'AdminBranch\UserController@reset')->name('adminBranch.user.reset');
+Route::put('/vct/reset-password/{user_id}', 'AdminBranch\UserController@updatePassword')->name('adminBranch.user.password.update');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -100,6 +103,7 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
 
         // Counter routes
         Route::put('user/restore', 'UserController@restore')->name('user.restore');
+        Route::post('user/resetPassword/{user}', 'UserController@resetPassword')->name('user.resetPassword');
         Route::resource('user', 'UserController');
 
         // Report routes

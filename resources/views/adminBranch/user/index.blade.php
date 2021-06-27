@@ -72,6 +72,12 @@
                                                             </button>
                                                         </form>
                                                     @endif
+                                                    <form action="{{route('adminBranch.user.resetPassword', $user->id)}}" method="post" style="display: inline">
+                                                        @csrf   
+                                                        <button type="submit" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Reset Password">
+                                                            <i class="fas fa-fw fa-lock"></i>
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @endforeach
