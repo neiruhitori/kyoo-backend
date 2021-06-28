@@ -16,16 +16,19 @@ class VCTDirectQueue implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $directQueues = '';
+    private $directQueues = '';
+    private $branch_id = null;
+
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($directQueue)
+    public function __construct($directQueue, $branch_id)
     {
         $directQueues = $directQueue;
+        $this->branch_id = $branch_id;
         $this->directQueues = [
             'success' => true,
             'message' => 'realtime direct queue',
@@ -40,6 +43,6 @@ class VCTDirectQueue implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('event_direct_queue.'.Auth::id());
+        return new PrivateChannel('event_direct_queue.'.($this->branch_id ?: Auth::id()));
     }
 }

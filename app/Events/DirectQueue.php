@@ -16,16 +16,18 @@ class DirectQueue implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $directQueues = '';
+    private $directQueues = '';
+    private $branch_id = null;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($directQueue)
+    public function __construct($directQueue, $branch_id)
     {
         $directQueues = $directQueue;
+        $this->branch_id = $branch_id;
         $this->directQueues = [
             'success' => true,
             'message' => 'realtime direct queue',
@@ -40,6 +42,6 @@ class DirectQueue implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('event_direct_queue_general.'.Auth::user()->branch_id);
+        return new Channel('event_direct_queue_general.'.($this->branch_id ?: Auth::user()->branch_id));
     }
 }

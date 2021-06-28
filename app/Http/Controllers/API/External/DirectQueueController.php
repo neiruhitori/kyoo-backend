@@ -1,70 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\External;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\DirectQueue;
-use App\Branch;
 use App\WorkstationService;
 use App\Service;
 use App\Schedule;
 use App\ScheduleTemplateDetail;
-use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
-use App\Http\Requests\API\DirectQueue\Feedback as DirectQueueFeedback;
-use App\Http\Resources\DirectQueue\All as DirectQueueAll;
-use App\Http\Resources\DirectQueue\Detail as DirectQueueDetail;
-use Auth;
+use App\Http\Requests\API\External\DirectQueue\Store;
 use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 use App\Events\DirectQueue as DirectQueueEvent;
 
 class DirectQueueController extends Controller
 {
+    private $branch_id = 17;
 
-    private function InitQuery()
-    {
-        return DirectQueue::query()
-                    ->addSelect([
-                        'vct_priority' => WorkstationService::query()
-                                                                ->select('priority')
-                                                                ->whereColumn('service_id', 'direct_queues.service_id')
-                                                                ->where('workstation_id', Auth::user()->WorkstationVct->workstation_id)
-                                                                ->limit(1)
-                    ])
-                    ->with('Service')
-                    ->whereDate('direct_queues.created_at', Date('Y-m-d'))
-                    ->whereNotIn('status', ['end served', 'no show'])
-                    ->orderBy('vct_priority', 'ASC')
-                    ->orderBy('direct_queues.requeue_count', 'ASC')
-                    ->orderBy('direct_queues.queue_no', 'ASC');
-    }
-
-    public function index(Branch $branch)
-    {
-        $workstationServices = WorkstationService::query()
-                                                    ->with('Service')
-                                                    ->whereHas('Service', function($query) use ($branch){
-                                                        $query->whereBranchId($branch->id);
-                                                    })
-                                                    ->get();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'get all direct queue list by branch_id',
-            'data' => DirectQueueAll::collection($workstationServices)
-        ]);
-    }
-
-    public function show(DirectQueue $directQueue)
-    {
-        return response()->json([
-            'success' => true,
-            'message' => 'get detail direct queues',
-            'data' => new DirectQueueDetail($directQueue)
-        ]);
-    }
-
-    public function store(DirectQueueStore $request)
+    public function store(Store $request)
     {
         /**
          * additional validations:
@@ -74,7 +27,7 @@ class DirectQueueController extends Controller
         
         $current_date = date('Y-m-d');
         $current_time = date('H:i');
-        $workstationService = WorkstationService::find($request->workstation_service_id);
+        $workstationService = WorkstationService::whereServiceId($request->service_id)->orderBy('priority', 'ASC')->first();
 
         // cant create direct queue on closed day by schedule template
         if($workstationService->Service->Branch->schedule_template_id){
@@ -126,15 +79,15 @@ class DirectQueueController extends Controller
 
         $input = $request->all();
         $input['queue_no'] = $queueNo;
+        $input['workstation_service_id'] = $workstationService->id;
         $input['service_id'] = $workstationService->service_id;
         $input['workstation_id'] = $workstationService->workstation_id;
-        $input['user_id'] = Auth::id();
         $input['direct_queue_channel'] = 'Mobile Apps';
         $directQueue = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor
-        event(new VCTDirectQueueEvent($directQueue));
-        event(new DirectQueueEvent($directQueue));
+        event(new VCTDirectQueueEvent($directQueue, $workstationService->Service->branch_id));
+        event(new DirectQueueEvent($directQueue, $workstationService->Service->branch_id));
 
         $workstation['total_waiting'] = DirectQueue::whereServiceId($directQueue->service_id)->whereStatus('waiting')->whereDate('created_at', date('Y-m-d'))->count();
 
@@ -142,30 +95,6 @@ class DirectQueueController extends Controller
             'success' => true,
             'message' => 'direct queue created',
             'data' => $workstation
-        ]);
-    }
-
-    public function upcoming()
-    {
-        $directQueues = DirectQueue::whereUserId(Auth::id())->whereStatus('waiting')->whereDate('created_at', '>=', date('Y-m-d'))->get();
-        return response()->json([
-            'success' => true,
-            'message' => 'get upcoming direct queues',
-            'data' => DirectQueueDetail::collection($directQueues)
-        ]);
-    }
-
-    public function feedback(DirectQueue $directQueue, DirectQueueFeedback $request)
-    {
-        $directQueue->update([
-            'rating' => $request->rating,
-            'is_liked' => $request->is_liked,
-        ]);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'success give feedback direct queue',
-            'data' => $directQueue
         ]);
     }
 }

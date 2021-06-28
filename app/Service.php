@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Service extends Model
 {
@@ -32,5 +33,15 @@ class Service extends Model
     public function Department()
     {
         return $this->belongsTo('App\Department');
+    }
+
+    /**
+     * Get all of the WorkstationService for the Service
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function WorkstationService(): HasMany
+    {
+        return $this->hasMany(WorkstationService::class);
     }
 }
