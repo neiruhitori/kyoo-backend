@@ -15,8 +15,6 @@ use App\Events\DirectQueue as DirectQueueEvent;
 
 class DirectQueueController extends Controller
 {
-    private $branch_id = 17;
-
     public function store(Store $request)
     {
         /**

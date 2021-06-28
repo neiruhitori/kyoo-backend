@@ -77,7 +77,7 @@ Route::get('direct-queue-by-branch/{branch}', 'API\DirectQueueController@index')
 /**
  * External API Routes
  */
-Route::namespace('API\External')->prefix('external')->group(function () {
+Route::namespace('API\External')->prefix('external')->middleware('external.checkBranchToken')->group(function () {
     Route::get('service', 'ServiceController@index');
     Route::get('service/{service}/slot', 'ServiceController@slot');
 

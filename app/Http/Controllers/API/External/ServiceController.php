@@ -14,14 +14,16 @@ use App\Http\Requests\API\External\Service\Slot as GetSlot;
 
 class ServiceController extends Controller
 {
-    private $branch_id = 17;
-
     public function index(Request $request)
     {
+        $branch = Branch::whereHas('BranchToken', function($query) use ($request){
+            $query->whereToken($request->branch_token);
+        })->first();
+
         $limit = $request->limit ?: 10;
         $type = $request->type ?: 'direct queue';
 
-        $services = Service::query()->whereBranchId($this->branch_id);
+        $services = Service::query()->whereBranchId($branch->id);
         $services->when($request->name, function($query) use($request){
             $query->where('name', 'like', "%{$request->name}%");
         });

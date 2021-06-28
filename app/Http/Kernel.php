@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'checkCS' => \App\Http\Middleware\CheckCS::class,
         'checkDirectQueue' => \App\Http\Middleware\CheckDirectQueue::class,
         'checkAppointmentQueue' => \App\Http\Middleware\CheckAppointmentQueue::class,
+        'external.checkBranchToken' => \App\Http\Middleware\API\External\CheckBranchToken::class,
     ];
 }
