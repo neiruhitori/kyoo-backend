@@ -79,6 +79,9 @@ Route::get('direct-queue-by-branch/{branch}', 'API\DirectQueueController@index')
  */
 Route::namespace('API\External')->prefix('external')->group(function () {
     Route::get('service', 'ServiceController@index');
+    Route::get('service/{service}/slot', 'ServiceController@slot');
 
     Route::post('direct-queue', 'DirectQueueController@store');
+
+    Route::post('appointment', 'AppointmentController@store');
 });
