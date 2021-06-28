@@ -71,7 +71,7 @@ class BranchController extends Controller
         $categories = IndustryCategory::all();
         $templates = ScheduleTemplate::all();
         $provinces = Province::all();
-        $branch = Branch::find(Auth::user()->branch_id);
+        $branch = Branch::with('BranchToken')->find(Auth::user()->branch_id);
         $branchTypes = BranchType::all();
         return view('adminBranch.branch.edit', [
             'branch' => $branch,
