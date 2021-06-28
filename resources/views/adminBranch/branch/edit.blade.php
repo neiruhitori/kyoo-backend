@@ -23,6 +23,9 @@
                                     <li class="nav-item">
                                         <a class="nav-link" id="location-tab" data-toggle="tab" href="#location" role="tab" aria-controls="location" aria-selected="false">Branch Location</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="token-tab" data-toggle="tab" href="#token" role="tab" aria-controls="token" aria-selected="false">Branch Token</a>
+                                    </li>
                                 </ul>
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -30,6 +33,20 @@
                                     </div>
                                     <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
                                         @include('adminBranch.branch.edit.step-2')
+                                    </div>
+                                    <div class="tab-pane fade" id="token" role="tabpanel" aria-labelledby="token-tab">
+                                        <div class="form-group mt-2">
+                                            <label for="">Token</label>
+                                            <input type="text" class="form-control" value="{{$branch->BranchToken->token}}" disabled>
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <label for="">Created At</label>
+                                            <input type="text" class="form-control" value="{{date('Y-m-d H:i:s', strtotime($branch->BranchToken->created_at))}}" disabled>
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <label for="">Expired At</label>
+                                            <input type="text" class="form-control" value="{{date('Y-m-d H:i:s', strtotime($branch->BranchToken->created_at . ' + 1 year'))}}" disabled>
+                                        </div>
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-warning fullwidth mb-3">Update</button>

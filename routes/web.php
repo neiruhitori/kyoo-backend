@@ -55,6 +55,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::resource('industryCategory', 'IndustryCategoryController');
 
     // Branch
+    Route::post('branchToken', 'BranchTokenController@store')->name('branchToken.store');
     Route::resource('branch', 'BranchController');
     Route::resource('registrationBranch', 'RegistrationBranchController')->only(['index', 'show', 'update', 'destroy']);
 

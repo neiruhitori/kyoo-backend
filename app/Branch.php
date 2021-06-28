@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Branch extends Model
 {
@@ -81,5 +82,15 @@ class Branch extends Model
     public function Workstations()
     {
         return $this->hasManyThrough('App\Workstation', 'App\Department');
+    }
+
+    /**
+     * Get the BranchToken associated with the Branch
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function BranchToken(): HasOne
+    {
+        return $this->hasOne(BranchToken::class);
     }
 }
