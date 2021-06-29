@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('notification:daily')->dailyAt('07:00')->timezone('Asia/Jakarta');
         $schedule->command('appointment:update')->dailyAt('23:55')->timezone('Asia/Jakarta');
         $schedule->command('directQueue:update')->dailyAt('23:55')->timezone('Asia/Jakarta');
+        $schedule->command('branchToken:expriy')->dailyAt('01:00')->timezone('Asia/Jakarta');
     }
 
     /**
