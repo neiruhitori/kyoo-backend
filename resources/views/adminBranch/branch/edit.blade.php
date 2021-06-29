@@ -49,7 +49,7 @@
                                                 <input type="text" class="form-control" value="{{date('Y-m-d H:i:s', strtotime($branch->BranchToken->created_at . ' + 1 year'))}}" disabled>
                                             </div>
                                         @else
-                                            <b class="my-4">Token not provided yet, please contact admin KYOO</b>
+                                            <b class="my-4">Branch Token API only available for premium license branch and registered for API. Please contact <a href="mailto:support@kyoo.id">support@kyoo.id</a>.</b>
                                         @endif
                                     </div>
                                 </div>
