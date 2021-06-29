@@ -38,7 +38,7 @@ class SetExpiryBranchToken extends Command
      */
     public function handle()
     {
-        $date = date('Y-m-d', strtotime('-1 year'));
-        BranchToken::where('created_at', $date)->delete();
+        $date = date('Y-m-d H:i:s', strtotime('-1 year'));
+        BranchToken::whereDate('created_at', '<=', $date)->delete();
     }
 }
