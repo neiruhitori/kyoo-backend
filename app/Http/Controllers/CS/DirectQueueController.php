@@ -6,6 +6,7 @@ use App\DirectQueue;
 use App\Service;
 use App\WorkstationService;
 use App\WorkstationVct;
+use App\Schedule;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -93,7 +94,47 @@ class DirectQueueController extends Controller
      */
     public function store(StoreDirectQueue $request)
     {
+
+        /**
+         * additional validations:
+         * - user cant create direct queue on closed day with schedule template
+         * - user cant create direct queue on closed day
+         */
+        
+        $current_date = date('Y-m-d');
+        $current_time = date('H:i');
         $workstationService = WorkstationService::find($request->workstation_service_id);
+
+        // cant create direct queue on closed day by schedule template
+        if($workstationService->Service->Branch->schedule_template_id){
+            $schedule_template_details = ScheduleTemplateDetail::query()
+                                                                    ->where('schedule_template_id', $workstationService->Service->Branch->schedule_template_id)
+                                                                    ->where('date', $current_date)
+                                                                    ->first();
+            if($schedule_template_details){
+                $request->session()->flash('error', "Service Provider Already Closed");
+                return redirect(route('cs.directQueue.create'));
+            }
+        }
+
+        // cant create direct queue on closed day
+        $selectedSchedule = Schedule::query()
+                                ->where('branch_id', $workstationService->Service->branch_id)
+                                ->where('day', strtolower(date('l', strtotime($current_date))))
+                                ->get(['day', 'status', 'start_time', 'end_time'])
+                                ->first();
+
+        if (!$selectedSchedule || $selectedSchedule->status == 'closed') {
+            $request->session()->flash('error', "Service Provider Already Closed");
+            return redirect(route('cs.directQueue.create'));
+        }
+
+        // cant create direct queue before open time and after closed time
+        if ($current_time < $selectedSchedule->start_time || $current_time > $selectedSchedule->end_time) {
+            $request->session()->flash('error', "Service Provider Already Closed");
+            return redirect(route('cs.directQueue.create'));
+        }
+
         $serviceOrderNumber = Service::where('branch_id', $workstationService->Service->branch_id)->where('id', '<=', $workstationService->service_id)->count();
         $lastDirectQueue = DirectQueue::where('service_id', $workstationService->service_id)->whereDate('created_at', Date('Y-m-d'))->orderBy('queue_no', 'desc')->get();
 
@@ -107,6 +148,8 @@ class DirectQueueController extends Controller
         $input['queue_no'] = $queueNo;
         $input['service_id'] = $workstationService->service_id;
         $input['workstation_id'] = $workstationService->workstation_id;
+        $input['user_id'] = Auth::id();
+        $input['direct_queue_channel'] = 'Mobile Apps';
         $directQueue = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor

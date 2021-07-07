@@ -25,7 +25,7 @@ class VCTDirectQueue implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($directQueue, $branch_id)
+    public function __construct($directQueue, $branch_id = null)
     {
         $directQueues = $directQueue;
         $this->branch_id = $branch_id;
