@@ -12,6 +12,7 @@ use App\Schedule;
 use App\ScheduleTemplateDetail;
 use App\DirectQueue;
 use App\Http\Resources\Appointment as AppointmentCollection;
+use App\Http\Resources\Upcomming as UpcommingCollection;
 use Auth;
 use Collection;
 
@@ -140,7 +141,7 @@ class AppointmentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get all history appointment',
-            'data' => AppointmentCollection::collection($histories)
+            'data' => UpcommingCollection::collection($histories)
         ]);
     }
 
@@ -187,7 +188,7 @@ class AppointmentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get upcoming appointment and direct queue',
-            'data' => AppointmentCollection::collection($histories)
+            'data' => UpcommingCollection::collection($histories)
         ]);
     }
 }
