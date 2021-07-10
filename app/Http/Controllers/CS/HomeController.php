@@ -140,7 +140,7 @@ class HomeController extends Controller
                                             ->where(['date' => $request->date])
                                             ->first(); 
         if ($sameAppointment) {
-            $request->session()->flash('error', 'Appointment maximum limit already reached, please find other timeslot schedule');
+            $request->session()->flash('error', 'Can not create the same appointment at the same time');
             return back()->withInput();
         }
 
@@ -155,7 +155,7 @@ class HomeController extends Controller
                                             ->count(); 
 
         if ($sameAppointment >= $slot->max_slots) {
-            $request->session()->flash('error', "This service slot was full");
+            $request->session()->flash('error', "Appointment maximum limit already reached, please find other timeslot schedule");
             return back()->withInput();
         }
 
