@@ -188,8 +188,7 @@ class AppointmentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get upcoming appointment and direct queue',
-            'data' => UpcommingCollection::collection($histories),
-            'histories' => $histories
+            'data' => UpcommingCollection::collection($histories)
         ]);
     }
 }
