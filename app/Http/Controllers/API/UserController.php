@@ -61,7 +61,7 @@ class UserController extends Controller
                     'data' => [
                         'email' => 'not verified'
                     ]
-                ], 401);
+                ], 400);
             }
             $user['token'] =  $user->createToken('nApp')->accessToken;
 
@@ -81,7 +81,7 @@ class UserController extends Controller
                 'success' => false,
                 'message' => 'Username or password is incorrect',
                 'data' => null
-            ], 401);
+            ], 400);
         }
     }
 
