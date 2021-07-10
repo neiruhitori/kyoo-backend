@@ -130,13 +130,13 @@ class DirectQueueController extends Controller
         $input['workstation_id'] = $workstationService->workstation_id;
         $input['user_id'] = Auth::id();
         $input['direct_queue_channel'] = 'Mobile Apps';
-        $directQueue = DirectQueue::create($input);
+        $workstation = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor
-        event(new VCTDirectQueueEvent($directQueue));
-        event(new DirectQueueEvent($directQueue));
+        event(new VCTDirectQueueEvent($workstation));
+        event(new DirectQueueEvent($workstation));
 
-        $workstation['total_waiting'] = DirectQueue::whereServiceId($directQueue->service_id)->whereStatus('waiting')->whereDate('created_at', date('Y-m-d'))->count();
+        $workstation['total_waiting'] = DirectQueue::whereServiceId($workstation->service_id)->whereStatus('waiting')->whereDate('created_at', date('Y-m-d'))->count();
 
         return response()->json([
             'success' => true,
