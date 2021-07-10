@@ -177,8 +177,11 @@ class UserController extends Controller
         }
 
         $user->update($input);
-        $user->Customer->update($request->all());
-        $user->Customer;
+        if ($user->Customer) {
+            $user->Customer->update($request->all());
+            $user->Customer;
+        }
+        
         return response()->json([
             'success' => true,
             'message' => 'update user',
