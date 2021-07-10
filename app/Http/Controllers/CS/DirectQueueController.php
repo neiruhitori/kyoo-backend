@@ -7,6 +7,7 @@ use App\Service;
 use App\WorkstationService;
 use App\WorkstationVct;
 use App\Schedule;
+use App\ScheduleTemplateDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
