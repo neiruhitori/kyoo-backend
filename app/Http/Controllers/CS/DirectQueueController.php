@@ -142,7 +142,7 @@ class DirectQueueController extends Controller
         if (count($lastDirectQueue) > 0) {
             $queueNo = (int) $lastDirectQueue[0]->queue_no + 1;
         }else{
-            $queueNo = $serviceOrderNumber . sprintf('%03s', ++$lastDirectQueue);
+            $queueNo = $serviceOrderNumber . sprintf('%03s', ((int) count($lastDirectQueue) + 1));
         }
 
         $input = $request->all();
@@ -150,7 +150,7 @@ class DirectQueueController extends Controller
         $input['service_id'] = $workstationService->service_id;
         $input['workstation_id'] = $workstationService->workstation_id;
         $input['user_id'] = Auth::id();
-        $input['direct_queue_channel'] = 'Mobile Apps';
+        $input['direct_queue_channel'] = 'Web';
         $directQueue = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor
