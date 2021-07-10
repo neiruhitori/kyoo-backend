@@ -179,8 +179,12 @@ class UserController extends Controller
         $user->update($input);
         if ($user->Customer) {
             $user->Customer->update($request->all());
-            $user->Customer;
+        }else{
+            $input['user_id'] = $user->id;
+            Customer::create($input);
         }
+        
+        $user->Customer;
         
         return response()->json([
             'success' => true,
