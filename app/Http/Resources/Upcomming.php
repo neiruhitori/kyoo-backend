@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Appointment as AppointmentModel;
 use App\DirectQueue;
-class Appointment extends JsonResource
+class Upcomming extends JsonResource
 {
     
     /**
