@@ -16,6 +16,8 @@ class Appointment extends JsonResource
      */
     public function toArray($request)
     {
+        $appointment = AppointmentModel::find($this['id']);
+        $currently_attending = AppointmentModel::select('number')->where('slot_id', $appointment->slot_id)->where('date', $appointment->date)->where('status', 'served')->first();
         return [
             'id' => $appointment->id,
             'branch_id' => $appointment->Slot->Service->Branch->id,
