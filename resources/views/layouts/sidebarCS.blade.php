@@ -15,11 +15,13 @@
       </li>
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item">
-        <a class="nav-link" href="{{route('cs.directQueue.create')}}">
-          <i class="fas fa-fw fa-edit"></i>
-          <span>Add Direct Queue</span></a>
-      </li>
+      @if (Auth::user()->Branch->BranchType->is_direct_queue)
+        <li class="nav-item">
+          <a class="nav-link" href="{{route('cs.directQueue.create')}}">
+            <i class="fas fa-fw fa-edit"></i>
+            <span>Add Direct Queue</span></a>
+        </li>
+      @endif
       
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
