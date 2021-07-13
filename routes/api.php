@@ -32,6 +32,7 @@ Route::get('industry-category', 'API\IndustryCategoryController@index');
 Route::get('branch/city/{regency_id}', 'API\BranchController@getAllByCityId');
 Route::get('branch/keyword/{keyword}', 'API\BranchController@getAllByKeyword');
 Route::get('branch/industry-category/{industry_category_id}', 'API\BranchController@getAllByIndustryCategory');
+Route::get('branch/type/{branch}', 'API\BranchController@getBranchType');
 Route::get('branch/{branch}', 'API\BranchController@show');
 
 // service routes

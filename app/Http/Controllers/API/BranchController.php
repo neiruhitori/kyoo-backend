@@ -79,4 +79,13 @@ class BranchController extends Controller
 
         return ['week_start' => $week_start, 'week_end' => $week_end];
     }
+
+    public function getBranchType(Branch $branch)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'get branch type by branch id',
+            'data' => $branch->BranchType
+        ]);
+    }
 }

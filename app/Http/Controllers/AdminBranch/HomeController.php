@@ -77,10 +77,17 @@ class HomeController extends Controller
 
     public function qr()
     {
-        $id = base64_encode(Auth::user()->branch_id);
+        $json_barcode = json_encode([
+                'type' => 'show_branch_action',
+                'branch' => [
+                    'id' => Auth::user()->branch_id
+                ]
+            ]);
+
+        $barcode = base64_encode($json_barcode);
         $image = \QrCode::format('png')
                          ->size(500)->errorCorrection('H')
-                         ->generate($id);
+                         ->generate($barcode);
       return response($image)->header('Content-type','image/png');
     }
 
