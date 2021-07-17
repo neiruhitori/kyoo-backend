@@ -86,7 +86,9 @@ class DirectQueueController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Service Provider Already Closed',
-                    'data' => []
+                    'data' => [
+                        'condition' => 'schedule_template_details'
+                    ]
                 ]);    
             }
         }
@@ -102,7 +104,9 @@ class DirectQueueController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Service Provider Already Closed',
-                'data' => []
+                'data' => [
+                    'condition' => 'selectedSchedule->status'
+                ]
             ]);
         }
 
@@ -111,7 +115,9 @@ class DirectQueueController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Service Provider Already Closed',
-                'data' => []
+                'data' => [
+                    'condition' => 'selectedSchedule->start_time'
+                ]
             ]);
         }
 
