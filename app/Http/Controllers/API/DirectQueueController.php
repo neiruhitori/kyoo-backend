@@ -105,7 +105,8 @@ class DirectQueueController extends Controller
                 'success' => false,
                 'message' => 'Service Provider Already Closed',
                 'data' => [
-                    'condition' => $selectedSchedule
+                    'condition' => $selectedSchedule,
+                    'day' => strtolower(date('l', strtotime($current_date)))
                 ]
             ]);
         }
