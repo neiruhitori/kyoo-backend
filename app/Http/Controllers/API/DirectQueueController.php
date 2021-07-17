@@ -106,7 +106,7 @@ class DirectQueueController extends Controller
                 'message' => 'Service Provider Already Closed',
                 'data' => [
                     'condition' => $selectedSchedule,
-                    'day' => strtolower(date('l', strtotime($current_date)))
+                    'branch_id' => $workstationService->Service->branch_id
                 ]
             ]);
         }
