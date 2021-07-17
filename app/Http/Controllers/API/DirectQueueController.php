@@ -86,17 +86,15 @@ class DirectQueueController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Service Provider Already Closed',
-                    'data' => [
-                        'condition' => 'schedule_template_details'
-                    ]
+                    'data' => []
                 ]);    
             }
         }
 
         // cant create direct queue on closed day
         $selectedSchedule = Schedule::query()
-                                // ->where('branch_id', $workstationService->Service->branch_id)
-                                // ->where('day', strtolower(date('l', strtotime($current_date))))
+                                ->where('branch_id', $workstationService->Service->branch_id)
+                                ->where('day', strtolower(date('l', strtotime($current_date))))
                                 ->get(['day', 'status', 'start_time', 'end_time'])
                                 ->first();
 
@@ -104,10 +102,7 @@ class DirectQueueController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Service Provider Already Closed',
-                'data' => [
-                    'condition' => $selectedSchedule,
-                    'branch_id' => $workstationService->Service->branch_id
-                ]
+                'data' => []
             ]);
         }
 
@@ -116,9 +111,7 @@ class DirectQueueController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Service Provider Already Closed',
-                'data' => [
-                    'condition' => 'selectedSchedule->start_time'
-                ]
+                'data' => []
             ]);
         }
 
