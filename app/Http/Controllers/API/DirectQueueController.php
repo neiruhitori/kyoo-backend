@@ -95,7 +95,7 @@ class DirectQueueController extends Controller
 
         // cant create direct queue on closed day
         $selectedSchedule = Schedule::query()
-                                ->where('branch_id', $workstationService->Service->branch_id)
+                                // ->where('branch_id', $workstationService->Service->branch_id)
                                 // ->where('day', strtolower(date('l', strtotime($current_date))))
                                 ->get(['day', 'status', 'start_time', 'end_time'])
                                 ->first();
