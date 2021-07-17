@@ -105,7 +105,7 @@ class DirectQueueController extends Controller
                 'success' => false,
                 'message' => 'Service Provider Already Closed',
                 'data' => [
-                    'condition' => 'selectedSchedule->status'
+                    'condition' => $selectedSchedule
                 ]
             ]);
         }
