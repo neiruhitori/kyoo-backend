@@ -32,7 +32,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Submenu:</h6>
             @if (Auth::user()->Branch->BranchType->is_appointment)
-                <a class="collapse-item" href="{{route('cs.directQueue.monitor')}}">Appointment</a>
+                <a class="collapse-item" href="{{route('home')}}">Appointment</a>
             @endif
             @if (Auth::user()->Branch->BranchType->is_direct_queue)
                 <a class="collapse-item" href="{{route('cs.directQueue.monitor')}}">Direct Queue</a>
