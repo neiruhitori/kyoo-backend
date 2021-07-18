@@ -68,6 +68,7 @@ class DirectQueueController extends Controller
     {
         /**
          * additional validations:
+         * - user cant create same direct queue 3x at same date
          * - user cant create direct queue on closed day with schedule template
          * - user cant create direct queue on closed day
          */
@@ -75,6 +76,23 @@ class DirectQueueController extends Controller
         $current_date = date('Y-m-d');
         $current_time = date('H:i');
         $workstationService = WorkstationService::find($request->workstation_service_id);
+
+        // user cant create same direct queue 3x at same date
+        $sameUserQueueCount = DirectQueue::query()
+                                            ->whereHas('WorkstationService.Service', function($query) use($workstationService){
+                                                return $query->where('branch_id', $workstationService->Service->branch_id);
+                                            })
+                                            ->where('user_id', Auth::id())
+                                            ->whereDate('created_at', $current_date)
+                                            ->count();
+
+        if ($sameUserQueueCount > 3) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Can not create same direct queue 3 times at same date',
+                'data' => []
+            ]);    
+        }
 
         // cant create direct queue on closed day by schedule template
         if($workstationService->Service->Branch->schedule_template_id){
