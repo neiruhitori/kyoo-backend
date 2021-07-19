@@ -125,13 +125,13 @@ class AppointmentController extends Controller
     
     public function history()
     {
-        $appointments = Appointment::where('user_id', Auth::id())->whereIn('status', ['no show', 'end served'])->orderBy('date', 'asc')->get()->toArray();
+        $appointments = Appointment::where('user_id', Auth::id())->whereIn('status', ['no show', 'end served'])->orderBy('date', 'desc')->get()->toArray();
         foreach ($appointments as $key => $appointment) {
             $appointments[$key]['is_direct_queue'] = false;
             $appointments[$key]['sorting_date'] = $appointment['date'];
         }
 
-        $directQueues = DirectQueue::whereUserId(Auth::id())->whereNotIn('status', ['waiting', 'served'])->orderBy('created_at', 'asc')->get()->toArray();
+        $directQueues = DirectQueue::whereUserId(Auth::id())->whereNotIn('status', ['waiting', 'served'])->orderBy('created_at', 'desc')->get()->toArray();
         foreach ($directQueues as $key => $directQueue) {
             $directQueues[$key]['is_direct_queue'] = true;
             $directQueues[$key]['sorting_date'] = date('Y-m-d', strtotime($directQueue['created_at']));
