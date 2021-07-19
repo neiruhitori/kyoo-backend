@@ -42,7 +42,7 @@ class DirectQueueController extends Controller
             if ($sameUserQueueCount > 3) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Can not create same direct queue 3 times at same date',
+                    'message' => 'Only max 3 direct queue number request at the same date',
                     'data' => []
                 ]);    
             }

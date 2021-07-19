@@ -119,7 +119,7 @@ class DirectQueueController extends Controller
                                             ->count();
 
             if ($sameUserQueueCount > 3) {
-                $request->session()->flash('error', "Can not create same direct queue 3 times at same date");
+                $request->session()->flash('error', "Only max 3 direct queue number request at the same date");
                 return redirect(route('cs.directQueue.create'));
             }
         }
