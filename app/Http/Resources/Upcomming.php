@@ -37,7 +37,6 @@ class Upcomming extends JsonResource
                 'rating' => $directQueue->rating,
                 'is_liked' => $directQueue->is_liked,
                 'status' => $directQueue->status,
-                'sorting_date' => $directQueue->sorting_date,
             ];
         }else{
             $appointment = AppointmentModel::find($this['id']);
@@ -63,7 +62,6 @@ class Upcomming extends JsonResource
                 'queue_no' => (int) $appointment->number,
                 'total_waiting' => AppointmentModel::where('slot_id', $appointment->slot_id)->where('date', $appointment->date)->where('number', '<', $appointment->number)->whereIn('status', ['book', 'check in'])->get()->count(),
                 'currently_attending' => isset($currently_attending) ? intval($currently_attending->number) : 0,
-                'sorting_date' => $appointment->sorting_date,
             ];
         }
 
