@@ -136,14 +136,16 @@ class AppointmentController extends Controller
             $directQueues[$key]['is_direct_queue'] = true;
             $directQueues[$key]['sorting_date'] = date('Y-m-d', strtotime($directQueue['created_at']));
         }
+
+        // merging appointments and direct queues and sorting by date desc
         $histories = array_merge($directQueues, $appointments);
         usort($histories, function($a, $b) {return strcmp($a['sorting_date'], $b['sorting_date']);});
         $histories = collect($histories)->sortByDesc('sorting_date')->toArray();
+
         return response()->json([
             'success' => true,
             'message' => 'get all history appointment',
             'data' => UpcommingCollection::collection($histories)
-            // 'data' => $histories
         ]);
     }
 
