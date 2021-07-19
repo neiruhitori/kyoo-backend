@@ -138,6 +138,7 @@ class AppointmentController extends Controller
         }
         $histories = array_merge($directQueues, $appointments);
         usort($histories, function($a, $b) {return strcmp($a['sorting_date'], $b['sorting_date']);});
+        $histories = collect($histories)->sortByDesc('sorting_date');
         return response()->json([
             'success' => true,
             'message' => 'get all history appointment',
