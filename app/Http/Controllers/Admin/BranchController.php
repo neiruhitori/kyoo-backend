@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Branch;
+use App\BranchType;
+use App\BranchConfiguration;
 use App\IndustryCategory;
 use App\ScheduleTemplate;
 use App\User;
@@ -14,7 +16,9 @@ use Illuminate\Http\Request;
 use Countries;
 use App\Models\Province;
 use App\Mail\RegisteredBranchMail;
+use App\Mail\Branch\Registration\Verified;
 use Illuminate\Support\Facades\Mail;
+use App\Helpers\AutoPopulate;
 
 use Storage;
 use Auth;
@@ -59,11 +63,13 @@ class BranchController extends Controller
         $categories = IndustryCategory::all();
         $templates = ScheduleTemplate::all();
         $provinces = Province::all();
+        $branchTypes = BranchType::all();
         return view('admin.branch.create', [
             'countries' => $countries,
             'categories' => $categories,
             'templates' => $templates,
-            'provinces' => $provinces
+            'provinces' => $provinces,
+            'branchTypes' => $branchTypes
         ]);
     }
 
@@ -75,12 +81,27 @@ class BranchController extends Controller
      */
     public function store(StoreBranch $request)
     {
+        // validation max counter
+        $branchType = BranchType::whereId($request->branch_type_id)->whereIsPremium(true)->first();
+        if (!$branchType &&  $request->max_counter > 1) {
+            $request->session()->flash('error', 'Free License only able to set max counter 1!');
+            return redirect(route('admin.branch.create'))->withInput();
+        }
+        
         // create branch
         $input = $request->all();
         $input['logo'] = Storage::disk('public')->put('branch_logos', $request->logo);
         $input['photo'] = Storage::disk('public')->put('branch_photos', $request->photo);
         $input['status'] = 'verified';
         $branch = Branch::create($input);
+
+        // create branch configuration
+        BranchConfiguration::create([
+            'branch_id' => $branch->id,
+            'maximum_recall' => 2,
+            'maximum_requeue_count' => 2,
+            'allow_transfer' => false
+        ]);
 
         // create admin branch
         $password = $this->generateRandomString(3, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // random uppercase
@@ -91,6 +112,7 @@ class BranchController extends Controller
             'branch_id' => $branch->id,
             'name' => $input['admin_name'],
             'email' => $input['admin_email'],
+            'email_verified_at' => date('Y-m-d H:i:s'),
             'password' => $password,
             'is_password_changed' => false,
             'phone' => $input['admin_phone'],
@@ -103,6 +125,8 @@ class BranchController extends Controller
         ]);
         // sending email
         Mail::to($user->email)->send(new RegisteredBranchMail($branch, $password));
+
+        AutoPopulate::create($branch->id);
 
         $request->session()->flash('success', 'Branch '.$request->name.' has been inserted!');
         return redirect(route('admin.branch.index'));
@@ -131,12 +155,14 @@ class BranchController extends Controller
         $categories = IndustryCategory::all();
         $templates = ScheduleTemplate::all();
         $provinces = Province::all();
+        $branchTypes = BranchType::all();
         return view('admin.branch.edit', [
             'branch' => $branch,
             'countries' => $countries,
             'categories' => $categories,
             'templates' => $templates,
-            'provinces' => $provinces
+            'provinces' => $provinces,
+            'branchTypes' => $branchTypes
         ]);
     }
 
@@ -149,6 +175,13 @@ class BranchController extends Controller
      */
     public function update(UpdateBranch $request, Branch $branch)
     {
+        // validation max counter
+        $branchType = BranchType::whereId($request->branch_type_id)->whereIsPremium(true)->first();
+        if (!$branchType &&  $request->max_counter > 1) {
+            $request->session()->flash('error', 'Free License only able to set max counter 1!');
+            return redirect(route('admin.branch.create'))->withInput();
+        }
+        
         $input = $request->all();
         if (isset($request->logo)) {
             Storage::disk('public')->delete($branch->logo);
@@ -210,6 +243,9 @@ class BranchController extends Controller
           $branch->status = $request->status;
           $branch->save();
           if ($request->status == 'verified') {
+              // sending email
+              Mail::to($branch->email)->send(new Verified($branch));
+
               Log::create([
                     'user_id' => Auth::id(),
                     'description' => 'Success Verify Branch'

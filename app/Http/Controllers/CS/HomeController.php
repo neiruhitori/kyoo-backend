@@ -32,6 +32,9 @@ class HomeController extends Controller
 
     public function index()
     {
+        if (!Auth::user()->Branch->BranchType->is_appointment) {
+            return redirect(route('cs.directQueue.monitor'));
+        }
         $dateNow = date('Y-m-d');
         
         $appointments = Appointment::whereHas('Slot.Service', function($query) {
@@ -105,7 +108,7 @@ class HomeController extends Controller
                 ]);    
                 break;
         }
-        $request->session()->flash('success', 'Appointment #'.$appointment->id.' status has been changed!');
+        $request->session()->flash('success', 'Appointment #'.$appointment->number.' status has been changed!');
         return redirect(route('cs.home'));
     }
 
@@ -137,7 +140,7 @@ class HomeController extends Controller
                                             ->where(['date' => $request->date])
                                             ->first(); 
         if ($sameAppointment) {
-            $request->session()->flash('error', 'Appointment maximum limit already reached, please find other timeslot schedule');
+            $request->session()->flash('error', 'Can not create the same appointment at the same time');
             return back()->withInput();
         }
 
@@ -152,7 +155,7 @@ class HomeController extends Controller
                                             ->count(); 
 
         if ($sameAppointment >= $slot->max_slots) {
-            $request->session()->flash('error', "This service slot was full");
+            $request->session()->flash('error', "Appointment maximum limit already reached, please find other timeslot schedule");
             return back()->withInput();
         }
 
@@ -195,5 +198,21 @@ class HomeController extends Controller
 
         $request->session()->flash('success', 'Appointment Has Been Created');
         return redirect(route('cs.appointment.create'));
+    }
+
+    public function qr()
+    {
+        $json_barcode = json_encode([
+                'type' => 'show_branch_action',
+                'branch' => [
+                    'id' => Auth::user()->branch_id
+                ]
+            ]);
+
+        $barcode = base64_encode($json_barcode);
+        $image = \QrCode::format('png')
+                         ->size(500)->errorCorrection('H')
+                         ->generate($barcode);
+      return response($image)->header('Content-type','image/png');
     }
 }

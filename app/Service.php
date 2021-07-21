@@ -4,12 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Service extends Model
 {
     use SoftDeletes;
     
-    protected $fillable = ['branch_id', 'name'];
+    protected $fillable = ['branch_id', 'name', 'department_id'];
 
     public function Slot()
     {
@@ -27,5 +28,20 @@ class Service extends Model
     public function Branch()
     {
         return $this->belongsTo('App\Branch')->withTrashed();
+    }
+
+    public function Department()
+    {
+        return $this->belongsTo('App\Department');
+    }
+
+    /**
+     * Get all of the WorkstationService for the Service
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function WorkstationService(): HasMany
+    {
+        return $this->hasMany(WorkstationService::class);
     }
 }

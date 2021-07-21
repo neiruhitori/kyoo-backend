@@ -4,7 +4,7 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Edit CS Account</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Edit User Counter</h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
@@ -15,20 +15,32 @@
                                 @method('PUT')
                                 <input type="hidden" name="user_id" value="{{$user->id}}">
                                 <div class="form-group">
+                                    <label for="workstation_id">Workstation</label>
+                                    <select name="workstation_id" id="workstation_id" class="form-control @error('workstation_id') is-invalid @enderror">
+                                        <option value="">- Select Workstation -</option>
+                                        @foreach ($workstations as $workstation)
+                                            <option value="{{$workstation->id}}">{{$workstation->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @include('layouts.inputError', ['errorName' => 'department_id'])
+                                </div>
+                                <div class="form-group">
                                     <label for="username">Username</label>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">KY{{Auth::user()->branch_id}}_</span>
                                         </div>
-                                        <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{!!old('username') ?: explode('_', $user->username)[1]!!}" required>
+                                        <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{!!old('username') ?: (count(explode("_", $user->username)) > 1 ? explode("_", $user->username)[1] : '')!!}" required>
                                     </div>
                                     @include('layouts.inputError', ['errorName' => 'username'])
                                 </div>
-                                <div class="form-group">
-                                    <label for="password_confirmation">Old Password</label>
-                                    <input name="old_password" type="password" class="form-control @error('old_password') is-invalid @enderror" value="{{old('old_password')}}" required>
-                                    @include('layouts.inputError', ['errorName' => 'old_password'])
-                                </div>
+                                @if ($user->is_password_changed)
+                                    <div class="form-group">
+                                        <label for="password_confirmation">Old Password</label>
+                                        <input name="old_password" type="password" class="form-control @error('old_password') is-invalid @enderror" value="{{old('old_password')}}" required>
+                                        @include('layouts.inputError', ['errorName' => 'old_password'])
+                                    </div>
+                                @endif
                                 <div class="form-group">
                                     <label for="password">Password</label>
                                     <br>
@@ -58,3 +70,14 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script>
+        $(document).ready(function() {
+            const workstation_idOldValue = '{{ old('workstation_id') ?: $user->WorkstationVct->workstation_id }}';
+            
+            if(workstation_idOldValue !== '') {
+                $('#workstation_id').val(workstation_idOldValue);
+            }
+        });
+    </script>
+@endpush

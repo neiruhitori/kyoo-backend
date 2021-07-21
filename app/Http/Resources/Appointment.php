@@ -16,28 +16,29 @@ class Appointment extends JsonResource
      */
     public function toArray($request)
     {
-        $currently_attending = AppointmentModel::select('number')->where('slot_id', $this->slot_id)->where('date', $this->date)->where('status', 'served')->first();
+        $appointment = AppointmentModel::find($this['id']);
+        $currently_attending = AppointmentModel::select('number')->where('slot_id', $appointment->slot_id)->where('date', $appointment->date)->where('status', 'served')->first();
         return [
-            'id' => $this->id,
-            'branch_id' => $this->Slot->Service->Branch->id,
-            'branch_name' => $this->Slot->Service->Branch->name,
-            'service_name' => $this->Slot->Service->name,
-            'service_id' => $this->Slot->Service->id,
-            'status' => $this->status,
-            'date' => $this->date,
-            'start_time' => $this->Slot->start_time,
-            'end_time' => $this->Slot->end_time,
-            'timezone' => $this->Slot->Service->Branch->timezone,
-            'booking_code' => $this->booking_code,
-            'industry_category' => $this->Slot->Service->Branch->IndustryCategory->name,
-            'name' => $this->name,
-            'phone' => $this->phone,
-            'email' => $this->email,
-            'rating' => $this->rating,
-            'is_liked' => $this->is_liked,
-            'queue_no' => (int) $this->number,
-            'total_waiting' => AppointmentModel::where('slot_id', $this->slot_id)->where('date', $this->date)->where('number', '<', $this->number)->whereIn('status', ['book', 'check in'])->get()->count(),
-            'currently_attending' => isset($currently_attending) ? intval($currently_attending->number) : 0
+            'id' => $appointment->id,
+            'branch_id' => $appointment->Slot->Service->Branch->id,
+            'branch_name' => $appointment->Slot->Service->Branch->name,
+            'service_name' => $appointment->Slot->Service->name,
+            'service_id' => $appointment->Slot->Service->id,
+            'status' => $appointment->status,
+            'date' => $appointment->date,
+            'start_time' => $appointment->Slot->start_time,
+            'end_time' => $appointment->Slot->end_time,
+            'timezone' => $appointment->Slot->Service->Branch->timezone,
+            'booking_code' => $appointment->booking_code,
+            'industry_category' => $appointment->Slot->Service->Branch->IndustryCategory->name,
+            'name' => $appointment->name,
+            'phone' => $appointment->phone,
+            'email' => $appointment->email,
+            'rating' => $appointment->rating,
+            'is_liked' => $appointment->is_liked,
+            'queue_no' => (int) $appointment->number,
+            'total_waiting' => AppointmentModel::where('slot_id', $appointment->slot_id)->where('date', $appointment->date)->where('number', '<', $appointment->number)->whereIn('status', ['book', 'check in'])->get()->count(),
+            'currently_attending' => isset($currently_attending) ? intval($currently_attending->number) : 0,
         ];
     }
 }

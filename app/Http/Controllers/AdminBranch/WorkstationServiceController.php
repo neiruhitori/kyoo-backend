@@ -1,0 +1,134 @@
+<?php
+
+namespace App\Http\Controllers\AdminBranch;
+
+use App\Http\Controllers\Controller;
+use App\Workstation;
+use App\WorkstationService;
+use App\Service;
+use App\Log;
+use Illuminate\Http\Request;
+use App\Http\Requests\AdminBranch\StoreWorkstationService;
+use App\Http\Requests\AdminBranch\UpdateWorkstationService;
+use Auth;
+
+class WorkstationServiceController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Workstation $workstation)
+    {
+        return view('adminBranch.workstation.workstationService.index')->withWorkstation($workstation);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request, Workstation $workstation)
+    {
+        // for MVP
+        if (!Auth::user()->Branch->BranchType->is_premium && count($workstation->WorkstationService) > 0) {
+            $request->session()->flash('warning', 'Only one workstations can be created!');
+            return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+        }
+        $services = Service::whereBranchId(Auth::user()->branch_id)->get();
+        return view('adminBranch.workstation.workstationService.create')->withWorkstation($workstation)->withServices($services);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Workstation $workstation, StoreWorkstationService $request)
+    {
+        // for MVP
+        if (!Auth::user()->Branch->BranchType->is_premium && count($workstation->WorkstationService) > 0) {
+            $request->session()->flash('warning', 'Only one workstations can be created!');
+            return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+        }
+        WorkstationService::create($request->all());
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Insert Workstation Service'
+        ]);
+        $request->session()->flash('success', 'Workstation Service has been inserted!');
+        return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\WorkstationService  $workstationService
+     * @return \Illuminate\Http\Response
+     */
+    public function show(WorkstationService $workstationService)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\WorkstationService  $workstationService
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Workstation $workstation, WorkstationService $workstationService)
+    {
+        // gate
+        if ($workstationService->Service->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+        $services = Service::whereBranchId(Auth::user()->branch_id)->get();
+        return view('adminBranch.workstation.workstationService.edit')->withWorkstationService($workstationService)->withServices($services);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\WorkstationService  $workstationService
+     * @return \Illuminate\Http\Response
+     */
+    public function update(UpdateWorkstationService $request, Workstation $workstation, WorkstationService $workstationService)
+    {
+        // gate
+        if ($workstationService->Service->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+        $workstationService->update($request->all());
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update Workstation Service'
+        ]);
+        $request->session()->flash('warning', 'Workstation Service has been updated!');
+        return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\WorkstationService  $workstationService
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request, Workstation $workstation, WorkstationService $workstationService)
+    {
+        // gate
+        if ($workstationService->Service->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+        $workstationService->delete();
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Remove Workstation Service'
+        ]);
+        $request->session()->flash('error', 'Workstation Service has been removed!');
+        return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+    }
+}

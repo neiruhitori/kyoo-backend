@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Branch;
 use App\Appointment;
+use App\DirectQueue;
 use App\ScheduleTemplateDetail;
 
 class BranchController extends Controller
@@ -44,6 +45,7 @@ class BranchController extends Controller
     {
         $branch->Schedule;
         $branch->IndustryCategory;
+        $branch->BranchType;
 
         $week = $this->getWeek();
 
@@ -63,6 +65,16 @@ class BranchController extends Controller
             $query->where('branch_id', $branch->id);
         })->where('is_liked', true)->count();
 
+        $appointmentLikes = Appointment::whereHas('Slot.Service', function($query) use ($branch){
+            $query->where('branch_id', $branch->id);
+        })->where('is_liked', true)->count();
+
+        $directQueueLikes = DirectQueue::whereHas('Service', function($query) use ($branch){
+            $query->where('branch_id', $branch->id);
+        })->where('is_liked', true)->count();
+
+        $branch->likes = $appointmentLikes + $directQueueLikes;
+        
         return response()->json([
             'success' => true,
             'message' => 'get detail branch with schedule and service',
@@ -77,5 +89,14 @@ class BranchController extends Controller
         $week_end = date('Y-m-d', strtotime('+'.(6-$day).' days'));
 
         return ['week_start' => $week_start, 'week_end' => $week_end];
+    }
+
+    public function getBranchType(Branch $branch)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'get branch type by branch id',
+            'data' => $branch->BranchType
+        ]);
     }
 }

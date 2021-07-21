@@ -1,7 +1,7 @@
 @component('mail::message')
 # Verify Your Email
 
-Hi {{$branch->name}}, thank you for register your branch to Kyoo.id. Please login on our web and <b>CHANGE</b> your default password.
+Hi {{$branch->name}}, thank you for register your branch to Kyoo. Please login on our web and <b>CHANGE</b> your default password.
 
 <center>
     Your password is

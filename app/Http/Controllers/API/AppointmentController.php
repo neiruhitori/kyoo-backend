@@ -10,8 +10,11 @@ use App\Appointment;
 use App\Slot;
 use App\Schedule;
 use App\ScheduleTemplateDetail;
+use App\DirectQueue;
 use App\Http\Resources\Appointment as AppointmentCollection;
+use App\Http\Resources\Upcomming as UpcommingCollection;
 use Auth;
+use Collection;
 
 class AppointmentController extends Controller
 {
@@ -71,7 +74,7 @@ class AppointmentController extends Controller
 
         // cant create appointment on closed day
         $slot_day = Schedule::where('branch_id', $slot->Service->branch_id)->where('day', $selected_day)->get(['day', 'status'])->first();
-        if ($slot_day->status == 'closed') {
+        if ($slot_day && $slot_day->status == 'closed') {
             return response()->json([
                 'success' => false,
                 'message' => 'Service Provider Already Closed',
@@ -122,12 +125,27 @@ class AppointmentController extends Controller
     
     public function history()
     {
-        $appointments = Appointment::where('user_id', Auth::id())->whereIn('status', ['no show', 'end served'])->orderBy('date', 'desc')->get();
-        
+        $appointments = Appointment::where('user_id', Auth::id())->whereIn('status', ['no show', 'end served'])->orderBy('date', 'desc')->get()->toArray();
+        foreach ($appointments as $key => $appointment) {
+            $appointments[$key]['is_direct_queue'] = false;
+            $appointments[$key]['sorting_date'] = $appointment['date'];
+        }
+
+        $directQueues = DirectQueue::whereUserId(Auth::id())->whereNotIn('status', ['waiting', 'served'])->orderBy('created_at', 'desc')->get()->toArray();
+        foreach ($directQueues as $key => $directQueue) {
+            $directQueues[$key]['is_direct_queue'] = true;
+            $directQueues[$key]['sorting_date'] = date('Y-m-d', strtotime($directQueue['created_at']));
+        }
+
+        // merging appointments and direct queues and sorting by date desc
+        $histories = array_merge($directQueues, $appointments);
+        usort($histories, function($a, $b) {return strcmp($a['sorting_date'], $b['sorting_date']);});
+        $histories = collect($histories)->sortByDesc('sorting_date')->toArray();
+
         return response()->json([
             'success' => true,
             'message' => 'get all history appointment',
-            'data' => AppointmentCollection::collection($appointments)
+            'data' => UpcommingCollection::collection($histories)
         ]);
     }
 
@@ -144,17 +162,37 @@ class AppointmentController extends Controller
     public function upcoming()
     {
         $dateNow = date('Y-m-d');
-        $appointments = Appointment::with('Slot.Service')->where('date', '>=', $dateNow)->where('user_id', Auth::id())->where('status', 'book')->orderBy('date', 'asc')->get();
-        foreach ($appointments as $appointment) {
-            $filledSlot = Appointment::whereHas('Slot', function($query) use ($appointment) {
-                $query->where('id', $appointment->slot_id);
-            })->where('date', $dateNow)->whereIn('status', ['book', 'check in'])->where('user_id', '!=', Auth::id())->get();
-            $appointment['Slot']['waiting'] = count($filledSlot);
-        }
+        $appointments = Appointment::where('user_id', Auth::id())->where('date', '>=', $dateNow)->where('status', 'book')->orderBy('date', 'desc')->get()->toArray();
+
         return response()->json([
             'success' => true,
             'message' => 'get upcoming appointment',
             'data' => $appointments
+        ]);
+    }
+
+    public function upcomingCombine()
+    {
+        $dateNow = date('Y-m-d');
+        $appointments = Appointment::where('user_id', Auth::id())->where('date', '>=', $dateNow)->where('status', 'book')->orderBy('date', 'asc')->get()->toArray();
+        foreach ($appointments as $key => $appointment) {
+            $appointments[$key]['is_direct_queue'] = false;
+            $appointments[$key]['sorting_date'] = $appointment['date'];
+        }
+
+        $directQueues = DirectQueue::whereUserId(Auth::id())->where('status', 'waiting')->whereDate('created_at', '>=', date('Y-m-d'))->orderBy('created_at', 'asc')->get()->toArray();
+        foreach ($directQueues as $key => $directQueue) {
+            $directQueues[$key]['is_direct_queue'] = true;
+            $directQueues[$key]['sorting_date'] = date('Y-m-d', strtotime($directQueue['created_at']));
+        }
+
+        $histories = array_merge($directQueues, $appointments);
+        usort($histories, function($a, $b) {return strcmp($a['sorting_date'], $b['sorting_date']);});
+
+        return response()->json([
+            'success' => true,
+            'message' => 'get upcoming appointment and direct queue',
+            'data' => UpcommingCollection::collection($histories)
         ]);
     }
 }

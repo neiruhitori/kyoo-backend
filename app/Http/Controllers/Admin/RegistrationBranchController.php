@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\RegistrationBranch;
 use App\Branch;
+use App\BranchConfiguration;
 use App\User;
 use App\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Branch\Registration\Verified;
+use App\Mail\Branch\Registration\Rejected;
 use Auth;
 
 class RegistrationBranchController extends Controller
@@ -77,9 +81,28 @@ class RegistrationBranchController extends Controller
     public function update(Request $request, RegistrationBranch $registrationBranch)
     {
         $input = $registrationBranch->toArray();
+        switch ($input['queue_type']) {
+            case 'direct_queue':
+                $input['branch_type_id'] = 2;
+                break;
+            case 'appointment_queue':
+                $input['branch_type_id'] = 1;
+                break;
+        }
         // duplicate to branches table
         $input['mobile_phone'] = $registrationBranch->phone;
         $branch = Branch::create($input);
+        
+        // create branch configuration
+        BranchConfiguration::create([
+            'branch_id' => $branch->id,
+            'maximum_recall' => 2,
+            'maximum_requeue_count' => 2,
+            'allow_transfer' => false
+        ]);
+
+        // sending email
+        Mail::to($branch->email)->send(new Verified($branch));
 
         // duplicate to users table
         $input['password'] = Crypt::decryptString($registrationBranch->makeVisible('attribute')->password);
@@ -103,6 +126,8 @@ class RegistrationBranchController extends Controller
     public function destroy(Request $request, RegistrationBranch $registrationBranch)
     {
         $registrationBranch->delete();
+        // sending email
+        Mail::to($registrationBranch->email)->send(new Rejected($registrationBranch));
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Remove Branch Registration'

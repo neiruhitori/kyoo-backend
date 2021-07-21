@@ -27,7 +27,9 @@ class UpdateBranch extends FormRequest
             // branch profile
             'name' => 'required|string',
             'industry_category_id' => 'required|exists:industry_categories,id',
-            'description' => 'required',
+            'branch_type_id' => 'required|exists:branch_types,id',
+            'max_counter' => 'required|numeric|min:1|max:20',
+            'description' => 'nullable|string',
             'email' => 'email',
             'country' => 'required',
             'fixed_phone' => 'nullable|numeric|min:5',

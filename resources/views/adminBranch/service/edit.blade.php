@@ -20,6 +20,16 @@
                                     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: $service->name}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
+                                <div class="form-group">
+                                    <label for="department_id">Department</label>
+                                    <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror">
+                                        <option value="">- Select Department -</option>
+                                        @foreach ($departments as $department)
+                                            <option value="{{$department->id}}">{{$department->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @include('layouts.inputError', ['errorName' => 'department_id'])
+                                </div>
                                 <button class="btn btn-warning">Update</button>
                             </form>
                         </div>
@@ -29,3 +39,14 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script>
+        $(document).ready(function() {
+            const department_idOldValue = '{{ old('department_id') ?: $service->department_id }}';
+            
+            if(department_idOldValue !== '') {
+                $('#department_id').val(department_idOldValue);
+            }
+        });
+    </script>
+@endpush

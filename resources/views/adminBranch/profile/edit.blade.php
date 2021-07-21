@@ -24,7 +24,7 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group">
-                                    <label for="name">Name</label>
+                                    <label for="name">Branch Name</label>
                                     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: Auth::user()->name}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>

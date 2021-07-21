@@ -61,7 +61,7 @@ class UserController extends Controller
                     'data' => [
                         'email' => 'not verified'
                     ]
-                ], 401);
+                ], 400);
             }
             $user['token'] =  $user->createToken('nApp')->accessToken;
 
@@ -81,7 +81,7 @@ class UserController extends Controller
                 'success' => false,
                 'message' => 'Username or password is incorrect',
                 'data' => null
-            ], 401);
+            ], 400);
         }
     }
 
@@ -177,8 +177,15 @@ class UserController extends Controller
         }
 
         $user->update($input);
-        $user->Customer->update($request->all());
+        if ($user->Customer) {
+            $user->Customer->update($request->all());
+        }else{
+            $input['user_id'] = $user->id;
+            Customer::create($input);
+        }
+        
         $user->Customer;
+        
         return response()->json([
             'success' => true,
             'message' => 'update user',

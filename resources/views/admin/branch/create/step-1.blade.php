@@ -2,7 +2,7 @@
     <span class="badge badge-primary">Step 1 of 3</span>
 </h5>
 <div class="form-group">
-    <label for="name">Name (*)</label>
+    <label for="name">Branch Name (*)</label>
     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
     @include('layouts.inputError', ['errorName' => 'name'])
 </div>
@@ -14,6 +14,20 @@
         @endforeach
     </select>
     @include('layouts.inputError', ['errorName' => 'industry_category_id'])
+</div>
+<div class="form-group">
+    <label for="branch_type_id">Branch License (*)</label>
+    <select name="branch_type_id" id="branch_type_id" class="form-control @error('branch_type_id') is-invalid @enderror" >
+        @foreach ($branchTypes as $branchType)
+            <option value="{{$branchType->id}}">{{$branchType->code}} - {{$branchType->name}}</option>
+        @endforeach
+    </select>
+    @include('layouts.inputError', ['errorName' => 'branch_type_id'])
+</div>
+<div class="form-group">
+    <label for="max_counter">Max Counter </label>
+    <input name="max_counter" type="number" class="form-control @error('max_counter') is-invalid @enderror" value="{{old('max_counter')}}" min="1" max="20">
+    @include('layouts.inputError', ['errorName' => 'max_counter'])
 </div>
 <div class="form-group">
     <label for="description">Description</label>
@@ -81,6 +95,12 @@
             
             if(is_activeOldValue !== '') {
                 $('#is_active').val(is_activeOldValue);
+            }
+
+            const branch_type_idOldValue = '{{ old('branch_type_id') }}';
+            
+            if(branch_type_idOldValue !== '') {
+                $('#branch_type_id').val(branch_type_idOldValue);
             }
         });
     </script>

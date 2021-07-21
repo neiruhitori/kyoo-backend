@@ -39,7 +39,7 @@
             <div class="col-md-8 offset-md-2">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Regist your Branch here</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Register your Branch here</h6>
                     </div>
                     <div class="card-body">
                         <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
@@ -49,7 +49,7 @@
                                 <form action="{{route('registrationBranch.store')}}" method="post">
                                     @csrf
                                     <div class="form-group">
-                                        <label for="name">Name (*)</label>
+                                        <label for="name">Branch Name (*)</label>
                                         <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
                                         @include('layouts.inputError', ['errorName' => 'name'])
                                     </div>
@@ -59,6 +59,20 @@
                                             @foreach ($categories as $category)
                                                 <option value="{{$category->id}}">{{$category->name}}</option>
                                             @endforeach
+                                        </select>
+                                        @include('layouts.inputError', ['errorName' => 'industry_category_id'])
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="queue_type">Queue Type (*)</label>
+                                        <br>
+                                        <small>
+                                            <b>Direct Queue - GoShow :</b> Non Quota Basis, direct queue in branch location, no appointment needed to get the service
+                                            <br>
+                                            <b>Appointment Queue :</b> Quota Basis, appointment needed to get the service
+                                        </small>
+                                        <select name="queue_type" id="queue_type" class="form-control @error('queue_type') is-invalid @enderror" required>
+                                            <option value="direct_queue">Direct Queue (Go Show)</option>
+                                            <option value="appointment_queue">Appointment Queue</option>
                                         </select>
                                         @include('layouts.inputError', ['errorName' => 'industry_category_id'])
                                     </div>

@@ -46,7 +46,7 @@
                         <img src="{{asset('img/store.svg')}}" alt="" class="mb-3" style="max-height: 200px">
                         <div class="row">
                             <div class="col-md-12">
-                                <p>Thanks for registering your branch</p>
+                                <p>Your email was registered</p>
                                 <p>Please check your email to next verification step</p>
                                 <a href="/" class="btn btn-sm btn-primary">Back</a>
                             </div>

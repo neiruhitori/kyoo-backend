@@ -32,6 +32,7 @@ Route::get('industry-category', 'API\IndustryCategoryController@index');
 Route::get('branch/city/{regency_id}', 'API\BranchController@getAllByCityId');
 Route::get('branch/keyword/{keyword}', 'API\BranchController@getAllByKeyword');
 Route::get('branch/industry-category/{industry_category_id}', 'API\BranchController@getAllByIndustryCategory');
+Route::get('branch/type/{branch}', 'API\BranchController@getBranchType');
 Route::get('branch/{branch}', 'API\BranchController@show');
 
 // service routes
@@ -46,6 +47,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('user/update-profile', 'API\UserController@update');
     Route::put('user/update-password', 'API\UserController@updatePassword');
     Route::put('user/update-avatar', 'API\UserController@updateAvatar');
+    Route::get('upcoming', 'API\AppointmentController@upcomingCombine');
 
     // appointment routes
     Route::post('appointment', 'API\AppointmentController@store');
@@ -55,6 +57,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
     Route::get('appointment-upcoming', 'API\AppointmentController@upcoming');
 
+    // direct queue routes
+    Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
+    Route::get('direct-queue-upcoming', 'API\DirectQueueController@upcoming');
+    Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
+    Route::post('direct-queue', 'API\DirectQueueController@store');
+
     // favorite routes
     Route::get('favorite', 'API\FavoriteController@index');
     Route::post('favorite', 'API\FavoriteController@store');
@@ -62,4 +70,19 @@ Route::middleware(['auth:api'])->group(function () {
 
     // notification routes
     Route::get('notification', 'API\NotificationController@index');
+});
+
+// guest can be get the data
+Route::get('direct-queue-by-branch/{branch}', 'API\DirectQueueController@index');
+
+/**
+ * External API Routes
+ */
+Route::namespace('API\External')->prefix('external')->middleware('external.checkBranchToken')->group(function () {
+    Route::get('service', 'ServiceController@index');
+    Route::get('service/{service}/slot', 'ServiceController@slot');
+
+    Route::post('direct-queue', 'DirectQueueController@store');
+
+    Route::post('appointment', 'AppointmentController@store');
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AdminBranch;
 
 use App\Branch;
+use App\BranchType;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\IndustryCategory;
@@ -70,13 +71,15 @@ class BranchController extends Controller
         $categories = IndustryCategory::all();
         $templates = ScheduleTemplate::all();
         $provinces = Province::all();
-        $branch = Branch::find(Auth::user()->branch_id);
+        $branch = Branch::with('BranchToken')->find(Auth::user()->branch_id);
+        $branchTypes = BranchType::all();
         return view('adminBranch.branch.edit', [
             'branch' => $branch,
             'countries' => $countries,
             'categories' => $categories,
             'templates' => $templates,
-            'provinces' => $provinces
+            'provinces' => $provinces,
+            'branchTypes' => $branchTypes
         ]);
     }
 

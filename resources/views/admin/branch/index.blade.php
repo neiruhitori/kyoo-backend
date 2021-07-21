@@ -31,7 +31,7 @@
                                             <th>Category</th>
                                             <th>Name</th>
                                             <th>Address</th>
-                                            <th>Created At</th>
+                                            <th>Branch License</th>
                                             <th>Show in Mobile</th>
                                             <th>Action</th>
                                         </tr>
@@ -48,7 +48,9 @@
                                                 <td>{{$branch->IndustryCategory->name}}</td>
                                                 <td>{{$branch->name}}</td>
                                                 <td>{{$branch->address}}, {{$branch->Regency->name}}</td>
-                                                <td>{{$branch->created_at->format('D, d M y')}}</td>
+                                                <td>
+                                                    {{$branch->BranchType->code}} - {{$branch->BranchType->name}}    
+                                                </td>
                                                 <td>
                                                     @if ($branch->is_active)
                                                         <span class="badge badge-primary">Active</span>

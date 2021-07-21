@@ -13,7 +13,7 @@
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
-                    @if (count(Auth::user()->Branch->CS) < 1)
+                    @if (Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->CS) < 1)
                         <div class="row">
                             <div class="col-md-12 text-right">
                                 <a href="{{route('adminBranch.user.create')}}" class="btn btn-primary"">
@@ -29,6 +29,7 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
+                                            <th>Workstation</th>
                                             <th>Username</th>
                                             <th>Role</th>
                                             <th>Status</th>
@@ -39,6 +40,7 @@
                                         @foreach (Auth::user()->Branch->CS as $user)
                                             <tr>
                                                 <td>{{$user->id}}</td>
+                                                <td>{{$user->WorkstationVct && $user->WorkstationVct->Workstation ? $user->WorkstationVct->Workstation->name : '-'}}</td>
                                                 <td>{{$user->username}}</td>
                                                 <td>Counter</td>
                                                 <td>
@@ -70,6 +72,12 @@
                                                             </button>
                                                         </form>
                                                     @endif
+                                                    <form action="{{route('adminBranch.user.resetPassword', $user->id)}}" method="post" style="display: inline">
+                                                        @csrf   
+                                                        <button type="submit" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Reset Password">
+                                                            <i class="fas fa-fw fa-lock"></i>
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @endforeach

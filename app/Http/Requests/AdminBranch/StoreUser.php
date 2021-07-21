@@ -25,6 +25,7 @@ class StoreUser extends FormRequest
     public function rules()
     {
         return [
+            'workstation_id' => 'required|exists:workstations,id',
             'username' => 'required|unique:users',
             'password' => [
                 'required',

@@ -73,6 +73,14 @@
                                         <td>{{$branch->IndustryCategory->name}}</td>
                                     </tr>
                                     <tr>
+                                        <th>Branch License</th>
+                                        <td>
+                                            <span class="badge badge-primary">
+                                                {{$branch->BranchType->code}} - {{$branch->BranchType->name}}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Email</th>
                                         <td>{{$branch->email}}</td>
                                     </tr>
@@ -153,6 +161,36 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                    <tr>
+                                        <th colspan="2">
+                                            <br>
+                                            <br>
+                                            <h5>Branch Token</h5>
+                                        </th>
+                                    </tr>
+                                    @if ($branch->BranchToken)
+                                        <tr>
+                                            <th>Token</th>
+                                            <td>{{$branch->BranchToken->token}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Created At</th>
+                                            <td>{{date('Y-m-d H:i:s', strtotime($branch->BranchToken->created_at))}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Expired At</th>
+                                            <td>{{date('Y-m-d H:i:s', strtotime($branch->BranchToken->created_at . ' + 1 year'))}}</td>
+                                        </tr>
+                                    @endif
+                                    <tr>
+                                        <td colspan="2">
+                                            <form action="{{route('admin.branchToken.store')}}" method="post">
+                                                @csrf
+                                                <input type="hidden" name="branch_id" value="{{$branch->id}}">
+                                                <button type="submit" class="btn btn-success">Generate Token</button>
+                                            </form>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th colspan="2">
                                             <br>

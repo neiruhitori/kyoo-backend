@@ -9,8 +9,12 @@ use Illuminate\Support\Facades\Crypt;
 use App\Mail\RegistrationBranchMail;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Facades\Socialite;
+use App\Mail\Branch\Registration\Verified;
 use App\User;
 use App\Customer;
+use App\Branch;
+use App\BranchConfiguration;
+use App\Helpers\AutoPopulate;
 
 class RegistrationBranchController extends Controller
 {
@@ -70,8 +74,43 @@ class RegistrationBranchController extends Controller
      */
     public function edit(RegistrationBranch $registrationBranch)
     {
+        $input = $registrationBranch->toArray();
+        switch ($input['queue_type']) {
+            case 'direct_queue':
+                $input['branch_type_id'] = 2;
+                break;
+            case 'appointment_queue':
+                $input['branch_type_id'] = 1;
+                break;
+        }
+        // duplicate to branches table
+        $input['mobile_phone'] = $registrationBranch->phone;
+        $branch = Branch::create($input);
+        
+        // create branch configuration
+        BranchConfiguration::create([
+            'branch_id' => $branch->id,
+            'maximum_recall' => 2,
+            'maximum_requeue_count' => 2,
+            'allow_transfer' => false
+        ]);
+
+        // sending email
+        Mail::to($branch->email)->send(new Verified($branch));
+
+        // duplicate to users table
+        $input['password'] = Crypt::decryptString($registrationBranch->makeVisible('attribute')->password);
+        $input['role'] = 'admin_branch';
+        $input['branch_id'] = $branch->id;
+        $input['email_verified_at'] = date('Y-m-d H:i:s');
+        $user = User::create($input);
+
+        // remove registration branch
         $registrationBranch->is_email_verified = 1;
         $registrationBranch->save();
+        $registrationBranch->delete();
+
+        AutoPopulate::create($branch->id);
         return redirect(route('registrationBranch.afterVerified'));
     }
 

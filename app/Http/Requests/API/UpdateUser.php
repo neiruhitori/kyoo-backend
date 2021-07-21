@@ -31,9 +31,9 @@ class UpdateUser extends FormRequest
             'name' => 'required|string',
             'phone' => 'required|numeric|digits_between:6,15',
             'email' => 'required|email|unique:users,email,'.Auth::id(),
-            'birthday' => 'required|date',
-            'gender' => 'required|in:male,female',
-            'marital' => 'required|boolean'
+            'birthday' => 'nullable|date',
+            'gender' => 'nullable|in:male,female',
+            'marital' => 'nullable|boolean'
         ];
     }
 

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
-
+use App\Branch;
 /*
 |--------------------------------------------------------------------------
 | Broadcast Channels
@@ -15,4 +15,12 @@ use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel('App.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
+});
+
+Broadcast::channel('event_direct_queue.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
+});
+
+Broadcast::channel('event_direct_queue_general.{id}', function ($user, $id) {
+    return (int) $id === Branch::find((int) $id)->id;
 });

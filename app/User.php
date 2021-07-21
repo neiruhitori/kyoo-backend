@@ -59,4 +59,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Notification');
     }
+
+    public function WorkstationVct()
+    {
+        return $this->hasOne('App\WorkstationVct', 'vct_id', 'id');
+    }
 }

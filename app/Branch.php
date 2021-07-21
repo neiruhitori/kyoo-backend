@@ -4,12 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Branch extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['industry_category_id', 'schedule_template_id', 'name', 'email', 'address', 'description', 'fixed_phone', 'mobile_phone', 'lat', 'long', 'country', 'regency_id', 'logo', 'photo', 'likes', 'is_active', 'timezone'];
+    protected $fillable = ['industry_category_id', 'schedule_template_id', 'name', 'email', 'address', 'description', 'fixed_phone', 'mobile_phone', 'lat', 'long', 'country', 'regency_id', 'logo', 'photo', 'likes', 'is_active', 'timezone', 'branch_type_id', 'max_counter'];
 
     /**
      * The attributes that should be cast.
@@ -61,5 +62,35 @@ class Branch extends Model
     public function Service()
     {
         return $this->hasMany('App\Service');
+    }
+
+    public function BranchType()
+    {
+        return $this->belongsTo('App\BranchType');
+    }
+
+    public function BranchConfiguration()
+    {
+        return $this->hasOne('App\BranchConfiguration');
+    }
+
+    public function Departments()
+    {
+        return $this->hasMany('App\Department');
+    }
+
+    public function Workstations()
+    {
+        return $this->hasManyThrough('App\Workstation', 'App\Department');
+    }
+
+    /**
+     * Get the BranchToken associated with the Branch
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function BranchToken(): HasOne
+    {
+        return $this->hasOne(BranchToken::class);
     }
 }

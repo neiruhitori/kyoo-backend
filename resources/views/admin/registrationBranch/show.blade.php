@@ -24,6 +24,16 @@
                                         <td>{{$branch->IndustryCategory->name}}</td>
                                     </tr>
                                     <tr>
+                                        <th>Queue Type</th>
+                                        <td>
+                                            @if ($branch->queue_type == 'direct_queue')
+                                                <span class="badge badge-primary">Direct Queue</span>
+                                            @else
+                                                <span class="badge badge-info">Appointment Queue</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Email</th>
                                         <td>{{$branch->email}}</td>
                                     </tr>

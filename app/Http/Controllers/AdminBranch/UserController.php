@@ -4,12 +4,18 @@ namespace App\Http\Controllers\AdminBranch;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Workstation;
+use App\WorkstationVct;
 use App\Log;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreUser;
 use App\Http\Requests\AdminBranch\UpdateUser;
+use App\Mail\CS\ResetPassword;
+use Mail;
 use Auth;
 use Hash;
+use Crypt;
+use Validator;
 
 class UserController extends Controller
 {
@@ -28,9 +34,16 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('adminBranch.user.create');
+        if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->CS) > 0) {
+            $request->session()->flash('warning', 'You only able insert one account!');
+            return redirect(route('adminBranch.user.index'));
+        }
+        $workstations = Workstation::whereHas('Department', function($query){
+            return $query->whereBranchId(Auth::user()->branch_id);
+        })->get();
+        return view('adminBranch.user.create')->withWorkstations($workstations);
     }
 
     /**
@@ -41,16 +54,22 @@ class UserController extends Controller
      */
     public function store(StoreUser $request)
     {
-        if (count(Auth::user()->Branch->CS) > 0) {
+        if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->CS) > 0) {
             $request->session()->flash('error', 'You only able insert one account!');
             return redirect(route('adminBranch.user.index'));
         }
+
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
         $input['role'] = 'cs';
         $input['name'] = "KY{$input['branch_id']}_".$request->username;
         $input['username'] = "KY{$input['branch_id']}_".$request->username;
-        User::create($input);
+        $input['is_password_changed'] = true;
+        $user = User::create($input);
+        WorkstationVct::create([
+            'workstation_id' => $request->workstation_id,
+            'vct_id' => $user->id
+        ]);
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Create VCT User'
@@ -78,7 +97,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('adminBranch.user.edit')->withUser($user);
+        $workstations = Workstation::whereHas('Department', function($query){
+            return $query->whereBranchId(Auth::user()->branch_id);
+        })->get();
+        return view('adminBranch.user.edit')->withUser($user)->withWorkstations($workstations);
     }
 
     /**
@@ -95,18 +117,21 @@ class UserController extends Controller
             return redirect(route('unauthorized'));
         }
 
-        if (!Hash::check($request->old_password, $user->password)) {
+        if ($user->is_password_changed && !Hash::check($request->old_password, $user->password)) {
             $request->session()->flash('error', 'Please insert correct old password!');
             return redirect()->back();
         }
-        
         $input = $request->all();
         $input['name'] = "KY{$user['branch_id']}_".$request->username;
         $input['username'] = "KY{$user['branch_id']}_".$request->username;
+        $input['is_password_changed'] = true;
         if (!$request->password) {
             unset($input['password']);
         }
         $user->update($input);
+        WorkstationVct::whereVctId($user->id)->update([
+            'workstation_id' => $request->workstation_id
+        ]);
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Update VCT User'
@@ -146,5 +171,55 @@ class UserController extends Controller
         ]);
         $request->session()->flash('success', 'Account '.$user->name.' has been restored!');
         return redirect(route('adminBranch.user.index'));
+    }
+
+    public function resetPassword(Request $request, User $user)
+    {
+        if ($user->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+        Mail::to(Auth::user()->email)->send(new ResetPassword($user));
+        $request->session()->flash('success', 'Please check your email to reset the password');
+        return redirect(route('adminBranch.user.index'));
+    }
+
+    public function reset($user_id)
+    {
+        $user = User::findOrFail(Crypt::decrypt($user_id));
+
+        return view('auth.passwords.resetCS', [
+            'token' => $user_id,
+            'user' => $user
+        ]);
+    }
+
+    public function updatePassword(Request $request, $user_id)
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',             // must be at least 8 characters in length
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',      // must contain at least one digit
+            ]
+        ]);
+        
+        if ($validator->fails()) {
+            $request->session()->flash('error', 'Please check password rules!');
+            return redirect(route('adminBranch.user.reset', $user_id));
+        }
+
+        $user = User::findOrFail(Crypt::decrypt($user_id));
+        $user->update([
+            'password' => bcrypt($request->password)
+        ]);
+        $request->session()->flash('success', "Password {$user->name} has been updated successfully!");
+        if (Auth::user()) {
+            return redirect(route('adminBranch.user.index'));
+        }
+        return redirect(route('login'));
     }
 }

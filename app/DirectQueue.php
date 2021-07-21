@@ -1,0 +1,52 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+class DirectQueue extends Model
+{
+    protected $fillable = ['queue_no', 'user_id', 'vct_id', 'workstation_service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count', 'rating', 'is_liked', 'service_id', 'workstation_id'];
+
+    public function getCreatedAtAttribute($value)
+    {
+        return date('Y-m-d H:m:s', \strtotime($value));
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return date('Y-m-d H:m:s', \strtotime($value));
+    }
+
+    public function WorkstationService()
+    {
+        return $this->belongsTo('App\WorkstationService');
+    }
+
+    public function WorkstationServices()
+    {
+        return $this->hasMany('App\WorkstationService', 'workstation_id', 'workstation_id');
+    }
+
+    /**
+     * Get the Service that owns the DirectQueue
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function Service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class);
+    }
+
+    /**
+     * Get all of the WorkstationVct for the DirectQueue
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function WorkstationVct(): HasOne
+    {
+        return $this->hasOne(WorkstationVct::class, 'workstation_id', 'workstation_id');
+    }
+}

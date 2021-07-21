@@ -1,0 +1,47 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateDirectQueuesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('direct_queues', function (Blueprint $table) {
+            $table->id();
+            $table->string('queue_no', 10);
+            $table->foreignId('user_id')->nullable();
+            $table->foreignId('vct_id');
+            $table->foreignId('workstation_service_id');
+            $table->string('name', 100)->nullable();
+            $table->string('phone', 20)->nullable();
+            $table->string('direct_queue_channel', 100)->default('web')->comment('where the direct queue created from (web / apps)');
+            $table->string('status', 20)->default('waiting')->comment('statuses are waiting, served, requeue, no show, end served');
+            $table->smallInteger('recall_count')->default(0);
+            $table->smallInteger('requeue_count')->default(0);
+            $table->timestamp('called_at')->nullable();
+            $table->timestamp('done_at')->nullable();
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('vct_id')->references('id')->on('users');
+            $table->foreign('workstation_service_id')->references('id')->on('workstation_services');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('direct_queues');
+    }
+}

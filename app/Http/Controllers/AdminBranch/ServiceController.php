@@ -5,7 +5,10 @@ namespace App\Http\Controllers\AdminBranch;
 use App\Http\Controllers\Controller;
 use App\Service;
 use App\Log;
+use App\Department;
 use Illuminate\Http\Request;
+use App\Http\Requests\AdminBranch\StoreService;
+use App\Http\Requests\AdminBranch\UpdateService;
 use Auth;
 
 class ServiceController extends Controller
@@ -28,7 +31,10 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        return view('adminBranch.service.create');
+        $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
+        return view('adminBranch.service.create', [
+            'departments' => $departments
+        ]);
     }
 
     /**
@@ -37,7 +43,7 @@ class ServiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreService $request)
     {
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
@@ -73,7 +79,11 @@ class ServiceController extends Controller
         if ($service->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
-        return view('adminBranch.service.edit')->withService($service);
+        $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
+        return view('adminBranch.service.edit', [
+            'service' => $service,
+            'departments' => $departments
+        ]);
     }
 
     /**
@@ -83,7 +93,7 @@ class ServiceController extends Controller
      * @param  \App\Service  $service
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Service $service)
+    public function update(UpdateService $request, Service $service)
     {
         // gate
         if ($service->branch_id != Auth::user()->branch_id) {
