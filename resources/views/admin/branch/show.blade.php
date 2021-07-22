@@ -75,9 +75,11 @@
                                     <tr>
                                         <th>Branch License</th>
                                         <td>
-                                            <span class="badge badge-primary">
-                                                {{$branch->BranchType->code}} - {{$branch->BranchType->name}}
-                                            </span>
+                                            @if ($branch->BranchType)
+                                                <span class="badge badge-primary">
+                                                    {{$branch->BranchType->code}} - {{$branch->BranchType->name}}
+                                                </span>
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
