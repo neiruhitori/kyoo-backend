@@ -73,7 +73,7 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            const workstation_idOldValue = '{{ old('workstation_id') ?: $user->WorkstationVct->workstation_id }}';
+            const workstation_idOldValue = '{{ old('workstation_id') ? $user->WorkstationVct ? $user->WorkstationVct->workstation_id : "" : "" }}';
             
             if(workstation_idOldValue !== '') {
                 $('#workstation_id').val(workstation_idOldValue);
