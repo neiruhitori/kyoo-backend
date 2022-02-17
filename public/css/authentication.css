@@ -1,0 +1,178 @@
+body {
+  font-family: 'Inter', sans-serif;
+  color: black;
+  --grey: #8D8E92;
+  --blue: #103C7C;
+}
+
+.k-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+}
+
+.k-input {
+  border: 1px solid #D8D8D8;
+  padding: 0.75rem;
+  border-radius: 10px;
+  display: flex;
+}
+
+.k-input input {
+  background: transparent;
+  outline: none;
+  width: 100%;
+  border: none;
+  flex-grow: 1;
+}
+
+.k-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.k-checkbox input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+}
+
+.k-checkbox label {
+  margin: 0;
+}
+
+.k-form-group {
+  margin-bottom: 1rem;
+}
+
+.k-label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.k-login-section {
+  display: flex;
+  justify-content: between;
+  margin-bottom: 1rem;
+}
+
+.k-button {
+  padding: 0.75rem;
+  font-weight: bold;
+  color: #fff;
+  width: 100%;
+  text-align: center;
+  border-radius: 10px;
+  border: none;
+  background-color: var(--blue);
+}
+
+.k-icon {
+  margin-right: 0.5rem;
+  width: 2rem;
+  height: auto;
+}
+
+.k-icon path {
+  fill: #1DA2CA;
+}
+
+form {
+  margin-bottom: 1rem;
+}
+
+.login-description {
+  font-size: 1rem;
+  color: var(--grey);
+}
+
+.login-container {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.login-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.login-logo-app {
+  width: 11rem;
+  height: auto;
+}
+
+.login-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 2rem 0 2rem 0;
+}
+
+.login-headline {
+  margin-bottom: 1.25rem;
+}
+
+.login-content-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  position: relative;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.login-outer-container {
+  display: flex;
+}
+
+.login-banner {
+  flex: 1;
+  background: linear-gradient(270deg, #EFF6FF 74.33%, rgba(239, 246, 255, 0) 100%);
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+
+.circle {
+  position: absolute;
+  background: linear-gradient(317.22deg, rgba(218, 227, 254, 0.01) -9.68%, rgba(233, 239, 253, 0.58) 66.95%);
+  border-radius: 100%;
+  width: 37rem;
+  height: 37rem;
+}
+
+.circle1 {
+  bottom: -8%;
+  right: -22%;
+  z-index: 2;
+}
+
+.circle2 {
+  bottom: 32%;
+  right: -28%;
+  z-index: 1;
+}
+
+.login-banner-img {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+}
+
+.text-gray {
+  color: var(--grey);
+}
+
+@media(min-width: 1280px) {
+  .login-banner {
+    display: block;
+  }
+
+  .login-container {
+    max-width: 650px;
+  }
+}
