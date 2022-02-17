@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,111 +10,175 @@
 
   <title>Kyoo Admin</title>
   <link rel="icon" href="{{ asset('img/favico.png') }}" type="image/icon type">
-  <!-- Custom fonts for this template-->
-  <link href="{{asset('admin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-  <!-- Custom styles for this template-->
-  <link href="{{asset('admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
+  <!-- Roboto Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+
+  <!-- Template CSS -->
+  <link href="{{ asset('admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
+
   <style>
-    .bg-gradient-primary {
-      background: linear-gradient(121.16deg, #189DCD 0.95%, #0A5194 97.59%);
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: black;
     }
-    .img-welcome {
+
+    .k-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .k-input {
+      border: 1px solid gray;
+      padding: 0.75rem;
+      border-radius: 10px;
+    }
+
+    .k-input input {
+      background: transparent;
+      outline: none;
+      width: 100%;
+      border: none;
+    }
+
+    .k-checkbox {
+      display: flex;
+      align-items: center;
+    }
+
+    .k-checkbox input {
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-right: 0.75rem;
+    }
+
+    .k-checkbox label {
+      margin: 0;
+    }
+
+    .k-form-group {
+      margin-bottom: 1rem;
+    }
+
+    .k-label {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .k-login-section {
+      display: flex;
+      justify-content: between;
+      margin-bottom: 1rem;
+    }
+
+    .k-button {
+      padding: 0.75rem;
+      font-weight: bold;
+      color: #fff;
+      background-color: #000;
+      width: 100%;
       text-align: center;
-      margin-top: 80px;
+      border-radius: 10px;
+      border: none;
     }
-    .img-welcome img {
-      width: 500px;
+
+    form {
+      margin-bottom: 1rem;
     }
-    @media only screen and (max-width: 768px) {
-      /* For mobile phones: */
-      .img-welcome img {
-        width: 200px;
-      }
+
+    .login-description {
+      font-size: 1.125rem;
+    }
+
+    .login-container {
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .login-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .login-logo-app {
+      width: 12rem;
+      height: auto;
+    }
+
+    .login-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 1.125rem;
+    }
+
+    .login-headline {
+      margin-bottom: 1.5rem;
+    }
+
+    .login-content-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100vh;
     }
   </style>
 </head>
 
-<body class="bg-gradient-primary">
+<body>
+  <div class="px-4 login-container">
+    <div class="login-header">
+      <img src="{{ asset('img/logo-color.svg') }}" class="login-logo-app" />
+    </div>
 
-  <div class="container pt-5">
+    <div class="login-content-container">
+      <div class="login-headline">
+        <h1 class="k-title">Login</h1>
+        <p class="login-description">Selamat datang kembali di KYOOO</p>
+      </div>
 
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
+      <form action="{{ route('login') }}">
+        @csrf
 
-      <div class="col-xl-10 col-lg-12 col-md-9">
-
-        <div class="card o-hidden border-0 shadow-lg my-5">
-          <div class="card-body p-0">
-            <!-- Nested Row within Card Body -->
-            <div class="row">
-              <div class="col-lg-6 img-welcome">
-                <img src="{{ asset('/img/welcome.svg') }}" alt="welcome img">
-              </div>
-              <div class="col-lg-6">
-                <div class="p-5">
-                  <div class="text-center">
-                    <img src="{{asset('img/logo-color.svg')}}" alt="" class="img-fluid mb-4">
-                  </div>
-                  @include('layouts.alert')
-                  <form method="POST" action="{{ route('login') }}" class="user">
-                        @csrf
-                    <div class="form-group">
-                      <input type="text" name="email" class="form-control form-control-user @error('email') is-invalid @enderror" value="{{ old('email') }}" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email or Username...">
-                        @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                      <input type="password" name="password" class="form-control form-control-user @error('password') is-invalid @enderror" id="exampleInputPassword" placeholder="Password">
-                        @error('password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                    {{-- <div class="form-group">
-                      <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="customCheck">
-                        <label class="custom-control-label" for="customCheck">Remember Me</label>
-                      </div>
-                    </div> --}}
-                    <button type="submit" class="btn btn-primary btn-user btn-block">
-                      Login
-                    </button>
-                  </form>
-                  <hr>
-                  <div class="text-center">
-                    <a class="small" href="{{route('password.request')}}">Forgot Password?</a>
-                  </div>
-                  <div class="text-center">
-                    <a class="small" href="{{route('register')}}">Register your Branch here!</a>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div class="k-form-group">
+          <label for="email" class="k-label">Email</label>
+          <div class="k-input">
+            <!-- <img src="{{ asset('img/icons/letter.svg') }}" class="input-icon"> -->
+            <input type="text" name="email" id="email" placeholder="mail@website.com">
           </div>
         </div>
 
-      </div>
+        <div class="k-form-group">
+          <label for="password" class="k-label">Password</label>
+          <div class="k-input">
+            <!-- <img src="{{ asset('img/icons/letter.svg') }}" class="input-icon"> -->
+            <input type="password" name="password" id="password" placeholder="Min. 8 karakter">
+          </div>
+        </div>
 
+        <div class="login-section">
+          <div class="k-checkbox">
+            <input type="checkbox" name="remember_me" id="remember_me">
+            <label for="remember_me">Ingat saya</label>
+          </div>
+
+          <div>
+            <a href="{{ route('password.request') }}">Lupa password?</a>
+          </div>
+        </div>
+
+        <button type="submit" class="k-button">Login</button>
+      </form>
+
+      <p>
+        Belum punya akun? <a href="">Layanan Anda di KYOO</a>
+      </p>
     </div>
-
   </div>
-
-  <!-- Bootstrap core JavaScript-->
-  <script src="{{asset('admin/vendor/jquery/jquery.min.js')}}"></script>
-  <script src="{{asset('admin/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="{{asset('admin/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
-
 </body>
 
 </html>
