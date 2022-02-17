@@ -66,6 +66,8 @@
 
   <div class="login-banner">
     <img class="login-banner-img" src="{{ asset('img/illustrations/reset-password.svg') }}">
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
 </body>
 
 </html>
