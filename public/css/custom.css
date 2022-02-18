@@ -1,0 +1,159 @@
+* {
+    font-family: "Inter", sans-serif;
+    color: black;
+}
+
+body {
+    --grey: #8d8e92;
+    --blue-pale: #1da2ca;
+    --blue: #103c7c;
+}
+
+.app-icon {
+    width: 10rem;
+    height: auto;
+}
+
+.page-container {
+    width: 100%;
+}
+
+.content-container {
+    padding: 0 1rem 0 1rem;
+    box-sizing: border-box;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.image-container {
+    height: 100vh;
+    position: relative;
+    background: linear-gradient(
+        270deg,
+        #eff6ff 74.33%,
+        rgba(239, 246, 255, 0) 100%
+    );
+    flex: 1 1 0%;
+    display: none;
+}
+
+.page-header {
+    padding: 3rem 0 3rem 0;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.page-illustration {
+    position: absolute;
+    height: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+}
+
+.text-gray {
+    color: var(--grey);
+}
+
+.k-input {
+    border: 1px solid #d8d8d8;
+    border-radius: 10px;
+    display: flex;
+    padding: 0 0.75rem 0 0.75rem;
+}
+
+.k-input:focus-within {
+    border-color: var(--blue);
+}
+
+.k-input input,
+.k-input select,
+.k-input textarea {
+    padding: 0.75rem 0 0.75rem 0;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    border: none;
+    flex-grow: 1;
+}
+
+.k-input textarea {
+    height: 5rem;
+}
+
+.k-input .k-icon,
+.k-icon.k-password-icon {
+    width: 2rem;
+    height: auto;
+}
+
+.k-input .k-icon path {
+    fill: var(--blue-pale);
+}
+
+.k-icon.k-password-icon {
+    cursor: pointer;
+}
+
+.k-icon.k-password-icon path {
+    fill: var(--grey);
+}
+
+.k-input:focus-within .k-icon path {
+    fill: var(--blue);
+}
+
+.k-checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.k-checkbox input {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+}
+
+.k-checkbox label {
+    margin: 0;
+}
+
+.k-button {
+    padding: 0.75rem;
+    font-weight: bold;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--blue);
+}
+
+.k-alert {
+    padding: 1rem;
+    background-color: #f3f8ff;
+    border: 1px solid #1da2ca;
+    border-radius: 10px;
+}
+
+.inline {
+    display: flex;
+}
+
+.inline > * {
+    flex: 1 1 0%;
+}
+
+@media (min-width: 1280px) {
+    .page-container {
+        flex: 1 1 0%;
+    }
+
+    .image-container {
+        display: block;
+    }
+}

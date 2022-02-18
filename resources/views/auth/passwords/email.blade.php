@@ -18,24 +18,21 @@
 
   <!-- Template CSS -->
   <link href="{{ asset('admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
-  <!-- Custom CSS -->
-  <link href="{{ asset('css/authentication.css') }}" rel="stylesheet">
+  <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 </head>
 
-<body class="login-outer-container">
-  <div class="px-4 login-container">
-    <div class="login-content-container">
-      <div class="login-header">
-        <img src="{{ asset('img/logo-color.svg') }}" class="login-logo-app" />
+<body style="display: flex; align-items: stretch;">
+  <div class="page-container">
+    <div class="content-container">
+      <div class="page-header">
+        <img src="{{ asset('img/logo-color.svg') }}" class="app-icon" />
       </div>
 
-      <div class="login-headline">
-        <h1 class="k-title">Reset Password</h1>
-        <p class="login-description">Kami bantu pulihkan akunmu kembali</p>
-      </div>
-
-      <form action="{{ route('password.email') }}" method="POST">
-        @csrf
+      <div style="padding: 3rem 0 3rem 0;">
+        <div style="margin-bottom: 1.5rem;">
+          <h1 class="page-title" style="margin-bottom: 1rem;">Reset Password</h1>
+          <p class="text-gray">Kami bantu pulihkan akunmu kembali</p>
+        </div>
 
         @if (Session::get('error'))
         <div class="alert alert-danger" role="alert">
@@ -43,31 +40,35 @@
         </div>
         @endif
 
-        <div class="k-form-group mb-4">
-          <label for="email" class="k-label">Email</label>
-          <div class="k-input">
-            <x-icon icon="letter" class="k-icon" />
-            <input type="text" name="email" id="email" placeholder="Masukkan email">
+        <form action="{{ route('password.email') }}" method="POST" style="margin-bottom: 1rem;">
+          @csrf 
+
+          <div style="margin-bottom: 1.5rem;">
+            <label class="font-weight-bold" for="email">Email</label>
+
+            <div class="k-input">
+              <x-icon icon="letter" class="k-icon" style="margin-right: 0.5rem;" />
+              <input type="email" name="email" id="email" placeholder="Masukkan email" value="{{ old('email') }}"
+                required>
+            </div>
+
+            @error('email')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
           </div>
 
-          @error('email')
-          <div class="text-danger mt-2">{{ $message }}</div>
-          @enderror
-        </div>
+          <button type="submit" class="k-button">Kirim Email Pemulihan</button>
+        </form>
 
-        <button type="submit" class="k-button">Kirim Email Pemulihan</button>
-      </form>
-
-      <p class="text-gray">
-        Kembali ke <a href="{{route('login')}}">Login</a>
-      </p>
+        <p class="text-gray">
+          Kembali ke <a href="{{route('login')}}">Login</a>
+        </p>
+      </div>
     </div>
   </div>
-
-  <div class="login-banner">
-    <img class="login-banner-img" src="{{ asset('img/illustrations/reset-password.svg') }}">
-    <div class="circle circle1"></div>
-    <div class="circle circle2"></div>
+  <div class="image-container">
+    <img class="page-illustration" src="{{ asset('img/illustrations/reset-password.svg') }}">
+  </div>
 </body>
 
 </html>

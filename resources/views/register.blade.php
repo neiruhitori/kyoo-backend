@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -10,217 +9,310 @@
   <meta name="author" content="">
 
   <title>Kyoo Admin</title>
-    <link rel="icon" href="{{ asset('img/favico.png') }}" type="image/icon type">
-  <!-- Custom fonts for this template-->
-  <link href="{{asset('admin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link rel="icon" href="{{ asset('img/favico.png') }}" type="image/icon type">
 
-  <!-- Custom styles for this template-->
-  <link href="{{asset('admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
-  <style>
-    .bg-gradient-primary {
-      background: linear-gradient(121.16deg, #189DCD 0.95%, #0A5194 97.59%);
-    }
-    .fullwidth {
-        width: 100%;
-    }
-  </style>
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <!-- Template CSS -->
+  <link href="{{ asset('admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+
+  <script src="{{asset('admin/vendor/jquery/jquery.min.js')}}"></script>
 </head>
 
-<body class="bg-gradient-primary">
-
-  <div class="container pt-5">
-
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
-
-      <div class="col-xl-10 col-lg-12 col-md-9">
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Register your Branch here</h6>
-                    </div>
-                    <div class="card-body">
-                        <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
-                        <div class="row">
-                            <div class="col-md-12">
-                                @include('layouts.alert')
-                                <form action="{{route('registrationBranch.store')}}" method="post">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label for="name">Branch Name (*)</label>
-                                        <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
-                                        @include('layouts.inputError', ['errorName' => 'name'])
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="industry_category_id">Industry Category (*)</label>
-                                        <select name="industry_category_id" id="industry_category_id" class="form-control @error('industry_category_id') is-invalid @enderror" required>
-                                            @foreach ($categories as $category)
-                                                <option value="{{$category->id}}">{{$category->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @include('layouts.inputError', ['errorName' => 'industry_category_id'])
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="queue_type">Queue Type (*)</label>
-                                        <br>
-                                        <small>
-                                            <b>Direct Queue - GoShow :</b> Non Quota Basis, direct queue in branch location, no appointment needed to get the service
-                                            <br>
-                                            <b>Appointment Queue :</b> Quota Basis, appointment needed to get the service
-                                        </small>
-                                        <select name="queue_type" id="queue_type" class="form-control @error('queue_type') is-invalid @enderror" required>
-                                            <option value="direct_queue">Direct Queue (Go Show)</option>
-                                            <option value="appointment_queue">Appointment Queue</option>
-                                        </select>
-                                        @include('layouts.inputError', ['errorName' => 'industry_category_id'])
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Email (*)</label>
-                                        <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email')}}" required>
-                                        @include('layouts.inputError', ['errorName' => 'email'])
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password">Password (*)</label>
-                                        <br>
-                                        <small>
-                                            rules:
-                                            <ul>
-                                                <li>must be at least 8 characters in length</li>
-                                                <li>must contain at least one lowercase letter</li>
-                                                <li>must contain at least one uppercase letter</li>
-                                                <li>must contain at least one digit</li>
-                                            </ul>
-                                        </small>
-                                        <input id="password" name="password" type="password" class="form-control @error('password') is-invalid @enderror" value="{{old('password')}}" required>
-                                        @include('layouts.inputError', ['errorName' => 'password'])
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password_confirmation">Password Confirmation (*)</label>
-                                        <input id="password_confirmation" name="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{old('password_confirmation')}}" required>
-                                        @include('layouts.inputError', ['errorName' => 'password_confirmation'])
-                                        <small id="visibleText" style="cursor: pointer; color: #3490dc" onclick="visiblePassword()">Show password</small>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="country">Country (*)</label>
-                                        <select name="country" id="country" class="form-control @error('country') is-invalid @enderror" required>
-                                            @foreach ($countries as $country)
-                                                <option value="{{$country}}">{{$country}}</option>
-                                            @endforeach
-                                        </select>
-                                        @include('layouts.inputError', ['errorName' => 'country'])
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="phone">Mobile Phone (*)</label>
-                                        <input name="phone" type="text" class="form-control @error('phone') is-invalid @enderror" value="{{old('phone')}}" required>
-                                        @include('layouts.inputError', ['errorName' => 'phone'])
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="province_id">Province (*)</label>
-                                                <select name="province_id" id="province_id" class="form-control @error('province_id') is-invalid @enderror" required>
-                                                    @foreach ($provinces as $province)
-                                                        <option value="{{$province->id}}">{{$province->name}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @include('layouts.inputError', ['errorName' => 'province_id'])
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="regency_id">City (*)</label>
-                                                <select name="regency_id" id="regency_id" class="form-control" required>
-                                                    <option value="">Choose City</option>
-                                                </select>
-                                                @include('layouts.inputError', ['errorName' => 'regency_id'])
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="address">Address (*)</label>
-                                        <textarea name="address" id="" cols="" rows="" class="form-control @error('address') is-invalid @enderror" required>{{old('address')}}</textarea>
-                                        @include('layouts.inputError', ['errorName' => 'address'])
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="captcha">Captcha (*)</label>
-                                        {!! NoCaptcha::renderJs() !!}
-                                        {!! NoCaptcha::display() !!}
-                                        <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
-                                    </div>
-                                    <button class="btn btn-primary fullwidth">Register</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<body style="display: flex; align-items: stretch;">
+  <div class="page-container">
+    <div class="content-container">
+      <div class="page-header">
+        <img src="{{ asset('img/logo-color.svg') }}" class="app-icon" />
       </div>
 
-    </div>
+      <div style="padding: 3rem 0 3rem 0;">
+        <div style="margin-bottom: 1.5rem;">
+          <h1 class="page-title" style="margin-bottom: 1rem;">Registrasi Cabang</h1>
+          <p class="text-gray">Daftarkan Cabangmu Sekarang Juga!</p>
+        </div>
 
+        @if (Session::get('error'))
+        <div class="alert alert-danger" role="alert">
+          {{ Session::get('error') }}
+        </div>
+        @endif
+
+        <form action="{{ route('registrationBranch.store') }}" method="POST" style="margin-bottom: 1rem;">
+          @csrf
+
+          <div style="margin-bottom: 1rem;">
+            <label class="font-weight-bold" for="name">Nama Cabang</label>
+
+            <div class="k-input">
+              <x-icon icon="home" class="k-icon" style="margin-right: 0.5rem;" />
+              <input type="text" name="name" id="name" placeholder="Nama Cabang" value="{{ old('name') }}" required>
+            </div>
+
+            @error('name')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label class="font-weight-bold" for="industry_category_id">Kategori Industri</label>
+
+            <div class="k-input">
+              <x-icon icon="file" class="k-icon" style="margin-right: 0.5rem;" />
+              <select name="industry_category_id" id="industry_category_id" required>
+                <option disabled selected>Pilih Kategori</option>
+                @foreach ($categories as $category)
+                <option value="{{$category->id}}" {{ old('industry_category_id')==$category->id ? 'selected' : '' }}>
+                  {{$category->name}}
+                </option>
+                @endforeach
+              </select>
+            </div>
+
+            @error('industry_category_id')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label class="font-weight-bold" for="queue_type">Jenis Antrian</label>
+
+            <div class="k-input">
+              <x-icon icon="group" class="k-icon" style="margin-right: 0.5rem;" />
+              <select name="queue_type" id="queue_type" required>
+                <option disabled selected>Pilih Jenis Antrian</option>
+                <option value="direct_queue" {{ old('queue_type')=='direct_queue' ? 'selected' : '' }}>
+                  Antrian Onsite (Datang ke Lokasi)
+                </option>
+                <option value="appointment_queue" {{ old('queue_type')=='appointment_queue' ? 'selected' : '' }}>
+                  Antrian Appointment (Temu Janji)
+                </option>
+                <option value="exhibition_queue" {{ old('queue_type')=='exhibition_queue' ? 'selected' : '' }}>Antrian
+                  Exhibition (Check-in)
+                </option>
+              </select>
+            </div>
+
+            @error('queue_type')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div class="k-alert" style="margin-bottom: 1rem;">
+            <div style="margin-bottom: 1.125rem;">
+              <strong>Kunjungan di Lokasi</strong>
+              <p>
+                Antri langsung di lokasi cabang, tidak perlu janji temu untuk mendapatkan layanan
+              </p>
+            </div>
+
+            <div>
+              <strong>Quota Basis</strong>
+              <p>
+                Diperlukan janji temu untuk mendapatkan layanan
+              </p>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label class="font-weight-bold" for="email">Email</label>
+
+            <div class="k-input">
+              <x-icon icon="letter" class="k-icon" style="margin-right: 0.5rem;" />
+              <input type="email" name="email" id="email" placeholder="mail@website.com" value="{{ old('email') }}"
+                required>
+            </div>
+
+            @error('email')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label class="font-weight-bold" for="password">Password</label>
+
+            <div class="k-input">
+              <x-icon icon="key" class="k-icon" style="margin-right: 0.5rem;" />
+              <input type="password" name="password" id="password" placeholder="Masukkan Password" required>
+              <x-icon icon="eyeClosed" class="k-icon k-password-icon" style="margin-left: 0.5rem;" />
+            </div>
+
+            @error('password')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label class="font-weight-bold" for="password_confirmation">Konfirmasi Password</label>
+
+            <div class="k-input">
+              <x-icon icon="key" class="k-icon" style="margin-right: 0.5rem;" />
+              <input type="password" name="password_confirmation" id="password_confirmation"
+                placeholder="Ketik Ulang Password" reuqired>
+              <x-icon icon="eyeClosed" class="k-icon k-password-icon" style="margin-left: 0.5rem;" />
+            </div>
+
+            @error('password_confirmation')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label class="font-weight-bold" for="country">Negara</label>
+
+            <div class="k-input">
+              <x-icon icon="flag" class="k-icon" style="margin-right: 0.5rem;" />
+              <select name="country" id="country" required>
+                <option disabled selected>Pilih Negara</option>
+                @foreach ($countries as $country)
+                <option value="{{$country}}" {{ old('country')==$country ? 'selected' : '' }}>
+                  {{$country}}
+                </option>
+                @endforeach
+              </select>
+            </div>
+
+            @error('country')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label class="font-weight-bold" for="phone">Telepon</label>
+
+            <div class="k-input">
+              <x-icon icon="phone" class="k-icon" style="margin-right: 0.5rem;" />
+              <input type="tel" name="phone" id="phone" placeholder="Ch.+628***" value="{{ old('phone') }}" required>
+            </div>
+
+            @error('phone')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div class="inline" style="margin-bottom: 1rem; margin-left: -1rem;">
+            <div style="margin-left: 1rem;">
+              <label class="font-weight-bold" for="province_id">Provinsi</label>
+
+              <div class="k-input">
+                <x-icon icon="chat" class="k-icon" style="margin-right: 0.5rem;" />
+                <select name="province_id" id="province_id" required>
+                  <option disabled selected>Ch. Jawa Barat</option>
+                  @foreach ($provinces as $province)
+                  <option value="{{ $province->id }}" {{ old('province_id')==$province->id ? 'selected' : '' }}>
+                    {{$province->name}}
+                  </option>
+                  @endforeach
+                </select>
+              </div>
+
+              @error('province_id')
+              <div class="text-danger mt-2">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <div style="margin-left: 1rem">
+              <label class="font-weight-bold" for="regency_id">Kota</label>
+
+              <div class="k-input">
+                <x-icon icon="point" class="k-icon" style="margin-right: 0.5rem;" />
+                <select name="regency_id" id="regency_id" required>
+                  <option disabled selected>Ch. Bandung</option>
+                </select>
+              </div>
+
+              @error('regency_id')
+              <div class="text-danger mt-2">{{ $message }}</div>
+              @enderror
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1rem">
+            <label class="font-weight-bold" for="address">Alamat</label>
+
+            <div class="k-input">
+              <textarea name="address" id="address" placeholder="Tulis alamat" required>{{ old('address') }}</textarea>
+            </div>
+
+            @error('address')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div style="margin-bottom: 1.5rem">
+            {!! NoCaptcha::renderJs() !!}
+            {!! NoCaptcha::display() !!}
+
+            @error('g-recaptcha-response')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <button type="submit" class="k-button">Daftar Sekarang</button>
+        </form>
+
+        <p class="text-gray">
+          Sudah punya akun? <a href="{{ route('login') }}">Login</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="image-container">
+    <img class="page-illustration" src="{{ asset('img/illustrations/registration.svg') }}">
   </div>
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="{{asset('admin/vendor/jquery/jquery.min.js')}}"></script>
-  <script src="{{asset('admin/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="{{asset('admin/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
   <script>
-        $(document).ready(function() {
-            const industry_category_idOldValue = '{{ old('industry_category_id') }}';
-            
-            if(industry_category_idOldValue !== '') {
-                $('#industry_category_id').val(industry_category_idOldValue);
-            }
+    $(document).ready(function() {
+      $('#country').val('Indonesia')
 
-            const countryOldValue = '{{ old('country') ?: "Indonesia" }}';
-            
-            if(countryOldValue !== '') {
-                $('#country').val(countryOldValue);
-            }
+      console.log('Province old: ', '{{ old('province_id') }}')
 
-            $('#province_id').change(() => {
-                let provinceId = $('#province_id').val()
-                fetch(`/api/regency/${provinceId}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        $('#regency_id option').remove()
-                        data.data.forEach(regency => {
-                            $('#regency_id')
-                                .append($("<option></option>")
-                                .attr("value", regency.id)
-                                .text(regency.name)); 
-                        });
-                    })
-                    .catch(err => console.log(err))
-            })
-        });
+      if ('{{ old('province_id') }}') {
+        fetchRegencies('{{ old('province_id') }}')
+      }
 
-        let isVisible = false
-        function visiblePassword() {
-            isVisible = !isVisible
-            let password = $('#password').val()
-            let passwordConfirmation = $('#password_confirmation').val()
-            if (isVisible) {
-                // show password
-                $('#visibleText').text('Hide Password')
-                $('#password').attr({type: 'text'})
-                $('#password_confirmation').attr({type: 'text'})
-            } else {
-                // hide password
-                $('#visibleText').text('Show Password')
-                $('#password').attr({type: 'password'})
-                $('#password_confirmation').attr({type: 'password'})
-            }
-        }
-    </script>
+      $('#province_id').change(() => {
+        let provinceId = $('#province_id').val()
+        fetchRegencies(provinceId)
+      })
+
+      $('input[type="password"] + .k-password-icon').click(function () {
+        const input = $(this).siblings('input')
+
+        input.attr('type') === 'password'
+          ? input.attr('type', 'text')
+          : input.attr('type', 'password')
+      })
+    })
+
+    function fetchRegencies(provinceId) {
+      const oldRegency = '{{ old('regency_id') }}'
+
+      fetch(`/api/regency/${provinceId}`)
+        .then(res => res.json())
+        .then(data => {
+          $('#regency_id option:not(:disabled)').remove()
+          data.data.forEach(regency => {
+            const regencySelect = $('#regency_id')
+
+            regencySelect.append($("<option></option>")
+              .attr("value", regency.id)
+              .text(regency.name));
+          });
+
+          if (oldRegency) {
+            console.log(oldRegency)
+
+            $('#regency_id').val(oldRegency)
+          }
+        })
+        .catch(err => console.log(err))
+    }
+  </script>
 </body>
 
 </html>

@@ -8,16 +8,18 @@ class Icon extends Component
 {
     public $class;
     public $icon;
+    public $style;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($icon = null, $class = '')
+    public function __construct($icon = null, $class = '', $style = '')
     {
         $this->class = $class;
         $this->icon = $icon;
+        $this->style = $style;
     }
 
     /**
