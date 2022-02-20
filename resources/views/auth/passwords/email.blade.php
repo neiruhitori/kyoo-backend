@@ -41,13 +41,16 @@
         @endif
 
         <form action="{{ route('password.email') }}" method="POST" style="margin-bottom: 1rem;">
-          @csrf 
+          @csrf
 
           <div style="margin-bottom: 1.5rem;">
             <label class="font-weight-bold" for="email">Email</label>
 
             <div class="k-input">
-              <x-icon icon="letter" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="letter" class="k-icon" />
+              </div>
+
               <input type="email" name="email" id="email" placeholder="Masukkan email" value="{{ old('email') }}"
                 required>
             </div>

@@ -49,7 +49,10 @@
             <label class="font-weight-bold" for="email">Email</label>
 
             <div class="k-input">
-              <x-icon icon="letter" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="letter" class="k-icon" />
+              </div>
+
               <input type="email" name="email" id="email" placeholder="mail@website.com" value="{{ old('email') }}"
                 required>
             </div>
@@ -63,9 +66,11 @@
             <label class="font-weight-bold" for="password">Password</label>
 
             <div class="k-input">
-              <x-icon icon="lock" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="lock" class="k-icon" />
+              </div>
+
               <input type="password" name="password" id="password" placeholder="Min. 8 Character" required>
-              <x-icon icon="eyeClosed" class="k-icon k-password-icon" style="margin-left: 0.5rem;" />
             </div>
 
             @error('password')

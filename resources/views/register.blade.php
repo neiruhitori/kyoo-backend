@@ -49,7 +49,10 @@
             <label class="font-weight-bold" for="name">Nama Cabang</label>
 
             <div class="k-input">
-              <x-icon icon="home" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="home" class="k-icon" />
+              </div>
+
               <input type="text" name="name" id="name" placeholder="Nama Cabang" value="{{ old('name') }}" required>
             </div>
 
@@ -62,7 +65,10 @@
             <label class="font-weight-bold" for="industry_category_id">Kategori Industri</label>
 
             <div class="k-input">
-              <x-icon icon="file" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="file" class="k-icon" />
+              </div>
+
               <select name="industry_category_id" id="industry_category_id" required>
                 <option disabled selected>Pilih Kategori</option>
                 @foreach ($categories as $category)
@@ -82,17 +88,20 @@
             <label class="font-weight-bold" for="queue_type">Jenis Antrian</label>
 
             <div class="k-input">
-              <x-icon icon="group" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="group" class="k-icon" />
+              </div>
+
               <select name="queue_type" id="queue_type" required>
                 <option disabled selected>Pilih Jenis Antrian</option>
                 <option value="direct_queue" {{ old('queue_type')=='direct_queue' ? 'selected' : '' }}>
-                  Antrian Onsite (Datang ke Lokasi)
+                  Antrian Onsite
                 </option>
                 <option value="appointment_queue" {{ old('queue_type')=='appointment_queue' ? 'selected' : '' }}>
-                  Antrian Appointment (Temu Janji)
+                  Antrian Appointment
                 </option>
-                <option value="exhibition_queue" {{ old('queue_type')=='exhibition_queue' ? 'selected' : '' }}>Antrian
-                  Exhibition (Check-in)
+                <option value="exhibition_queue" {{ old('queue_type')=='exhibition_queue' ? 'selected' : '' }}>
+                  Antrian Exhibition
                 </option>
               </select>
             </div>
@@ -104,17 +113,29 @@
 
           <div class="k-alert" style="margin-bottom: 1rem;">
             <div style="margin-bottom: 1.125rem;">
-              <strong>Kunjungan di Lokasi</strong>
-              <p>
-                Antri langsung di lokasi cabang, tidak perlu janji temu untuk mendapatkan layanan
+              <h6 class="font-weight-bold" style="margin-bottom: 0.25rem;">Antrian Onsite atau Kunjungan di Lokasi</h6>
+              <p style="margin-bottom: 0.25rem;">
+                Antri langsung di lokasi cabang, tidak perlu janji temu untuk mendapatkan layanan.
               </p>
+              <small>Contoh: Antrian di kantor Telekomunikasi dll</small>
+            </div>
+
+            <div style="margin-bottom: 1.125rem;">
+              <h6 class="font-weight-bold" style="margin-bottom: 0.25rem;">Antrian Appointment atau Janji Temu</h6>
+              <p style="margin-bottom: 0.25rem;">
+                Diperlukan janji temu atau booking waktu terlebih dahulu untuk mendapatkan layanan. Antrian jenis ini
+                memiliki pengaturan kuota.
+              </p>
+              <small>Contoh: Antrian di Rumah Sakit dll</small>
             </div>
 
             <div>
-              <strong>Quota Basis</strong>
-              <p>
-                Diperlukan janji temu untuk mendapatkan layanan
+              <h6 class="font-weight-bold" style="margin-bottom: 0.25rem;">Antrian Exhibition</h6>
+              <p style="margin-bottom: 0.25rem;">
+                Diperlukan booking slot terlebih dahulu dan kemudian check-in di lokasi. Antrian jenis ini memiliki
+                pengaturan kuota.
               </p>
+              <small>Contoh: Konser Musik, Pameran Seni dll</small>
             </div>
           </div>
 
@@ -122,7 +143,9 @@
             <label class="font-weight-bold" for="email">Email</label>
 
             <div class="k-input">
-              <x-icon icon="letter" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="letter" class="k-icon" />
+              </div>
               <input type="email" name="email" id="email" placeholder="mail@website.com" value="{{ old('email') }}"
                 required>
             </div>
@@ -136,9 +159,17 @@
             <label class="font-weight-bold" for="password">Password</label>
 
             <div class="k-input">
-              <x-icon icon="key" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="key" class="k-icon" />
+              </div>
+
               <input type="password" name="password" id="password" placeholder="Masukkan Password" required>
-              <x-icon icon="eyeClosed" class="k-icon k-password-icon" style="margin-left: 0.5rem;" />
+
+              <div>
+                <button type="button" class="k-button-text is-password-visible">
+                  <x-icon icon="eyeClosed" />
+                </button>
+              </div>
             </div>
 
             @error('password')
@@ -150,10 +181,18 @@
             <label class="font-weight-bold" for="password_confirmation">Konfirmasi Password</label>
 
             <div class="k-input">
-              <x-icon icon="key" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="key" class="k-icon" aria-hidden="true" />
+              </div>
+
               <input type="password" name="password_confirmation" id="password_confirmation"
                 placeholder="Ketik Ulang Password" reuqired>
-              <x-icon icon="eyeClosed" class="k-icon k-password-icon" style="margin-left: 0.5rem;" />
+
+              <div>
+                <button type="button" class="k-button-text is-password-visible">
+                  <x-icon icon="eyeClosed" />
+                </button>
+              </div>
             </div>
 
             @error('password_confirmation')
@@ -165,7 +204,10 @@
             <label class="font-weight-bold" for="country">Negara</label>
 
             <div class="k-input">
-              <x-icon icon="flag" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="flag" class="k-icon" />
+              </div>
+
               <select name="country" id="country" required>
                 <option disabled selected>Pilih Negara</option>
                 @foreach ($countries as $country)
@@ -185,7 +227,10 @@
             <label class="font-weight-bold" for="phone">Telepon</label>
 
             <div class="k-input">
-              <x-icon icon="phone" class="k-icon" style="margin-right: 0.5rem;" />
+              <div>
+                <x-icon icon="phone" class="k-icon" />
+              </div>
+
               <input type="tel" name="phone" id="phone" placeholder="Ch.+628***" value="{{ old('phone') }}" required>
             </div>
 
@@ -199,9 +244,12 @@
               <label class="font-weight-bold" for="province_id">Provinsi</label>
 
               <div class="k-input">
-                <x-icon icon="chat" class="k-icon" style="margin-right: 0.5rem;" />
+                <div>
+                  <x-icon icon="chat" class="k-icon" />
+                </div>
+
                 <select name="province_id" id="province_id" required>
-                  <option disabled selected>Ch. Jawa Barat</option>
+                  <option disabled selected>Pilih Provinsi</option>
                   @foreach ($provinces as $province)
                   <option value="{{ $province->id }}" {{ old('province_id')==$province->id ? 'selected' : '' }}>
                     {{$province->name}}
@@ -219,9 +267,12 @@
               <label class="font-weight-bold" for="regency_id">Kota</label>
 
               <div class="k-input">
-                <x-icon icon="point" class="k-icon" style="margin-right: 0.5rem;" />
+                <div>
+                  <x-icon icon="point" class="k-icon" />
+                </div>
+
                 <select name="regency_id" id="regency_id" required>
-                  <option disabled selected>Ch. Bandung</option>
+                  <option disabled selected>Pilih Kota</option>
                 </select>
               </div>
 
@@ -243,11 +294,24 @@
             @enderror
           </div>
 
-          <div style="margin-bottom: 1.5rem">
+          <div style="margin-bottom: 1rem">
             {!! NoCaptcha::renderJs() !!}
             {!! NoCaptcha::display() !!}
 
             @error('g-recaptcha-response')
+            <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <div class="k-checkbox">
+              <input type="checkbox" name="accept_term_condition" id="accept_term_condition">
+              <label for="accept_term_condition">
+                Saya menyetujui <a href="https://kyoo.id/termsandconditions">Syarat dan Ketentuan yang Berlaku</a>
+              </label>
+            </div>
+
+            @error('accept_term_condition')
             <div class="text-danger mt-2">{{ $message }}</div>
             @enderror
           </div>
@@ -269,8 +333,6 @@
     $(document).ready(function() {
       $('#country').val('Indonesia')
 
-      console.log('Province old: ', '{{ old('province_id') }}')
-
       if ('{{ old('province_id') }}') {
         fetchRegencies('{{ old('province_id') }}')
       }
@@ -280,8 +342,8 @@
         fetchRegencies(provinceId)
       })
 
-      $('input[type="password"] + .k-password-icon').click(function () {
-        const input = $(this).siblings('input')
+      $('.is-password-visible').click(function () {
+        const input = $(this).parents().siblings('.k-input input')
 
         input.attr('type') === 'password'
           ? input.attr('type', 'text')
