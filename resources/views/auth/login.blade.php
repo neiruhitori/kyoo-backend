@@ -53,7 +53,7 @@
                 <x-icon icon="letter" class="k-icon" />
               </div>
 
-              <input type="email" name="email" id="email" placeholder="mail@website.com" value="{{ old('email') }}"
+              <input type="text" name="email" id="email" placeholder="mail@website.com" value="{{ old('email') }}"
                 required>
             </div>
 
