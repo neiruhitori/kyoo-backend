@@ -101,18 +101,6 @@
   <div class="image-container">
     <img class="page-illustration" src="{{ asset('img/illustrations/in-line.svg') }}">
   </div>
-
-  <script>
-    $(document).ready(function () {
-      $('input[type="password"] + .k-password-icon').click(function () {
-        const input = $(this).siblings('input')
-
-        input.attr('type') === 'password'
-          ? input.attr('type', 'text')
-          : input.attr('type', 'password')
-      })
-    })
-  </script>
 </body>
 
 </html>
