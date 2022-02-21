@@ -1,91 +1,79 @@
 <?php
 
 return [
-
-  /*
-    |--------------------------------------------------------------------------
-    | Validation Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines contain the default error messages used by
-    | the validator class. Some of these rules have multiple versions such
-    | as the size rules. Feel free to tweak each of these messages here.
-    |
-    */
-
-  'accepted' => 'The :attribute must be accepted.',
-  'active_url' => 'The :attribute is not a valid URL.',
-  'after' => 'The :attribute must be a date after :date.',
-  'after_or_equal' => 'The :attribute must be a date after or equal to :date.',
-  'alpha' => 'The :attribute may only contain letters.',
-  'alpha_dash' => 'The :attribute may only contain letters, numbers, dashes and underscores.',
-  'alpha_num' => 'The :attribute may only contain letters and numbers.',
-  'array' => ':attribute harus array',
-  'before' => 'The :attribute must be a date before :date.',
-  'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
+  'accepted' => ':attribute harus diisi.',
+  'active_url' => ':attribute bukan URL yang valid.',
+  'after' => ':attribute harus tanggal setelah :date.',
+  'after_or_equal' => ':attribute harus tanggal setelah atau sama dengan :date.',
+  'alpha' => ':attribute hanya boleh berisi huruf.',
+  'alpha_dash' => ':attribute hanya boleh berisi huruf, nomor, dash, dan underscore.',
+  'alpha_num' => ':attribute hanya boleh berisi huruf dan nomor.',
+  'array' => ':attribute hanya boleh berisi array',
+  'before' => ':attribute harus tanggal sebelum :date.',
+  'before_or_equal' => ':attribute harus tanggal sebelum atau sama dengan :date.',
   'between' => [
-    'numeric' => 'The :attribute must be between :min and :max.',
-    'file' => 'The :attribute must be between :min and :max kilobytes.',
-    'string' => 'The :attribute must be between :min and :max characters.',
-    'array' => 'The :attribute must have between :min and :max items.',
+    'numeric' => ':attribute harus antara :min dan :max.',
+    'file' => ':attribute harus antara :min dan :max kilobyte.',
+    'string' => ':attribute harus antara :min dan :max karakter.',
+    'array' => ':attribute harus memiliki antara :min and :max item.',
   ],
   'boolean' => 'Field :attribute harus bernilai true atau false.',
   'confirmed' => 'Konfirmasi :attribute tidak cocok.',
   'date' => ':attribute bukan tanggal valid.',
-  'date_equals' => 'The :attribute must be a date equal to :date.',
-  'date_format' => 'The :attribute does not match the format :format.',
-  'different' => 'The :attribute and :other must be different.',
-  'digits' => 'The :attribute must be :digits digits.',
-  'digits_between' => 'The :attribute must be between :min and :max digits.',
-  'dimensions' => 'The :attribute has invalid image dimensions.',
-  'distinct' => 'The :attribute field has a duplicate value.',
-  'email' => ':attribute harus berisi alamat email yang valid',
-  'ends_with' => 'The :attribute must end with one of the following: :values.',
+  'date_equals' => ':attribute harus berisi tanggal yang sama dengan :date.',
+  'date_format' => ':attribute tidak sesuai dengan format :format.',
+  'different' => ':attribute dan :other harus berbeda.',
+  'digits' => ':attribute harus :digits digit.',
+  'digits_between' => ':attribute harus antara :min dan :max digit.',
+  'dimensions' => ':attribute memiliki dimensi gambar yang tidak valid.',
+  'distinct' => 'Field :attribute memiliki nilai duplikat.',
+  'email' => ':attribute harus berisi alamat email valid',
+  'ends_with' => ':attribute harus diakhiri dengan salah satu dari berikut: :values.',
   'exists' => ':attribute yang dipilih tidak valid.',
   'file' => ':attribute harus berisi file.',
   'filled' => ':attribute harus diisi.',
   'gt' => [
-    'numeric' => 'The :attribute must be greater than :value.',
-    'file' => 'The :attribute must be greater than :value kilobytes.',
-    'string' => 'The :attribute must be greater than :value characters.',
-    'array' => 'The :attribute must have more than :value items.',
+    'numeric' => ':attribute harus lebih besar dari :value.',
+    'file' => ':attribute harus lebih besar dari :value kilobyte.',
+    'string' => ':attribute harus lebih besar dari :value karakter.',
+    'array' => ':attribute harus punya lebih dari :value item.',
   ],
   'gte' => [
-    'numeric' => 'The :attribute must be greater than or equal :value.',
-    'file' => 'The :attribute must be greater than or equal :value kilobytes.',
-    'string' => 'The :attribute must be greater than or equal :value characters.',
-    'array' => 'The :attribute must have :value items or more.',
+    'numeric' => ':attribute harus lebih besar dari atau sama dengan :value.',
+    'file' => ':attribute harus lebih besar dari atau sama dengan :value kilobyte.',
+    'string' => ':attribute harus lebih besar dari atau sama dengan :value karakter.',
+    'array' => ':attribute harus memiliki :value item atau lebih.',
   ],
   'image' => ':attribute harus berisi gambar.',
   'in' => ':attribute yang terpilih tidak valid.',
-  'in_array' => 'The :attribute field does not exist in :other.',
-  'integer' => 'The :attribute must be an integer.',
-  'ip' => 'The :attribute must be a valid IP address.',
-  'ipv4' => 'The :attribute must be a valid IPv4 address.',
-  'ipv6' => 'The :attribute must be a valid IPv6 address.',
-  'json' => 'The :attribute must be a valid JSON string.',
+  'in_array' => 'Field :attribute tidak ada di :other.',
+  'integer' => ':attribute harus bilangan bulat.',
+  'ip' => ':attribute harus berisi alamat IP yang valid.',
+  'ipv4' => ':attribute harus berisi alamat IPv4 yang valid.',
+  'ipv6' => ':attribute harus berisi alamat IPv6 yang valid.',
+  'json' => ':attribute harus berisi string JSON yang valid.',
   'lt' => [
-    'numeric' => 'The :attribute must be less than :value.',
-    'file' => 'The :attribute must be less than :value kilobytes.',
-    'string' => 'The :attribute must be less than :value characters.',
-    'array' => 'The :attribute must have less than :value items.',
+    'numeric' => ':attribute harus lebih kecil dari :value.',
+    'file' => ':attribute harus lebih kecil dari :value kilobyte.',
+    'string' => ':attribute harus lebih kecil dari :value karakter.',
+    'array' => ':attribute harus memiliki kurang dari :value item.',
   ],
   'lte' => [
-    'numeric' => 'The :attribute must be less than or equal :value.',
-    'file' => 'The :attribute must be less than or equal :value kilobytes.',
-    'string' => 'The :attribute must be less than or equal :value characters.',
-    'array' => 'The :attribute must not have more than :value items.',
+    'numeric' => ':attribute must be less than or equal :value.',
+    'file' => ':attribute must be less than or equal :value kilobytes.',
+    'string' => ':attribute must be less than or equal :value characters.',
+    'array' => ':attribute must not have more than :value items.',
   ],
   'max' => [
-    'numeric' => 'The :attribute may not be greater than :max.',
-    'file' => 'The :attribute may not be greater than :max kilobytes.',
-    'string' => 'The :attribute may not be greater than :max characters.',
-    'array' => 'The :attribute may not have more than :max items.',
+    'numeric' => ':attribute may not be greater than :max.',
+    'file' => ':attribute may not be greater than :max kilobytes.',
+    'string' => ':attribute may not be greater than :max characters.',
+    'array' => ':attribute may not have more than :max items.',
   ],
-  'mimes' => 'Jenis file :attribute harus bertipe: :values.',
-  'mimetypes' => 'Jenis file :attribute harus bertipe: :values.',
+  'mimes' => ':attribute harus memiliki jenis file: :values.',
+  'mimetypes' => ':attribute harus memiliki jenis file: :values.',
   'min' => [
-    'numeric' => ':attribute harus bernilai setidaknya :min.',
+    'numeric' => ':attribute harus memiliki nilai setidaknya :min.',
     'file' => ':attribute harus memiliki ukuran setidaknya :min kilobytes.',
     'string' => ':attribute harus berisi setidaknya :min karakter.',
     'array' => ':attribute harus berisi setidaknya :min item.',
@@ -97,12 +85,12 @@ return [
   'present' => 'Field :attribute harus ada.',
   'regex' => 'Format :attribute tidak valid.',
   'required' => 'Field :attribute harus diisi.',
-  'required_if' => 'Field :attribute jika nilai :other adalah :value.',
+  'required_if' => 'Field :attribute harus diisi jika nilai :other adalah :value.',
   'required_unless' => 'Field :attribute harus diisi kecuali :other ada di :values.',
   'required_with' => 'Field :attribute diperlukan jika :values diisi.',
   'required_with_all' => 'Field :attribute harus diisi saat :values ada.',
   'required_without' => ':attribute harus diisi jika :values tidak ada.',
-  'required_without_all' => ':attribute diperlukan jika tidak ada nilai dari :values yang disediakan.',
+  'required_without_all' => ':attribute diperlukan jika tidak ada nilai :values disediakan.',
   'same' => ':attribute dan :other harus sama.',
   'size' => [
     'numeric' => ':attribute harus bernilai :size.',
@@ -113,21 +101,10 @@ return [
   'starts_with' => ':attribute harus dimulai dengan salah satu dari :values.',
   'string' => ':attribute harus berisi string.',
   'timezone' => ':attribute harus berisi zona yang valid.',
-  'unique' => ':attribute sudah tersimpan.',
+  'unique' => ':attribute sudah disimpan.',
   'uploaded' => ':attribute gagal diupload.',
   'url' => 'Format :attribute tidak valid.',
   'uuid' => ':attribute harus berisi UUID yang valid.',
-
-  /*
-    |--------------------------------------------------------------------------
-    | Custom Validation Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify custom validation messages for attributes using the
-    | convention "attribute.rule" to name the lines. This makes it quick to
-    | specify a specific custom language line for a given attribute rule.
-    |
-    */
 
   'custom' => [
     'attribute-name' => [
@@ -135,17 +112,5 @@ return [
     ],
   ],
 
-  /*
-    |--------------------------------------------------------------------------
-    | Custom Validation Attributes
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used to swap our attribute placeholder
-    | with something more reader friendly such as "E-Mail Address" instead
-    | of "email". This simply helps us make our message more expressive.
-    |
-    */
-
   'attributes' => [],
-
 ];
