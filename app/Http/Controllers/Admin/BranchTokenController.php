@@ -20,7 +20,7 @@ class BranchTokenController extends Controller
             'token' => $token
         ]);
 
-        $request->session()->flash('success', 'Token for branch '.$branch->name.' has been generated!');
+        $request->session()->flash('success', __('module.generated', ['module' => __('Token'), 'name' => $branch->name]));
         return redirect(route('admin.branch.show', $branch->id));
     }
 }

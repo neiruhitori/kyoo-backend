@@ -9,7 +9,9 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Virtual Counter List</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('list.module', ['module' => __('Virtual Counter')]) }}
+                    </h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
@@ -17,7 +19,7 @@
                         <div class="row">
                             <div class="col-md-12 text-right">
                                 <a href="{{route('adminBranch.user.create')}}" class="btn btn-primary"">
-                                    Create User Counter
+                                    {{ __('create.module', ['module' => __('Virtual Counter')]) }}
                                 </a>
                             </div>
                         </div>
@@ -28,12 +30,12 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Workstation</th>
-                                            <th>Username</th>
-                                            <th>Role</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
+                                            <th>{{ __('ID') }}</th>
+                                            <th>{{ __('Workstation') }}</th>
+                                            <th>{{ __('Username') }}</th>
+                                            <th>{{ __('Role') }}</th>
+                                            <th>{{ __('Status') }}</th>
+                                            <th>{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -42,23 +44,39 @@
                                                 <td>{{$user->id}}</td>
                                                 <td>{{$user->WorkstationVct && $user->WorkstationVct->Workstation ? $user->WorkstationVct->Workstation->name : '-'}}</td>
                                                 <td>{{$user->username}}</td>
-                                                <td>Counter</td>
+                                                <td>{{ __('Counter') }}</td>
                                                 <td>
                                                     @if ($user->deleted_at)
-                                                            <span class="badge badge-danger">Non Active</span>
+                                                            <span class="badge badge-danger">{{ __('Non Active') }}</span>
                                                         @else
-                                                            <span class="badge badge-primary">Active</span>                                                    
+                                                            <span class="badge badge-primary">{{ __('Active') }}</span>                                                    
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if (!$user->deleted_at)
-                                                        <a href="{{route('adminBranch.user.edit', $user->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit User">
+                                                        <a
+                                                            href="{{route('adminBranch.user.edit', $user->id)}}"
+                                                            class="btn
+                                                            btn-warning" data-toggle="tooltip"
+                                                            data-placement="bottom"
+                                                            title="{{
+                                                                __('edit.module', ['module' => __('Virtual Counter')])
+                                                            }}"
+                                                        >
                                                             <i class="fas fa-fw fa-edit"></i>
                                                         </a>
                                                         <form action="{{route('adminBranch.user.destroy', $user->id)}}" method="post" style="display: inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove User">
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-danger"
+                                                                data-toggle="tooltip"
+                                                                data-placement="bottom"
+                                                                title="{{
+                                                                    __('remove.module', ['module' => __('Virtual Counter')])
+                                                                }}"
+                                                            >
                                                                 <i class="fas fa-fw fa-trash"></i>
                                                             </button>
                                                         </form>
@@ -67,14 +85,26 @@
                                                             @csrf
                                                             @method('PUT')
                                                             <input type="hidden" name="user_id" value="{{$user->id}}">
-                                                            <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Restore User">
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-primary"
+                                                                data-toggle="tooltip"
+                                                                data-placement="bottom"
+                                                                title="{{ __('Restore User') }}"
+                                                            >
                                                                 <i class="fas fa-fw fa-check"></i>
                                                             </button>
                                                         </form>
                                                     @endif
                                                     <form action="{{route('adminBranch.user.resetPassword', $user->id)}}" method="post" style="display: inline">
                                                         @csrf   
-                                                        <button type="submit" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Reset Password">
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-info"
+                                                            data-toggle="tooltip"
+                                                            data-placement="bottom"
+                                                            title="{{  __('Reset Password') }}"
+                                                        >
                                                             <i class="fas fa-fw fa-lock"></i>
                                                         </button>
                                                     </form>

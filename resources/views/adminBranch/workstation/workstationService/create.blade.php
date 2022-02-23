@@ -5,7 +5,9 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Insert Workstation Service</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('create.module', ['module' => __('Workstation Service')]) }}
+                    </h6>
                 </div>
                 @csrf
                 <div class="card-body">
@@ -16,7 +18,7 @@
                                 @csrf
                                 <input type="hidden" name="workstation_id" value="{{$workstation->id}}">
                                 <div class="form-group">
-                                    <label for="service_id">Service</label>
+                                    <label for="service_id">{{ __('Service') }}</label>
                                     <select name="service_id" id="service_id" class="form-control @error('service_id') is-invalid @enderror">
                                         @foreach ($services as $service)
                                             <option value="{{$service->id}}">{{$service->name}}</option>
@@ -25,17 +27,17 @@
                                     @include('layouts.inputError', ['errorName' => 'service_id'])
                                 </div>
                                 <div class="form-group">
-                                    <label for="priority">Priority</label>
+                                    <label for="priority">{{ __('Priority') }}</label>
                                     <select name="priority" id="priority" class="form-control @error('priority') is-invalid @enderror">
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
+                                        <option value="1">{{ __('1') }}</option>
+                                        <option value="2">{{ __('2') }}</option>
+                                        <option value="3">{{ __('3') }}</option>
+                                        <option value="4">{{ __('4') }}</option>
+                                        <option value="5">{{ __('5') }}</option>
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'priority'])
                                 </div>
-                                <button class="btn btn-primary">Insert</button>
+                                <button class="btn btn-primary">{{ __('Save') }}</button>
                             </form>
                         </div>
                     </div>

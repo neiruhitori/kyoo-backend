@@ -109,7 +109,7 @@ class BranchController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Branch'
         ]);
-        $request->session()->flash('warning', 'Branch '.$request->name.' has been updated!');
+        $request->session()->flash('warning', __('module.updated', ['module' => __('Branch'), 'name' => $request->name]));
         return redirect(route('adminBranch.home'));
     }
 

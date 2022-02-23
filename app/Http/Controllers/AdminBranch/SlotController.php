@@ -47,7 +47,7 @@ class SlotController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Insert Slot'
         ]);
-        $request->session()->flash('success', 'Slot for service '.$service->name.' has been inserted!');
+        $request->session()->flash('success', __('module.generated', ['module' => __('Slot'), 'name' => $service->name]));
         return redirect(route('adminBranch.service.slot.index', $service->id));
     }
 
@@ -97,7 +97,7 @@ class SlotController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Slot'
         ]);
-        $request->session()->flash('warning', 'Slot has been updated!');
+        $request->session()->flash('warning', __('Slot has been updated'));
         return redirect(route('adminBranch.service.slot.index', $slot->service_id));
     }
 
@@ -119,7 +119,7 @@ class SlotController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Remove Slot'
         ]);
-        $request->session()->flash('error', 'Slot has been removed!');
+        $request->session()->flash('error', __('Slot has been removed'));
         return redirect(route('adminBranch.service.slot.index', $slot->service_id));
     }
 }

@@ -11,37 +11,40 @@
       <div class="card shadow mb-4">
         <div class="card-header py-3">
           <h6 class="m-0 font-weight-bold text-primary">
-            Direct Queue Monitor
+            Monitor Antrian Onsite
           </h6>
         </div>
         <div class="card-body">
           <div class="row">
             <div class="col-md-12 text-right">
-              <a href="/cs/directQueue/create" class="btn btn-primary"
-                >Create Direct Queue</a
+              <a
+                href="/cs/directQueue/create"
+                class="btn btn-primary"
               >
+                Tambah Antrian Onsite
+              </a>
             </div>
           </div>
           <div class="row">
             <!-- START DIRECT QUEUE CALLER -->
             <div class="col-md-4">
-              <b class="text-primary">Direct Queue Caller</b>
+              <b class="text-primary">Pemanggil Antrian Onsite</b>
               <hr />
               <div class="row">
                 <div class="col-md-12" v-if="!isOnTransfer">
                   <div class="form-group">
-                    <label for="search-by">Input Queue No</label>
+                    <label for="search-by">Masukkan No. Antrian</label>
                     <input
                       type="text"
                       class="form-control"
-                      placeholder="Input here"
+                      placeholder="Ketik Disini"
                       v-model.lazy="selected_queue"
                       @change="manualInput = true"
                     />
                   </div>
                 </div>
                 <div class="col-md-12" v-else>
-                  <h5>Transfer Queue: {{ selected_queue }}</h5>
+                  <h5>Transfer Antrian: {{ selected_queue }}</h5>
                   <form @submit.prevent="onSubmitTransfer">
                     <input
                       type="hidden"
@@ -49,7 +52,7 @@
                       v-model="selected_queue"
                     />
                     <div class="form-group">
-                      <label for="services">select workstation service</label>
+                      <label for="services">Pilih Layanan di Meja</label>
                       <select
                         name="workstation_service_id"
                         id="workstation_service_id"
@@ -72,7 +75,7 @@
                             type="button"
                             @click="isOnTransfer = false"
                           >
-                            CANCEL
+                            Batal
                           </button>
                         </div>
                         <div class="col-md-6">
@@ -80,7 +83,7 @@
                             class="btn btn-success fullwidth"
                             type="submit"
                           >
-                            SAVE
+                            Simpan
                           </button>
                         </div>
                       </div>
@@ -94,7 +97,7 @@
                       @click="onServed"
                       :disabled="!selected_queue || selected_queue.status"
                     >
-                      Served
+                      Terlayani
                     </button>
                   </div>
                   <template v-else>
@@ -104,7 +107,7 @@
                         @click="onRecall"
                         disabled
                       >
-                        RECALL
+                        Panggil Ulang
                       </button>
                     </div>
                     <div class="col-md-6">
@@ -112,7 +115,7 @@
                         class="btn btn-success fullwidth mb-2"
                         @click="onEndServed"
                       >
-                        END SERVED
+                        Layanan Berakhir
                       </button>
                     </div>
                     <div class="col-md-6">
@@ -124,7 +127,7 @@
                           onServedQueue.requeue_count >= max_requeue
                         "
                       >
-                        REQUEUE
+                        Antri Ulang
                       </button>
                     </div>
                     <div class="col-md-6">
@@ -132,7 +135,7 @@
                         class="btn btn-danger fullwidth mb-2"
                         @click="onNoShow"
                       >
-                        NO SHOW
+                        Tidak Muncul
                       </button>
                     </div>
                     <div class="col-md-12">
@@ -141,7 +144,7 @@
                         @click="onTransfer"
                         :disabled="!allow_transfer"
                       >
-                        TRANSFER
+                        Transfer
                       </button>
                     </div>
                   </template>
@@ -151,22 +154,24 @@
             <!-- END DIRECT QUEUE CALLER -->
             <!-- START DIRECT QUEUE LIST -->
             <div class="col-md-8">
-              <b class="text-primary">Direct Queue List</b>
+              <b class="text-primary">Daftar Antrian Onsite</b>
               <hr />
               <div class="row">
                 <div class="col-md-12">
                   <div class="form-group">
                     <div class="row">
                       <div class="col-md-8">
-                        <label for="search-by"
-                          >Search By Queue No or Name</label
+                        <label
+                          for="search-by"
                         >
+                          Cari menggunakan No. Antrian atau Nama
+                        </label>
                       </div>
                       <div class="col-md-4">
                         <input
                           type="text"
                           class="form-control"
-                          placeholder="Search"
+                          placeholder="Cari"
                           @input="debounceSearch"
                         />
                       </div>
@@ -178,9 +183,9 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th>Queue No</th>
-                      <th>Name</th>
-                      <th>Service Name</th>
+                      <th>No. Antrian</th>
+                      <th>Nama</th>
+                      <th>Nama Layanan</th>
                       <th>Status</th>
                     </tr>
                   </thead>
@@ -201,34 +206,34 @@
                           <span
                             class="badge badge-secondary"
                             v-show="queue.status == 'waiting'"
-                            >Waiting</span
+                            >Menunggu</span
                           >
                           <span
                             class="badge badge-info"
                             v-show="queue.status == 'served'"
-                            >On Served</span
+                            >Sedang Dilayani</span
                           >
                           <span
                             class="badge badge-warning"
                             v-show="queue.status == 'requeue'"
-                            >Re-queue</span
+                            >Antri Ulang</span
                           >
                           <span
                             class="badge badge-danger"
                             v-show="queue.status == 'no show'"
-                            >No Show</span
+                            >Tidak Muncul</span
                           >
                           <span
                             class="badge badge-success"
                             v-show="queue.status == 'end served'"
-                            >End Served</span
+                            >Layanan Berakhir</span
                           >
                         </td>
                       </tr>
                     </template>
                     <tr v-else>
                       <td colspan="3">
-                        <p class="text-center">No Data Found</p>
+                        <p class="text-center">Tidak Ada Data</p>
                       </td>
                     </tr>
                   </tbody>
@@ -300,7 +305,7 @@ export default {
       "VCTDirectQueue",
       (data) => {
         this.$toast.open({
-          message: "New queue created",
+          message: "Antrian baru ditambahkan",
           type: "info",
           duration: 3000,
           dismissible: true,
@@ -339,7 +344,7 @@ export default {
         selected_queue[0]?.status != "served" &&
         selected_queue[0]?.status != "requeue"
       ) {
-        alert("Queue status incorrect");
+        alert("Status antrian salah");
         return;
       }
       this.isLoading = true;

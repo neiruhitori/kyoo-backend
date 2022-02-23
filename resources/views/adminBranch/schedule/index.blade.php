@@ -9,13 +9,13 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Working Days Schedule</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Working Days Schedule') }}</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12 text-right">
-                            <a href="{{route('adminBranch.schedule.create')}}" class="btn btn-primary"">
-                                Insert Schedule
+                            <a href="{{route('adminBranch.schedule.create')}}" class="btn btn-primary">
+                                {{ __('create.module', ['module' => __('Schedule')]) }}
                             </a>
                         </div>
                     </div>
@@ -26,41 +26,45 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>No</th>
-                                            <th>Day</th>
-                                            <th>Status</th>
-                                            <th>Start Time</th>
-                                            <th>End Time</th>
-                                            <th>Action</th>
+                                            <th>{{ __('No.') }}</th>
+                                            <th>{{ __('Day') }}</th>
+                                            <th>{{ __('Status') }}</th>
+                                            <th>{{ __('Start Time') }}</th>
+                                            <th>{{ __('End Time') }}</th>
+                                            <th>{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($schedules as $index => $schedule)
                                             <tr>
                                                 <td>{{ ++$index }}</td>
-                                                <td style="text-transform: capitalize;">{{$schedule->day}}</td>
+                                                <td>{{ __(ucfirst($schedule->day)) }}</td>
                                                 <td>
                                                     @switch($schedule->status)
                                                         @case('closed')
-                                                            <span class="badge badge-danger">Closed</span>
+                                                            <span class="badge badge-danger">{{ __('Closed') }}</span>
                                                             @break
                                                         @case('fullday')
-                                                            <span class="badge badge-success">Fullday</span>
+                                                            <span class="badge badge-success">{{ __('Fullday') }}</span>
                                                             @break
                                                         @default
-                                                            <span class="badge badge-primary">Open</span>
+                                                            <span class="badge badge-primary">{{ __('Open') }}</span>
                                                     @endswitch
                                                 </td>
                                                 <td>{{$schedule->start_time}}</td>
                                                 <td>{{$schedule->end_time}}</td>
                                                 <td>
-                                                    <a href="{{route('adminBranch.schedule.edit', $schedule->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Schedule">
+                                                    <a href="{{route('adminBranch.schedule.edit', $schedule->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="{{
+                                                        __('edit.module', ['module' => __('Schedule')])
+                                                    }}">
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
                                                     <form action="{{route('adminBranch.schedule.destroy', $schedule->id)}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove Schedule">
+                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="{{
+                                                            __('remove.module', ['module' => __('Schedule')])
+                                                        }}">
                                                             <i class="fas fa-fw fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -80,7 +84,7 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Public Holiday</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Public Holiday') }}</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -88,7 +92,9 @@
                             @if (Auth::user()->Branch->schedule_template_id)
                                 <h5>Youre using {{Auth::user()->Branch->ScheduleTemplate->name}}</h5>
                             @endif
-                            <a href="{{route('adminBranch.schedule.template.index')}}"><b>Click here to add public holidays schedule as exceptional working days</b></a>
+                            <a href="{{route('adminBranch.schedule.template.index')}}">
+                                <b>{{ __('Click here to add public holidays schedule as exceptional working days') }}</b>
+                            </a>
                         </div>
                     </div>
                     <div class="row">
@@ -97,8 +103,8 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Description</th>
-                                            <th>Date</th>
+                                            <th>{{ __('Description') }}</th>
+                                            <th>{{ __('Date') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

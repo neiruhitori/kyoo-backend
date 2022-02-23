@@ -9,15 +9,17 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">List Department</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('list.module', ['module' => __('Department')]) }}
+                    </h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
                     @if (Auth::user()->Branch->BranchType->is_premium || count($departments) < 1)
                         <div class="row">
                             <div class="col-md-12 text-right">
-                                <a href="{{route('adminBranch.department.create')}}" class="btn btn-primary"">
-                                    Insert Department
+                                <a href="{{route('adminBranch.department.create')}}" class="btn btn-primary">
+                                    {{ __('create.module', ['module' => __('Department')]) }}
                                 </a>
                             </div>
                         </div>
@@ -28,8 +30,8 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Action</th>
+                                            <th>{{ __('Name') }}</th>
+                                            <th>{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -37,7 +39,17 @@
                                             <tr>
                                                 <td>{{$department->name}}</td>
                                                 <td>
-                                                    <a href="{{route('adminBranch.department.edit', $department->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit department">
+                                                    <a
+                                                        href="{{
+                                                            route('adminBranch.department.edit', $department->id)
+                                                        }}"
+                                                        class="btn btn-warning"
+                                                        data-toggle="tooltip"
+                                                        data-placement="bottom"
+                                                        title="{{
+                                                            __('edit.module', ['module' => __('Department')])
+                                                        }}"
+                                                    >
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
                                                     {{-- <form action="{{route('adminBranch.department.destroy', $department->id)}}" method="post" style="display: inline">

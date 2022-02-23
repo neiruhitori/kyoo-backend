@@ -4,7 +4,9 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Edit User Counter</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('edit.module', ['module' => __('Virtual Counter')]) }}
+                    </h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
@@ -15,9 +17,9 @@
                                 @method('PUT')
                                 <input type="hidden" name="user_id" value="{{$user->id}}">
                                 <div class="form-group">
-                                    <label for="workstation_id">Workstation</label>
+                                    <label for="workstation_id">{{ __('Workstation') }}</label>
                                     <select name="workstation_id" id="workstation_id" class="form-control @error('workstation_id') is-invalid @enderror">
-                                        <option value="">- Select Workstation -</option>
+                                        <option value="">- {{ __('Select Workstation') }} -</option>
                                         @foreach ($workstations as $workstation)
                                             <option value="{{$workstation->id}}">{{$workstation->name}}</option>
                                         @endforeach
@@ -25,7 +27,7 @@
                                     @include('layouts.inputError', ['errorName' => 'department_id'])
                                 </div>
                                 <div class="form-group">
-                                    <label for="username">Username</label>
+                                    <label for="username">{{ __('Username') }}</label>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">KY{{Auth::user()->branch_id}}_</span>
@@ -36,32 +38,32 @@
                                 </div>
                                 @if ($user->is_password_changed)
                                     <div class="form-group">
-                                        <label for="password_confirmation">Old Password</label>
+                                        <label for="password_confirmation">{{ __('Old Password') }}</label>
                                         <input name="old_password" type="password" class="form-control @error('old_password') is-invalid @enderror" value="{{old('old_password')}}" required>
                                         @include('layouts.inputError', ['errorName' => 'old_password'])
                                     </div>
                                 @endif
                                 <div class="form-group">
-                                    <label for="password">Password</label>
+                                    <label for="password">{{ __('Password') }}</label>
                                     <br>
                                     <small>
-                                        rules:
+                                        {{ __('Rules') }}:
                                         <ul>
-                                            <li>must be at least 8 characters in length</li>
-                                            <li>must contain at least one lowercase letter</li>
-                                            <li>must contain at least one uppercase letter</li>
-                                            <li>must contain at least one digit</li>
+                                            <li>{{ __('must be at least 8 characters in length') }}</li>
+                                            <li>{{ __('must contain at least one lowercase letter') }}</li>
+                                            <li>{{ __('must contain at least one uppercase letter') }}</li>
+                                            <li>{{ __('must contain at least one digit') }}</li>
                                         </ul>
                                     </small>
                                     <input name="password" type="password" class="form-control @error('password') is-invalid @enderror" value="{{old('password')}}">
                                     @include('layouts.inputError', ['errorName' => 'password'])
                                 </div>
                                 <div class="form-group">
-                                    <label for="password_confirmation">Confirmation Password</label>
+                                    <label for="password_confirmation">{{ __('Password Confirmation') }}</label>
                                     <input name="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{old('password_confirmation')}}">
                                     @include('layouts.inputError', ['errorName' => 'password_confirmation'])
                                 </div>
-                                <button class="btn btn-warning">Update</button>
+                                <button class="btn btn-warning">{{ __('Update') }}</button>
                             </form>
                         </div>
                     </div>

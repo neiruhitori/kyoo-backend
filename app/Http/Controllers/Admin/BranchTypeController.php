@@ -42,7 +42,7 @@ class BranchTypeController extends Controller
     public function store(StoreBranchType $request)
     {
         BranchType::create($request->all());
-        $request->session()->flash('success', 'Branch Type '.$request->name.' has been inserted!');
+        $request->session()->flash('success', __('module.created', ['module' => __('Branch Type'), 'name' => $request->name]));
         return redirect(route('admin.branchType.index'));
     }
 
@@ -80,7 +80,7 @@ class BranchTypeController extends Controller
     public function update(UpdateBranchType $request, BranchType $branchType)
     {
         $branchType->update($request->all());
-        $request->session()->flash('warning', 'Branch Type '.$request->name.' has been updated!');
+        $request->session()->flash('warning', __('module.updated', ['module' => __('Branch Type'), 'name' => $request->name]));
         return redirect(route('admin.branchType.index'));
     }
 
@@ -93,7 +93,7 @@ class BranchTypeController extends Controller
     public function destroy(Request $request, BranchType $branchType)
     {
         $branchType->delete();
-        $request->session()->flash('error', 'Branch Type '.$branchType->name.' has been removed!');
+        $request->session()->flash('error', __('module.removed', ['module' => __('Branch Type'), 'name' => $branchType->name]));
         return redirect(route('admin.branchType.index'));
     }
 }

@@ -84,7 +84,7 @@ class BranchController extends Controller
         // validation max counter
         $branchType = BranchType::whereId($request->branch_type_id)->whereIsPremium(true)->first();
         if (!$branchType &&  $request->max_counter > 1) {
-            $request->session()->flash('error', 'Free License only able to set max counter 1!');
+            $request->session()->flash('error', __('Free License only able to set max counter 1'));
             return redirect(route('admin.branch.create'))->withInput();
         }
         
@@ -128,7 +128,7 @@ class BranchController extends Controller
 
         AutoPopulate::create($branch->id);
 
-        $request->session()->flash('success', 'Branch '.$request->name.' has been inserted!');
+        $request->session()->flash('success', __('module.created', ['module' => __('Branch'), 'name' => $request->name]));
         return redirect(route('admin.branch.index'));
     }
 
@@ -178,7 +178,7 @@ class BranchController extends Controller
         // validation max counter
         $branchType = BranchType::whereId($request->branch_type_id)->whereIsPremium(true)->first();
         if (!$branchType &&  $request->max_counter > 1) {
-            $request->session()->flash('error', 'Free License only able to set max counter 1!');
+            $request->session()->flash('error', __('Free License only able to set max counter 1'));
             return redirect(route('admin.branch.create'))->withInput();
         }
         
@@ -204,7 +204,7 @@ class BranchController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Branch'
         ]);
-        $request->session()->flash('warning', 'Branch '.$request->name.' has been updated!');
+        $request->session()->flash('warning', __('module.created', ['module' => __('Branch'), 'name' => $request->name]));
         return redirect(route('admin.branch.index'));
     }
 
@@ -221,7 +221,7 @@ class BranchController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Remove Branch'
         ]);
-        $request->session()->flash('error', 'Branch '.$branch->name.' has been suspended!');
+        $request->session()->flash('error', __('module.suspended', ['module' => __('Branch'), 'name' => $branch->name]));
         return redirect(route('admin.branch.index'));
     }
 
@@ -250,13 +250,13 @@ class BranchController extends Controller
                     'user_id' => Auth::id(),
                     'description' => 'Success Verify Branch'
                 ]);
-              $request->session()->flash('success', 'Branch '.$branch->name.' has been verified!');
+              $request->session()->flash('success', __('module.verified', ['module' => __('Branch'), 'name' => $branch->name]));
           } else {
               Log::create([
                     'user_id' => Auth::id(),
                     'description' => 'Failed Verify Branch'
                 ]);
-              $request->session()->flash('error', 'Branch '.$branch->name.' has been rejected!');
+              $request->session()->flash('error', __('module.rejected', ['module' => __('Branch'), 'name' => $branch->name]));
           }
           
           return redirect(route('admin.branch.verify.index'));

@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Virtual Counter {{Auth::user()->Branch->name}}</h1>
+        <h1 class="h3 mb-0 text-gray-800">{{ __('Virtual Counter') }} {{Auth::user()->Branch->name}}</h1>
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -15,13 +15,15 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Active Appointment</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Active Appointment') }}</h6>
                 </div>
                 <div class="card-body">
                     <div class="row mb-5">
                         <div class="col text-right">
                             <a href="{{ route('cs.appointment.create') }}">
-                                <button class="btn btn-primary">Create New Appointment</button>
+                                <button class="btn btn-primary">
+                                    {{ __('create.module', ['module' => __('Appointment')]) }}
+                                </button>
                             </a>
                         </div>
                     </div>
@@ -29,13 +31,13 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Queue No.</th>
-                                    <th>Booking Code</th>
-                                    <th>Booking Time</th>
-                                    <th>Name</th>
-                                    <th>Service</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th>{{ __('Queue Number') }}</th>
+                                    <th>{{ __('Booking Code') }}</th>
+                                    <th>{{ __('Booking Time') }}</th>
+                                    <th>{{ __('Name') }}</th>
+                                    <th>{{ __('Service') }}</th>
+                                    <th>{{ __('Status') }}</th>
+                                    <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -49,13 +51,13 @@
                                         <td>
                                             @switch($appointment->status)
                                                 @case('book')
-                                                    <span class="badge badge-primary">Book</span>
+                                                    <span class="badge badge-primary">{{ __('Book') }}</span>
                                                     @break
                                                 @case('check in')
-                                                    <span class="badge badge-success">Attend</span>
+                                                    <span class="badge badge-success">{{ __('Attend') }}</span>
                                                     @break        
                                                 @case('served')
-                                                    <span class="badge badge-info">On Progress</span>
+                                                    <span class="badge badge-info">{{ __('On Progress') }}</span>
                                                     @break        
                                             @endswitch
                                         </td>
@@ -75,8 +77,8 @@
                                                             @csrf
                                                             @method('PUT')
                                                             <input type="hidden" name="status" value="no show">
-                                                            <button class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="No Show">
-                                                                No Show
+                                                            <button class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="{{ __('No Show') }}">
+                                                                {{ __('No Show') }}
                                                             </button>
                                                         </form>
                                                     </div>
@@ -86,8 +88,8 @@
                                                             @csrf
                                                             @method('PUT')
                                                             <input type="hidden" name="status" value="served">
-                                                            <button class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Served">
-                                                                Served
+                                                            <button class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="{{ __('Served') }}">
+                                                                {{ __('Served') }}
                                                             </button>
                                                         </form>
                                                     @break        
@@ -96,8 +98,8 @@
                                                             @csrf
                                                             @method('PUT')
                                                             <input type="hidden" name="status" value="end served">
-                                                            <button class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Served">
-                                                                End Served
+                                                            <button class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="{{ __('End Served') }}">
+                                                                {{ __('End Served') }}
                                                             </button>
                                                         </form>
                                                     @break        
@@ -114,19 +116,19 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">History</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('History') }}</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
                             <tr>
-                                <th>Queue No.</th>
-                                <th>Booking Code</th>
-                                <th>Booking Time</th>
-                                <th>Name</th>
-                                <th>Service</th>
-                                <th>Served Time</th>
-                                <th>Status</th>
+                                <th>{{ __('Queue Number') }}</th>
+                                <th>{{ __('Booking Code') }}</th>
+                                <th>{{ __('Booking Time') }}</th>
+                                <th>{{ __('Name') }}</th>
+                                <th>{{ __('Service') }}</th>
+                                <th>{{ __('Served Time') }}</th>
+                                <th>{{ __('Status') }}</th>
                             </tr>
                             @foreach ($historyAppointments as $index => $appointment)
                                 <tr>
@@ -145,10 +147,10 @@
                                     <th>
                                         @switch($appointment->status)
                                             @case('end served')
-                                                <span class="badge badge-success">End Served</span>
+                                                <span class="badge badge-success">{{ __('End Served') }}</span>
                                                 @break
                                             @case('no show')
-                                                <span class="badge badge-danger">No Show</span>
+                                                <span class="badge badge-danger">{{ __('No Show') }}</span>
                                                 @break        
                                         @endswitch
                                     </th>
@@ -170,6 +172,29 @@
         $(document).ready(function() {
             $('#dataTable').DataTable( {
                 "ordering": false,
+                "language": {
+                    "emptyTable": "Tidak ada data",
+                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                    "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
+                    "infoFiltered": "(ter-filter dari _MAX_ total data)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Tampilkan _MENU_ data",
+                    "loadingRecords": "Memuat...",
+                    "processing": "Memproses...",
+                    "search": "Cari:",
+                    "zeroRecords": "Tidak ada data yang ditemukan",
+                    "paginate": {
+                        "first": "Awal",
+                        "last": "Akhir",
+                        "next": "Berikutnya",
+                        "previous": "Sebelum"
+                    },
+                    "aria": {
+                        "sortAscending": ": aktifkan untuk mengurutkan kolom menaik",
+                        "sortDescending": ": aktifkan untuk mengurutkan kolom menurun"
+                    }
+                }
             });
             $('[data-toggle="tooltip"]').tooltip();
         });

@@ -38,7 +38,7 @@ class HomeController extends Controller
     {
         $user = User::find(Auth::user()->id);
         $user->update($request->all());
-        $request->session()->flash('warning', 'Admin profile has been updated!');
+        $request->session()->flash('warning', __('Admin profile has been updated'));
         return redirect(route('admin.profile.edit'));
     }
 

@@ -5,7 +5,9 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Edit Department {{$department->name}}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('edit.module', ['module' => __('Department')]) }} {{$department->name}}
+                    </h6>
                 </div>
                 @csrf
                 <div class="card-body">
@@ -16,11 +18,11 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group">
-                                    <label for="name">Name</label>
+                                    <label for="name">{{ __('Name') }}</label>
                                     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: $department->name}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
-                                <button class="btn btn-warning">Update</button>
+                                <button class="btn btn-warning">{{ __('Update') }}</button>
                             </form>
                         </div>
                     </div>

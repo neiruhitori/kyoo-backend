@@ -50,7 +50,7 @@ class IndustryCategoryController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Create Industry Category'
         ]);
-        $request->session()->flash('success', 'Industry Category '.$request->name.' has been added!');
+        $request->session()->flash('success', __('module.created', ['module' => __('Industry Category'), 'name' => $request->name]));
         return redirect(route('admin.industryCategory.index'));
     }
 
@@ -95,7 +95,7 @@ class IndustryCategoryController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Industry Category'
         ]);
-        $request->session()->flash('warning', 'Industry Category '.$request->name.' has been updated!');
+        $request->session()->flash('warning', __('module.updated', ['module' => __('Industry Category'), 'name' => $request->name]));
         return redirect(route('admin.industryCategory.index'));
     }
 
@@ -112,7 +112,7 @@ class IndustryCategoryController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Remove Industry Category'
         ]);
-        $request->session()->flash('error', 'Industry Category '.$industryCategory->name.' has been removed!');
+        $request->session()->flash('error', __('module.removed', ['module' => __('Industry Category'), 'name' => $industryCategory->name]));
         return redirect(route('admin.industryCategory.index'));
     }
 }

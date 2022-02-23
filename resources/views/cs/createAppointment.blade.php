@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Virtual Counter {{Auth::user()->Branch->name}}</h1>
+        <h1 class="h3 mb-0 text-gray-800">{{ __('Virtual Counter') }} {{Auth::user()->Branch->name}}</h1>
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -15,52 +15,52 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Active Appointment</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Active Appointment') }}</h6>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('cs.appointment.store') }}" method="post">
                         @csrf
                         <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                         <div class="col-md-12 form-group">
-                            <label for="date">Date</label>
+                            <label for="date">{{ __('Date') }}</label>
                             <input type="date" name="date" id="date" class="form-control" value="{{ old('date') ?: date('Y-m-d') }}" required>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label for="service_id">Services</label>
+                            <label for="service_id">{{ __('Service') }}</label>
                             <select name="service_id" id="service_id" class="form-control">
-                                <option value="" selected disabled>Choose Services</option>
+                                <option value="" selected disabled>{{ __('Choose Service') }}</option>
                                 @foreach ($services as $service)
                                     <option value="{{ $service->id }}">{{ $service->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label for="slot_id">Slot</label>
+                            <label for="slot_id">{{ __('Slot') }}</label>
                             <select name="slot_id" id="slot_id" class="form-control">
-                                <option value="" selected disabled>Choose Slot</option>
+                                <option value="" selected disabled>{{ __('Choose Slot') }}</option>
                                 {{-- @foreach ($slots as $slot)
                                     <option value="{{ $slot->id }}">{{ $slot->Service->name }} ({{ $slot->day }} | {{ $slot->start_time }} - {{ $slot->end_time }})</option>
                                 @endforeach --}}
                             </select>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label for="name">Name</label>
+                            <label for="name">{{ __('Name') }}</label>
                             <input type="text" name="name" id="" class="form-control" value="{{ old('name') }}" required>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label for="phone">Phone Number</label>
+                            <label for="phone">{{ __('Phone Number') }}</label>
                             <input type="tel" name="phone" id="" class="form-control" value="{{ old('phone') }}" required>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label for="email">Email</label>
+                            <label for="email">{{ __('Email') }}</label>
                             <input type="email" name="email" id="" class="form-control" value="{{ old('email') }}" required>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label for="notes">Notes</label>
+                            <label for="notes">{{ __('Notes') }}</label>
                             <textarea name="notes" id="" cols="" rows="" class="form-control">{{ old('notes') }}</textarea>
                         </div>
                         <div class="col-md-12">
-                            <button class="btn btn-primary">Submit</button>
+                            <button class="btn btn-primary">{{ __('Save') }}</button>
                         </div>
                     </form>
                 </div>

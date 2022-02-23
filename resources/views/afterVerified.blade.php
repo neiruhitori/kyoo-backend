@@ -9,11 +9,13 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Kyoo Admin</title>
+  <title>{{ __('Kyoo Admin') }}</title>
   <link rel="icon" href="{{ asset('img/favico.png') }}" type="image/icon type">
   <!-- Custom fonts for this template-->
   <link href="{{asset('admin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
 
   <!-- Custom styles for this template-->
   <link href="{{asset('admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
@@ -21,8 +23,9 @@
     .bg-gradient-primary {
       background: linear-gradient(121.16deg, #189DCD 0.95%, #0A5194 97.59%);
     }
+
     .fullwidth {
-        width: 100%;
+      width: 100%;
     }
   </style>
 </head>
@@ -36,24 +39,24 @@
 
       <div class="col-xl-10 col-lg-12 col-md-9">
         <div class="row">
-            <div class="col-md-12">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Verification Success!</h6>
-                    </div>
-                    <div class="card-body text-center">
-                        <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
-                        <img src="{{asset('img/desk.svg')}}" alt="" class="mb-3" style="max-height: 200px">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p>Thanks for registering your branch</p>
-                                <p>Let's login to KYOO and update branch profile and virtual counter user to start the Queue</p>
-                                <a href="{{route('login')}}" class="btn btn-sm btn-primary">Login</a>
-                            </div>
-                        </div>
-                    </div>
+          <div class="col-md-12">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{ __('Verification Success!') }}</h6>
+              </div>
+              <div class="card-body text-center">
+                <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
+                <img src="{{asset('img/desk.svg')}}" alt="" class="mb-3" style="max-height: 200px">
+                <div class="row">
+                  <div class="col-md-12">
+                    <p>{{ __('Thanks for registering your branch') }}</p>
+                    <p>Let's login to KYOO and update branch profile and virtual counter user to start the Queue</p>
+                    <a href="{{route('login')}}" class="btn btn-sm btn-primary">{{ __('Login') }}</a>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
       </div>
 

@@ -12,21 +12,21 @@
       <li class="nav-item">
         <a class="nav-link" href="{{route('home')}}">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span></a>
+          <span>{{ __('Dashboard') }}</span></a>
       </li>
 
       @if (Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
           <li class="nav-item">
             <a class="nav-link" href="{{route('adminBranch.directQueue.monitor')}}" target="_blank">
               <i class="fas fa-fw fa-tv"></i>
-              <span>Direct Queue Monitor</span></a>
+              <span>{{ __('Direct Queue Monitor') }}</span></a>
           </li>
       @endif
 
       <li class="nav-item">
         <a class="nav-link" href="{{route('adminBranch.qr')}}" target="_blank">
           <i class="fas fa-fw fa-qrcode"></i>
-          <span>Show QR Code</span></a>
+          <span>{{ __('Show QR Code') }}</span></a>
       </li>
 
       <!-- Divider -->
@@ -41,7 +41,7 @@
       <li class="nav-item">
         <a class="nav-link" href="{{route('adminBranch.branch.edit')}}">
           <i class="fas fa-fw fa-building"></i>
-          <span>Edit Branch Profile</span>
+          <span>{{ __('edit.module', ['module' => __('Branch Profile')]) }}</span>
         </a>
       </li>
 
@@ -49,7 +49,7 @@
           <li class="nav-item">
             <a class="nav-link" href="{{route('adminBranch.branchConfiguration.edit')}}">
               <i class="fas fa-fw fa-building"></i>
-              <span>Branch Configuration</span>
+              <span>{{ __('Branch Configuration') }}</span>
             </a>
           </li>
       @endif
@@ -57,13 +57,17 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           <i class="fas fa-fw fa-calendar"></i>
-          <span>Schedule</span>
+          <span>{{ __('Schedule') }}</span>
         </a>
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Submenu:</h6>
-            <a class="collapse-item" href="{{route('adminBranch.schedule.index')}}">List Schedule</a>
-            <a class="collapse-item" href="{{route('adminBranch.schedule.create')}}">Insert Schedule</a>
+            <a class="collapse-item" href="{{route('adminBranch.schedule.index')}}">
+              {{ __('list.module', ['module' => __('Schedule')]) }}
+            </a>
+            <a class="collapse-item" href="{{route('adminBranch.schedule.create')}}">
+              {{ __('create.module', ['module' => __('Schedule')]) }}
+            </a>
           </div>
         </div>
       </li>
@@ -71,20 +75,24 @@
       <li class="nav-item">
         <a class="nav-link" href="{{route('adminBranch.department.index')}}">
           <i class="fas fa-fw fa-building"></i>
-          <span>Department</span>
+          <span>{{ __('Department') }}</span>
         </a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-bars"></i>
-          <span>Service</span>
+          <span>{{ __('Service') }}</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Submenu:</h6>
-            <a class="collapse-item" href="{{route('adminBranch.service.index')}}">List Service</a>
-            <a class="collapse-item" href="{{route('adminBranch.service.create')}}">Insert Service</a>
+            <a class="collapse-item" href="{{route('adminBranch.service.index')}}">
+              {{ __('list.module', ['module' => __('Service')]) }}
+            </a>
+            <a class="collapse-item" href="{{route('adminBranch.service.create')}}">
+              {{ __('create.module', ['module' => __('Service')]) }}
+            </a>
           </div>
         </div>
       </li>
@@ -93,14 +101,14 @@
       <li class="nav-item">
         <a class="nav-link" href="{{route('adminBranch.workstation.index')}}">
           <i class="fas fa-fw fa-user"></i>
-          <span>Workstation</span>
+          <span>{{ __('Workstation') }}</span>
         </a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link" href="{{route('adminBranch.user.index')}}">
           <i class="fas fa-fw fa-user"></i>
-          <span>Virtual Counter</span>
+          <span>{{ __('Virtual Counter') }}</span>
         </a>
       </li>
 
@@ -108,12 +116,12 @@
           <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
               <i class="fas fa-list-ul"></i>
-              <span>Report Appointment</span>
+              <span>{{ __('Report Appointment') }}</span>
             </a>
             <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
               <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Submenu:</h6>
-                <a class="collapse-item" href="{{route('adminBranch.report.daily')}}">Daily Report</a>
+                <a class="collapse-item" href="{{route('adminBranch.report.daily')}}">{{ __('Daily Report') }}</a>
               </div>
             </div>
           </li>
@@ -123,12 +131,12 @@
           <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
               <i class="fas fa-list-ul"></i>
-              <span>Report Direct Queue</span>
+              <span>{{ __('Report Direct Queue') }}</span>
             </a>
             <div id="collapseFour" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
               <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Submenu:</h6>
-                <a class="collapse-item" href="{{route('adminBranch.report.directQueue.daily')}}">Daily Report</a>
+                <a class="collapse-item" href="{{route('adminBranch.report.directQueue.daily')}}">{{ __('Daily Report') }}</a>
               </div>
             </div>
           </li>

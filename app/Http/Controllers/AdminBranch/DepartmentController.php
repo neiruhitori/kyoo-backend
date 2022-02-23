@@ -34,7 +34,7 @@ class DepartmentController extends Controller
     {
         // for MVP
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->Departments) > 0) {
-            $request->session()->flash('warning', 'Only one department can be created!');
+            $request->session()->flash('warning', __('Only one department can be created'));
             return redirect(route('adminBranch.department.index'));
         }
         return view('adminBranch.department.create');
@@ -50,7 +50,7 @@ class DepartmentController extends Controller
     {
         // for MVP
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->Departments) > 0) {
-            $request->session()->flash('warning', 'Only one department can be created!');
+            $request->session()->flash('warning', __('Only one department can be created'));
             return redirect(route('adminBranch.department.index'));
         }
         Department::create($request->all());
@@ -58,7 +58,7 @@ class DepartmentController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Insert Department'
         ]);
-        $request->session()->flash('success', 'Department '.$request->name.' has been inserted!');
+        $request->session()->flash('success', __('module.created', ['module' => __('Department'), 'name' => $request->name]));
         return redirect(route('adminBranch.department.index'));
     }
 
@@ -105,7 +105,7 @@ class DepartmentController extends Controller
         }
         // for MVP
         if (count(Auth::user()->Branch->Departments) > 0) {
-            $request->session()->flash('warning', 'Can not update department info!');
+            $request->session()->flash('warning', __('Can not update department info'));
             return redirect(route('adminBranch.department.index'));
         }
         $department->update($request->all());
@@ -113,7 +113,7 @@ class DepartmentController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Department'
         ]);
-        $request->session()->flash('warning', 'Department '.$request->name.' has been updated!');
+        $request->session()->flash('warning', __('module.updated', ['module' => __('Department'), 'name' => $request->name]));
         return redirect(route('adminBranch.department.index'));
     }
 
@@ -137,7 +137,7 @@ class DepartmentController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Remove Department'
         ]);
-        $request->session()->flash('error', 'Department '.$department->name.' has been removed!');
+        $request->session()->flash('error', __('module.removed', ['module' => __('Department'), 'name' => $department->name]));
         return redirect(route('adminBranch.department.index'));
     }
 }

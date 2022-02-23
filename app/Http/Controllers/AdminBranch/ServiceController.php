@@ -52,7 +52,7 @@ class ServiceController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Insert Service'
         ]);
-        $request->session()->flash('success', 'Service '.$request->name.' has been inserted!');
+        $request->session()->flash('success', __('module.created', ['module' => __('Service'), 'name' => $request->name]));
         return redirect(route('adminBranch.service.index'));
     }
 
@@ -105,7 +105,7 @@ class ServiceController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Service'
         ]);
-        $request->session()->flash('warning', 'Service '.$request->name.' has been updated!');
+        $request->session()->flash('warning', __('module.updated', ['module' => __('Service'), 'name' => $request->name]));
         return redirect(route('adminBranch.service.index'));
     }
 
@@ -127,7 +127,7 @@ class ServiceController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Remove Service'
         ]);
-        $request->session()->flash('error', 'Service '.$service->name.' has been removed!');
+        $request->session()->flash('error', __('module.removed', ['module' => __('Service'), 'name' => $service->name]));
         return redirect(route('adminBranch.service.index'));
     }
 }

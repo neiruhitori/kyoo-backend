@@ -5,7 +5,9 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Insert Department</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('create.module', ['module' => __('Department')]) }}
+                    </h6>
                 </div>
                 @csrf
                 <div class="card-body">
@@ -16,11 +18,11 @@
                                 @csrf
                                 <input type="hidden" name="branch_id" value="{{Auth::user()->branch_id}}">
                                 <div class="form-group">
-                                    <label for="name">Name</label>
+                                    <label for="name">{{ __('Name') }}</label>
                                     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: 'Department 1'}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
-                                <button class="btn btn-primary">Insert</button>
+                                <button class="btn btn-primary">{{ __('Save') }}</button>
                             </form>
                         </div>
                     </div>

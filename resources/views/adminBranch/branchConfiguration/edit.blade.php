@@ -5,7 +5,9 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Update Branch Configuration</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('update.module', ['module' => __('Branch Configuration')]) }}
+                    </h6>
                 </div>
                 @csrf
                 <div class="card-body">
@@ -16,27 +18,27 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group">
-                                    <label for="maximum_recall">Max Recall</label>
+                                    <label for="maximum_recall">{{ __('Max Recall') }}</label>
                                     <input name="maximum_recall" type="number" min="0" class="form-control @error('maximum_recall') is-invalid @enderror" value="{{old('maximum_recall') ?: Auth::user()->Branch->BranchConfiguration->maximum_recall}}" required>
                                     @include('layouts.inputError', ['errorName' => 'maximum_recall'])
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="maximum_requeue_count">Max Re-queue</label>
+                                    <label for="maximum_requeue_count">{{ __('Max Requeue') }}</label>
                                     <input name="maximum_requeue_count" type="number" min="0" class="form-control @error('maximum_requeue_count') is-invalid @enderror" value="{{old('maximum_requeue_count') ?: Auth::user()->Branch->BranchConfiguration->maximum_requeue_count}}" required>
                                     @include('layouts.inputError', ['errorName' => 'maximum_requeue_count'])
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="allow_transfer">Allow Transfer</label>
+                                    <label for="allow_transfer">{{ __('Allow Transfer') }}</label>
                                     <select name="allow_transfer" id="allow_transfer" class="form-control @error('allow_transfer') is-invalid @enderror">
-                                        <option value="0">No</option>
-                                        <option value="1">Yes</option>
+                                        <option value="0">{{ __('No') }}</option>
+                                        <option value="1">{{ __('Yes') }}</option>
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'allow_transfer'])
                                 </div>
 
-                                <button class="btn btn-warning">Update</button>
+                                <button class="btn btn-warning">{{ __('Update') }}</button>
                             </form>
                         </div>
                     </div>

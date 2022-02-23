@@ -5,7 +5,9 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Insert Service</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('create.module', ['module' => __('Service')]) }}
+                    </h6>
                 </div>
                 @csrf
                 <div class="card-body">
@@ -15,12 +17,12 @@
                             <form action="{{route('adminBranch.service.store')}}" method="post">
                                 @csrf
                                 <div class="form-group">
-                                    <label for="name">Name</label>
+                                    <label for="name">{{ __('Name') }}</label>
                                     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: 'Service 1'}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
                                 <div class="form-group">
-                                    <label for="department_id">Department</label>
+                                    <label for="department_id">{{ __('Department') }}</label>
                                     <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror">
                                         @foreach ($departments as $department)
                                             <option value="{{$department->id}}">{{$department->name}}</option>
@@ -28,7 +30,7 @@
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'department_id'])
                                 </div>
-                                <button class="btn btn-primary">Insert</button>
+                                <button class="btn btn-primary">{{ __('Save') }}</button>
                             </form>
                         </div>
                     </div>

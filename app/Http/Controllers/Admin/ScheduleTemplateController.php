@@ -53,7 +53,7 @@ class ScheduleTemplateController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Import Schedule Template'
         ]);
-        $request->session()->flash('success', 'Schedule Template '.$request->name.' has been added!');
+        $request->session()->flash('success', __('module.created', ['module' => __('Schedule Template'), 'name' => $request->name]));
         return redirect(route('admin.scheduleTemplate.index'));
     }
 
@@ -100,7 +100,7 @@ class ScheduleTemplateController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Schedule Template'
         ]);
-        $request->session()->flash('warning', 'Schedule Template '.$scheduleTemplate->name.' has been updated!');
+        $request->session()->flash('warning', __('module.updated', ['module' => __('Schedule Template'), 'name' => $scheduleTemplate->name]));
         return redirect()->back();
     }
 
@@ -118,7 +118,7 @@ class ScheduleTemplateController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Remove Schedule Template'
         ]);
-        $request->session()->flash('error', 'Schedule Template '.$scheduleTemplate->name.' has been removed!');
+        $request->session()->flash('error', __('module.removed', ['module' => __('Schedule Template'), 'name' => $scheduleTemplate->name]));
         return redirect(route('admin.scheduleTemplate.index'));
     }
 }

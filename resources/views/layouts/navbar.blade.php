@@ -29,7 +29,7 @@
                 </div>
                 <div>
                 <div class="small text-gray-500">December 12, 2019</div>
-                <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                <span class="font-weight-bold">{{ __('A new monthly report is ready to download!') }}</span>
                 </div>
             </a>
             </div>
@@ -49,14 +49,14 @@
                 @case('admin_kyoo')
                     <a class="dropdown-item" href="{{route('admin.profile.edit')}}">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Profile
+                        {{ __('Profile') }}
                     </a>
                     <div class="dropdown-divider"></div>
                     @break
                 @case('admin_branch')
                     <a class="dropdown-item" href="{{route('adminBranch.profile.edit')}}">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Profile
+                        {{ __('Profile') }}
                     </a>
                     <div class="dropdown-divider"></div>
                     @break

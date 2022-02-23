@@ -63,7 +63,7 @@ class ScheduleController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Insert Schedule'
         ]);
-        $request->session()->flash('success', 'Schedule has been inserted!');
+        $request->session()->flash('success', __('Schedule has been inserted'));
         return redirect(route('adminBranch.schedule.index'));
     }
 
@@ -118,7 +118,7 @@ class ScheduleController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Schedule'
         ]);
-        $request->session()->flash('warning', 'Schedule has been updated!');
+        $request->session()->flash('warning', __('Schedule has been updated'));
         return redirect(route('adminBranch.schedule.index'));
     }
 
@@ -140,7 +140,7 @@ class ScheduleController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Remove Schedule'
         ]);
-        $request->session()->flash('error', 'Schedule has been removed!');
+        $request->session()->flash('error', __('Schedule has been removed'));
         return redirect(route('adminBranch.schedule.index'));
     }
 
@@ -161,7 +161,7 @@ class ScheduleController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Template Schedule Branch'
         ]);
-        $request->session()->flash('warning', 'Schedule Template has been updated!');
+        $request->session()->flash('warning', __('Schedule Template has been updated'));
         return redirect(route('adminBranch.schedule.index'));
     }
 }

@@ -1,13 +1,13 @@
 <h5 class="my-3">
-    <span class="badge badge-warning">Step 1 of 2</span>
+    <span class="badge badge-warning">{{ __('step.total', ['current' => 1, 'total' => 2]) }}</span>
 </h5>
 <div class="form-group">
-    <label for="name">Branch Name</label>
+    <label for="name">{{ __('name.module', ['module' => __('Branch')]) }}</label>
     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: $branch->name}}" >
     @include('layouts.inputError', ['errorName' => 'name'])
 </div>
 <div class="form-group">
-    <label for="industry_category_id">Category</label>
+    <label for="industry_category_id">{{ __('Category') }}</label>
     <select name="industry_category_id" id="industry_category_id" class="form-control @error('industry_category_id') is-invalid @enderror" >
         @foreach ($categories as $category)
             <option value="{{$category->id}}">{{$category->name}}</option>
@@ -16,7 +16,7 @@
     @include('layouts.inputError', ['errorName' => 'industry_category_id'])
 </div>
 <div class="form-group">
-    <label for="branch_type_id">Branch License</label>
+    <label for="branch_type_id">{{ __('Branch License') }}</label>
     <select name="branch_type_id" id="branch_type_id" class="form-control @error('branch_type_id') is-invalid @enderror" disabled>
         @foreach ($branchTypes as $branchType)
             <option value="{{$branchType->id}}">{{$branchType->code}} - {{$branchType->name}}</option>
@@ -25,22 +25,22 @@
     @include('layouts.inputError', ['errorName' => 'branch_type_id'])
 </div>
 <div class="form-group">
-    <label for="max_counter">Max Counter </label>
+    <label for="max_counter">{{ __('Max Counter') }}</label>
     <input name="max_counter" type="number" class="form-control @error('max_counter') is-invalid @enderror" value="{{$branch->max_counter}}" disabled>
     @include('layouts.inputError', ['errorName' => 'max_counter'])
 </div>
 <div class="form-group">
-    <label for="description">Description</label>
+    <label for="description">{{ __('Description') }}</label>
     <textarea name="description" id="" cols="" rows="" class="form-control @error('description') is-invalid @enderror">{{old('description') ?: $branch->description}}</textarea>
     @include('layouts.inputError', ['errorName' => 'description'])
 </div>
 <div class="form-group">
-    <label for="email">Email</label>
+    <label for="email">{{ __('Email') }}</label>
     <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{old('email') ?: $branch->email}}">
     @include('layouts.inputError', ['errorName' => 'email'])
 </div>
 <div class="form-group">
-    <label for="country">Country</label>
+    <label for="country">{{ __('Country') }}</label>
     <select name="country" id="country" class="form-control @error('country') is-invalid @enderror" >
         @foreach ($countries as $country)
             <option value="{{$country}}">{{$country}}</option>
@@ -49,27 +49,27 @@
     @include('layouts.inputError', ['errorName' => 'country'])
 </div>
 <div class="form-group">
-    <label for="timezone">Indonesia Timezone</label>
+    <label for="timezone">{{ __('Indonesia Timezone') }}</label>
     <select name="timezone" id="timezone" class="form-control @error('timezone') is-invalid @enderror" >
-        <option value="" selected disabled>Select Timezone</option>
-        <option value="WIB">WIB</option>
-        <option value="WITA">WITA</option>
-        <option value="WIT">WIT</option>
+        <option value="" selected disabled>{{ __('Select Timezone') }}</option>
+        <option value="WIB">{{ __('WIB') }}</option>
+        <option value="WITA">{{ __('WITA') }}</option>
+        <option value="WIT">{{ __('WIT') }}</option>
     </select>
     @include('layouts.inputError', ['errorName' => 'country'])
 </div>
 <div class="form-group">
-    <label for="fixed_phone">Fixed Phone</label>
+    <label for="fixed_phone">{{ __('Fixed Phone') }}</label>
     <input name="fixed_phone" type="text" class="form-control @error('fixed_phone') is-invalid @enderror" value="{{old('fixed_phone') ?: $branch->fixed_phone}}">
     @include('layouts.inputError', ['errorName' => 'fixed_phone'])
 </div>
 <div class="form-group">
-    <label for="mobile_phone">Mobile Phone</label>
+    <label for="mobile_phone">{{ __('Mobile Phone') }}</label>
     <input name="mobile_phone" type="text" class="form-control @error('mobile_phone') is-invalid @enderror" value="{{old('mobile_phone') ?: $branch->mobile_phone}}" >
     @include('layouts.inputError', ['errorName' => 'mobile_phone'])
 </div>
 <div class="form-group">
-    <label for="logo">Logo</label>
+    <label for="logo">{{ __('Logo') }}</label>
     <br>
     <img src="{{asset('storage/'.$branch->logo)}}" alt="" style="max-height: 100px">
     <br>
@@ -77,7 +77,7 @@
     @include('layouts.inputError', ['errorName' => 'logo'])
 </div>
 <div class="form-group">
-    <label for="photo">Image Background</label>
+    <label for="photo">{{ __('Image Background') }}</label>
     <br>
     <img src="{{asset('storage/'.$branch->photo)}}" alt="" style="max-height: 100px">
     <br>
@@ -85,10 +85,10 @@
     @include('layouts.inputError', ['errorName' => 'photo'])
 </div>
 <div class="form-group">
-    <label for="is_active">Show on Mobile</label>
+    <label for="is_active">{{ __('Show in Mobile') }}</label>
     <select name="is_active" id="is_active" class="form-control @error('is_active') is-invalid @enderror" >
-        <option value="1">Yes</option>
-        <option value="0">No</option>
+        <option value="1">{{ __('Yes') }}</option>
+        <option value="0">{{ __('No') }}</option>
     </select>
     @include('layouts.inputError', ['errorName' => 'is_active'])
 </div>

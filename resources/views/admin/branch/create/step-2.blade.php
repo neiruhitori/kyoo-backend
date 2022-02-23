@@ -1,11 +1,11 @@
 @push('css')
-    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
-    <style type="text/css">
-        .log {
+<link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+<style type="text/css">
+    .log {
         position: absolute;
         top: 5px;
         left: 5px;
@@ -17,37 +17,40 @@
         padding: 0;
         list-style: none;
         font-size: 12px;
-      }
-      .log-entry {
+    }
+
+    .log-entry {
         padding: 5px;
         border-bottom: 1px solid #d0d9e9;
-      }
-      .log-entry:nth-child(odd) {
-          background-color: #e1e7f1;
-      }
-	  #map {
+    }
+
+    .log-entry:nth-child(odd) {
+        background-color: #e1e7f1;
+    }
+
+    #map {
         width: 95%;
         height: 450px;
         background: grey;
-		}
+    }
 
-		#panel {
+    #panel {
         width: 100%;
         height: 400px;
-		}
-    </style>
-    <script src='https://developer.here.com/javascript/src/iframeheight.js'></script>
+    }
+</style>
+<script src='https://developer.here.com/javascript/src/iframeheight.js'></script>
 @endpush
 <h5 class="my-3">
-    <span class="badge badge-primary">Step 2 of 3</span>
+    <span class="badge badge-primary">{{ __('step.total', ['current' => 2, 'total' => 3]) }}</span>
 </h5>
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
-            <label for="province_id">Province (*)</label>
+            <label for="province_id">{{ __('Province') }} (*)</label>
             <select name="province_id" id="province_id" class="form-control @error('province_id') is-invalid @enderror">
                 @foreach ($provinces as $province)
-                    <option value="{{$province->id}}">{{$province->name}}</option>
+                <option value="{{$province->id}}">{{$province->name}}</option>
                 @endforeach
             </select>
             @include('layouts.inputError', ['errorName' => 'province_id'])
@@ -55,43 +58,48 @@
     </div>
     <div class="col-md-6">
         <div class="form-group">
-            <label for="regency_id">City (*)</label>
+            <label for="regency_id">{{ __('City') }} (*)</label>
             <select name="regency_id" id="regency_id" class="form-control" required>
-                <option value="">Choose City</option>
+                <option value="">{{ __('Choose City') }}</option>
             </select>
             @include('layouts.inputError', ['errorName' => 'regency_id'])
         </div>
     </div>
 </div>
 <div class="form-group">
-    <label for="address">Address (*)</label>
-    <textarea name="address" cols="" rows="" class="form-control @error('address') is-invalid @enderror">{{old('address')}}</textarea>
+    <label for="address">{{ __('Address') }} (*)</label>
+    <textarea name="address" cols="" rows=""
+        class="form-control @error('address') is-invalid @enderror">{{old('address')}}</textarea>
     @include('layouts.inputError', ['errorName' => 'address'])
 </div>
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
-            <label for="lat">Lat (*)</label>
-            <input name="lat" id="latInput" type="text" class="form-control @error('lat') is-invalid @enderror" value="{{old('lat')}}">
+            <label for="lat">{{ __('Lat') }} (*)</label>
+            <input name="lat" id="latInput" type="text" class="form-control @error('lat') is-invalid @enderror"
+                value="{{old('lat')}}">
             @include('layouts.inputError', ['errorName' => 'lat'])
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
-            <label for="long">Long (*)</label>
-            <input name="long" id="lngInput" type="text" class="form-control @error('long') is-invalid @enderror" value="{{old('long')}}">
+            <label for="long">{{ __('Long') }} (*)</label>
+            <input name="long" id="lngInput" type="text" class="form-control @error('long') is-invalid @enderror"
+                value="{{old('long')}}">
             @include('layouts.inputError', ['errorName' => 'long'])
         </div>
     </div>
 </div>
 <div class="form-group">
-    <label id="map-text" for="name" class="text-primary" onclick="initMaps()" style="cursor: pointer">Click here to show the maps</label>
+    <label id="map-text" for="name" class="text-primary" onclick="initMaps()" style="cursor: pointer">
+        {{ __('Click here to show the maps') }}
+    </label>
     <br>
     <div id="map"></div>
 </div>
 @push('js')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             $('#province_id').change(() => {
                 let provinceId = $('#province_id').val()
                 fetch(`/api/regency/${provinceId}`)
@@ -108,9 +116,9 @@
                     .catch(err => console.log(err))
             })
         });
-    </script>
-    <script>
-		function initMaps() {
+</script>
+<script>
+    function initMaps() {
             $('#map-text').hide()
             /**
             * Calculates and displays the address details of  425 Randolph St, Chicago, IL
@@ -217,7 +225,7 @@
             // Step 4: create custom logging facilities
             var logContainer = document.createElement('ul');
             logContainer.className ='log';
-            logContainer.innerHTML = '<li class="log-entry">Try clicking on the map</li>';
+            logContainer.innerHTML = '<li class="log-entry">{{ __('Try clicking on the map') }}</li>';
             map.getElement().appendChild(logContainer);
 
             // Helper for logging events
@@ -262,5 +270,5 @@
             // Now use the map as required...
             geocode(platform);
         }
-	</script>
+</script>
 @endpush

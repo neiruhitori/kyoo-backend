@@ -5,7 +5,9 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Edit Schedule</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('edit.module', ['module' => __('Schedule')]) }}
+                    </h6>
                 </div>
                 @csrf
                 <div class="card-body">
@@ -16,42 +18,42 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group">
-                                    <label for="day">Day</label>
+                                    <label for="day">{{ __('Day') }}</label>
                                     <select name="day" id="day" class="form-control @error('day') is-invalid @enderror" required>
-                                        <option value="sunday">Sunday</option>
-                                        <option value="monday">Monday</option>
-                                        <option value="tuesday">Tuesday</option>
-                                        <option value="wednesday">Wednesday</option>
-                                        <option value="thursday">Thursday</option>
-                                        <option value="friday">Friday</option>
-                                        <option value="saturday">Saturday</option>
+                                        <option value="sunday">{{ __('Sunday') }}</option>
+                                        <option value="monday">{{ __('Monday') }}</option>
+                                        <option value="tuesday">{{ __('Tuesday') }}</option>
+                                        <option value="wednesday">{{ __('Wednesday') }}</option>
+                                        <option value="thursday">{{ __('Thursday') }}</option>
+                                        <option value="friday">{{ __('Friday') }}</option>
+                                        <option value="saturday">{{ __('Saturday') }}</option>
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'day'])
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="status">Status</label>
+                                    <label for="status">{{ __('Status') }}</label>
                                     <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" onchange="changeStatus()">
-                                        <option value="open">Open</option>
-                                        <option value="fullday">Open Fullday</option>
-                                        <option value="closed">Closed</option>
+                                        <option value="open">{{ __('Open') }}</option>
+                                        <option value="fullday">{{ __('Fullday') }}</option>
+                                        <option value="closed">{{ __('Closed') }}</option>
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'status'])
                                 </div>
 
                                 <div class="form-group" id="start_time">
-                                    <label for="start_time">Start Time</label>
+                                    <label for="start_time">{{ __('Start Time') }}</label>
                                     <input name="start_time" type="time" class="form-control @error('start_time') is-invalid @enderror" value="{{old('start_time') ?: substr($schedule->start_time, 0, -3)}}">
                                     @include('layouts.inputError', ['errorName' => 'start_time'])
                                 </div>
 
                                 <div class="form-group" id="end_time">
-                                    <label for="end_time">End Time</label>
+                                    <label for="end_time">{{ __('End Time') }}</label>
                                     <input name="end_time" type="time" class="form-control @error('end_time') is-invalid @enderror" value="{{old('end_time') ?: substr($schedule->end_time, 0, -3)}}">
                                     @include('layouts.inputError', ['errorName' => 'end_time'])
                                 </div>
 
-                                <button class="btn btn-warning">Update</button>
+                                <button class="btn btn-warning">{{ __('Update') }}</button>
                             </form>
                         </div>
                     </div>

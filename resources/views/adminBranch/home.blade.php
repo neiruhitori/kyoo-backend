@@ -1,169 +1,196 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Admin Branch Dashboard</h1>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">{{ __('Admin Branch Dashboard') }}</h1>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @if(!Auth::user()->is_password_changed)
+        <div class="alert alert-warning alert-block">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>
+                Your password not changed from registered, <a href="{{ route('adminBranch.profile.edit') }}">
+                    {{ __('click here to change.') }}
+                </a>
+            </strong>
+        </div>
+        @endif
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            @if(!Auth::user()->is_password_changed)
-                <div class="alert alert-warning alert-block">
-                    <button type="button" class="close" data-dismiss="alert">×</button> 
-                    <strong>
-                        Your password not changed from registered, <a href="{{ route('adminBranch.profile.edit') }}">click here to change.</a>
-                    </strong>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @include('layouts.alert')
+    </div>
+</div>
+{{-- START APPOINTMENT --}}
+@if (Auth::user()->Branch->BranchType->is_appointment)
+<div class="row">
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            {{ __('Total Appointment') }}
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalAppointment)}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
                 </div>
-            @endif
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            @include('layouts.alert')
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ __('Served') }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalServed)}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    {{-- START APPOINTMENT --}}
-    @if (Auth::user()->Branch->BranchType->is_appointment)
-        <div class="row">
-            <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Appointment</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalAppointment)}}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ __('No Show') }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalNoShow)}}</div>
                     </div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Served</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalServed)}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">No Show</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalNoShow)}}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xl-12 col-lg-7">
-                <!-- Area Chart -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Total Appointment</h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12 col-lg-7">
+        <!-- Area Chart -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{ __('Total Appointment') }}</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col text-right">
+                        <a href="{{ route('adminBranch.export') }}" class="btn btn-primary">
+                            {{ __('Download Report') }}
+                        </a>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col text-right">
-                                <a href="{{ route('adminBranch.export') }}" class="btn btn-primary">Download Report</a>
-                            </div>
+                </div>
+                <div class="chart-area">
+                    <div class="chartjs-size-monitor">
+                        <div class="chartjs-size-monitor-expand">
+                            <div class=""></div>
                         </div>
-                        <div class="chart-area"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                        <canvas id="myAreaChart" style="display: block; height: 320px; width: 387px;" width="774" height="640" class="chartjs-render-monitor"></canvas>
+                        <div class="chartjs-size-monitor-shrink">
+                            <div class=""></div>
                         </div>
+                    </div>
+                    <canvas id="myAreaChart" style="display: block; height: 320px; width: 387px;" width="774"
+                        height="640" class="chartjs-render-monitor"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+{{-- END APPOINTMENT --}}
+{{-- START DIRECT QUEUE --}}
+@if (Auth::user()->Branch->BranchType->is_direct_queue)
+<div class="row">
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ __('Total Visit') }}
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalDirectQueue)}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
-    @endif
-    {{-- END APPOINTMENT --}}
-    {{-- START DIRECT QUEUE --}}
-    @if (Auth::user()->Branch->BranchType->is_direct_queue)
-        <div class="row">
-            <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Visit</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalDirectQueue)}}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                            </div>
+    </div>
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ __('Served') }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalDirectQueueServed)}}
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Served</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalDirectQueueServed)}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">No Show</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalDirectQueueNoShow)}}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xl-12 col-lg-7">
-                <!-- Area Chart -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Total Visit</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-area"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                        <canvas id="myAreaChartDirectQueue" style="display: block; height: 320px; width: 387px;" width="774" height="640" class="chartjs-render-monitor"></canvas>
+    </div>
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ __('No Show') }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{number_format($totalDirectQueueNoShow)}}
                         </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
-    @endif
-    {{-- END DIRECT QUEUE --}}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12 col-lg-7">
+        <!-- Area Chart -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{ __('Total Visit') }}</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <div class="chartjs-size-monitor">
+                        <div class="chartjs-size-monitor-expand">
+                            <div class=""></div>
+                        </div>
+                        <div class="chartjs-size-monitor-shrink">
+                            <div class=""></div>
+                        </div>
+                    </div>
+                    <canvas id="myAreaChartDirectQueue" style="display: block; height: 320px; width: 387px;" width="774"
+                        height="640" class="chartjs-render-monitor"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+{{-- END DIRECT QUEUE --}}
 @endsection
 @push('js')
-    <script src="{{asset('admin/vendor/chart.js/Chart.min.js')}}"></script>
-    @if (Auth::user()->Branch->BranchType->is_appointment)
-        <script>
-            // Set new default font family and font color to mimic Bootstrap's default styling
+<script src="{{asset('admin/vendor/chart.js/Chart.min.js')}}"></script>
+@if (Auth::user()->Branch->BranchType->is_appointment)
+<script>
+    // Set new default font family and font color to mimic Bootstrap's default styling
             Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
             Chart.defaults.global.defaultFontColor = '#858796';
 
@@ -283,11 +310,11 @@
                 }
             });
 
-        </script>
-    @endif
-    @if (Auth::user()->Branch->BranchType->is_direct_queue)
-        <script>
-            const directQueues = JSON.parse('{!! $directQueueGraph !!}')
+</script>
+@endif
+@if (Auth::user()->Branch->BranchType->is_direct_queue)
+<script>
+    const directQueues = JSON.parse('{!! $directQueueGraph !!}')
             let directQueueLabels = []
             let directQueueData = []
 
@@ -378,6 +405,6 @@
                     }
                 }
             });
-        </script>
-    @endif
+</script>
+@endif
 @endpush

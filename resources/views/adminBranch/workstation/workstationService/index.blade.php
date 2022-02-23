@@ -9,15 +9,15 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">List Workstation Service</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('List Workstation Service') }}</h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
                     @if (Auth::user()->Branch->BranchType->is_premium || count($workstation->WorkstationService) < 1)
                         <div class="row">
                             <div class="col-md-12 text-right">
-                                <a href="{{route('adminBranch.workstation.workstationService.create', $workstation->id)}}" class="btn btn-primary"">
-                                    Insert Workstation Service
+                                <a href="{{route('adminBranch.workstation.workstationService.create', $workstation->id)}}" class="btn btn-primary">
+                                    {{ __('create.module', ['module' => __('Service')]) }}
                                 </a>
                             </div>
                         </div>
@@ -28,9 +28,9 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Service</th>
-                                            <th>Priority</th>
-                                            <th>Action</th>
+                                            <th>{{ __('Service') }}</th>
+                                            <th>{{ __('Priority') }}</th>
+                                            <th>{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -39,13 +39,29 @@
                                                 <td>{{$workstationService->Service->name}}</td>
                                                 <td>{{$workstationService->priority}}</td>
                                                 <td>
-                                                    <a href="{{route('adminBranch.workstation.workstationService.edit', ["workstation" => $workstation->id, "workstationService" => $workstationService->id])}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit workstation">
+                                                    <a
+                                                        href="{{route('adminBranch.workstation.workstationService.edit', ["workstation" => $workstation->id, "workstationService" => $workstationService->id])}}"
+                                                        class="btn btn-warning"
+                                                        data-toggle="tooltip"
+                                                        data-placement="bottom"
+                                                        title="{{
+                                                            __('edit.module', ['module' => __('Workstation Service')])
+                                                        }}"
+                                                    >
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
                                                     <form action="{{route('adminBranch.workstation.workstationService.destroy', ["workstation" => $workstation->id, "workstationService" => $workstationService->id])}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove workstation">
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-danger"
+                                                            data-toggle="tooltip"
+                                                            data-placement="bottom"
+                                                            title="{{
+                                                                __('edit.module', ['module' => __('Workstation Service')])
+                                                            }}"
+                                                        >
                                                             <i class="fas fa-fw fa-trash"></i>
                                                         </button>
                                                     </form>

@@ -66,7 +66,7 @@ class HomeController extends Controller
         $input = $request->all();
         $input['is_password_changed'] = true;
         $user->update($input);
-        $request->session()->flash('warning', 'Admin profile has been updated!');
+        $request->session()->flash('warning', __('Admin profile has been updated'));
         return redirect(route('adminBranch.profile.edit'));
     }
 
@@ -94,7 +94,7 @@ class HomeController extends Controller
     public function directQueueMonitor(Request $request)
     {
         if (!Auth::user()->Branch->BranchType->is_premium) {
-            $request->session()->flash('warning', 'This feature for premium account only!');
+            $request->session()->flash('warning', __('This feature for premium account only'));
             return redirect()->back();
         }
 

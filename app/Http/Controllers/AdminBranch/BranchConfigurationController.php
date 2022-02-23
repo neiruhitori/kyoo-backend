@@ -23,7 +23,7 @@ class BranchConfigurationController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Branch Configuration'
         ]);
-        $request->session()->flash('warning', 'Branch Configuration has been updated!');
+        $request->session()->flash('warning', __('Branch Configuration has been updated'));
         return redirect(route('adminBranch.branchConfiguration.edit'));
     }
 }

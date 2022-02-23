@@ -132,7 +132,7 @@ class RegistrationBranchController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Remove Branch Registration'
         ]);
-        $request->session()->flash('error', 'Branch '.$registrationBranch->name.' has been rejected!');
+        $request->session()->flash('error', __('module.rejected', ['module' => __('Branch'), 'name' => $registrationBranch->name]));
         return redirect(route('admin.branch.index'));
     }
 }
