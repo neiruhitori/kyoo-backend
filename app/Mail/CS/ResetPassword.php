@@ -32,7 +32,7 @@ class ResetPassword extends Mailable
     public function build()
     {
         $user_id = Crypt::encrypt($this->user->id);
-        return $this->from('noreply@kyoo.id', 'KYOO')->subject('VCT Reset Password')->markdown('emails.cs.resetPassword', [
+        return $this->from('noreply@kyoo.id', 'KYOO')->subject(__('VCT Reset Password'))->markdown('emails.cs.resetPassword', [
             'user' => $this->user,
             'user_id' => $user_id,
         ]);

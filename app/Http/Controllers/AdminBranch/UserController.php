@@ -37,7 +37,7 @@ class UserController extends Controller
     public function create(Request $request)
     {
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->CS) > 0) {
-            $request->session()->flash('warning', 'You only able insert one account!');
+            $request->session()->flash('warning', __('You only able insert one account'));
             return redirect(route('adminBranch.user.index'));
         }
         $workstations = Workstation::whereHas('Department', function($query){
@@ -55,7 +55,7 @@ class UserController extends Controller
     public function store(StoreUser $request)
     {
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->CS) > 0) {
-            $request->session()->flash('error', 'You only able insert one account!');
+            $request->session()->flash('error', __('You only able insert one account'));
             return redirect(route('adminBranch.user.index'));
         }
 
@@ -74,7 +74,7 @@ class UserController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Create VCT User'
         ]);
-        $request->session()->flash('success', 'Account '.$input['username'].' has been inserted!');
+        $request->session()->flash('success', __('module.created', ['module' => __('Account'), 'name' => $input['username']]));
         return redirect(route('adminBranch.user.index'));
     }
 
@@ -118,7 +118,7 @@ class UserController extends Controller
         }
 
         if ($user->is_password_changed && !Hash::check($request->old_password, $user->password)) {
-            $request->session()->flash('error', 'Please insert correct old password!');
+            $request->session()->flash('error', __('Please insert correct old password'));
             return redirect()->back();
         }
         $input = $request->all();
@@ -137,7 +137,7 @@ class UserController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update VCT User'
         ]);
-        $request->session()->flash('warning', 'Account '.$input['username'].' has been updated!');
+        $request->session()->flash('warning', __('module.updated', ['module' => __('Account'), 'name' => $input['username']]));
         return redirect(route('adminBranch.user.index'));
     }
 
@@ -158,7 +158,7 @@ class UserController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Remove VCT User'
         ]);
-        $request->session()->flash('error', 'Account '.$user->name.' has been removed!');
+        $request->session()->flash('error', __('module.removed', ['module' => __('Account'), 'name' => $user->name]));
         return redirect(route('adminBranch.user.index'));
     }
 
@@ -170,7 +170,7 @@ class UserController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Restore VCT User'
         ]);
-        $request->session()->flash('success', 'Account '.$user->name.' has been restored!');
+        $request->session()->flash('success', __('module.restored', ['module' => __('Account'), 'name' => $user->name]));
         return redirect(route('adminBranch.user.index'));
     }
 
@@ -180,7 +180,7 @@ class UserController extends Controller
             return redirect(route('unauthorized'));
         }
         Mail::to(Auth::user()->email)->send(new ResetPassword($user));
-        $request->session()->flash('success', 'Please check your email to reset the password');
+        $request->session()->flash('success', __('Please check your email to reset the password'));
         return redirect(route('adminBranch.user.index'));
     }
 
@@ -209,7 +209,7 @@ class UserController extends Controller
         ]);
         
         if ($validator->fails()) {
-            $request->session()->flash('error', 'Please check password rules!');
+            $request->session()->flash('error', __('Please check password rules'));
             return redirect(route('adminBranch.user.reset', $user_id));
         }
 
@@ -217,7 +217,7 @@ class UserController extends Controller
         $user->update([
             'password' => bcrypt($request->password)
         ]);
-        $request->session()->flash('success', "Password {$user->name} has been updated successfully!");
+        $request->session()->flash('success', __('module.updated', ['module' => __('Password'), 'name' => $user->name]));
         if (Auth::user()) {
             return redirect(route('adminBranch.user.index'));
         }

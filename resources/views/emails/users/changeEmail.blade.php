@@ -1,12 +1,12 @@
 @component('mail::message')
-# Verify New Email
+# {{ __('Verify New Email') }}
 
-Hi {{ $changeEmail->User->name }}, please click button below to verify your new email.
+{{ __('email.confirmation', ['user' => $changeEmail->User->name]) }}.
 
 @component('mail::button', ['url' => route('user.changeEmail', $id)])
-Verify
+{{ __('Verify Here') }}
 @endcomponent
 
-Thank You,<br>
+{{ __('Thank You') }},<br>
 {{ config('app.name') }}
 @endcomponent

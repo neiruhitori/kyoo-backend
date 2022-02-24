@@ -44,7 +44,7 @@
                                 <label for="password">{{ __('Password') }}</label>
                                 <br>
                                 <small>
-                                    rules:
+                                    {{ __('Rules') }}:
                                     <ul>
                                         <li>{{ __('must be at least 8 characters in length') }}</li>
                                         <li>{{ __('must contain at least one lowercase letter') }}</li>

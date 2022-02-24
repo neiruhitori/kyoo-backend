@@ -33,7 +33,7 @@ class WorkstationServiceController extends Controller
     {
         // for MVP
         if (!Auth::user()->Branch->BranchType->is_premium && count($workstation->WorkstationService) > 0) {
-            $request->session()->flash('warning', 'Only one workstations can be created!');
+            $request->session()->flash('warning', __('Only one workstations can be created'));
             return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
         }
         $services = Service::whereBranchId(Auth::user()->branch_id)->get();
@@ -50,7 +50,7 @@ class WorkstationServiceController extends Controller
     {
         // for MVP
         if (!Auth::user()->Branch->BranchType->is_premium && count($workstation->WorkstationService) > 0) {
-            $request->session()->flash('warning', 'Only one workstations can be created!');
+            $request->session()->flash('warning', __('Only one workstations can be created'));
             return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
         }
         WorkstationService::create($request->all());
@@ -58,7 +58,7 @@ class WorkstationServiceController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Insert Workstation Service'
         ]);
-        $request->session()->flash('success', 'Workstation Service has been inserted!');
+        $request->session()->flash('success', __('Workstation Service has been inserted'));
         return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
     }
 
@@ -107,7 +107,7 @@ class WorkstationServiceController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Workstation Service'
         ]);
-        $request->session()->flash('warning', 'Workstation Service has been updated!');
+        $request->session()->flash('warning', __('Workstation Service has been updated'));
         return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
     }
 
@@ -128,7 +128,7 @@ class WorkstationServiceController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Remove Workstation Service'
         ]);
-        $request->session()->flash('error', 'Workstation Service has been removed!');
+        $request->session()->flash('error', __('Workstation Service has been removed'));
         return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
     }
 }

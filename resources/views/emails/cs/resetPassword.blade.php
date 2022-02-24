@@ -1,12 +1,12 @@
 @component('mail::message')
-# Resetting VCT Password!
+# {{ __('Resetting VCT Password') }}
 
-You are receiving this email because we received a password reset request for <b>{{$user->name}}'s</b> account.
+{{ __('password.request', ['user' => $user->name]) }}.
 
 @component('mail::button', ['url' => route('adminBranch.user.reset', $user_id)])
-Reset Password
+{{ __('Reset Password') }}
 @endcomponent
 
-Regards,<br>
+{{ __('Thank You') }},<br>
 {{ config('app.name') }}
 @endcomponent

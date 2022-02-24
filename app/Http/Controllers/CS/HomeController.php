@@ -72,7 +72,7 @@ class HomeController extends Controller
             case 'served':
                 $onServed = Appointment::where('slot_id', $appointment->slot_id)->where('date', $appointment->date)->where('status', 'served')->first();
                 if (isset($onServed)) {
-                    $request->session()->flash('error', 'Cant move to serve because other appointment in progress on '.$appointment->Slot->Service->name);
+                    $request->session()->flash('error', __('appointment.in_progres', ['service' => $appointment->Slot->Service->name]));
                     return redirect(route('cs.home'));
                 }
                 $appointment->update([
@@ -140,7 +140,7 @@ class HomeController extends Controller
                                             ->where(['date' => $request->date])
                                             ->first(); 
         if ($sameAppointment) {
-            $request->session()->flash('error', 'Can not create the same appointment at the same time');
+            $request->session()->flash('error', __('Can not create the same appointment at the same time'));
             return back()->withInput();
         }
 
@@ -169,7 +169,7 @@ class HomeController extends Controller
         if($slot->Service->Branch->schedule_template_id){
             $schedule_template_details = ScheduleTemplateDetail::where('schedule_template_id', $slot->Service->Branch->schedule_template_id)->where('date', $request->date)->first();
             if($schedule_template_details){
-                $request->session()->flash('error', 'Service Provider Already Closed');
+                $request->session()->flash('error', __('Service Provider Already Closed'));
                 return back()->withInput();
             }
         }
@@ -177,13 +177,13 @@ class HomeController extends Controller
         // cant create appointment on closed day
         $slot_day = Schedule::where('branch_id', $slot->Service->branch_id)->where('day', $selected_day)->get(['day', 'status'])->first();
         if ($slot_day->status == 'closed') {
-            $request->session()->flash('error', 'Service Provider Already Closed');
+            $request->session()->flash('error', __('Service Provider Already Closed'));
             return back()->withInput();
         }
 
         // cant create appointment with past time slot
         if ($request->date == $current_date && $slot->end_time < $current_time) {
-            $request->session()->flash('error', 'Service Provider Already Closed');
+            $request->session()->flash('error', __('Service Provider Already Closed'));
             return back()->withInput();
         }
 
@@ -196,7 +196,7 @@ class HomeController extends Controller
         // send email to customer
         Mail::to($request->email)->send(new StoreAppointmentMail($appointment));
 
-        $request->session()->flash('success', 'Appointment Has Been Created');
+        $request->session()->flash('success', __('Appointment has been inserted'));
         return redirect(route('cs.appointment.create'));
     }
 

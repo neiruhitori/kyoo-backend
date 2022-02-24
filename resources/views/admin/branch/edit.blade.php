@@ -73,7 +73,7 @@
             
             if (!name || !industry_category_id || !email || !country || !mobile_phone || !is_active) {
                 e.preventDefault();
-                swal('', 'Please fill all mandatory input on Branch Profile page', 'info')
+                swal('', {{ __('page.mandatory', ['page' => 'Branch Profile']) }, 'info')
                 return
             }
 
@@ -86,7 +86,7 @@
 
             if (!lat || !long || !province_id || !regency_id || !address) {
                 e.preventDefault();
-                swal('', 'Please fill all mandatory input on Branch Location page', 'info')
+                swal('', {{ __('page.mandatory', ['page' => 'Branch Location']) }, 'info')
                 return
             }
 
@@ -97,7 +97,7 @@
             
             if (!admin_name || !admin_email || !admin_phone) {
                 e.preventDefault();
-                swal('', 'Please fill all mandatory input on Branch Admin page', 'info')
+                swal('', {{ __('page.mandatory', ['page' => 'Branch Admin']) }}, 'info')
                 return
             }
         });

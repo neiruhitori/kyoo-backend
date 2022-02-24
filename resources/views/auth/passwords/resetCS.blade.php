@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Kyoo Admin</title>
+  <title>{{ __('Kyoo Admin') }}</title>
 
   <!-- Custom fonts for this template-->
   <link href="{{asset('admin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
@@ -68,18 +68,18 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="token" value="{{ $token }}">
-                    <h4 class="text-center mb-3">Reset Password VCT</h4>
+                    <h4 class="text-center mb-3">{{ __('Reset Password VCT') }}</h4>
                       <small>
-                          password rules:
+                          {{ __('Rules') }}:
                           <ul>
-                              <li>must be at least 8 characters in length</li>
-                              <li>must contain at least one lowercase letter</li>
-                              <li>must contain at least one uppercase letter</li>
-                              <li>must contain at least one digit</li>
+                              <li>{{ __('must be at least 8 characters in length') }}</li>
+                              <li>{{ __('must contain at least one lowercase letter') }}</li>
+                              <li>{{ __('must contain at least one uppercase letter') }}</li>
+                              <li>{{ __('must contain at least one digit') }}</li>
                           </ul>
                       </small>
                     <div class="form-group">
-                      <input type="text" name="username" class="form-control form-control-user @error('username') is-invalid @enderror" value="{{ $user->username ?? old('username') }}" id="exampleInputUsername" aria-describedby="usernameHelp" placeholder="Enter Username" required disabled>
+                      <input type="text" name="username" class="form-control form-control-user @error('username') is-invalid @enderror" value="{{ $user->username ?? old('username') }}" id="exampleInputUsername" aria-describedby="usernameHelp" placeholder="{{ __('Enter Username') }}" required disabled>
                         @error('username')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -87,7 +87,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                      <input type="password" name="password" class="form-control form-control-user @error('password') is-invalid @enderror" placeholder="Type your new password" required>
+                      <input type="password" name="password" class="form-control form-control-user @error('password') is-invalid @enderror" placeholder="{{ __('Type your new password') }}" required>
                         @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -95,7 +95,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                      <input type="password" name="password_confirmation" class="form-control form-control-user @error('password') is-invalid @enderror" placeholder="Type your new password confirmation" required>
+                      <input type="password" name="password_confirmation" class="form-control form-control-user @error('password') is-invalid @enderror" placeholder="{{ __('Type your new password confirmation') }}" required>
                     </div>
                     <button type="submit" class="btn btn-primary btn-user btn-block">
                       Reset Password

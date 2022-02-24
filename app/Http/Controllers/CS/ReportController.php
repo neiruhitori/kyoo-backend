@@ -16,7 +16,7 @@ class ReportController extends Controller
         $date = $request->date ?: date('Y-m-d');
         $last_month = $newdate = date("Y-m-d", strtotime("-2 months"));
         if($request->date && date('Y-m-d', strtotime($request->date)) < $last_month){
-            $request->session()->flash('error', 'Can not select report more then last 2 months!');
+            $request->session()->flash('error', __('Can not select report more then last 2 months'));
             return view('cs.report.daily', [
             'appointments' => [],
             'date' => $date,
@@ -44,7 +44,7 @@ class ReportController extends Controller
         if (Auth::user()->Branch->BranchType->is_premium) {
             $last_month = $newdate = date("Y-m-d", strtotime("-2 months"));
             if($request->date && date('Y-m-d', strtotime($request->date)) < $last_month){
-                $request->session()->flash('error', 'Can not select report more then last 2 months!');
+                $request->session()->flash('error', __('Can not select report more then last 2 months'));
                 return view('cs.report.directQueue.daily', [
                     'appointments' => [],
                     'date' => $date,

@@ -30,7 +30,7 @@ class Verified extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@kyoo.id', 'KYOO')->subject('Your Branch Has Been Verified')->markdown('emails.branch.registration.verified', [
+        return $this->from('noreply@kyoo.id', 'KYOO')->subject(__('Your Branch Has Been Verified'))->markdown('emails.branch.registration.verified', [
             'branch' => $this->branch
         ]);
     }

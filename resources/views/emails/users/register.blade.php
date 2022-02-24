@@ -1,12 +1,12 @@
 @component('mail::message')
-# User Register
+# {{ __('User Register') }}
 
-Hi {{ $user->name }}, thanks for register on {{ config('app.name') }}, please click button below to verify your account.
+{{ __('user.confirmation', ['user' => $user->name]) }}.
 
 @component('mail::button', ['url' => route('user.userRegister', $id)])
-Verify
+{{ __('Verify Here') }}
 @endcomponent
 
-Thank You,<br>
+{{ __('Thank You') }},<br>
 {{ config('app.name') }}
 @endcomponent

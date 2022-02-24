@@ -30,7 +30,7 @@ class Rejected extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@kyoo.id', 'KYOO')->subject('Registration Branch Status Update')->markdown('emails.branch.registration.rejected', [
+        return $this->from('noreply@kyoo.id', 'KYOO')->subject(__('Registration Branch Status Update'))->markdown('emails.branch.registration.rejected', [
             'branch' => $this->branch
         ]);
     }

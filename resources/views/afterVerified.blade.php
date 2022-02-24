@@ -50,7 +50,7 @@
                 <div class="row">
                   <div class="col-md-12">
                     <p>{{ __('Thanks for registering your branch') }}</p>
-                    <p>Let's login to KYOO and update branch profile and virtual counter user to start the Queue</p>
+                    <p>{{ __('Let\'s login to KYOO and update branch profile and virtual counter user to start the Queue')}}</p>
                     <a href="{{route('login')}}" class="btn btn-sm btn-primary">{{ __('Login') }}</a>
                   </div>
                 </div>

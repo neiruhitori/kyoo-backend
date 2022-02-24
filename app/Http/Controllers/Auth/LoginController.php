@@ -66,6 +66,6 @@ class LoginController extends Controller
             return redirect()->route('home');
         }
         // on failed
-        return redirect()->route('login')->with(['error' => 'Authenticate Failed']);
+        return redirect()->route('login')->with(['error' => __('Authenticate Failed')]);
     }
 }

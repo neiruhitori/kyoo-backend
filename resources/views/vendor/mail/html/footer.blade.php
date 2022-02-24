@@ -3,7 +3,7 @@
 <table class="footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
 <tr>
 <td class="content-cell" align="center">
-    <p>Download our Apps on Playstore</p>
+    <p>{{ __('Download our Apps on Playstore') }}</p>
     <a href="https://play.google.com/store/apps/details?id=com.kyoo.android">
         <img src="{{ asset('img/playstore.png') }}" alt="playstore img" style="width: 150px; margin-bottom: 100px">
     </a>

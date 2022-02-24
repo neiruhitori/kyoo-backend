@@ -4,25 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>{{ __('Document') }}</title>
 </head>
 <body>
     <table>
         <tr>
-            <th><b>Transaction ID</b></th>
-            <th><b>Customer ID</b></th>
-            <th><b>VCT ID</b></th>
-            <th><b>Transaction Date</b></th>
-            <th><b>Branch ID</b></th>
-            <th><b>Service ID</b></th>
-            <th><b>Appointment Booking Code</b></th>
-            <th><b>Appointment Date</b></th>
-            <th><b>Appointment Channel</b></th>
-            <th><b>Appointment Status</b></th>
-            <th><b>Datetime Checkin</b></th>
-            <th><b>Datetime Served</b></th>
-            <th><b>Datetime End Served</b></th>
-            <th><b>Queue Number</b></th>
+            <th><b>{{ __('Transaction ID') }}</b></th>
+            <th><b>{{ __('Customer ID') }}</b></th>
+            <th><b>{{ __('VCT ID') }}</b></th>
+            <th><b>{{ __('Transaction Date') }}</b></th>
+            <th><b>{{ __('Branch ID') }}</b></th>
+            <th><b>{{ __('Service ID') }}</b></th>
+            <th><b>{{ __('Appointment Booking Code') }}</b></th>
+            <th><b>{{ __('Appointment Date') }}</b></th>
+            <th><b>{{ __('Channel') }}</b></th>
+            <th><b>{{ __('Status') }}</b></th>
+            <th><b>{{ __('Check-In Time') }}</b></th>
+            <th><b>{{ __('Served Time') }}</b></th>
+            <th><b>{{ __('End Served Time') }}</b></th>
+            <th><b>{{ __('Queue Number') }}</b></th>
         </tr>
         @forelse ($appointments as $appointment)
             <tr>
@@ -43,7 +43,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="12">No Data</td>
+                <td colspan="12">{{ __('No Data') }}</td>
             </tr>
         @endforelse
     </table>

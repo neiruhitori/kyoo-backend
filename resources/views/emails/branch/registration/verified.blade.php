@@ -1,13 +1,13 @@
 @component('mail::message')
-# Your Branch Has Been Verified
+# {{ __('Your Branch Has Been Verified') }}
 
-Hi {{$branch->name}}, thank you for register your branch to Kyoo.id. Now your branch has been verified.
+{{ __('branch.verified', ['branch' => $branch->name])}}.
 <br>
-Let's login to KYOO and update branch profile and virtual counter user to start the Queue
+{{ __('Let\'s login to KYOO and update branch profile and virtual counter user to start the Queue') }}
 @component('mail::button', ['url' => route('login')])
 Login
 @endcomponent
 
-Thank You,<br>
+{{ __('Thank You') }},<br>
 {{ config('app.name') }}
 @endcomponent

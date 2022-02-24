@@ -17,11 +17,11 @@ class CheckDirectQueue
     public function handle($request, Closure $next)
     {
         if (!Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->role == 'admin_branch') {
-            $request->session()->flash('warning', 'Only Direct Queue Branch can access this page!');
+            $request->session()->flash('warning', __('Only Direct Queue Branch can access this page'));
             return redirect(route('adminBranch.home'));
         }
         if (!Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->role == 'cs') {
-            $request->session()->flash('warning', 'Only Direct Queue Branch can access this page!');
+            $request->session()->flash('warning', __('Only Direct Queue Branch can access this page'));
             return redirect(route('cs.home'));
         }
         return $next($request);

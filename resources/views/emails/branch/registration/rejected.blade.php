@@ -1,8 +1,8 @@
 @component('mail::message')
-# Branch Registration Status Update
+# {{ __('Branch Registration Status Update') }}
 
-Hi {{$branch->name}}, thank you for register your branch to Kyoo.id. Your branch are rejected, please contact admin for futher information.
+{{ __('branch.rejected', ['branch' => $branch->name])}}.
 
-Thank You,<br>
+{{ __('Thank You') }},<br>
 {{ config('app.name') }}
 @endcomponent
