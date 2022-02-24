@@ -36,6 +36,7 @@
     "Account": "Akun",
     "User Register": "Pendaftaran User",
     "Verify New Email": "Verifikasi Email Baru",
+    "Reset Password Notification": "Notifikasi Reset Password",
     
     "List Schedule Template": "Daftar Template Jadwal",
     "List Branch": "Daftar Cabang",
@@ -226,6 +227,9 @@
     "Type your new password confirmation": "Masukkan konfirmasi password",
     "Enter Username": "Masukkan Username",
     "Download our Apps on Playstore": "Download aplikasi kami di Playstore",
+    "You are receiving this email because we received a password reset request for your account": "Anda menerima email ini karena kami menerima permintaan reset password untuk akun Anda",
+    "This password reset link will expire in :count minutes": "Link reset password akan kadaluwarsa dalam :count menit",
+    "If you did not request a password reset, no further action is required": "Jika permintaan ini bukan dari Anda, tidak ada aksi lanjut yang diperlukan",
     
     "Generate Token": "Buat Token",
     "Maps": "Map",
