@@ -204,7 +204,7 @@ class BranchController extends Controller
             'user_id' => Auth::id(),
             'description' => 'Update Branch'
         ]);
-        $request->session()->flash('warning', __('module.created', ['module' => __('Branch'), 'name' => $request->name]));
+        $request->session()->flash('warning', __('module.updated', ['module' => __('Branch'), 'name' => $request->name]));
         return redirect(route('admin.branch.index'));
     }
 
