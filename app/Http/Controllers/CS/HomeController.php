@@ -108,7 +108,7 @@ class HomeController extends Controller
                 ]);    
                 break;
         }
-        $request->session()->flash('success', 'Appointment #'.$appointment->number.' status has been changed!');
+        $request->session()->flash('success', __('Appointment #:no status has been changed', ['no' => $appointment->number]));
         return redirect(route('cs.home'));
     }
 

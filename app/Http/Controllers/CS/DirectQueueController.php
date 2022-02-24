@@ -175,7 +175,7 @@ class DirectQueueController extends Controller
         event(new VCTDirectQueueEvent($directQueue));
         event(new DirectQueueEvent($directQueue));
 
-        $request->session()->flash('success', "Direct Queue Has Been Created, Queue no: {$directQueue->queue_no}");
+        $request->session()->flash('success', __('Direct Queue Has Been Created, Queue no: :no', ['no' => $directQueue->queue_no]));
         return redirect(route('cs.directQueue.create'));
     }
 
