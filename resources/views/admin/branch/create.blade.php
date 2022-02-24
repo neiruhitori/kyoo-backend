@@ -81,7 +81,7 @@
 
             if (!lat || !long || !province_id || !regency_id || !address) {
                 e.preventDefault();
-                swal('', {{ __('page.mandatory', ['page' => 'Branch Location']) }, 'info')
+                swal('', {{ __('page.mandatory', ['page' => 'Branch Location']) }}, 'info')
                 return
             }
 
@@ -92,7 +92,7 @@
             
             if (!admin_name || !admin_email || !admin_phone) {
                 e.preventDefault();
-                swal('', {{ __('page.mandatory', ['page' => 'Branch Admin']) }, 'info')
+                swal('', {{ __('page.mandatory', ['page' => 'Branch Admin']) }}, 'info')
                 return
             }
         });

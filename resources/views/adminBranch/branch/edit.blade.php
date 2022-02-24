@@ -97,7 +97,7 @@
             
             if (!name || !industry_category_id || !email || !country || !mobile_phone || !is_active) {
                 e.preventDefault();
-                swal('', {{ __('page.mandatory', ['page' => 'Branch Profile']) }, 'info')
+                swal('', {{ __('page.mandatory', ['page' => 'Branch Profile']) }}, 'info')
                 return
             }
 
@@ -110,7 +110,7 @@
 
             if (!lat || !long || !province_id || !regency_id || !address) {
                 e.preventDefault();
-                swal('', {{ __('page.mandatory', ['page' => 'Branch Location']) }, 'info')
+                swal('', {{ __('page.mandatory', ['page' => 'Branch Location']) }}, 'info')
                 return
             }
         });
