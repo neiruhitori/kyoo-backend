@@ -30,7 +30,10 @@
                                         <tr>
                                             <th>{{ __('Name') }}</th>
                                             <th>{{ __('Department') }}</th>
-                                            @if (Auth::user()->Branch->BranchType->is_appointment)
+                                            @if (
+                                                Auth::user()->Branch->BranchType->is_appointment ||
+                                                Auth::user()->Branch->BranchType->is_exhibition
+                                            )
                                                 <th>{{ __('Total Slot Time Interval') }}</th>
                                             @endif
                                             <th>{{ __('Action') }}</th>
@@ -47,13 +50,19 @@
                                                         -
                                                     @endif
                                                 </td>
-                                                @if (Auth::user()->Branch->BranchType->is_appointment)
+                                                @if (
+                                                    Auth::user()->Branch->BranchType->is_appointment ||
+                                                    Auth::user()->Branch->BranchType->is_exhibition
+                                                )
                                                     <td>
                                                         {{count($service->Slot)}}
                                                     </td>
                                                 @endif
                                                 <td>
-                                                    @if (Auth::user()->Branch->BranchType->is_appointment)
+                                                    @if (
+                                                        Auth::user()->Branch->BranchType->is_appointment ||
+                                                        Auth::user()->Branch->BranchType->is_exhibition
+                                                    )
                                                         <a
                                                             href="{{route('adminBranch.service.slot.index', $service->id)}}"
                                                             class="btn btn-success"

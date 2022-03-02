@@ -55,6 +55,15 @@
                                 </select>
                                 @include('layouts.inputError', ['errorName' => 'is_direct_queue'])
                             </div>
+
+                            <div class="form-group">
+                                <label for="is_exhibition">{{ __('Is Exhibition Queue') }}?</label>
+                                <select name="is_exhibition" id="" class="form-control" required>
+                                    <option value="0" {{ !old('is_exhibition') ?: 'selected' }}>{{ __('No') }}</option>
+                                    <option value="1" {{ !old('is_exhibition') ?: 'selected' }}>{{ __('Yes') }}</option>
+                                </select>
+                                @include('layouts.inputError', ['errorName' => 'is_exhibition'])
+                            </div>
                             <button class="btn btn-primary">{{ __('Save') }}</button>
                         </form>
                     </div>

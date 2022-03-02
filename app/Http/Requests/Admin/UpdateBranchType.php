@@ -30,6 +30,7 @@ class UpdateBranchType extends FormRequest
             'is_premium' => 'required|boolean',
             'is_appointment' => 'required|boolean',
             'is_direct_queue' => 'required|boolean',
+            'is_exhibition' => 'required|boolean'
         ];
     }
 }

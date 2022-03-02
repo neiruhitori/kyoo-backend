@@ -16,11 +16,20 @@ class CheckAppointmentQueue
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::user()->Branch->BranchType->is_appointment && Auth::user()->role == 'cs') {
+        if (
+            !Auth::user()->Branch->BranchType->is_appointment &&
+            !Auth::user()->Branch->BranchType->is_exhibition &&
+            Auth::user()->role == 'cs'
+        ) {
             $request->session()->flash('warning', __('Only Appointment Queue Branch can access this page'));
             return redirect(route('cs.home'));
         }
-        if (!Auth::user()->Branch->BranchType->is_appointment && Auth::user()->role == 'admin_branch') {
+
+        if (
+            !Auth::user()->Branch->BranchType->is_appointment &&
+            !Auth::user()->Branch->BranchType->is_exhibition &&
+            Auth::user()->role == 'admin_branch'
+        ) {
             $request->session()->flash('warning', __('Only Appointment Queue Branch can access this page'));
             return redirect(route('adminBranch.home'));
         }

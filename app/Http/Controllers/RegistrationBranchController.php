@@ -14,10 +14,18 @@ use App\User;
 use App\Customer;
 use App\Branch;
 use App\BranchConfiguration;
+use App\BranchType;
 use App\Helpers\AutoPopulate;
+use App\Interfaces\BranchTypeRepositoryInterface;
 
 class RegistrationBranchController extends Controller
 {
+    private BranchTypeRepositoryInterface $branchTypeRepository;
+
+    public function __construct(BranchTypeRepositoryInterface $branchTypeRepository)
+    {
+        $this->branchTypeRepository = $branchTypeRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -77,10 +85,13 @@ class RegistrationBranchController extends Controller
         $input = $registrationBranch->toArray();
         switch ($input['queue_type']) {
             case 'direct_queue':
-                $input['branch_type_id'] = 2;
+                $input['branch_type_id'] = $this->branchTypeRepository->getFreeOnsiteLicense()->id;
                 break;
             case 'appointment_queue':
-                $input['branch_type_id'] = 1;
+                $input['branch_type_id'] = $this->branchTypeRepository->getFreeAppointmentLicense()->id;
+                break;
+            default:
+                $input['branch_type_id'] = $this->branchTypeRepository->getFreeExhibitionLicense()->id;
                 break;
         }
         // duplicate to branches table

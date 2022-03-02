@@ -8,9 +8,11 @@ use App\Http\Requests\AdminBranch\UpdateProfile;
 use App\User;
 use App\Appointment;
 use App\DirectQueue;
+use App\Models\Exhibition;
 use Auth;
 use DB;
 use App\Exports\AdminBranch\ReportExport;
+use App\Exports\AdminBranch\ReportExportExhibition;
 use Excel;
 use Crypt;
 use URL;
@@ -21,6 +23,7 @@ class HomeController extends Controller
     {
         $isAppointment = Auth::user()->Branch->BranchType->is_appointment;
         $isDirectQueue = Auth::user()->Branch->BranchType->is_direct_queue;
+        $isExhibition = Auth::user()->Branch->BranchType->is_exhibition;
 
         // Appointment Queue
         if ($isAppointment) {
@@ -31,6 +34,26 @@ class HomeController extends Controller
             $appointmentGraph = Appointment::whereHas('Slot.Service', function($query){
                 $query->where('branch_id', Auth::user()->branch_id);
             })->select(DB::raw("date_part('day', date) as day"), DB::raw('count(id) as total'))->whereMonth('date', date('m'))->groupBy('day')->get(); // for pgsql
+        }
+
+        if ($isExhibition) {
+            $queue = Exhibition::whereHas('Slot.Service', function($query){
+                $query->where('branch_id', Auth::user()->branch_id);
+            })
+                ->whereMonth('date', date('m'))
+                ->get();
+
+            $exhibition['total'] = count($queue);
+            $exhibition['total_served'] = count($queue->where('status', 'end served'));
+            $exhibition['total_no_show'] = count($queue->where('status', 'no show'));
+
+            $exhibition['graph'] = Exhibition::whereHas('Slot.Service', function($query){
+                $query->where('branch_id', Auth::user()->branch_id);
+            })
+                ->select(DB::raw("date_part('day', date) as day"), DB::raw('count(id) as total'))
+                ->whereMonth('date', date('m'))
+                ->groupBy('day')
+                ->get();
         }
 
         // Direct Queue
@@ -52,6 +75,7 @@ class HomeController extends Controller
             'totalDirectQueueServed' => $isDirectQueue ? count($directQueues->where('status', 'end served')) : 0,
             'totalDirectQueueNoShow' => $isDirectQueue ? count($directQueues->where('status', 'no show')) : 0,
             'directQueueGraph' => $isDirectQueue ? $directQueueGraph : [],
+            'exhibition' => isset($exhibition) ? $exhibition : null
         ]);
     }
 
@@ -73,6 +97,11 @@ class HomeController extends Controller
     public function exportExcel()
     {
         return Excel::download(new ReportExport, 'Kyoo - Branch Report.xlsx');
+    }
+
+    public function exportExcelExhibition()
+    {
+        return Excel::download(new ReportExportExhibition, 'Kyoo - Branch Exhibition Queue Report.xlsx');
     }
 
     public function qr()

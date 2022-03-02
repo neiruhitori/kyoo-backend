@@ -44,8 +44,8 @@
                             <div class="form-group">
                                 <label for="is_appointment">{{ __('Is Appointment Queue') }}?</label>
                                 <select name="is_appointment" id="" class="form-control" required>
-                                    <option value="0">{{ __('No') }}</option>
-                                    <option value="1">{{ __('Yes') }}</option>
+                                    <option value="0" {{ !$branchType->is_appointment ?: 'selected' }}>{{ __('No') }}</option>
+                                    <option value="1" {{ !$branchType->is_appointment ?: 'selected' }}>{{ __('Yes') }}</option>
                                 </select>
                                 @include('layouts.inputError', ['errorName' => 'is_appointment'])
                             </div>
@@ -53,10 +53,19 @@
                             <div class="form-group">
                                 <label for="is_direct_queue">{{ __('Is Direct Queue') }}?</label>
                                 <select name="is_direct_queue" id="" class="form-control" required>
-                                    <option value="0">{{ __('No') }}</option>
-                                    <option value="1">{{ __('Yes') }}</option>
+                                    <option value="0" {{ !$branchType->is_direct_queue ?: 'selected' }}>{{ __('No') }}</option>
+                                    <option value="1" {{ !$branchType->is_direct_queue ?: 'selected' }}>{{ __('Yes') }}</option>
                                 </select>
                                 @include('layouts.inputError', ['errorName' => 'is_direct_queue'])
+                            </div>
+
+                            <div class="form-group">
+                                <label for="is_exhibition">{{ __('Is Exhibition Queue') }}?</label>
+                                <select name="is_exhibition" id="" class="form-control" required>
+                                    <option value="0" {{ !$branchType->is_exhibition ?: 'selected' }}>{{ __('No') }}</option>
+                                    <option value="1" {{ !$branchType->is_exhibition ?: 'selected' }}>{{ __('Yes') }}</option>
+                                </select>
+                                @include('layouts.inputError', ['errorName' => 'is_exhibition'])
                             </div>
                             <button class="btn btn-warning">{{ __('Update') }}</button>
                         </form>

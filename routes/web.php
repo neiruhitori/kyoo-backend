@@ -138,3 +138,5 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     Route::get('report/daily', 'ReportController@daily')->name('report.daily');
     Route::get('report/directQueue/daily', 'ReportController@directQueueDaily')->name('report.directQueue.daily')->middleware('checkDirectQueue');
 });
+
+Route::group([], __DIR__ . '/web/exhibition.php');

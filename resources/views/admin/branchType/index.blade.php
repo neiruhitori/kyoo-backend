@@ -33,6 +33,7 @@
                                                 <th>{{ __('Is Premium') }}</th>
                                                 <th>{{ __('Is Appointment Queue') }}</th>
                                                 <th>{{ __('Is Direct Queue') }}</th>
+                                                <th>{{ __('Is Exhibition Queue') }}</th>
                                                 <th>{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
@@ -63,6 +64,19 @@
                                                     @endif
                                                 </td>
                                                 <td>
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+                                                    <a href="{{route('admin.branchType.edit', $branchType->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Branch Type">
+=======
+                                                    @if ($branchType->is_exhibition)
+                                                    <span class="badge badge-primary">{{ __('Yes') }}</span>
+                                                    @else
+                                                    <span class="badge badge-danger">{{ __('No') }}</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+=======
+>>>>>>> origin/development
                                                     <a href="{{route('admin.branchType.edit', $branchType->id)}}"
                                                         class="btn btn-warning" data-toggle="tooltip"
                                                         data-placement="bottom" title="{{
@@ -70,6 +84,10 @@
                                                                 'module' => __('Branch Type')
                                                             ])
                                                         }}">
+<<<<<<< HEAD
+>>>>>>> Stashed changes
+=======
+>>>>>>> origin/development
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
                                                     <form

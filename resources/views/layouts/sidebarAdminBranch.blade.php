@@ -142,6 +142,21 @@
           </li>
       @endif
 
+      @if (Auth::user()->Branch->BranchType->is_exhibition)
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+            <i class="fas fa-list-ul"></i>
+            <span>{{ __('Report Exhibition') }}</span>
+          </a>
+          <div id="collapseFour" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">Submenu:</h6>
+              <a class="collapse-item" href="{{ route('adminBranch.exhibition.report.daily') }}">{{ __('Daily Report') }}</a>
+            </div>
+          </div>
+        </li>
+      @endif
+
       <!-- Divider -->
       <hr class="sidebar-divider">
 

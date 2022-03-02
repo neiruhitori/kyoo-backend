@@ -8,8 +8,17 @@ use App\Appointment;
 use App\DirectQueue;
 use App\WorkstationService;
 use Auth;
+use App\Interfaces\ExhibitionRepositoryInterface;
+
 class ReportController extends Controller
 {
+    private ExhibitionRepositoryInterface $exhibitionRepository;
+
+    public function __construct(ExhibitionRepositoryInterface $exhibitionRepository)
+    {
+        $this->exhibitionRepository = $exhibitionRepository;
+    }
+
     public function daily(Request $request)
     {
         // only can see report within last two months
@@ -74,5 +83,34 @@ class ReportController extends Controller
             'workstationServices' => $workstationServices,
             'success' => true
         ]);
+    }
+
+    public function exhibitionDaily(Request $request)
+    {
+        $viewData = [
+            'data' => [],
+            'date' => $request->date ?: date('Y-m-d'),
+            'service_id' => $request->service_id
+        ];
+
+        try {
+            $params = [
+                'date' => $request->date ?: date('Y-m-d'),
+                'service_id' => $request->service_id,
+                'branch_id' => Auth::user()->branch_id
+            ];
+            
+            $viewData['data'] = $this->exhibitionRepository->getDailyReport($params);
+        } catch (Throwable $e) {
+            $viewData['error'] = $e->getMessage();
+        }
+
+        $last_month = $newdate = date("Y-m-d", strtotime("-2 months"));
+        if ($request->date && (date('Y-m-d', strtotime($request->date)) < $last_month)) {
+            $request->session()->flash('error', __('Can not select report more then last 2 months'));
+            $viewData['data'] = [];
+        }
+
+        return view('cs.report.exhibition.daily', $viewData);
     }
 }
