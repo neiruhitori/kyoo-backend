@@ -39,20 +39,22 @@
 
       <div class="col-xl-10 col-lg-12 col-md-9">
         <div class="row">
-          <div class="col-md-12">
-            <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{ __('Registration Success!') }}</h6>
-              </div>
-              <div class="card-body text-center">
-                <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
-                <img src="{{asset('img/store.svg')}}" alt="" class="mb-3" style="max-height: 200px">
-                <div class="row">
-                  <div class="col-md-12">
-                    <p>{{ __('Your email was registered') }}</p>
-                    <p>{{ __('Please check your email to next verification step') }}</p>
-                    <a href="/" class="btn btn-sm btn-primary">{{ __('Back') }}</a>
-                  </div>
+            <div class="col-md-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">{{ __('Registration Success') }}!</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
+                        <img src="{{asset('img/store.svg')}}" alt="" class="mb-3" style="max-height: 200px">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>{{ __('Your email was registered') }}</p>
+                                <p>{{ __('Please check your email to next verification step') }}</p>
+                                <a href="/" class="btn btn-sm btn-primary">{{ __('Back') }}</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
               </div>
             </div>

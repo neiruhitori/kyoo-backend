@@ -39,20 +39,22 @@
 
       <div class="col-xl-10 col-lg-12 col-md-9">
         <div class="row">
-          <div class="col-md-12">
-            <div class="card shadow mb-4">
-              <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{ __('Verification Success!') }}</h6>
-              </div>
-              <div class="card-body text-center">
-                <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
-                <img src="{{asset('img/desk.svg')}}" alt="" class="mb-3" style="max-height: 200px">
-                <div class="row">
-                  <div class="col-md-12">
-                    <p>{{ __('Thanks for registering your branch') }}</p>
-                    <p>{{ __('Let\'s login to KYOO and update branch profile and virtual counter user to start the Queue')}}</p>
-                    <a href="{{route('login')}}" class="btn btn-sm btn-primary">{{ __('Login') }}</a>
-                  </div>
+            <div class="col-md-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">{{ __('Verification Success') }}!</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="{{asset('img/logo-color.svg')}}" alt="" class="mb-3">
+                        <img src="{{asset('img/desk.svg')}}" alt="" class="mb-3" style="max-height: 200px">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>{{ __('Thanks for registering your branch') }}</p>
+                                <p>{{ __('Let\'s login to KYOO and update branch profile and virtual counter user to start the Queue')}}</p>
+                                <a href="{{route('login')}}" class="btn btn-sm btn-primary">Login</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
               </div>
             </div>

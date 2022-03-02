@@ -1,7 +1,7 @@
 @component('mail::message')
 # {{ __('Verify Your Email') }}
 
-{{ __('branch.confirmation', ['branch' => $branch->name]) }}.
+{{ __('Hi :Branch, thank you for register your branch to Kyoo. Please click button below to verify your branch', ['branch' => $branch->name]) }}.
 
 @component('mail::button', ['url' => route('registrationBranch.edit', $branch->id)])
 {{ __('Verify Here') }}
