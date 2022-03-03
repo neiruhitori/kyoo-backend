@@ -23,94 +23,84 @@
                         </div>
                     </div>
                     <div class=" row">
-                            <div class="col-md-12 mt-3">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>{{ __('Code') }}</th>
-                                                <th>{{ __('Name') }}</th>
-                                                <th>{{ __('Is Premium') }}</th>
-                                                <th>{{ __('Is Appointment Queue') }}</th>
-                                                <th>{{ __('Is Direct Queue') }}</th>
-                                                <th>{{ __('Is Exhibition Queue') }}</th>
-                                                <th>{{ __('Action') }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($branchTypes as $branchType)
-                                            <tr>
-                                                <td>{{$branchType->code}}</td>
-                                                <td>{{$branchType->name}}</td>
-                                                <td>
-                                                    @if ($branchType->is_premium)
-                                                    <span class="badge badge-primary">{{ __('Yes') }}</span>
-                                                    @else
-                                                    <span class="badge badge-danger">{{ __('No') }}</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($branchType->is_appointment)
-                                                    <span class="badge badge-primary">{{ __('Yes') }}</span>
-                                                    @else
-                                                    <span class="badge badge-danger">{{ __('No') }}</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($branchType->is_direct_queue)
-                                                    <span class="badge badge-primary">{{ __('Yes') }}</span>
-                                                    @else
-                                                    <span class="badge badge-danger">{{ __('No') }}</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                                                    <a href="{{route('admin.branchType.edit', $branchType->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit Branch Type">
-=======
-                                                    @if ($branchType->is_exhibition)
-                                                    <span class="badge badge-primary">{{ __('Yes') }}</span>
-                                                    @else
-                                                    <span class="badge badge-danger">{{ __('No') }}</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-=======
->>>>>>> origin/development
-                                                    <a href="{{route('admin.branchType.edit', $branchType->id)}}"
-                                                        class="btn btn-warning" data-toggle="tooltip"
-                                                        data-placement="bottom" title="{{
-                                                            __('edit.module', [
+                        <div class="col-md-12 mt-3">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ __('Code') }}</th>
+                                            <th>{{ __('Name') }}</th>
+                                            <th>{{ __('Is Premium') }}</th>
+                                            <th>{{ __('Is Appointment Queue') }}</th>
+                                            <th>{{ __('Is Direct Queue') }}</th>
+                                            <th>{{ __('Is Exhibition Queue') }}</th>
+                                            <th>{{ __('Action') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($branchTypes as $branchType)
+                                        <tr>
+                                            <td>{{$branchType->code}}</td>
+                                            <td>{{$branchType->name}}</td>
+                                            <td>
+                                                @if ($branchType->is_premium)
+                                                <span class="badge badge-primary">{{ __('Yes') }}</span>
+                                                @else
+                                                <span class="badge badge-danger">{{ __('No') }}</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($branchType->is_appointment)
+                                                <span class="badge badge-primary">{{ __('Yes') }}</span>
+                                                @else
+                                                <span class="badge badge-danger">{{ __('No') }}</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($branchType->is_direct_queue)
+                                                <span class="badge badge-primary">{{ __('Yes') }}</span>
+                                                @else
+                                                <span class="badge badge-danger">{{ __('No') }}</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($branchType->is_exhibition)
+                                                <span class="badge badge-primary">{{ __('Yes') }}</span>
+                                                @else
+                                                <span class="badge badge-danger">{{ __('No') }}</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="{{route('admin.branchType.edit', $branchType->id)}}"
+                                                    class="btn btn-warning" data-toggle="tooltip"
+                                                    data-placement="bottom" title="{{
+                                                        __('edit.module', [
+                                                            'module' => __('Branch Type')
+                                                        ])
+                                                    }}">
+                                                    <i class="fas fa-fw fa-edit"></i>
+                                                </a>
+                                                <form
+                                                    action="{{route('admin.branchType.destroy', $branchType->id)}}"
+                                                    method="post" style="display: inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger"
+                                                        data-toggle="tooltip" data-placement="bottom" title="{{
+                                                            __('remove.module', [
                                                                 'module' => __('Branch Type')
                                                             ])
                                                         }}">
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> origin/development
-                                                        <i class="fas fa-fw fa-edit"></i>
-                                                    </a>
-                                                    <form
-                                                        action="{{route('admin.branchType.destroy', $branchType->id)}}"
-                                                        method="post" style="display: inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger"
-                                                            data-toggle="tooltip" data-placement="bottom" title="{{
-                                                                __('remove.module', [
-                                                                    'module' => __('Branch Type')
-                                                                ])
-                                                            }}">
-                                                            <i class="fas fa-fw fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                        <i class="fas fa-fw fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>
