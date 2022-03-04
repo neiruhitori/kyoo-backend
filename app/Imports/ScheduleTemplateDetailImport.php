@@ -4,8 +4,9 @@ namespace App\Imports;
 
 use App\ScheduleTemplateDetail;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
-class ScheduleTemplateDetailImport implements ToModel
+class ScheduleTemplateDetailImport implements ToModel, SkipsEmptyRows
 {
     private $id = null;
 
