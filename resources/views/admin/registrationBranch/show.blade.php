@@ -51,7 +51,11 @@
                                 </tr>
                                 <tr>
                                     <th>{{ __('Verified Email At') }}</th>
-                                    <td>{{$branch->updated_at->format('D, d-m-Y H:i')}}</td>
+                                    <td>
+                                        {{
+                                            $branch->is_email_verified ? $branch->updated_at->format('D, d-m-Y H:i') : ''
+                                        }}
+                                    </td>
                                 </tr>
                             </table>
                         </div>

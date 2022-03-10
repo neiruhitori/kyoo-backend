@@ -9,6 +9,8 @@ use App\Exports\Admin\ReportExport;
 use App\Branch;
 use App\User;
 use App\Appointment;
+use App\DirectQueue;
+use App\Models\Exhibition;
 use Auth;
 use DB;
 use Excel;
@@ -16,16 +18,19 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $branches = Branch::all();
-        $users = User::whereRole('customer')->get();
-        $appointments = Appointment::all();
-        // $appointmentGraph = Appointment::select(DB::raw("MONTH(date) as 'month'"), DB::raw("count(id) as 'total'"))->groupBy('month')->get(); // for mysql
         $appointmentGraph = Appointment::select(DB::raw("date_part('month', date) as month"), DB::raw("count(id) as total"))->groupBy('month')->orderBy('month')->get(); // for pgsql
+        $exhibitionGraph = Exhibition::select(DB::raw("date_part('month', date) as month"), DB::raw("count(id) as total"))->groupBy('month')->orderBy('month')->get(); // for pgsql
+        $onsiteGraph = DirectQueue::select(DB::raw("date_part('month', created_at) as month"), DB::raw("count(id) as total"))->groupBy('month')->orderBy('month')->get(); // for pgsql
+
         return view('admin.home', [
-            'totalBranch' => count($branches),
-            'totalUser' => count($users),
-            'totalAppointment' => count($appointments),
-            'appointmentGraph' => $appointmentGraph
+            'totalBranch' => Branch::count(),
+            'totalUser' => User::whereRole('customer')->count(),
+            'totalAppointment' => Appointment::count(),
+            'totalOnsite' => DirectQueue::count(),
+            'totalExhibition' => Exhibition::count(),
+            'appointmentGraph' => $appointmentGraph,
+            'exhibitionGraph' => $exhibitionGraph,
+            'onsiteGraph' => $onsiteGraph
         ]);
     }
 
