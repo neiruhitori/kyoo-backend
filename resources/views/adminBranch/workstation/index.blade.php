@@ -5,6 +5,35 @@
 @endpush
 
 @section('content')
+    <div class="card mb-4 custom-info" data-open="open" role="alert">
+        <div class="card-body">
+            <div class="custom-info-head">
+                <h6 class="font-weight-bold my-0">
+                    <span class="fas fa-info-circle text-primary mr-1"></span>
+                    Informasi
+                </h6>
+
+                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
+                    Tampilkan
+                </button>
+            </div>
+
+            <div class="custom-info-body">
+                <p>
+                    <ul style="padding-left: 2rem;">
+                        <li style="margin-bottom: 0.25rem;">
+                            Meja merupakan loket/counter tempat petugas akan melayani pelanggan. Untuk versi gratis hanya tersedia 1 Meja/Loket saja.
+                        </li>
+                        <li>
+                            Meja akan melekat ke Layanan di kantor Cabang Anda.
+                        </li>
+                    </ul>
+                </p>
+                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card shadow mb-4">
@@ -30,9 +59,7 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('Name') }}</th>
-                                            <th>{{ __('Label') }}</th>
-                                            <th>{{ __('Display ID') }}</th>
+                                            <th>{{ __('Workstation Name') }}</th>
                                             <th>{{ __('Department') }}</th>
                                             <th>{{ __('Action') }}</th>
                                         </tr>
@@ -41,8 +68,6 @@
                                         @foreach ($workstations as $workstation)
                                             <tr>
                                                 <td>{{$workstation->name}}</td>
-                                                <td>{{$workstation->label}}</td>
-                                                <td>{{$workstation->display_id}}</td>
                                                 <td>{{$workstation->Department->name}}</td>
                                                 <td>
                                                     <a

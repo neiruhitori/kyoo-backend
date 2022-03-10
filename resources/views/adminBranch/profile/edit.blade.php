@@ -3,31 +3,22 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    {{ __('edit.module', ['module' => __('Profile Admin')]) }}
-                </h6>
-            </div>
+        @include('layouts.alert')
+
+        <form action="{{route('adminBranch.profile.update')}}" method="post">
             @csrf
-            <div class="card-body">
-                @include('layouts.alert')
-                <div class="row">
-                    <div class="col-md-12">
-                        @if(!Auth::user()->is_password_changed)
-                        <div class="alert alert-warning alert-block">
-                            <button type="button" class="close" data-dismiss="alert">×</button>
-                            <strong>
-                                Your password not changed from registered, <a
-                                    href="{{ route('adminBranch.profile.edit') }}">
-                                    {{ __('click here to change.') }}
-                                </a>
-                            </strong>
-                        </div>
-                        @endif
-                        <form action="{{route('adminBranch.profile.update')}}" method="post">
-                            @csrf
-                            @method('PUT')
+            @method('PUT')
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('Edit :module', ['module' => __('Profile Admin')]) }}
+                    </h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label for="name">{{ __('name.module', ['module' => __('Branch')]) }}</label>
                                 <input name="name" type="text" class="form-control @error('name') is-invalid @enderror"
@@ -50,6 +41,34 @@
                                     value="{{old('phone') ?: Auth::user()->phone}}" required>
                                 @include('layouts.inputError', ['errorName' => 'phone'])
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('Change Password') }}
+                    </h6>
+                </div>
+
+                <div class="card-body">
+                    @include('layouts.alert')
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if(!Auth::user()->is_password_changed)
+                                <div class="alert alert-warning alert-block">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>
+                                    <strong>
+                                        Your password not changed from registered, <a
+                                            href="{{ route('adminBranch.profile.edit') }}">
+                                            {{ __('click here to change.') }}
+                                        </a>
+                                    </strong>
+                                </div>
+                            @endif
 
                             <div class="form-group">
                                 <label for="password">{{ __('Password') }}</label>
@@ -76,13 +95,13 @@
                                     value="{{old('password_confirmation')}}" required>
                                 @include('layouts.inputError', ['errorName' => 'password_confirmation'])
                             </div>
-
-                            <button class="btn btn-warning">{{ __('Update') }}</button>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <button class="btn btn-warning mb-4">{{ __('Update') }}</button>
+        </form>
     </div>
 </div>
 @endsection

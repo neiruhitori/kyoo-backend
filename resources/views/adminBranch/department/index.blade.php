@@ -5,6 +5,37 @@
 @endpush
 
 @section('content')
+    <div class="card mb-4 custom-info" data-open="open" role="alert">
+        <div class="card-body">
+            <div class="custom-info-head">
+                <h6 class="font-weight-bold my-0">
+                    <span class="fas fa-info-circle text-primary mr-1"></span>
+                    Informasi
+                </h6>
+
+                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
+                    Tampilkan
+                </button>
+            </div>
+
+            <div class="custom-info-body">
+                <p>
+                    <ul style="padding-left: 2rem;">
+                        <li style="margin-bottom: 0.25rem;">
+                            Departement merupakan hierarki atau unit paling tinggi di antrian KYOO. Untuk versi gratis hanya akan tersedia 1 departmen saja. Dibawah Departemen akan terdapat beberapa jenis layanan.
+                        </li>
+                        <li>
+                            Daftar layanan adalah jenis layanan yang Kantor Cabang anda berikan kepada pelanggan
+                        </li>
+                    </ul>
+                </p>
+                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            </div>
+        </div>
+    </div>
+
+    @include('layouts.alert')
+
     <div class="row">
         <div class="col-md-12">
             <div class="card shadow mb-4">
@@ -14,7 +45,6 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                    @include('layouts.alert')
                     @if (Auth::user()->Branch->BranchType->is_premium || count($departments) < 1)
                         <div class="row">
                             <div class="col-md-12 text-right">
@@ -52,13 +82,6 @@
                                                     >
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
-                                                    {{-- <form action="{{route('adminBranch.department.destroy', $department->id)}}" method="post" style="display: inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Remove department">
-                                                            <i class="fas fa-fw fa-trash"></i>
-                                                        </button>
-                                                    </form> --}}
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -69,6 +92,8 @@
                     </div>
                 </div>
             </div>
+
+            @include('adminBranch.service.index', ['services' => $services])
         </div>
     </div>
 @endsection

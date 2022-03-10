@@ -20,6 +20,19 @@ class ExhibitionRepository implements ExhibitionRepositoryInterface
             ->get();
     }
 
+    public function getMonthlyReport($params)
+    {
+        return Exhibition::whereHas('Slot.Service', function ($query) use ($params) {
+            $params['service_id']
+                ? $query->where('id', $params['service_id'])
+                : $query->where('branch_id', $params['branch_id']);
+        })
+            ->whereMonth('date', $params['month'])
+            ->whereYear('date', $params['year'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
     public function getUnfinishedQueue($params)
     {
         return Exhibition::whereHas('Slot.Service', function ($query) use ($params) {

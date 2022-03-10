@@ -5,6 +5,35 @@
 @endpush
 
 @section('content')
+    <div class="card mb-4 custom-info" data-open="open" role="alert">
+        <div class="card-body">
+            <div class="custom-info-head">
+                <h6 class="font-weight-bold my-0">
+                    <span class="fas fa-info-circle text-primary mr-1"></span>
+                    Informasi
+                </h6>
+
+                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
+                    Tampilkan
+                </button>
+            </div>
+
+            <div class="custom-info-body">
+                <p>
+                    <ul style="padding-left: 2rem;">
+                        <li style="margin-bottom: 0.25rem;">
+                            1 Meja hanya bisa melayani satu jenis Layanan saja.
+                        </li>
+                        <li>
+                            Untuk versi Antrian berbayar, 1 atau lebih Meja bisa melayani 1 atau lebih Layanan dengan Prioritas masing-masing Layanan yang bisa diatur.
+                        </li>
+                    </ul>
+                </p>
+                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card shadow mb-4">

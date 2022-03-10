@@ -83,6 +83,28 @@ class BranchController extends Controller
         ]);
     }
 
+    public function profile()
+    {
+        $data = [
+            'branch' => Branch::find(Auth::user()->branch_id),
+            'categories' => IndustryCategory::all(),
+            'branchTypes' => BranchType::all(),
+            'countries' => Countries::getList('en_US')
+        ];
+
+        return view('adminBranch.branchInfo.profile', $data);
+    }
+
+    public function location()
+    {
+        $data = [
+            'branch' => Branch::find(Auth::user()->branch_id),
+            'provinces' => Province::all()
+        ];
+
+        return view('adminBranch.branchInfo.location', $data);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -103,6 +125,7 @@ class BranchController extends Controller
             Storage::disk('public')->delete($branch->logo);
             $input['photo'] = Storage::disk('public')->put('branch_photos', $request->photo);
         }
+
         $branch->update($input);
         
         Log::create([
@@ -110,7 +133,7 @@ class BranchController extends Controller
             'description' => 'Update Branch'
         ]);
         $request->session()->flash('warning', __('module.updated', ['module' => __('Branch'), 'name' => $request->name]));
-        return redirect(route('adminBranch.home'));
+        return back();
     }
 
     /**

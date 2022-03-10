@@ -5,6 +5,28 @@
 @endpush
 
 @section('content')
+    <div class="card mb-4 custom-info" data-open="open" role="alert">
+        <div class="card-body">
+            <div class="custom-info-head">
+                <h6 class="font-weight-bold my-0">
+                    <span class="fas fa-info-circle text-primary mr-1"></span>
+                    Informasi
+                </h6>
+
+                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
+                    Tampilkan
+                </button>
+            </div>
+
+            <div class="custom-info-body">
+                <p>
+                    Jadwal hari kerja merupakan jadwal buka tutup kantor cabang Anda setiap hari. Anda juga dapat menambahkan informasi hari pengecualian dimana kantor cabang anda tutup karena mengikuti hari Libur Nasional.
+                </p>
+                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card shadow mb-4">

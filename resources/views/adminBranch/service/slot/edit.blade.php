@@ -39,13 +39,29 @@
 
                                 <div class="form-group">
                                     <label for="start_time">{{ __('Start Time') }}</label>
-                                    <input name="start_time" type="time" class="form-control @error('start_time') is-invalid @enderror" value="{{old('start_time') ?: $slot->start_time}}" required>
+
+                                    <input
+                                        type="text"
+                                        name="start_time"
+                                        class="form-control datetimepicker-input @error('start_time') is-invalid @enderror"
+                                        data-toggle="datetimepicker"
+                                        value="{{ $slot->start_time }}"
+                                    />
+
                                     @include('layouts.inputError', ['errorName' => 'start_time'])
                                 </div>
 
                                 <div class="form-group">
                                     <label for="end_time">{{ __('End Time') }}</label>
-                                    <input name="end_time" type="time" class="form-control @error('end_time') is-invalid @enderror" value="{{old('end_time') ?: $slot->end_time}}" required>
+                                    
+                                    <input
+                                        type="text"
+                                        name="end_time"
+                                        class="form-control datetimepicker-input @error('end_time') is-invalid @enderror"
+                                        data-toggle="datetimepicker"
+                                        value="{{ $slot->end_time }}"
+                                    />
+
                                     @include('layouts.inputError', ['errorName' => 'end_time'])
                                 </div>
                                 <button class="btn btn-warning">{{ __('Update') }}</button>

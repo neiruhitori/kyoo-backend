@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AdminBranch;
 
 use App\Department;
+use App\Service;
 use App\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -20,8 +21,11 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
+        $services = Service::whereBranchId(Auth::user()->branch_id)->get();
+
         return view('adminBranch.department.index', [
-            'departments' => $departments
+            'departments' => $departments,
+            'services' => $services
         ]);
     }
 

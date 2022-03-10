@@ -18,13 +18,52 @@
 
   <!-- Custom styles for this template-->
   <link href="{{asset('admin/css/sb-admin-2.css')}}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" integrity="sha512-3JRrEUwaCkFUBLK1N8HehwQgu8e23jTH4np5NHOmQOobuC4ROQxFwFgBLTnhcnQRMs84muMh0PnnwXlPq5MGjg==" crossorigin="anonymous" />
+
   <link rel="icon" href="{{ asset('img/favico.png') }}" type="image/icon type">
+
   <style>
     .bg-gradient-primary {
       background-image: linear-gradient(355.22deg, #189DCD 4.98%, #0A5194 121.39%);
     }
     .fullwidth {
       width: 100%;
+    }
+    .custom-icon {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 20px;
+      height: 20px;
+      font-weight: bold;
+      background-color: black;
+      color: white;
+      border-radius: 100%;
+      margin: 4px;
+      line-height: 0;
+    }
+
+    .custom-info .custom-info-head {
+      display: flex;
+      align-items: center;
+    }
+
+    .custom-info-head h6 {
+      flex: 1 1 0%;
+    }
+
+    .custom-info .custom-info-body {
+      margin-top: 0.75rem;
+    }
+
+    .custom-info .custom-info-head button {
+      display: none;
+    }
+
+    .custom-muted-btn {
+      padding: 0;
+      border: none;
+      background: transparent;
     }
   </style>
   @stack('css')
@@ -39,9 +78,11 @@
         @case('admin_kyoo')
             @include('layouts.sidebarAdmin')
             @break
+
         @case('admin_branch')
             @include('layouts.sidebarAdminBranch')
             @break
+
         @case('cs')
             @include('layouts.sidebarCS')
             @break
@@ -88,7 +129,9 @@
   </a>
 
   <!-- Bootstrap core JavaScript-->
-  <script src="{{asset('admin/vendor/jquery/jquery.min.js')}}"></script>
+  <script type="text/javascript" src="{{asset('admin/vendor/jquery/jquery.min.js')}}"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js" integrity="sha512-k6/Bkb8Fxf/c1Tkyl39yJwcOZ1P4cRrJu77p83zJjN2Z55prbFHxPs9vN7q3l3+tSMGPDdoH51AEU8Vgo1cgAA==" crossorigin="anonymous"></script>
   <script src="{{asset('admin/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
   <!-- Core plugin JavaScript-->
@@ -96,6 +139,28 @@
 
   <!-- Custom scripts for all pages-->
   <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
+
+  <script>
+    $(document).ready(function () {
+      $('.datetimepicker-input').datetimepicker({
+        format: 'HH:mm'
+      })
+
+      $('.custom-info button[data-toggle="alert"]').click(function (e) {
+        const alertEl = $(this).parents('.custom-info[role="alert"]');
+
+        if (alertEl.data('open') == 'open') {
+          alertEl.data('open', 'close');
+          alertEl.find('.custom-info-body').css('display', 'none');
+          alertEl.find('.custom-info-head button').css('display', 'inline-block');
+        } else {
+          alertEl.data('open', 'open');
+          alertEl.find('.custom-info-body').css('display', 'block');
+          alertEl.find('.custom-info-head button').css('display', 'none');
+        }
+      })
+    })
+  </script>
   @stack('js')
 </body>
 

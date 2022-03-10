@@ -19,7 +19,7 @@
                                 <input type="hidden" name="branch_id" value="{{Auth::user()->branch_id}}">
                                 <div class="form-group">
                                     <label for="name">{{ __('Name') }}</label>
-                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: 'Department 1'}}" required>
+                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: Auth::user()->Branch->name}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
                                 <button class="btn btn-primary">{{ __('Save') }}</button>

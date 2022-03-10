@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="label">{{ __('Label') }}</label>
-                                    <input name="label" type="text" class="form-control @error('label') is-invalid @enderror" value="{{old('label') ?: $workstation->label}}" required>
+                                    <input name="label" type="text" class="form-control @error('label') is-invalid @enderror" value="{{old('label') ?: $workstation->label}}" required readonly>
                                     @include('layouts.inputError', ['errorName' => 'label'])
                                 </div>
                                 <div class="form-group">

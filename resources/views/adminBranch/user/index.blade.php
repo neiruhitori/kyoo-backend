@@ -5,6 +5,38 @@
 @endpush
 
 @section('content')
+    <div class="card mb-4 custom-info" data-open="open" role="alert">
+        <div class="card-body">
+            <div class="custom-info-head">
+                <h6 class="font-weight-bold my-0">
+                    <span class="fas fa-info-circle text-primary mr-1"></span>
+                    Informasi
+                </h6>
+
+                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
+                    Tampilkan
+                </button>
+            </div>
+
+            <div class="custom-info-body">
+                <p>
+                    <ul style="padding-left: 2rem;">
+                        <li style="margin-bottom: 0.25rem;">
+                            Berikut adalah halaman untuk melihat dan mengatur petugas layanan di antrian kantor Cabang Anda. 
+                        </li>
+                        <li style="margin-bottom: 0.25rem;">
+                            Untuk versi gratis, hanya akan tersedia 1 petugas saja. Untuk penggunaan pertamakali, perlu disetting password user petugas agar dapat login sebagai petugas layanan.
+                        </li>
+                        <li>
+                            Jika lupa password user petugas, dapat menekan tombol reset password dibawah dan akan dikirimkan link melalui email admin cabang untuk melakukan proses reset password.
+                        </li>
+                    </ul>
+                </p>
+                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card shadow mb-4">
@@ -41,21 +73,27 @@
                                     <tbody>
                                         @foreach (Auth::user()->Branch->CS as $user)
                                             <tr>
-                                                <td>{{$user->id}}</td>
-                                                <td>{{$user->WorkstationVct && $user->WorkstationVct->Workstation ? $user->WorkstationVct->Workstation->name : '-'}}</td>
-                                                <td>{{$user->username}}</td>
+                                                <td>{{ $user->id }}</td>
+                                                <td>
+                                                    {{
+                                                        $user->WorkstationVct && $user->WorkstationVct->Workstation
+                                                            ? $user->WorkstationVct->Workstation->name
+                                                            : '-'
+                                                    }}
+                                                </td>
+                                                <td>{{ $user->username }}</td>
                                                 <td>{{ __('Counter') }}</td>
                                                 <td>
                                                     @if ($user->deleted_at)
-                                                            <span class="badge badge-danger">{{ __('Non Active') }}</span>
-                                                        @else
-                                                            <span class="badge badge-primary">{{ __('Active') }}</span>                                                    
+                                                        <span class="badge badge-danger">{{ __('Non Active') }}</span>
+                                                    @else
+                                                        <span class="badge badge-primary">{{ __('Active') }}</span>                                                    
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if (!$user->deleted_at)
                                                         <a
-                                                            href="{{route('adminBranch.user.edit', $user->id)}}"
+                                                            href="{{ route('adminBranch.user.edit', $user->id) }}"
                                                             class="btn
                                                             btn-warning" data-toggle="tooltip"
                                                             data-placement="bottom"
@@ -65,9 +103,10 @@
                                                         >
                                                             <i class="fas fa-fw fa-edit"></i>
                                                         </a>
-                                                        <form action="{{route('adminBranch.user.destroy', $user->id)}}" method="post" style="display: inline">
+                                                        <form action="{{ route('adminBranch.user.destroy', $user->id) }}" method="post" style="display: inline">
                                                             @csrf
                                                             @method('DELETE')
+
                                                             <button
                                                                 type="submit"
                                                                 class="btn btn-danger"
@@ -80,7 +119,7 @@
                                                                 <i class="fas fa-fw fa-trash"></i>
                                                             </button>
                                                         </form>
-                                                        @else
+                                                    @else
                                                         <form action="{{route('adminBranch.user.restore')}}" method="post" style="display: inline">
                                                             @csrf
                                                             @method('PUT')
@@ -96,6 +135,7 @@
                                                             </button>
                                                         </form>
                                                     @endif
+
                                                     <form action="{{route('adminBranch.user.resetPassword', $user->id)}}" method="post" style="display: inline">
                                                         @csrf   
                                                         <button

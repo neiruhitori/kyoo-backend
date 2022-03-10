@@ -77,7 +77,8 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
         Route::get('qr', 'HomeController@qr')->name('qr');
 
         // Branch routes
-        Route::get('branch', 'BranchController@edit')->name('branch.edit');
+        Route::get('branch/profile', 'BranchController@profile')->name('branch.profile');
+        Route::get('branch/location', 'BranchController@location')->name('branch.location');
         Route::put('branch', 'BranchController@update')->name('branch.update');
 
         // Branch Configuration routes
@@ -109,7 +110,9 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
 
         // Report routes
         Route::get('report/daily', 'ReportController@daily')->name('report.daily')->middleware('checkAppointmentQueue');
+        Route::get('report/appointment/monthly', 'ReportController@appointmentMonthly')->name('report.appointment.monthly')->middleware('checkAppointmentQueue');
         Route::get('report/directQueue/daily', 'ReportController@directQueueDaily')->name('report.directQueue.daily')->middleware('checkDirectQueue');
+        Route::get('report/directQueue/monthly', 'ReportController@directQueueMonthly')->name('report.directQueue.monthly')->middleware('checkDirectQueue');
     });
 });
 
@@ -140,3 +143,6 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 });
 
 Route::group([], __DIR__ . '/web/exhibition.php');
+Route::group([], __DIR__ . '/web/feature.php');
+Route::group([], __DIR__ . '/web/branch_config_guide.php');
+Route::group([], __DIR__ . '/web/slot_time_guide.php');

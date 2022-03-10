@@ -16,7 +16,8 @@
                     <div class="col-md-12">
                         <form action="{{route('admin.branchType.update', $branchType->id)}}" method="post">
                             @csrf
-                            <input type="hidden" value="PUT" name="_method">
+                            @method('PUT')
+
                             <input type="hidden" value="{{ $branchType->id }}" name="id">
                             <div class="form-group">
                                 <label for="code">{{ __('Code') }}</label>
@@ -35,8 +36,8 @@
                             <div class="form-group">
                                 <label for="is_premium">{{ __('Is Premium') }}?</label>
                                 <select name="is_premium" id="" class="form-control" required>
-                                    <option value="0">{{ __('No') }}</option>
-                                    <option value="1">{{ __('Yes') }}</option>
+                                    <option value="0" {{ $branchType->is_premium ?: 'selected' }}>{{ __('No') }}</option>
+                                    <option value="1" {{ !$branchType->is_premium ?: 'selected' }}>{{ __('Yes') }}</option>
                                 </select>
                                 @include('layouts.inputError', ['errorName' => 'is_premium'])
                             </div>

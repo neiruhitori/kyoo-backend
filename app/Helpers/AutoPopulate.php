@@ -8,11 +8,14 @@ use App\Service;
 use App\Workstation;
 use App\WorkstationVct;
 use App\WorkstationService;
+use App\Branch;
 use Str;
 
 class AutoPopulate {
     public static function create($branch_id)
     {
+        $branch = Branch::find($branch_id);
+
         // auto populate schedule
         $days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         foreach ($days as $key => $day) {
@@ -28,14 +31,14 @@ class AutoPopulate {
         // auto populate department
         $department = Department::create([
             'branch_id' => $branch_id,
-            'name' => 'Department 1'
+            'name' => $branch->name
         ]);
 
         // auto populate service
         $service = Service::create([
             'branch_id' => $branch_id,
             'department_id' => $department->id,
-            'name' => 'Service 1'
+            'name' => 'Customer Service 1'
         ]);
 
         // auto populate workstation

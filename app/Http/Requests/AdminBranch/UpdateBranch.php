@@ -26,23 +26,23 @@ class UpdateBranch extends FormRequest
     {
         return [
             // branch profile
-            'name' => 'required|string',
-            'industry_category_id' => 'required|exists:industry_categories,id',
-            'description' => 'required',
+            'name' => 'required_with:name|string',
+            'industry_category_id' => 'required_with:industry_category_id|exists:industry_categories,id',
+            'description' => 'required_with:description',
             'email' => 'email',
-            'country' => 'required',
-            'timezone' => 'required|string',
+            'country' => 'required_with:country',
+            'timezone' => 'required_with:timezone|string',
             'fixed_phone' => 'nullable|numeric|min:5',
-            'mobile_phone' => 'required|numeric|min:5',
+            'mobile_phone' => 'required_with:mobile_phone|numeric|min:5',
             'logo' => 'sometimes|image',
             'photo' => 'sometimes|image',
-            'is_active' => 'required',
+            'is_active' => 'required_with:is_active',
 
             // branch location
-            'regency_id' => 'required|exists:indoregion_regencies,id',
-            'address' => 'required|string',
-            'lat' => 'required',
-            'long' => 'required',
+            'regency_id' => 'required_with:regency_id|exists:indoregion_regencies,id',
+            'address' => 'required_with:address|string',
+            'lat' => 'required_with:lat',
+            'long' => 'required_with:long',
         ];
     }
 }

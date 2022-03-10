@@ -1,27 +1,37 @@
 @extends('layouts.app')
+
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        {{ __('edit.module', ['module' => __('Virtual Counter')]) }}
-                    </h6>
-                </div>
-                <div class="card-body">
-                    @include('layouts.alert')
-                    <div class="row">
-                        <div class="col-md-12 mt-3">
-                            <form action="{{route('adminBranch.user.update', $user->id)}}" method="post">
-                                @csrf
-                                @method('PUT')
+            @include('layouts.alert')
+
+            <form action="{{route('adminBranch.user.update', $user->id)}}" method="post">
+                @csrf
+                @method('PUT')
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            Setting Meja Petugas
+                        </h6>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
                                 <input type="hidden" name="user_id" value="{{$user->id}}">
+
                                 <div class="form-group">
                                     <label for="workstation_id">{{ __('Workstation') }}</label>
                                     <select name="workstation_id" id="workstation_id" class="form-control @error('workstation_id') is-invalid @enderror">
                                         <option value="">- {{ __('Select Workstation') }} -</option>
                                         @foreach ($workstations as $workstation)
-                                            <option value="{{$workstation->id}}">{{$workstation->name}}</option>
+                                            <option
+                                                value="{{ $workstation->id }}"
+                                                {{ $user->WorkstationVct->Workstation->id != $workstation->id ?: 'selected' }}
+                                            >
+                                                {{ $workstation->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'department_id'])
@@ -36,6 +46,21 @@
                                     </div>
                                     @include('layouts.inputError', ['errorName' => 'username'])
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            {{ __('Change Password') }}
+                        </h6>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
                                 @if ($user->is_password_changed)
                                     <div class="form-group">
                                         <label for="password_confirmation">{{ __('Old Password') }}</label>
@@ -43,8 +68,9 @@
                                         @include('layouts.inputError', ['errorName' => 'old_password'])
                                     </div>
                                 @endif
+
                                 <div class="form-group">
-                                    <label for="password">{{ __('Password') }}</label>
+                                    <label for="password">{{ __('New Password') }}</label>
                                     <br>
                                     <small>
                                         {{ __('Rules') }}:
@@ -58,17 +84,19 @@
                                     <input name="password" type="password" class="form-control @error('password') is-invalid @enderror" value="{{old('password')}}">
                                     @include('layouts.inputError', ['errorName' => 'password'])
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="password_confirmation">{{ __('Password Confirmation') }}</label>
+                                    <label for="password_confirmation">{{ __('Confirm New Password') }}</label>
                                     <input name="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{old('password_confirmation')}}">
                                     @include('layouts.inputError', ['errorName' => 'password_confirmation'])
                                 </div>
-                                <button class="btn btn-warning">{{ __('Update') }}</button>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <button class="btn btn-warning mb-4">{{ __('Update') }}</button>
+            </form>
         </div>
     </div>
 @endsection

@@ -24,6 +24,6 @@ class BranchConfigurationController extends Controller
             'description' => 'Update Branch Configuration'
         ]);
         $request->session()->flash('warning', __('Branch Configuration has been updated'));
-        return redirect(route('adminBranch.branchConfiguration.edit'));
+        return back();
     }
 }
