@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">{{ __('Virtual Counter') }} {{ Auth::user()->Branch->name }}</h1>
+        <h1 class="h3 mb-0 text-gray-800">User {{ __('Virtual Counter') }} {{ Auth::user()->Branch->name }}</h1>
     </div>
 
     <div class="row">
@@ -25,7 +25,7 @@
                         <div class="col text-right">
                             <a href="{{ route('cs.exhibition.create') }}">
                                 <button class="btn btn-primary">
-                                    {{ __('create.module', ['module' => __('Exhibition')]) }}
+                                    Daftar Exhibition
                                 </button>
                             </a>
                         </div>
@@ -113,7 +113,7 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('History') }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Riwayat Antrian</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

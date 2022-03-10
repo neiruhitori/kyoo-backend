@@ -21,7 +21,7 @@
                 href="/cs/directQueue/create"
                 class="btn btn-primary"
               >
-                Tambah Antrian Onsite
+                Daftar Antrian Onsite
               </a>
             </div>
           </div>
