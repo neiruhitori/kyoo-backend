@@ -29,7 +29,7 @@
             <a class="collapse-item" href="#">
               {{ __('Customer Guide') }}
             </a>
-            <a class="collapse-item" href="{{ route('adminBranch.qr') }}">
+            <a class="collapse-item" href="{{ route('adminBranch.qr') }}" target="__blank">
               {{ __('Branch QR Code') }}
             </a>
           </div>
