@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Log;
 use Auth;
+use App\User;
+
 class LoginController extends Controller
 {
     /*
@@ -62,8 +64,17 @@ class LoginController extends Controller
                 'user_id' => Auth::id(),
                 'description' => 'Login Success'
             ]);
-            // on success
+
+            if (Auth::user()->role == 'admin_branch' && !Auth::user()->last_login) {
+                User::find(Auth::id())->update([
+                    'last_login' => date('Y-m-d H:i:s')
+                ]);
+                
+                return redirect()->route('adminBranch.branchConfigGuide');
+            }
+            
             return redirect()->route('home');
+
         }
         // on failed
         return redirect()->route('login')->with(['error' => __('Authenticate Failed')]);
