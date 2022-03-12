@@ -28,13 +28,13 @@
                                         @foreach ($workstations as $workstation)
                                             <option
                                                 value="{{ $workstation->id }}"
-                                                {{ $user->WorkstationVct->Workstation->id != $workstation->id ?: 'selected' }}
+                                                {{ $user->WorkstationVct && $user->WorkstationVct->Workstation->id == $workstation->id ? 'selected' : '' }}
                                             >
                                                 {{ $workstation->name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @include('layouts.inputError', ['errorName' => 'department_id'])
+                                    @include('layouts.inputError', ['errorName' => 'workstation_id'])
                                 </div>
                                 <div class="form-group">
                                     <label for="username">{{ __('Username') }}</label>
