@@ -88,8 +88,8 @@
 
             <div class="form-group">
                 <label for="max_counter">{{ __('Max Counter') }}</label>
-                <input name="max_counter" type="number" class="form-control @error('max_counter') is-invalid @enderror" value="{{$branch->max_counter}}" readonly>
-                @include('layouts.inputError', ['errorName' => 'max_counter'])
+                
+                <div class="font-weight-bold">{{ $branch->max_counter }}</div>
             </div>
 
             <div class="form-group">
