@@ -67,9 +67,9 @@
 
         ctx.resetTransform()
 
-        const branchName = '{{ Auth::user()->Branch->name }}'
-        const address = '{{ Auth::user()->Branch->address }}'
-        const regionName = '{{ Auth::user()->Branch->Regency->name }}, {{ Auth::user()->Branch->Regency->province->name }}'
+        const branchName = `{{ Auth::user()->Branch->name }}`
+        const address = `{{ Auth::user()->Branch->address }}`
+        const regionName = `{{ Auth::user()->Branch->Regency->name }}, {{ Auth::user()->Branch->Regency->province->name }}`
 
         ctx.fillStyle = '#114077'
         
