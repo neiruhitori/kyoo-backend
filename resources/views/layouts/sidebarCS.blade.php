@@ -9,7 +9,7 @@
       <hr class="sidebar-divider my-0">
       
       <li class="nav-item">
-        <a class="nav-link" href="{{route('cs.qr')}}" target="_blank">
+        <a class="nav-link" href="{{ route('cs.branchQrCode') }}">
           <i class="fas fa-fw fa-qrcode"></i>
           <span>{{ __('Show QR Code') }}</span></a>
       </li>
