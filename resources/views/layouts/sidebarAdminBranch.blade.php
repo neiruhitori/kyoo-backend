@@ -16,6 +16,12 @@
       </li>
 
       <li class="nav-item">
+        <a class="nav-link" href="{{ route('adminBranch.branchQrCode') }}">
+          <i class="fas fa-fw fa-qrcode"></i>
+          <span>{{ __('Branch QR Code') }}</span></a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#instruction-of-use" aria-expanded="true" aria-controls="instruction-of-use">
           <i class="fas fa-fw fa-info-circle"></i>
           <span>{{ __('Instruction for Use') }}</span>
@@ -28,9 +34,6 @@
             </a>
             <a class="collapse-item" href="#">
               {{ __('Customer Guide') }}
-            </a>
-            <a class="collapse-item" href="{{ route('adminBranch.branchQrCode') }}">
-              {{ __('Branch QR Code') }}
             </a>
           </div>
         </div>
