@@ -17,16 +17,8 @@ class BranchQrCodeController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $qrData = json_encode([
-            'type' => 'show_branch_action',
-            'branch' => [
-                'id' => Auth::user()->branch_id
-            ]
-        ]);
-        $qrDataToken = base64_encode($qrData);
-
         $data = [
-            'qr' => QrCode::size(180)->generate($qrDataToken)
+            'qr' => QrCode::size(180)->generate(url('kyooTicket', [Auth::user()->branch_id]))
         ];
 
         return view('adminBranch.branchQrCode', $data);
