@@ -17,7 +17,7 @@ import 'react-day-picker/lib/style.css'
 const BRANCH_ID = window.location.href.split('/').pop()
 
 const Wrapper = styled.div`
-    max-width: 400px;
+    max-width: 420px;
     margin: 0 auto;
     background-color: #FFFFFF;
     position: relative;
