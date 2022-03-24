@@ -78,12 +78,7 @@
 
             <div class="form-group">
                 <label for="branch_type_id">{{ __('Branch License') }}</label>
-                <select name="branch_type_id" id="branch_type_id" class="form-control @error('branch_type_id') is-invalid @enderror" disabled>
-                    @foreach ($branchTypes as $branchType)
-                        <option value="{{$branchType->id}}">{{$branchType->code}} - {{$branchType->name}}</option>
-                    @endforeach
-                </select>
-                @include('layouts.inputError', ['errorName' => 'branch_type_id'])
+                <div class="font-weight-bold">{{ $branch->BranchType->code }} - {{ $branch->BranchType->name }}</div>
             </div>
 
             <div class="form-group">

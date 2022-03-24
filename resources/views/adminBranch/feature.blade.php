@@ -98,18 +98,18 @@
                 </div>
             </div>
         </div>
+
+        @push('js')
+            <script>
+                $(document).ready(function() {
+                    let allow_transferOldValue = '{{ old("allow_transfer") ?? Auth::user()->Branch->BranchConfiguration->allow_transfer ?? "" }}';
+
+                    if(allow_transferOldValue !== '') {
+                        $('#allow_transfer').val(allow_transferOldValue);
+                    }
+                });
+            </script>
+        @endpush
     </div>
 </div>
-
-@push('js')
-    <script>
-        $(document).ready(function() {
-            const allow_transferOldValue = '{{ old('allow_transfer') ?: Auth::user()->Branch->BranchConfiguration->allow_transfer }}';
-                
-            if(allow_transferOldValue !== '') {
-                $('#allow_transfer').val(allow_transferOldValue);
-            }
-        });
-    </script>
-@endpush
 @endsection
