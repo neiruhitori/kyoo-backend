@@ -37,6 +37,7 @@ Route::get('branch/{branch}', 'API\BranchController@show');
 
 // service routes
 Route::get('service/branch/{branch_id}', 'API\ServiceController@getAllByBranchId');
+Route::get('service/{service_id}', 'API\ServiceController@getById');
 
 // slot routes
 Route::post('slot', 'API\SlotController@index');

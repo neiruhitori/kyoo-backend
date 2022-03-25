@@ -10,9 +10,10 @@ use App\Slot;
 
 class ServiceController extends Controller
 {
-    public function getAllByBranchId($branch_id)
+    public function getAllByBranchId(Request $requets, $branch_id)
     {
-        $dateNow = date('Y-m-d');
+        $dateNow = $request->date ?? date('Y-m-d');
+        $dayNow =  strtolower(date("l", strtotime($dateNow)));
         $services = Service::where('branch_id', $branch_id)->get();
 
         foreach ($services as $service) {
@@ -22,16 +23,39 @@ class ServiceController extends Controller
             })->where('date', $dateNow)->whereIn('status', ['book', 'check in'])->get();
 
             // get total slot
-            $totalSlot = Slot::whereServiceId($service->id)->sum('max_slots');
+            $slots = Slot::where('day', $dayNow)
+                ->whereServiceId($service->id);
 
+            $service->slots = $slots->get();
             $service->filledSlot = count($filledSlot);
-            $service->totalSlot = (int) $totalSlot;
+            $service->totalSlot = $slots->sum('max_slots');
         }
 
         return response()->json([
             'success' => true,
             'message' => 'get all services by branch id',
             'data' => $services
+        ]);
+    }
+
+    public function getById(Request $request, $id)
+    {
+        $service = Service::with('Slot')->where('id', $id)->first();
+        $date = $request->date ?? date('Y-m-d');
+
+        foreach ($service->slot as $slot) {
+            $slot->filled_slot = Appointment::whereHas('Slot', function ($query) use ($service) {
+                $query->where('service_id', $service->id);
+            })
+                ->where('date', $date)
+                ->whereIn('status', ['book', 'check in'])
+                ->count();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'get service by id',
+            'data' => $service
         ]);
     }
 }
