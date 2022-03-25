@@ -5,8 +5,8 @@ const SvgIconRoot = styled.svg.attrs((props) => ({
     viewBox: props.viewBox ||'0 0 512 512'
 }))(props => {
     return {
-        height: props.style?.height || '1.125rem',
-        width: props.style?.width || 'auto',
+        height: props.height || props.style?.height || '1.125rem',
+        width: props.width || props.style?.width || 'auto',
         fill: props.fill || props.color || '#000000'
     }
 })
