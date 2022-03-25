@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
 
 import ServiceList from './ServiceList/ServiceList'
 import TimeSlotList from './TimeSlotList/TimeSlotList'
@@ -23,8 +22,6 @@ function App() {
                 <Route path="/kyooTicket/:queueType/:branchId/services" element={<ServiceList />} />
                 <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId" element={<TimeSlotList />} />
             </Routes>
-
-            <ReactQueryDevtools initialIsOpen />
         </QueryClientProvider>
     </AppContainer>
 }
