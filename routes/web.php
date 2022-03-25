@@ -148,6 +148,10 @@ Route::group([], __DIR__ . '/web/branch_config_guide.php');
 Route::group([], __DIR__ . '/web/slot_time_guide.php');
 Route::group([], __DIR__ . '/web/branch_qr_code.php');
 
-Route::get('/kyooTicket/{branch_id}', function (Request $request) {
-    return view('kyoo-ticket.index');
-})->name('kyooTicket.index');
+Route::view('/kyooTicket/{queue_type}/{branch_id}/{path?}', 'kyoo-ticket.index')
+    ->name('kyooTicket.index')
+    ->where([
+        'queue_type' => 'exhibition|appointment',
+        'branch_id' => '[0-9]+',
+        'path' => '.*',
+    ]);
