@@ -42,6 +42,15 @@ Route::get('service/{service_id}', 'API\ServiceController@getById');
 // slot routes
 Route::post('slot', 'API\SlotController@index');
 
+Route::post('appointment', 'API\AppointmentController@store');
+Route::get('appointment/{appointment}', 'API\AppointmentController@show');
+
+Route::post('exhibition', 'API\ExhibitionController@store');
+Route::get('exhibition/{exhibition}', 'API\ExhibitionController@show');
+
+Route::post('direct-queue', 'API\DirectQueueController@store');
+Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
+
 Route::middleware(['auth:api'])->group(function () {
     // user routes
     Route::get('user', 'API\UserController@detail');
@@ -51,18 +60,14 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('upcoming', 'API\AppointmentController@upcomingCombine');
 
     // appointment routes
-    Route::post('appointment', 'API\AppointmentController@store');
-    Route::get('appointment/{appointment}', 'API\AppointmentController@show');
     Route::get('appointment', 'API\AppointmentController@index');
     Route::get('appointment-history', 'API\AppointmentController@history');
     Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
     Route::get('appointment-upcoming', 'API\AppointmentController@upcoming');
 
     // direct queue routes
-    Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
     Route::get('direct-queue-upcoming', 'API\DirectQueueController@upcoming');
     Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
-    Route::post('direct-queue', 'API\DirectQueueController@store');
 
     // favorite routes
     Route::get('favorite', 'API\FavoriteController@index');

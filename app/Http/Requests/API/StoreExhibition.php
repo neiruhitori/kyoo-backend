@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Requests\API\DirectQueue;
+namespace App\Http\Requests\API;
 
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Foundation\Http\FormRequest;
-use Auth;
 
-class Store extends FormRequest
+class StoreExhibition extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,7 +17,7 @@ class Store extends FormRequest
      */
     // public function authorize()
     // {
-    //     return Auth::user();
+    //     return false;
     // }
 
     /**
@@ -29,26 +28,22 @@ class Store extends FormRequest
     public function rules()
     {
         return [
-            'workstation_service_id' => 'required|exists:workstation_services,id',
-            'name' => 'nullable|string',
-            'phone' => 'nullable|string',
+            // 'user_id' => 'required|exists:users,id',
+            'slot_id' => 'required|exists:slots,id',
+            'date' => 'required|date|after_or_equal:today',
+            'name' => 'required|string',
+            'phone' => 'required|numeric',
+            'email' => 'required|email',
+            'notes' => 'nullable'
         ];
     }
 
-    /**
-     * Handle a failed validation attempt.
-     *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @return void
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     protected function failedValidation(Validator $validator)
     {
         $errors = (new ValidationException($validator))->errors();
         throw new HttpResponseException(response()->json([
             'success' => false,
-            'message' => 'Failed to store direct queue',
+            'message' => 'Failed to store booking',
             'data' => $errors
         ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }

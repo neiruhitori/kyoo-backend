@@ -3,7 +3,7 @@
 
 {{ __('Thank you for queueing using KYOO. Click button below to track your queue status') }}.
 
-@component('mail::button', ['url' => route('exhibition.status', $exhibition_id)])
+@component('mail::button', ['url' => url('kyooTicket/exhibition/' . $branch_id . '/booking-status/' . $exhibition_id)])
 {{ __('Check My Queue') }}
 @endcomponent
 

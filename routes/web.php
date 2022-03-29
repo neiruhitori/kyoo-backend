@@ -151,7 +151,7 @@ Route::group([], __DIR__ . '/web/branch_qr_code.php');
 Route::view('/kyooTicket/{queue_type}/{branch_id}/{path?}', 'kyoo-ticket.index')
     ->name('kyooTicket.index')
     ->where([
-        'queue_type' => 'exhibition|appointment',
+        'queue_type' => 'exhibition|appointment|onsite',
         'branch_id' => '[0-9]+',
         'path' => '.*',
     ]);

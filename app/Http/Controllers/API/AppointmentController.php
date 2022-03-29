@@ -43,10 +43,11 @@ class AppointmentController extends Controller
          */
         
         // cant create appointment on same time slot
-        $sameAppointment = Appointment::where(['user_id' => $request->user_id])
-                                            ->where(['slot_id' => $request->slot_id]) 
-                                            ->where(['date' => $request->date])
-                                            ->first(); 
+        $sameAppointment = Appointment::where('email', $request->email)
+                                        ->orWhere('phone', $request->phone)
+                                        ->where(['slot_id' => $request->slot_id]) 
+                                        ->where(['date' => $request->date])
+                                        ->first(); 
         if ($sameAppointment) {
             return response()->json([
                 'success' => false,

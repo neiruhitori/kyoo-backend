@@ -31,10 +31,13 @@ class StoreAppointment extends Mailable
      */
     public function build()
     {
-        $appointment_id = Crypt::encrypt($this->appointment->id);
+        $appointment_id = $this->appointment->id;
+        $branch = $this->appointment->Slot->Service->Branch;
+
         return $this->from('noreply@kyoo.id', 'KYOO')->subject(__('Branch Appointment'))->markdown('emails.cs.storeAppointment', [
             'appointment' => $this->appointment,
             'appointment_id' => $appointment_id,
+            'branch_id' => $branch->id
         ]);
     }
 }

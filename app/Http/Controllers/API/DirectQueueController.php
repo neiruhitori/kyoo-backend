@@ -79,12 +79,12 @@ class DirectQueueController extends Controller
 
         // user cant create same direct queue 3x at same date
         $sameUserQueueCount = DirectQueue::query()
-                                            ->whereHas('WorkstationService.Service', function($query) use($workstationService){
-                                                return $query->where('branch_id', $workstationService->Service->branch_id);
-                                            })
-                                            ->where('user_id', Auth::id())
-                                            ->whereDate('created_at', $current_date)
-                                            ->count();
+            ->whereHas('WorkstationService.Service', function($query) use($workstationService){
+                return $query->where('branch_id', $workstationService->Service->branch_id);
+            })
+            ->where('user_id', Auth::id())
+            ->whereDate('created_at', $current_date)
+            ->count();
 
         if ($sameUserQueueCount > 3) {
             return response()->json([
@@ -97,9 +97,10 @@ class DirectQueueController extends Controller
         // cant create direct queue on closed day by schedule template
         if($workstationService->Service->Branch->schedule_template_id){
             $schedule_template_details = ScheduleTemplateDetail::query()
-                                                                    ->where('schedule_template_id', $workstationService->Service->Branch->schedule_template_id)
-                                                                    ->where('date', $current_date)
-                                                                    ->first();
+                ->where('schedule_template_id', $workstationService->Service->Branch->schedule_template_id)
+                ->where('date', $current_date)
+                ->first();
+
             if($schedule_template_details){
                 return response()->json([
                     'success' => false,
@@ -111,10 +112,10 @@ class DirectQueueController extends Controller
 
         // cant create direct queue on closed day
         $selectedSchedule = Schedule::query()
-                                ->where('branch_id', $workstationService->Service->branch_id)
-                                ->where('day', strtolower(date('l', strtotime($current_date))))
-                                ->get(['day', 'status', 'start_time', 'end_time'])
-                                ->first();
+            ->where('branch_id', $workstationService->Service->branch_id)
+            ->where('day', strtolower(date('l', strtotime($current_date))))
+            ->get(['day', 'status', 'start_time', 'end_time'])
+            ->first();
 
         if (!$selectedSchedule || $selectedSchedule->status == 'closed') {
             return response()->json([
@@ -152,7 +153,7 @@ class DirectQueueController extends Controller
 
         // send event to update Direct Queue Monitor
         event(new VCTDirectQueueEvent($workstation));
-        event(new DirectQueueEvent($workstation));
+        event(new DirectQueueEvent($workstation, $workstationService->Service->branch_id));
 
         $workstation['total_waiting'] = DirectQueue::whereServiceId($workstation->service_id)->whereStatus('waiting')->whereDate('created_at', date('Y-m-d'))->count();
 
