@@ -18,6 +18,7 @@ const StepItem = styled.div`
         height: 0.75rem;
         background-color: #DCE3E9;
         border-radius: 100%;
+        z-index: 1;
     }
 
     &:before {
@@ -26,6 +27,8 @@ const StepItem = styled.div`
         height: 0.375rem;
         flex: 1 1 0%;
         background-color: #DCE3E9;
+        margin: 0 -0.1rem;
+        z-index: -1;
     }
 
     &:first-child {
