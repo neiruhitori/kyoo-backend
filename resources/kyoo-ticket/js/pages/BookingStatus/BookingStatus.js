@@ -198,7 +198,7 @@ export default function BookingStatus() {
                         </div>
 
                         <div style={{
-                            border: '1px solid rgba(255, 255, 255, 0.16)',
+                            borderTop: '1px solid rgba(255, 255, 255, 0.16)',
                             margin: '.75rem 0'
                         }}></div>
 
