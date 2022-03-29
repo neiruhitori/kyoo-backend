@@ -15,7 +15,6 @@ const InfoAlertRoot = styled.div`
 export default function InfoAlert(props) {
     return <InfoAlertRoot style={props.style}>
         <span style={{
-            marginRight: '0.75rem',
             display: 'inline-block'
         }}>
             <CircleInfoIcon color="#005AA3" />
