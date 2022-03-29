@@ -1,16 +1,10 @@
 import styled from 'styled-components'
 
+import Card from './Card'
+import BlueCard from './BlueCard'
 import AngleRightIcon from '../icons/AngleRightIcon'
 
-const ServiceRoot = styled.div`
-    box-shadow: 0px 7px 40px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    display: flex;
-    background-color: #FFFFFF;
-`
-
 const ServiceContent = styled.div(() => ({
-    padding: '1.125rem',
     flex: '1 1 0%'
 }))
 
@@ -25,12 +19,9 @@ const ServiceSubtitle = styled.div(() => ({
     marginTop: '0.75rem'
 }))
 
-const ServiceAction = styled.div(() => ({
+const ServiceAction = styled(BlueCard)(() => ({
     width: '164px',
-    background: 'linear-gradient(270deg, #103C7C -24.91%, #2F5B9B 118.64%)',
-    color: '#FFFF',
-    padding: '1.125rem',
-    borderRadius: '12px',
+    margin: '-1.125rem -1.125rem -1.125rem 0',
     display: 'flex'
 }))
 
@@ -59,7 +50,12 @@ const ServiceActionIcon = styled.div(() => ({
 }))
 
 function ServiceItem(props) {
-    return <ServiceRoot>
+    return <Card {...props} style={{
+        display: 'flex',
+        height: '85px',
+        ...props.style,
+        cursor: 'pointer'
+    }}>
         <ServiceContent>
             <ServiceTitle>{props.title}</ServiceTitle>
 
@@ -89,7 +85,7 @@ function ServiceItem(props) {
                 }} />
             </ServiceActionIcon>
         </ServiceAction>}
-    </ServiceRoot>
+    </Card>
 }
 
 export default ServiceItem

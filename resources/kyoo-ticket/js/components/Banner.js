@@ -6,11 +6,14 @@ const BannerWrapper = styled.div`
     background-size: cover;
     border-radius: 0 0 16px 16px;
     min-height: 216px;
+    max-height: 260px;
     position: relative;
+    width: 100%;
+    overflow: visible;
 `
 
 function Banner(props) {
-    return <BannerWrapper imageUrl={props.imageUrl}>
+    return <BannerWrapper imageUrl={props.imageUrl} style={props.style}>
         {props.children}
     </BannerWrapper>
 }

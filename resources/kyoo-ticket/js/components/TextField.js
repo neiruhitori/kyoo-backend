@@ -20,9 +20,7 @@ const InputGroup = styled.div`
     }
 `
 
-const StyledInput = styled.input.attrs(props => ({
-    type: 'text'
-}))`
+const StyledInput = styled.input`
     background: transparent;
     padding: 1rem;
     padding-right: 0;
@@ -30,6 +28,13 @@ const StyledInput = styled.input.attrs(props => ({
     flex: 1 1 0%;
     border: none;
     outline: none;
+    
+    ::placeholder {
+        color: #697D95;
+        font-weight: 500;
+        font-family: Inter, sans-serif;
+        font-size: 1rem;
+    }
 `
 
 const StyledLabel = styled.label`
@@ -66,14 +71,17 @@ function TextField(props) {
     const helperIcon = props.error ? errorIcon : infoIcon
 
     const inputProps = {
+        type: props.type || 'text',
         value: props.value,
-        readOnly: props.readOnly
+        readOnly: props.readOnly,
+        placeholder: props.placeholder,
+        onChange: props.onChange
     }
 
     return <StyledTextField style={props.style}>
         <StyledLabel>{props.label}</StyledLabel>
 
-        <InputGroup>
+        <InputGroup error={props.error}>
             <StyledInput {...inputProps} error={props.error} />
             {props.endAdornment}
         </InputGroup>

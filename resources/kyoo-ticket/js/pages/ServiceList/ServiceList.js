@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { useQuery, useQueryClient } from 'react-query'
-import { format, getDayName, getMonthNames, getDayIndex } from '../../utils/date'
+import { useState } from 'react'
+import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useQuery, useMutation } from 'react-query'
+import { format, getDayName, getMonthNames, getDayIndex, getFullDate } from '../../utils/date'
 import { fetchBranch } from '../../api/branch'
 import { fetchServiceByBranchId } from '../../api/services'
+import { createBooking } from '../../api/booking'
 
 import 'react-day-picker/lib/style.css'
 
@@ -20,6 +21,9 @@ import TextField from '../../components/TextField'
 import IconButton from '../../components/IconButton'
 import ServiceItem from '../../components/ServiceItem'
 import MainContent from '../../components/MainContent'
+import ServiceItemSkeleton from '../../components/ServiceItemSkeleton'
+import Loading from '../../components/Loading'
+import Alert from '../../components/Alert'
 
 import AngleRightIcon from '../../icons/AngleRightIcon'
 import CalendarIcon from '../../icons/CalendarIcon'
@@ -27,115 +31,77 @@ import ClockIcon from '../../icons/ClockIcon'
 
 function ServiceList() {
     const { branchId, queueType } = useParams()
-    const queryClient = useQueryClient()
-
     const PAGE_TITLE = `Booking ${queueType}`
+    const navigate = useNavigate()
 
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [showCalendar, setShowCalendar] = useState(false)
-    
+
     const branchRes = useQuery('branch', () => fetchBranch(branchId))
-    const serviceRes = useQuery('services', () => fetchServiceByBranchId(branchId, {
+    const servicesRes = useQuery(['services', selectedDate], () => fetchServiceByBranchId(branchId, {
         queueType,
         date: selectedDate
     }))
+    const bookingMutation = useMutation('booking', data => createBooking(queueType, data))
 
-    let serviceCardList
-    if (serviceRes.status === 'loading') serviceCardList = <div>Loading....</div>
-    if (serviceRes.status === 'error') serviceCardList = <div>{serviceRes.error}</div>
-    if (serviceRes.status === 'success') {
-        const services = serviceRes.data
+    let branch = null
+    let schedule = null
+    let services = []
 
-        serviceCardList = services.map(service => {
-            let serviceProps = {}
+    if (branchRes.status === 'success') {
+        branch = branchRes.data
+        schedule = branch?.schedule.find(v => (v.day === getDayName(new Date(), 'en')))
+    }
+    if (servicesRes.status === 'success') {
+        services = servicesRes.data
+    }
 
-            if (queueType == 'onsite') {
-                serviceProps = {
-                    title: service.service.name,
-                    action: {
-                        label: 'Total Antrian',
-                        value: service.total_queue
-                    }
-                }
-            } else {
-                const serviceSubtitle = <div style={{
-                    display: 'flex',
-                    alignItems: 'center'
-                }}>
-                    <ClockIcon
-                        color="#A5A5A5"
-                        width="0.75rem"
-                        height="0.75rem"
-                        style={{
-                            marginRight: '0.5rem'
-                        }}
-                />
-                    <span>{service.slots?.length} Sesi Waktu</span>
-                </div>
-
-                serviceProps = {
-                    title: service.name,
-                    subtitle: serviceSubtitle,
-                    action: {
-                        label: "Total Slot Tersedia",
-                        value: service.totalSlot - service.filledSlot,
-                        total: service.totalSlot
-                    }
-                }
-            }
-
-            return <Link to={`${service.id}?date=${selectedDate.toISOString()}`} key={service.id}>
-                <ServiceItem
-                    {...serviceProps}
-                    style={{
-                        marginBottom: '1.125rem'
-                    }}
-                />
-            </Link>
+    function handleServiceClick(serviceId) {
+        bookingMutation.mutate({
+            workstation_service_id: serviceId
         })
     }
 
-    if (branchRes.status === 'error') return <div>{branchRes.error}</div>
-    if (branchRes.status === 'loading') return <div>Loading...</div>
-    if (branchRes.status === 'success') {
-        const branch = branchRes.data
-        const currentSchedule = branch?.schedule.find(v => (v.day === getDayName(new Date(), 'en')))
+    function handleDayClick(day, modifiers = {}) {
+        if (modifiers.disabled) return
+        setSelectedDate(day)
+    }
 
-        function handleDayClick(day, modifiers = {}) {
-            if (modifiers.disabled) return
-            
-            setSelectedDate(day)
-        }
+    function handleCalendarClose() {
+        setShowCalendar(false)
+    }
 
-        function handleCalendarClose() {
-            queryClient.invalidateQueries('services')
-            setShowCalendar(false)
-        }
+    function getClosedDays() {
+        return branch ? branch.schedule.filter(v => {
+            return v.status === 'closed'
+        }).map(val => {
+            return getDayIndex(val.day)
+        }) : []
+    }
 
-        function getClosedDays() {
-            return branch ? branch.schedule.filter(v => {
-                return v.status === 'closed'
-            }).map(val => {
-                return getDayIndex(val.day)
-            }) : []
-        }
+    if (bookingMutation.status === 'success' && bookingMutation.data.success) {
+        navigate(`/kyooTicket/${queueType}/${branchId}/booking-status/${bookingMutation.data.data.id}`)
+    }
 
-        return <>
-            <Header>
-                <div style={{
-                    paddingRight: '0.5rem',
-                    borderRight: '1px solid #EEEEEE',
-                    marginRight:' 0.75rem'
-                }}>
-                    <a href="#">
-                        <KyooLogo />
-                    </a>
-                </div>
+    return <>
+        {bookingMutation.status === 'loading' && <Loading />}
 
-                <div style={{ textTransform: 'capitalize' }}>{PAGE_TITLE}</div>
-            </Header>
+        <Header>
+            <div style={{
+                paddingRight: '0.5rem',
+                borderRight: '1px solid #EEEEEE',
+                marginRight:' 0.75rem'
+            }}>
+                <a href="#">
+                    <KyooLogo />
+                </a>
+            </div>
 
-            <Banner imageUrl="/img/queue.jpeg">
+            <div style={{ textTransform: 'capitalize' }}>{PAGE_TITLE}</div>
+        </Header>
+
+        <Banner imageUrl="/img/queue.jpeg">
+            {branchRes.status === 'success' && <div>
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -167,10 +133,10 @@ function ServiceList() {
                     }}>{branch?.name}</H2>
                 </div>
 
-                {currentSchedule && <BranchStatus
-                    isOpen={currentSchedule.status == 'open'}
-                    startTime={currentSchedule.start_time.slice(0, -3)}
-                    endTime={currentSchedule.end_time.slice(0, -3)}
+                {schedule && <BranchStatus
+                    isOpen={schedule.status == 'open'}
+                    startTime={schedule.start_time.slice(0, -3)}
+                    endTime={schedule.end_time.slice(0, -3)}
                     style={{
                         marginTop: '1rem'
                     }}
@@ -182,56 +148,125 @@ function ServiceList() {
                     left: '50%',
                     transform: 'translateX(-50%)'
                 }} />
-            </Banner>
+            </div>}
+        </Banner>
 
-            <MainContent>
-                {showCalendar && <CalendarWrapper
-                    onClick={handleCalendarClose}
-                >
-                    <DayPicker
-                        onDayClick={handleDayClick}
-                        months={getMonthNames()}
-                        modifiers={{
-                            selected: selectedDate,
-                            disabled: [
-                                { daysOfWeek: getClosedDays() },
-                                { before: new Date() }
-                            ]
-                        }}
-                        modifiersStyles={{
-                            selected: {
-                                backgroundColor: '#0172CB',
-                                color: '#FFFFFF'
+        <MainContent>
+            {bookingMutation.status === 'success' && !bookingMutation.data.success && <Alert style={{
+                marginBottom: '1.5rem'
+            }}>Gagal membuat antrian: {bookingMutation.data.message}</Alert>}
+
+            {showCalendar && <CalendarWrapper
+                onClick={handleCalendarClose}
+            >
+                <DayPicker
+                    onDayClick={handleDayClick}
+                    months={getMonthNames()}
+                    modifiers={{
+                        selected: selectedDate,
+                        disabled: [
+                            { daysOfWeek: getClosedDays() },
+                            { before: new Date() }
+                        ]
+                    }}
+                    modifiersStyles={{
+                        selected: {
+                            backgroundColor: '#0172CB',
+                            color: '#FFFFFF'
+                        }
+                    }}
+                />
+            </CalendarWrapper>}
+
+            {queueType != 'onsite' && <TextField
+                label="Tanggal"
+                style={{
+                    marginBottom: '1.5rem'
+                }}
+                value={format(selectedDate)}
+                readOnly
+                endAdornment={
+                    <IconButton
+                        onClick={() => setShowCalendar(true)}
+                    >
+                        <CalendarIcon height="24" width="24" />
+                    </IconButton>
+                }
+            />}
+
+            <h4 style={{
+                fontSize: '1rem',
+                marginBottom: '1.125rem'
+            }}>Layanan</h4>
+
+            {servicesRes.status === 'loading' && <ServiceItemSkeleton />}
+
+            {servicesRes.status === 'success' && services.map(service => {
+                let serviceProps = {}
+
+                if (queueType == 'onsite') {
+                    serviceProps = {
+                        title: service.service.name,
+                        key: service.workstation_service_id,
+                        action: {
+                            label: 'Total Antrian',
+                            value: service.total_queue
+                        }
+                    }
+                } else {
+                    const serviceSubtitle = <div style={{
+                        display: 'flex',
+                        alignItems: 'center'
+                    }}>
+                        <ClockIcon
+                            color="#A5A5A5"
+                            width="0.75rem"
+                            height="0.75rem"
+                            style={{
+                                marginRight: '0.5rem'
+                            }}
+                    />
+                        <span>
+                            {
+                                service.slots.length
+                                    ? service.slots.length + ' Sesi Waktu'
+                                    : 'Tidak Ada Sesi Waktu'
                             }
+                        </span>
+                    </div>
+
+                    serviceProps = {
+                        title: service.name,
+                        subtitle: serviceSubtitle,
+                        action: {
+                            label: "Total Slot Tersedia",
+                            value: service.totalSlot - service.filledSlot,
+                            total: service.totalSlot
+                        }
+                    }
+                }
+
+                if (queueType == 'onsite') {
+                    return <ServiceItem
+                        {...serviceProps}
+                        onClick={() => handleServiceClick(service.workstation_service_id)}
+                        style={{
+                            marginBottom: '1.125rem'
                         }}
                     />
-                </CalendarWrapper>}
-
-                {queueType != 'onsite' && <TextField
-                    label="Tanggal"
-                    style={{
-                        marginBottom: '1.5rem'
-                    }}
-                    value={format(selectedDate)}
-                    readOnly
-                    endAdornment={
-                        <IconButton
-                            onClick={() => setShowCalendar(true)}
-                        >
-                            <CalendarIcon height="24" width="24" />
-                        </IconButton>
-                    }
-                />}
-
-                <h4 style={{
-                    fontSize: '1rem',
-                    marginBottom: '1.125rem'
-                }}>Layanan</h4>
-
-                {serviceCardList}
-            </MainContent>
-        </>
-    }
+                } else {
+                    return <Link to={`${service.id}?date=${getFullDate(selectedDate)}`} key={service.id}>
+                        <ServiceItem
+                            {...serviceProps}
+                            style={{
+                                marginBottom: '1.125rem'
+                            }}
+                        />
+                    </Link>
+                }
+            })}
+        </MainContent>
+    </>
 }
 
 export default ServiceList

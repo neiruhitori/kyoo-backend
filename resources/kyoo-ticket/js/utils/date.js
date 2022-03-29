@@ -37,6 +37,20 @@ const MONTHS = {
         'October', 'November', 'December'
     ]
 }
+const MONTHS_ABBR = {
+    'id': [
+        'Jan', 'Feb', 'Mar',
+        'Apr', 'Mei', 'Jun',
+        'Jul', 'Agu', 'Sep',
+        'Okt', 'Nov', 'Des'
+    ],
+    'en': [
+        'Jan', 'Feb', 'Mar',
+        'Apr', 'Mey', 'Jun',
+        'Jul', 'Aug', 'Sep',
+        'Oct', 'Nov', 'Dec'
+    ]
+}
 
 export function format(date, locale = defaultLocale) {
     return `${date.getDate()} ${MONTHS[locale][date.getMonth()]} ${date.getFullYear()}`
@@ -62,4 +76,12 @@ export function getDayIndex(dayName) {
     }
 
     return days[dayName]
+}
+
+export function getFullDate(date) {
+    return date.toISOString().slice(0, 10)
+}
+
+export function getAbrvDate(date) {
+    return `${date.getDate()} ${MONTHS_ABBR[defaultLocale][date.getMonth()]} ${date.getFullYear()}`
 }

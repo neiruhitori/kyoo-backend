@@ -1,7 +1,12 @@
 import http from '../utils/http';
 
-export function fetchServiceById(serviceId) {
-    return http.get(`service/${serviceId}`)
+export function fetchServiceById(serviceId, params) {
+    return http.get(`service/${serviceId}`, {
+        params: {
+            queue_type: params.queueType,
+            date: params.date
+        }
+    })
         .then(res => (res.data?.data))
 }
 

@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 
 import ServiceList from './ServiceList/ServiceList'
 import TimeSlotList from './TimeSlotList/TimeSlotList'
+import VisitorInformation from './VisitorInformation/VisitorInformation'
+import BookingConfirmation from './BookingConfirmation/BookingConfirmation'
+import BookingStatus from './BookingStatus/BookingStatus'
 
 const AppContainer = styled.div`
     max-width: 420px;
@@ -21,6 +24,9 @@ function App() {
             <Routes>
                 <Route path="/kyooTicket/:queueType/:branchId/services" element={<ServiceList />} />
                 <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId" element={<TimeSlotList />} />
+                <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId/visitor" element={<VisitorInformation />} />
+                <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId/booking-confirmation" element={<BookingConfirmation />} />
+                <Route path="/kyooTicket/:queueType/:branchId/booking-status/:bookingId" element={<BookingStatus />} />
             </Routes>
         </QueryClientProvider>
     </AppContainer>

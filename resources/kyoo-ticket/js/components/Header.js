@@ -7,15 +7,18 @@ const HeaderRoot = styled.header`
     padding: 0 1.375rem;
     align-items: center;
     position: sticky;
-    background-color: #FFFFFF;
+    background-color: ${props => props.bgType === 'blur' ? 'rgba(0, 0, 0, 0.28)' : '#FFFFFF'};
+    backdrop-filter: ${props => props.bgType === 'blur' ? 'blur(10px)' : 'none'};
+    color: ${props => props.bgType === 'blur' ? '#FFFFFF' : '#000000'}; 
     top: 0;
-    width: 100%;
+    left: 0;
+    right: 0;
     box-shadow: 0px 4px 23px rgba(0, 0, 0, 0.09);
     z-index: 999;
 `
 
 function Header(props) {
-    return <HeaderRoot>
+    return <HeaderRoot bgType={props.bgType || 'normal'} style={props.style}>
         {props.children}
     </HeaderRoot>
 }
