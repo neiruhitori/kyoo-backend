@@ -46,22 +46,22 @@ export default function BookingStatus() {
         service = serviceQuery.data
 
         if (service.slot) {
-            let session = 1
-            let lastDay = ''
-            for (let i = 0; i < service.slot.length; i++) {
-                if (lastDay != service.slot[i].day) {
-                    session = 1
-                } else {
-                    session++
-                }
-    
-                lastDay = service.slot[i].day
-                service.slot[i].session = session
-            }
             slot = service.slot.filter(s => {
-                return s.day == getDayName(new Date(booking?.date), 'en') &&
-                    s.start_time == booking.start_time}
-            )[0]
+                return s.day == getDayName(new Date(booking?.date), 'en')
+            }).sort((a, b) => {
+                if (a.start_time > b.start_time) {
+                    return 1
+                }
+                
+                if (a.start_time < b.start_time) {
+                    return -1
+                }
+
+                return 0
+            }).find((el, idx) => {
+                el.session = idx + 1
+                return el.start_time === booking.start_time
+            })
         }
     }
 
