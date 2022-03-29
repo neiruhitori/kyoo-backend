@@ -48,6 +48,7 @@ class ServiceController extends Controller
         foreach ($service->slot as $slot) {
             $slot->filled_slot = $this->getFilledSlot($request->queue_type, [
                 'service_id' => $service->id,
+                'slot_id' => $slot->id,
                 'date' => $date
             ]);
         }
@@ -62,9 +63,12 @@ class ServiceController extends Controller
     public function getFilledSlot($queue_type, $params)
     {
         if ($queue_type == 'appointment') {
-            return Appointment::whereHas('Slot', function ($query) use ($service) {
+            return Appointment::whereHas('Slot', function ($query) use ($params) {
                 $query->where('service_id', $params['service_id']);
             })
+                ->when(isset($params['slot_id']), function ($q) use ($params) {
+                    $q->where('slot_id', $params['slot_id']);
+                })
                 ->where('date', $params['date'])
                 ->whereIn('status', ['book', 'check in'])
                 ->count();
@@ -74,6 +78,9 @@ class ServiceController extends Controller
             return Exhibition::whereHas('Slot', function ($query) use ($params) {
                 $query->where('service_id', $params['service_id']);
             })
+                ->when(isset($params['slot_id']), function ($q) use ($params) {
+                    $q->where('slot_id', $params['slot_id']);
+                })
                 ->where('date', $params['date'])
                 ->where('status', 'book')
                 ->count();
