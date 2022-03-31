@@ -97,7 +97,7 @@
                       @click="onServed"
                       :disabled="!selected_queue || selected_queue.status"
                     >
-                      Terlayani
+                      Layani
                     </button>
                   </div>
                   <template v-else>
