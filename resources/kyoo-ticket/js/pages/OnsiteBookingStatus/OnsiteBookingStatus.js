@@ -142,7 +142,7 @@ function OnsiteBookingStatus() {
         </div>
 
         <MainContent>
-            {bookingQuery.status === 'success' && <div>
+            {branchQuery.status === 'success' && <div>
                 {!!branch?.logo && <div style={{
                     textAlign: 'center',
                     marginBottom: '2rem'
@@ -150,7 +150,7 @@ function OnsiteBookingStatus() {
                     <BranchLogo src={`/storage/${branch.logo}`}/>
                 </div>}
 
-                {branchQuery.status === 'success' && <TicketCard
+                {bookingQuery.status === 'success' && branchQuery.status === 'success' && <TicketCard
                     body={<TicketBody queueNo={booking.queue_no} />}
                     footer={<TicketFooter
                         serviceName={booking.service_name}
