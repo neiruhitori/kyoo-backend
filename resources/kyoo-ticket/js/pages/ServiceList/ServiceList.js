@@ -86,22 +86,24 @@ function ServiceList() {
     return <>
         {bookingMutation.status === 'loading' && <Loading />}
 
-        <Header>
-            <div style={{
-                paddingRight: '0.5rem',
-                borderRight: '1px solid #EEEEEE',
-                marginRight:' 0.75rem'
-            }}>
-                <a href="#">
-                    <KyooLogo />
-                </a>
-            </div>
-
-            <div style={{ textTransform: 'capitalize' }}>{PAGE_TITLE}</div>
-        </Header>
-
         <Banner imageUrl="/img/queue.jpeg">
-            {branchRes.status === 'success' && <div>
+            <Header>
+                <div style={{
+                    paddingRight: '0.5rem',
+                    borderRight: '1px solid #EEEEEE',
+                    marginRight:' 0.75rem'
+                }}>
+                    <a href="#">
+                        <KyooLogo />
+                    </a>
+                </div>
+
+                <div style={{ textTransform: 'capitalize' }}>{PAGE_TITLE}</div>
+            </Header>
+
+            {branchRes.status === 'success' && <div style={{
+                padding: '1.625rem 1.375rem'
+            }}>
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -110,7 +112,7 @@ function ServiceList() {
                 }}>
                     <Chip label={branch?.industry_category.name} />
 
-                    <a href="#">
+                    <Link to={`/kyooTicket/${queueType}/${branchId}/detail`}>
                         <div style={{
                             color: '#FFFFFF',
                             display: 'flex',
@@ -122,7 +124,7 @@ function ServiceList() {
                             }}>Lihat Detail</span>
                             <AngleRightIcon color="#FFFFFF" />
                         </div>
-                    </a>
+                    </Link>
                 </div>
 
                 <div style={{
