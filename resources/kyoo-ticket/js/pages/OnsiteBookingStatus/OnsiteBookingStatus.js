@@ -116,7 +116,7 @@ function OnsiteBookingStatus() {
         booking = bookingQuery.data?.data
     }
 
-    if (branchQuery.status === 'success') {
+    if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
         branch = branchQuery.data
         schedule = branch.schedule.find(v => {
             return v.day === getDayName(new Date(booking.date), 'en')
