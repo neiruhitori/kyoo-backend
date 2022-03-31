@@ -29,10 +29,12 @@ class ExhibitionController extends Controller
     public function store(StoreExhibition $request)
     {
         // cant create booking on same time slot
-        $same_booking = Exhibition::where('email', $request->email)
-            ->orWhere('phone', $request->phone)
-            ->where(['slot_id' => $request->slot_id]) 
-            ->where(['date' => $request->date])
+        $same_booking = Exhibition::where(function ($query) use  ($request) {
+                $query->where('email', $request->email)
+                    ->orWhere('phone', $request->phone);
+            })
+            ->where('slot_id', $request->slot_id) 
+            ->where('date', $request->date)
             ->first(); 
 
         if ($same_booking) {
