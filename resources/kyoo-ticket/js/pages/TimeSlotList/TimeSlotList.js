@@ -252,13 +252,14 @@ function TimeSlotList() {
                     return <Link to={!isFull
                         ? `visitor?date=${getFullDate(selectedDate)}&slot=${slot.id}`
                         : '#'
-                    } key={slot.id}>
+                    } key={slot.id} style={{
+                        marginBottom: '1rem'
+                    }}>
                         <Card style={{
                             borderLeft: '12px solid #007EC6',
                             display: 'flex',
                             height: '80px',
                             alignItems: 'center',
-                            marginBottom: '1rem',
                             opacity: isFull ? '0.5' : '1'
                         }}>
                             <div style={{

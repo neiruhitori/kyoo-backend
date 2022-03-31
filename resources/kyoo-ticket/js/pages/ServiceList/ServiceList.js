@@ -255,12 +255,11 @@ function ServiceList() {
                         }}
                     />
                 } else {
-                    return <Link to={`${service.id}?date=${getFullDate(selectedDate)}`} key={service.id}>
+                    return <Link to={`${service.id}?date=${getFullDate(selectedDate)}`} key={service.id} style={{
+                        marginBottom: '1.125rem'
+                    }}>
                         <ServiceItem
                             {...serviceProps}
-                            style={{
-                                marginBottom: '1.125rem'
-                            }}
                         />
                     </Link>
                 }
