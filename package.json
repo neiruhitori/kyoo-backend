@@ -30,6 +30,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "mapbox-gl": "^2.7.1",
         "react-day-picker": "^7.4.10",
         "react-query": "^3.34.17",
         "react-router-dom": "^6.2.2",

@@ -8,6 +8,7 @@ import VisitorInformation from './VisitorInformation/VisitorInformation'
 import BookingConfirmation from './BookingConfirmation/BookingConfirmation'
 import BookingStatus from './BookingStatus/BookingStatus'
 import OnsiteBookingStatus from './OnsiteBookingStatus/OnsiteBookingStatus'
+import BranchDetail from './BranchDetail/BranchDetail'
 
 const AppContainer = styled.div`
     max-width: 420px;
@@ -29,6 +30,7 @@ function App() {
                 <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId/booking-confirmation" element={<BookingConfirmation />} />
                 <Route path="/kyooTicket/onsite/:branchId/booking-status/:bookingId" element={<OnsiteBookingStatus />} />
                 <Route path="/kyooTicket/:queueType/:branchId/booking-status/:bookingId" element={<BookingStatus />} />
+                <Route path="/kyooTicket/:queueType/:branchId/detail" element={<BranchDetail />} />
             </Routes>
         </QueryClientProvider>
     </AppContainer>
