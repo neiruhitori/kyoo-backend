@@ -64,6 +64,10 @@ export function getMonthNames(locale = defaultLocale) {
     return MONTHS[locale]
 }
 
+export function getMonthAbrvName(date, locale = defaultLocale) {
+    return MONTHS_ABBR[locale][date.getMonth()]
+}
+
 export function getDayIndex(dayName) {
     const days = {
         'sunday': 0,

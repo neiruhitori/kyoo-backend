@@ -7,6 +7,7 @@ import TimeSlotList from './TimeSlotList/TimeSlotList'
 import VisitorInformation from './VisitorInformation/VisitorInformation'
 import BookingConfirmation from './BookingConfirmation/BookingConfirmation'
 import BookingStatus from './BookingStatus/BookingStatus'
+import OnsiteBookingStatus from './OnsiteBookingStatus/OnsiteBookingStatus'
 
 const AppContainer = styled.div`
     max-width: 420px;
@@ -16,6 +17,7 @@ const AppContainer = styled.div`
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 `
 
 function App() {
@@ -26,6 +28,7 @@ function App() {
                 <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId" element={<TimeSlotList />} />
                 <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId/visitor" element={<VisitorInformation />} />
                 <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId/booking-confirmation" element={<BookingConfirmation />} />
+                <Route path="/kyooTicket/onsite/:branchId/booking-status/:bookingId" element={<OnsiteBookingStatus />} />
                 <Route path="/kyooTicket/:queueType/:branchId/booking-status/:bookingId" element={<BookingStatus />} />
             </Routes>
         </QueryClientProvider>

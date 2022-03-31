@@ -1,7 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { getBooking } from '../../api/booking'
-import { fetchBranch } from '../../api/branch'
 import { fetchServiceById } from '../../api/services'
 import { getAbrvDate, getDayName } from '../../utils/date'
 
@@ -21,14 +20,10 @@ export default function BookingStatus() {
     const PAGE_TITLE = `Status ${queueType}`
 
     let booking = null
-    let branch = null
     let service = null
     let slot = null
     
     const bookingQuery = useQuery(['booking', bookingId], () => getBooking(queueType, bookingId))
-    const branchQuery = useQuery('branch', () => fetchBranch(booking?.branch_id), {
-        enabled: bookingQuery.status === 'success'      
-    })
     const serviceQuery = useQuery('service', () => fetchServiceById(booking?.service_id, {
         queueType,
         date: booking?.date
@@ -38,9 +33,6 @@ export default function BookingStatus() {
 
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
-    }
-    if (branchQuery.status === 'success') {
-        branch = branchQuery.data
     }
     if (serviceQuery.status === 'success') {
         service = serviceQuery.data
