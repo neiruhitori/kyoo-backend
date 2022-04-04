@@ -71,7 +71,7 @@ export default function BranchDetail() {
 
     if (branchQuery.status === 'success') {
         return <>
-            <Banner imageUrl="/img/queue.jpeg">
+            <Banner imageUrl={branch.photo}>
                 <Header bgType="blur">
                     <div style={{
                         marginRight:' 0.75rem'
@@ -97,9 +97,7 @@ export default function BranchDetail() {
                         <Chip label={branch.industry_category.name} />\
                     </div>
 
-                    <div style={{
-                        width: '224px'
-                    }}>
+                    <div>
                         <H2 style={{
                             color: '#FFFFFF'
                         }}>{branch.name}</H2>
@@ -111,7 +109,7 @@ export default function BranchDetail() {
                     padding: '0 1.375rem'
                 }}>
                     <BranchStatus
-                        isOpen={currentSchedule.status === 'open'}
+                        isOpen={currentSchedule.status !== 'closed'}
                         startTime={currentSchedule.start_time.slice(0, 5)}
                         endTime={currentSchedule.end_time.slice(0, 5)}
                         style={{

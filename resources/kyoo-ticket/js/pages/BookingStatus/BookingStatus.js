@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { getBooking } from '../../api/booking'
 import { fetchServiceById } from '../../api/services'
+import { fetchBranch } from '../../api/branch'
 import { getAbrvDate, getDayName } from '../../utils/date'
 
 import Header from '../../components/Header'
@@ -22,17 +23,25 @@ export default function BookingStatus() {
     let booking = null
     let service = null
     let slot = null
+    let branch = null
     
-    const bookingQuery = useQuery(['booking', bookingId], () => getBooking(queueType, bookingId))
+    const bookingQuery = useQuery('booking', () => getBooking(queueType, bookingId))
     const serviceQuery = useQuery('service', () => fetchServiceById(booking?.service_id, {
         queueType,
         date: booking?.date
     }), {
         enabled: bookingQuery.status === 'success'
     })
+    const branchQuery = useQuery('branch', () => fetchBranch(booking?.branch_id), {
+        enabled: bookingQuery.status === 'success'
+    })
 
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
+    }
+    if (branchQuery.status === 'success') {
+        branch = branchQuery.data
+        console.log(branch.photo)
     }
     if (serviceQuery.status === 'success') {
         service = serviceQuery.data
@@ -58,9 +67,9 @@ export default function BookingStatus() {
     }
 
     return <>
-        <Banner imageUrl="/img/queue.jpeg" style={{
+        {branchQuery.status === 'success' && <Banner imageUrl={branch.photo} style={{
             position: 'absolute'
-        }} />
+        }} />}
 
         <Header bgType="blur">
             <div style={{
@@ -88,9 +97,7 @@ export default function BookingStatus() {
                 <Chip label={booking.industry_category} />
             </div>
 
-            <div style={{
-                width: '224px'
-            }}>
+            <div>
                 <H2 style={{
                     color: '#FFFFFF'
                 }}>{booking.branch_name}</H2>

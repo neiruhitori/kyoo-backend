@@ -86,7 +86,7 @@ function ServiceList() {
     return <>
         {bookingMutation.status === 'loading' && <Loading />}
 
-        <Banner imageUrl="/img/queue.jpeg">
+        {branchRes.status === 'success' && <Banner imageUrl={branch.photo}>
             <Header>
                 <div style={{
                     paddingRight: '0.5rem',
@@ -101,7 +101,7 @@ function ServiceList() {
                 <div style={{ textTransform: 'capitalize' }}>{PAGE_TITLE}</div>
             </Header>
 
-            {branchRes.status === 'success' && <div style={{
+            <div style={{
                 padding: '1.625rem 1.375rem'
             }}>
                 <div style={{
@@ -127,16 +127,14 @@ function ServiceList() {
                     </Link>
                 </div>
 
-                <div style={{
-                    width: '224px'
-                }}>
+                <div>
                     <H2 style={{
                         color: '#FFFFFF'
                     }}>{branch?.name}</H2>
                 </div>
 
                 {schedule && <BranchStatus
-                    isOpen={schedule.status == 'open'}
+                    isOpen={schedule.status !== 'closed'}
                     startTime={schedule.start_time.slice(0, -3)}
                     endTime={schedule.end_time.slice(0, -3)}
                     style={{
@@ -150,8 +148,8 @@ function ServiceList() {
                     left: '50%',
                     transform: 'translateX(-50%)'
                 }} />
-            </div>}
-        </Banner>
+            </div>
+        </Banner>}
 
         <MainContent>
             {bookingMutation.status === 'success' && !bookingMutation.data.success && <Alert style={{
