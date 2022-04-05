@@ -31,7 +31,7 @@ import ClockIcon from '../../icons/ClockIcon'
 
 function ServiceList() {
     const { branchId, queueType } = useParams()
-    const PAGE_TITLE = `Booking ${queueType}`
+    const PAGE_TITLE = `Antrian ${queueType}`
     const navigate = useNavigate()
 
     const [selectedDate, setSelectedDate] = useState(new Date())
