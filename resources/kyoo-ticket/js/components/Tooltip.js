@@ -15,7 +15,7 @@ const TooltipRoot = styled.div`
     left: 0;
     display: flex;
     justify-content: center;
-    align-items: end;
+    align-items: flex-end;
     z-index: 9999;
 `
 

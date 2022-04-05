@@ -58,7 +58,7 @@ function ServiceList() {
 
     function handleServiceClick(serviceId) {
         bookingMutation.mutate({
-            workstation_service_id: serviceId
+            service_id: serviceId
         })
     }
 
@@ -206,8 +206,8 @@ function ServiceList() {
 
                 if (queueType == 'onsite') {
                     serviceProps = {
-                        title: service.service.name,
-                        key: service.workstation_service_id,
+                        title: service.name,
+                        key: service.id,
                         action: {
                             label: 'Total Antrian',
                             value: service.total_queue
@@ -249,7 +249,7 @@ function ServiceList() {
                 if (queueType == 'onsite') {
                     return <ServiceItem
                         {...serviceProps}
-                        onClick={() => handleServiceClick(service.workstation_service_id)}
+                        onClick={() => handleServiceClick(service.id)}
                         style={{
                             marginBottom: '1.125rem'
                         }}

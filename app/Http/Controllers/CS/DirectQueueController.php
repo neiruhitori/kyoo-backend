@@ -24,10 +24,10 @@ class DirectQueueController extends Controller
         return DirectQueue::query()
                     ->addSelect([
                         'vct_priority' => WorkstationService::query()
-                                                                ->select('priority')
-                                                                ->whereColumn('service_id', 'direct_queues.service_id')
-                                                                ->where('workstation_id', Auth::user()->WorkstationVct->workstation_id)
-                                                                ->limit(1)
+                            ->select('priority')
+                            ->whereColumn('service_id', 'direct_queues.service_id')
+                            ->where('workstation_id', Auth::user()->WorkstationVct->workstation_id)
+                            ->limit(1)
                     ])
                     ->with('Service')
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
@@ -296,6 +296,16 @@ class DirectQueueController extends Controller
                 'data' => null
             ], 400);
         }
+
+        $workstation_service = Auth::user()
+            ->WorkstationVct
+            ->Workstation
+            ->WorkstationService()
+            ->where('service_id', $directQueue->service_id)
+            ->first();
+
+        $directQueue->workstation_service_id = $workstation_service->id;
+        $directQueue->workstation_id = Auth::user()->WorkstationVct->workstation_id;
         $directQueue->status = 'served';
         $directQueue->recall_count = $directQueue->recall_count > 0 ? $directQueue->recall_count + 1 : 0;
         $directQueue->called_at = Date('Y-m-d H:i:s');

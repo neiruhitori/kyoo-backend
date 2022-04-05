@@ -53,7 +53,7 @@ class ServiceController extends Controller
             'description' => 'Insert Service'
         ]);
         $request->session()->flash('success', __('module.created', ['module' => __('Service'), 'name' => $request->name]));
-        return redirect(route('adminBranch.service.index'));
+        return redirect(route('adminBranch.department.index'));
     }
 
     /**
@@ -106,7 +106,7 @@ class ServiceController extends Controller
             'description' => 'Update Service'
         ]);
         $request->session()->flash('warning', __('module.updated', ['module' => __('Service'), 'name' => $request->name]));
-        return redirect(route('adminBranch.service.index'));
+        return redirect(route('adminBranch.department.index'));
     }
 
     /**
@@ -128,6 +128,6 @@ class ServiceController extends Controller
             'description' => 'Remove Service'
         ]);
         $request->session()->flash('error', __('module.removed', ['module' => __('Service'), 'name' => $service->name]));
-        return redirect(route('adminBranch.service.index'));
+        return redirect(route('adminBranch.department.index'));
     }
 }

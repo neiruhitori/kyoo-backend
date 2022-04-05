@@ -49,7 +49,7 @@ Route::get('appointment/{appointment}', 'API\AppointmentController@show');
 Route::post('exhibition', 'API\ExhibitionController@store');
 Route::get('exhibition/{exhibition}', 'API\ExhibitionController@show');
 
-Route::post('direct-queue', 'API\DirectQueueController@store');
+Route::post('direct-queue', 'API\DirectQueueController@store')->middleware(['throttle:create_onsites']);
 Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
 
 Route::middleware(['auth:api'])->group(function () {

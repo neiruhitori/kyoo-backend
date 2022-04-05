@@ -129,10 +129,19 @@ class UserController extends Controller
             unset($input['password']);
         }
         $user->update($input);
-        WorkstationVct::updateOrCreate([
-            'vct_id' => $user->id,
-            'workstation_id' => $request->workstation_id
-        ]);
+
+        $existing_workstation = WorkstationVct::where('vct_id', $user->id)->first();
+        if ($existing_workstation) {
+            WorkstationVct::where('vct_id', $user->id)->update([
+                'workstation_id' => $request->workstation_id
+            ]);
+        } else {
+            WorkstationVct::create([
+                'vct_id' => $user->id,
+                'workstation_id' => $request->workstation_id
+            ]);
+        }
+
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Update VCT User'

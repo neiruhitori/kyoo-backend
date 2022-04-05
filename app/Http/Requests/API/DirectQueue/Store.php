@@ -29,7 +29,8 @@ class Store extends FormRequest
     public function rules()
     {
         return [
-            'workstation_service_id' => 'required|exists:workstation_services,id',
+            'workstation_service_id' => 'nullable|exists:workstation_services,id',
+            'service_id' => 'required|exists:services,id',
             'name' => 'nullable|string',
             'phone' => 'nullable|string',
         ];
