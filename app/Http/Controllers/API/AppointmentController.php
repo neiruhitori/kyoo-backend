@@ -15,6 +15,8 @@ use App\Http\Resources\Appointment as AppointmentCollection;
 use App\Http\Resources\Upcomming as UpcommingCollection;
 use Auth;
 use Collection;
+use Mail;
+use App\Mail\CS\StoreAppointment as StoreAppointmentMail;
 
 class AppointmentController extends Controller
 {
@@ -99,6 +101,9 @@ class AppointmentController extends Controller
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
         $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
         $appointment = Appointment::create($input);
+
+        Mail::to($request->email)
+            ->send(new StoreAppointmentMail($appointment));
 
         return response()->json([
             'success' => true,

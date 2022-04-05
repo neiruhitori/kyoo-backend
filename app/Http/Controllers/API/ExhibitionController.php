@@ -10,6 +10,8 @@ use App\Schedule;
 use App\ScheduleTemplateDetail;
 use App\Http\Resources\Exhibition as ExhibitionCollection;
 use App\Http\Requests\API\StoreExhibition;
+use Mail;
+use App\Mail\CS\StoreExhibitionMail;
 
 class ExhibitionController extends Controller
 {
@@ -85,6 +87,10 @@ class ExhibitionController extends Controller
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
         $input['queue_order'] = Exhibition::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
         $booking = Exhibition::create($input);
+
+        // send email to customer
+        Mail::to($request->email)
+            ->send(new StoreExhibitionMail($booking));
 
         return response()->json([
             'success' => true,
