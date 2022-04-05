@@ -145,6 +145,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 Route::group([], __DIR__ . '/web/exhibition.php');
 Route::group([], __DIR__ . '/web/feature.php');
 Route::group([], __DIR__ . '/web/branch_config_guide.php');
+Route::group([], __DIR__ . '/web/customer_guide.php');
 Route::group([], __DIR__ . '/web/slot_time_guide.php');
 Route::group([], __DIR__ . '/web/branch_qr_code.php');
 
