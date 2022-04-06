@@ -24,12 +24,16 @@ class StoreExhibitionMail extends Mailable
         $exhibition_id = $this->exhibition->id;
         $branch = $this->exhibition->Slot->Service->Branch;
 
+        setlocale(LC_TIME, 'id_ID');
+
         return $this->from('noreply@kyoo.id', 'KYOO')
             ->subject(__('Branch Exhibition'))
             ->markdown('emails.cs.storeExhibition', [
                 'exhibition' => $this->exhibition,
                 'exhibition_id' => $exhibition_id,
-                'branch_id' => $branch->id
+                'branch_id' => $branch->id,
+                'branch_name' => $branch->name,
+                'booking_date' => date('j F Y', strtotime($this->exhibition->date))
             ]);
     }
 }

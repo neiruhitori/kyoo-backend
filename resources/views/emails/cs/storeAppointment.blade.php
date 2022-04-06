@@ -1,12 +1,12 @@
 @component('mail::message')
 # Appointment
 
-{{ __('Thank you for create appointment using KYOO. Click button below to track your appointment status') }}.
+Anda telah membuat appointment pada tanggal {{ $booking_date }} di {{ $branch_name }}. Klik tombol dibawah untuk melacak Appointment Anda.
 
 @component('mail::button', ['url' => url('kyooTicket/appointment/' . $branch_id. '/booking-status/' . $appointment_id)])
 {{ __('Check My Appointment') }}
 @endcomponent
 
-{{ __('Thank you') }},<br>
-{{ config('app.name') }}
+Terima kasih ,<br>
+{{ $branch_name }}
 @endcomponent
