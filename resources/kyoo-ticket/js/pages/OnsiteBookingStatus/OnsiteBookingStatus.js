@@ -16,8 +16,7 @@ import LocationIcon from '../../icons/LocationIcon'
 
 const BranchLogo = styled.img`
     display: inline-block;
-    height: 2rem;
-    width: auto;
+    height: 4.5rem;
 `
 
 const BookingTimeCard = styled.div`
@@ -146,7 +145,7 @@ function OnsiteBookingStatus() {
             {branchQuery.status === 'success' && <div>
                 {!!branch?.logo && <div style={{
                     textAlign: 'center',
-                    marginBottom: '2rem'
+                    marginBottom: '1.5rem'
                 }}>
                     <BranchLogo src={`/storage/${branch.logo}`}/>
                 </div>}
