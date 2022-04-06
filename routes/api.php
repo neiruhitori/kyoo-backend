@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('allProvince', 'API\RegionController@allProvince');
 Route::get('allRegency', 'API\RegionController@allRegency');
 Route::get('regency/{province}', 'API\RegionController@regencyByProvince');
+Route::get('regency/city/{id}', 'API\RegionController@regencyById');
 
 // user routes
 Route::post('user/register', 'API\UserController@register');
@@ -37,9 +38,19 @@ Route::get('branch/{branch}', 'API\BranchController@show');
 
 // service routes
 Route::get('service/branch/{branch_id}', 'API\ServiceController@getAllByBranchId');
+Route::get('service/{service_id}', 'API\ServiceController@getById');
 
 // slot routes
 Route::post('slot', 'API\SlotController@index');
+
+Route::post('appointment', 'API\AppointmentController@store');
+Route::get('appointment/{appointment}', 'API\AppointmentController@show');
+
+Route::post('exhibition', 'API\ExhibitionController@store');
+Route::get('exhibition/{exhibition}', 'API\ExhibitionController@show');
+
+Route::post('direct-queue', 'API\DirectQueueController@store');
+Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
 
 Route::middleware(['auth:api'])->group(function () {
     // user routes
@@ -50,18 +61,14 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('upcoming', 'API\AppointmentController@upcomingCombine');
 
     // appointment routes
-    Route::post('appointment', 'API\AppointmentController@store');
-    Route::get('appointment/{appointment}', 'API\AppointmentController@show');
     Route::get('appointment', 'API\AppointmentController@index');
     Route::get('appointment-history', 'API\AppointmentController@history');
     Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
     Route::get('appointment-upcoming', 'API\AppointmentController@upcoming');
 
     // direct queue routes
-    Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
     Route::get('direct-queue-upcoming', 'API\DirectQueueController@upcoming');
     Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
-    Route::post('direct-queue', 'API\DirectQueueController@store');
 
     // favorite routes
     Route::get('favorite', 'API\FavoriteController@index');

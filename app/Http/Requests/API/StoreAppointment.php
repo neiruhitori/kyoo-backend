@@ -15,10 +15,10 @@ class StoreAppointment extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
-    {
-        return Auth::user();
-    }
+    // public function authorize()
+    // {
+        // return Auth::user();
+    // }
 
     /**
      * Get the validation rules that apply to the request.
@@ -28,7 +28,7 @@ class StoreAppointment extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|exists:users,id',
+            // 'user_id' => 'required|exists:users,id',
             'slot_id' => 'required|exists:slots,id',
             'date' => 'required|date|after_or_equal:today',
             'name' => 'required|string',

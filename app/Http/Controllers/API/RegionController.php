@@ -30,6 +30,17 @@ class RegionController extends Controller
         ]);
     }
 
+    public function regencyById($regency_id)
+    {
+        $regency = Regency::find($regency_id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'get regencies by id',
+            'data' => $regency
+        ]);
+    }
+
     public function regencyByProvince($province)
     {
         $regencies = Regency::where('province_id', $province)->get();

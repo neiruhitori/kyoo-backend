@@ -10,7 +10,9 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "axios": "^0.19",
+        "@babel/preset-react": "^7.16.7",
+        "axios": "^0.19.2",
+        "babel-plugin-styled-components": "^2.0.6",
         "bootstrap": "^4.0.0",
         "cross-env": "^7.0",
         "jquery": "^3.2",
@@ -19,6 +21,8 @@
         "lodash": "^4.17.13",
         "popper.js": "^1.12",
         "pusher-js": "^7.0.3",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.20.1",
         "sass-loader": "^8.0.0",
@@ -26,7 +30,15 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "mapbox-gl": "^2.7.1",
+        "react-day-picker": "^7.4.10",
+        "react-query": "^3.34.17",
+        "react-router-dom": "^6.2.2",
+        "styled-components": "^5.3.3",
         "vue-loading-overlay": "^3.4.2",
         "vue-toast-notification": "^0.6.0"
+    },
+    "resolutions": {
+        "styled-components": "^5"
     }
 }

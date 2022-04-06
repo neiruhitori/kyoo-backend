@@ -223,7 +223,7 @@ class HomeController extends Controller
         $appointment = Appointment::create($input);
 
         // send email to customer
-        Mail::to($request->email)->send(new StoreExhibitionMail($appointment));
+        Mail::to($request->email)->send(new StoreAppointmentMail($appointment));
 
         $request->session()->flash('success', __('Appointment has been inserted'));
         return redirect(route('cs.appointment.create'));

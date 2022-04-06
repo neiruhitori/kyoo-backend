@@ -122,7 +122,7 @@ class BranchController extends Controller
         }
 
         if (isset($request->photo)) {
-            Storage::disk('public')->delete($branch->logo);
+            Storage::disk('public')->delete($branch->photo);
             $input['photo'] = Storage::disk('public')->put('branch_photos', $request->photo);
         }
 

@@ -21,13 +21,19 @@ class StoreExhibitionMail extends Mailable
 
     public function build()
     {
-        $exhibition_id = Crypt::encrypt($this->exhibition->id);
+        $exhibition_id = $this->exhibition->id;
+        $branch = $this->exhibition->Slot->Service->Branch;
+
+        setlocale(LC_TIME, 'id_ID');
 
         return $this->from('noreply@kyoo.id', 'KYOO')
-            ->subject(__('Branch Exhibition'))
+            ->subject('Pesanan Antrian di ' . $branch->name)
             ->markdown('emails.cs.storeExhibition', [
                 'exhibition' => $this->exhibition,
                 'exhibition_id' => $exhibition_id,
+                'branch_id' => $branch->id,
+                'branch_name' => $branch->name,
+                'booking_date' => date('j F Y', strtotime($this->exhibition->date))
             ]);
     }
 }

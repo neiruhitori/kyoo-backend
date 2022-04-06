@@ -32,7 +32,7 @@
             <a class="collapse-item" href="{{ route('adminBranch.branchConfigGuide') }}">
               {{ __('How to Configure Qeueu') }}
             </a>
-            <a class="collapse-item" href="#">
+            <a class="collapse-item" href="{{ route('adminBranch.customerGuide') }}">
               {{ __('Customer Guide') }}
             </a>
           </div>

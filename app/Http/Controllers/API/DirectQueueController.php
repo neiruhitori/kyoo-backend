@@ -41,17 +41,19 @@ class DirectQueueController extends Controller
 
     public function index(Branch $branch)
     {
-        $workstationServices = WorkstationService::query()
-                                                    ->with('Service')
-                                                    ->whereHas('Service', function($query) use ($branch){
-                                                        $query->whereBranchId($branch->id);
-                                                    })
-                                                    ->get();
+        $services = Service::where('branch_id', $branch->id)
+            ->get();
+
+        foreach ($services as $service) {
+            $service->total_queue = DirectQueue::where('service_id', $service->id)
+                ->whereDate('created_at', date('Y-m-d'))
+                ->count();
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'get all direct queue list by branch_id',
-            'data' => DirectQueueAll::collection($workstationServices)
+            'message' => 'get direct queue services by branch id',
+            'data' => $services
         ]);
     }
 
@@ -66,95 +68,63 @@ class DirectQueueController extends Controller
 
     public function store(DirectQueueStore $request)
     {
-        /**
-         * additional validations:
-         * - user cant create same direct queue 3x at same date
-         * - user cant create direct queue on closed day with schedule template
-         * - user cant create direct queue on closed day
-         */
-        
-        $current_date = date('Y-m-d');
-        $current_time = date('H:i');
-        $workstationService = WorkstationService::find($request->workstation_service_id);
-
-        // user cant create same direct queue 3x at same date
-        $sameUserQueueCount = DirectQueue::query()
-                                            ->whereHas('WorkstationService.Service', function($query) use($workstationService){
-                                                return $query->where('branch_id', $workstationService->Service->branch_id);
-                                            })
-                                            ->where('user_id', Auth::id())
-                                            ->whereDate('created_at', $current_date)
-                                            ->count();
-
-        if ($sameUserQueueCount > 3) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Only max 3 direct queue number request at the same date',
-                'data' => []
-            ]);    
-        }
+        $service = Service::with('Branch')->where('id', $request->service_id)->first(); 
 
         // cant create direct queue on closed day by schedule template
-        if($workstationService->Service->Branch->schedule_template_id){
-            $schedule_template_details = ScheduleTemplateDetail::query()
-                                                                    ->where('schedule_template_id', $workstationService->Service->Branch->schedule_template_id)
-                                                                    ->where('date', $current_date)
-                                                                    ->first();
-            if($schedule_template_details){
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Service Provider Already Closed',
-                    'data' => []
-                ]);    
-            }
+        $holiday = ScheduleTemplateDetail::where('schedule_template_id', $service->Branch->schedule_template_id)
+            ->where('date', date('Y-m-d'))
+            ->first();
+        
+        if ($holiday) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cabang sedang tutup hari ini'
+            ]);
         }
 
         // cant create direct queue on closed day
-        $selectedSchedule = Schedule::query()
-                                ->where('branch_id', $workstationService->Service->branch_id)
-                                ->where('day', strtolower(date('l', strtotime($current_date))))
-                                ->get(['day', 'status', 'start_time', 'end_time'])
-                                ->first();
-
-        if (!$selectedSchedule || $selectedSchedule->status == 'closed') {
+        $schedule = Schedule::where('branch_id', $service->branch_id)
+            ->where('day', strtolower(date('l')))
+            ->first();
+        
+        if ($schedule->status == 'closed') {
             return response()->json([
                 'success' => false,
-                'message' => 'Service Provider Already Closed',
-                'data' => []
+                'message' => 'Cabang sedang tutup hari ini'
             ]);
         }
 
         // cant create direct queue before open time and after closed time
-        if ($current_time < $selectedSchedule->start_time || $current_time > $selectedSchedule->end_time) {
+        if (date('H:i:s') < $schedule->start_time || date('H:i:s') > $schedule->end_time) {
             return response()->json([
                 'success' => false,
-                'message' => 'Service Provider Already Closed',
-                'data' => []
+                'message' => 'Cabang sedang tutup hari ini'
             ]);
         }
+        
+        $service_order_no = Service::where('branch_id', $service->branch_id)
+            ->where('id', '<=', $request->service_id)
+            ->count();
+        $last_onsite_queue = DirectQueue::where('service_id', $request->service_id)
+            ->whereDate('created_at', date('Y-m-d'))
+            ->orderBy('queue_no', 'desc')
+            ->first();
 
-        $serviceOrderNumber = Service::where('branch_id', $workstationService->Service->branch_id)->where('id', '<=', $workstationService->service_id)->count();
-        $lastDirectQueue = DirectQueue::where('service_id', $workstationService->service_id)->whereDate('created_at', Date('Y-m-d'))->orderBy('queue_no', 'desc')->get();
-
-        if (count($lastDirectQueue) > 0) {
-            $queueNo = (int) $lastDirectQueue[0]->queue_no + 1;
-        }else{
-            $queueNo = $serviceOrderNumber . sprintf('%03s', ((int) count($lastDirectQueue) + 1));
+        if ($last_onsite_queue) {
+            $queue_no = (int) $last_onsite_queue->queue_no + 1;
+        } else {
+            $queue_no = $service_order_no . sprintf('%03s', 1);
         }
 
         $input = $request->all();
-        $input['queue_no'] = $queueNo;
-        $input['service_id'] = $workstationService->service_id;
-        $input['workstation_id'] = $workstationService->workstation_id;
-        $input['user_id'] = Auth::id();
+        $input['queue_no'] = $queue_no;
+        $input['service_id'] = $request->service_id;
         $input['direct_queue_channel'] = 'Mobile Apps';
         $workstation = DirectQueue::create($input);
 
         // send event to update Direct Queue Monitor
         event(new VCTDirectQueueEvent($workstation));
-        event(new DirectQueueEvent($workstation));
-
-        $workstation['total_waiting'] = DirectQueue::whereServiceId($workstation->service_id)->whereStatus('waiting')->whereDate('created_at', date('Y-m-d'))->count();
+        event(new DirectQueueEvent($workstation, $service->branch_id));
 
         return response()->json([
             'success' => true,

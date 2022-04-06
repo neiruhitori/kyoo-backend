@@ -15,6 +15,8 @@ use App\Http\Resources\Appointment as AppointmentCollection;
 use App\Http\Resources\Upcomming as UpcommingCollection;
 use Auth;
 use Collection;
+use Mail;
+use App\Mail\CS\StoreAppointment as StoreAppointmentMail;
 
 class AppointmentController extends Controller
 {
@@ -43,10 +45,14 @@ class AppointmentController extends Controller
          */
         
         // cant create appointment on same time slot
-        $sameAppointment = Appointment::where(['user_id' => $request->user_id])
-                                            ->where(['slot_id' => $request->slot_id]) 
-                                            ->where(['date' => $request->date])
-                                            ->first(); 
+        $sameAppointment = Appointment::where(function ($query) use  ($request) {
+            $query->where('email', $request->email)
+                ->orWhere('phone', $request->phone);
+        })
+            ->where(['slot_id' => $request->slot_id]) 
+            ->where(['date' => $request->date])
+            ->first(); 
+
         if ($sameAppointment) {
             return response()->json([
                 'success' => false,
@@ -95,6 +101,9 @@ class AppointmentController extends Controller
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
         $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
         $appointment = Appointment::create($input);
+
+        Mail::to($request->email)
+            ->send(new StoreAppointmentMail($appointment));
 
         return response()->json([
             'success' => true,
