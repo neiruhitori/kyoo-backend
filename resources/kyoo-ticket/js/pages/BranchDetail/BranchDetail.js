@@ -108,7 +108,7 @@ export default function BranchDetail() {
                     marginTop: 'auto',
                     padding: '0 1.375rem'
                 }}>
-                    <BranchStatus
+                    {!!currentSchedule && <BranchStatus
                         isOpen={currentSchedule.status !== 'closed'}
                         startTime={currentSchedule.start_time.slice(0, 5)}
                         endTime={currentSchedule.end_time.slice(0, 5)}
@@ -116,7 +116,7 @@ export default function BranchDetail() {
                             borderBottomLeftRadius: '0',
                             borderBottomRightRadius: '0',
                         }}
-                    />
+                    />}
                 </div>
             </Banner>
 
@@ -156,7 +156,7 @@ export default function BranchDetail() {
                                 listValue = '-'
                             } else if (schedule?.status === 'fullday') {
                                 listValue = 'Sehari penuh'
-                            } else {
+                            } else if (schedule?.status === 'open') {
                                 listValue = `${schedule.start_time.slice(0, 5)} - ${schedule.end_time.slice(0, 5)}`
                             }
 
