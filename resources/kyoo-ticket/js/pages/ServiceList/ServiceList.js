@@ -40,7 +40,7 @@ function ServiceList() {
     const branchRes = useQuery('branch', () => fetchBranch(branchId))
     const servicesRes = useQuery(['services', selectedDate], () => fetchServiceByBranchId(branchId, {
         queueType,
-        date: selectedDate
+        date: getFullDate(selectedDate)
     }))
     const bookingMutation = useMutation('booking', data => createBooking(queueType, data))
 

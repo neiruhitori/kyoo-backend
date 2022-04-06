@@ -35,7 +35,7 @@ function TimeSlotList() {
     const branchRes = useQuery('branch', () => fetchBranch(branchId))
     const serviceRes = useQuery(['service', selectedDate], () => fetchServiceById(serviceId, {
         queueType,
-        date: selectedDate
+        date: getFullDate(selectedDate)
     }))
 
     let branch = null

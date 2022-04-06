@@ -42,12 +42,12 @@ export default function BookingStatus() {
     if (branchQuery.status === 'success') {
         branch = branchQuery.data
     }
-    if (serviceQuery.status === 'success') {
+    if (bookingQuery.status === 'success' && serviceQuery.status === 'success') {
         service = serviceQuery.data
 
         if (service.slot) {
             slot = service.slot.filter(s => {
-                return s.day == getDayName(formatBrowser(booking.date), 'en')
+                return s.day == getDayName(formatBrowser(booking?.date), 'en')
             }).sort((a, b) => {
                 if (a.start_time > b.start_time) {
                     return 1
