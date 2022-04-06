@@ -93,3 +93,10 @@ export function getFullDate(date) {
 export function getAbrvDate(date) {
     return `${date.getDate()} ${MONTHS_ABBR[defaultLocale][date.getMonth()]} ${date.getFullYear()}`
 }
+
+export function formatBrowser(date) {
+    if (!date) return null
+
+    const dates = date.split('-')
+    return new Date(`${dates[0]}, ${dates[1]}, ${dates[2].slice(0, 2)}`)
+}

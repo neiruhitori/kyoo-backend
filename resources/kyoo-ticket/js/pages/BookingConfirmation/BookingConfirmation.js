@@ -1,6 +1,6 @@
 import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { useQuery, useMutation } from 'react-query'
-import { format } from '../../utils/date'
+import { format, formatBrowser } from '../../utils/date'
 
 import Header from '../../components/Header'
 import MainContent from '../../components/MainContent'
@@ -33,7 +33,6 @@ function BookingConfirmation() {
     let service = null
     let slot = null
     let booking = null
-    const date = new Date(searchParams.get('date'))
 
     if (branchRes.status === 'success') {
         branch = branchRes.data
@@ -150,7 +149,7 @@ function BookingConfirmation() {
                                 color: '#103C7C',
                                 fontWeight: '600'
                             }}>
-                                {format(date)}
+                                {format(formatBrowser(searchParams.get('date')))}
                             </div>
                         </div>
 

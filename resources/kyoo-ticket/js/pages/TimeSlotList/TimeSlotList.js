@@ -1,6 +1,6 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useState } from 'react'
-import { format, getMonthNames, getDayIndex, getDayName, getFullDate } from '../../utils/date'
+import { format, formatBrowser, getMonthNames, getDayIndex, getDayName, getFullDate } from '../../utils/date'
 import { useQuery } from 'react-query'
 import { fetchBranch } from '../../api/branch'
 import { fetchServiceById } from '../../api/services'
@@ -27,7 +27,7 @@ function TimeSlotList() {
     const PAGE_TITLE = 'Slot Waktu'
     const { branchId, serviceId, queueType } = useParams()
     const [searchParams] = useSearchParams()
-    const date = searchParams.get('date') ? new Date(searchParams.get('date')) : new Date()
+    const date = searchParams.get('date') ? formatBrowser(searchParams.get('date')) : new Date()
 
     const [showCalendar, setShowCalendar] = useState(false)
     const [selectedDate, setSelectedDate] = useState(date)

@@ -3,7 +3,7 @@ import { useQuery } from 'react-query'
 import { getBooking } from '../../api/booking'
 import { fetchServiceById } from '../../api/services'
 import { fetchBranch } from '../../api/branch'
-import { getAbrvDate, getDayName } from '../../utils/date'
+import { getAbrvDate, getDayName, formatBrowser } from '../../utils/date'
 
 import Header from '../../components/Header'
 import Banner from '../../components/Banner'
@@ -41,14 +41,13 @@ export default function BookingStatus() {
     }
     if (branchQuery.status === 'success') {
         branch = branchQuery.data
-        console.log(branch.photo)
     }
     if (serviceQuery.status === 'success') {
         service = serviceQuery.data
 
         if (service.slot) {
             slot = service.slot.filter(s => {
-                return s.day == getDayName(new Date(booking?.date), 'en')
+                return s.day == getDayName(formatBrowser(booking.date), 'en')
             }).sort((a, b) => {
                 if (a.start_time > b.start_time) {
                     return 1
@@ -136,7 +135,7 @@ export default function BookingStatus() {
                                 }}
                             />
                             <span>
-                                {getAbrvDate(new Date(booking.date))}
+                                {getAbrvDate(formatBrowser(booking.date))}
                             </span>
                             {serviceQuery.status === 'success' && !!slot && <>
                                 <span style={{

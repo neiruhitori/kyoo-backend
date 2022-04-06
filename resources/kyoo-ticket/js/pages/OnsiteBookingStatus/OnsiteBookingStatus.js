@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { getBooking } from '../../api/booking'
 import { fetchBranch } from '../../api/branch'
-import { getDayName, getMonthAbrvName } from '../../utils/date'
+import { formatBrowser, getDayName, getMonthAbrvName } from '../../utils/date'
 
 import MainContent from '../../components/MainContent'
 import TicketCard from '../../components/Ticket'
@@ -60,11 +60,11 @@ function TicketFooter(props) {
             <h3 style={{
                 fontSize: '1.625rem',
                 fontWeight: '700'
-            }}>{new Date(props.bookingDate).getDate()}</h3>
+            }}>{formatBrowser(props.bookingDate).getDate()}</h3>
             <p style={{
                 fontSize: '.875rem',
                 fontWeight: '600'
-            }}>{getMonthAbrvName(new Date(props.bookingDate))}</p>
+            }}>{getMonthAbrvName(formatBrowser(props.bookingDate))}</p>
 
             <div style={{
                 fontSize: '.625rem',
@@ -118,8 +118,9 @@ function OnsiteBookingStatus() {
 
     if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
         branch = branchQuery.data
+
         schedule = branch.schedule.find(v => {
-            return v.day === getDayName(new Date(booking.date), 'en')
+            return v.day === getDayName(formatBrowser(booking.date), 'en')
         })
     }
 
