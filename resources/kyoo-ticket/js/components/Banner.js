@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 const BannerWrapper = styled.div`
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.21) 0%, #000000 142.65%), url('${props => props.imageUrl ? '/storage/' + props.imageUrl : '/img/queue.jpeg'}'), #C4C4C4;
+    background: linear-gradient(0deg, rgba(71, 85, 105, 0.20), rgba(71, 85, 105, 0.20)), url('${props => props.imageUrl ? '/storage/' + props.imageUrl : '/img/queue.jpeg'}');
     background-size: cover;
     border-radius: 0 0 16px 16px;
     height: 260px;

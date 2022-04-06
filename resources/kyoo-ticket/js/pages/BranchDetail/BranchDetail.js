@@ -94,7 +94,7 @@ export default function BranchDetail() {
                     <div style={{
                         marginBottom: '1rem'
                     }}>
-                        <Chip label={branch.industry_category.name} />\
+                        <Chip label={branch.industry_category.name} />
                     </div>
 
                     <div>

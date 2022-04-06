@@ -118,6 +118,7 @@ function ServiceList() {
                             display: 'flex',
                             alignItems: 'center',
                             fontSize: '0.75rem',
+                            textShadow: '0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px rgb(0 0 0 / 0.1)'
                         }}>
                             <span style={{
                                 padding: '0 0.75rem'

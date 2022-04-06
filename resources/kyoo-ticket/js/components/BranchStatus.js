@@ -11,8 +11,8 @@ const BranchStatusRoot = styled.div(() => ({
     fontSize: '0.875rem',
     height: '2.125rem',
     color: '#FFFF',
-    background: 'rgba(255, 255, 255, 0.1)',
-    boxShadow: '16px -4px 40px rgba(0, 0, 0, 0.05)',
+    background: 'rgba(0, 0, 0, 0.2)',
+    boxShadow: '16px -4px 40px rgba(0, 0, 0, 0.1)',
     backdropFilter: 'blur(16px)'
 }))
 
