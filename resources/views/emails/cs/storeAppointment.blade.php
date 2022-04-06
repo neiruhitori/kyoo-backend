@@ -7,6 +7,6 @@ Anda telah membuat appointment pada tanggal {{ $booking_date }} di {{ $branch_na
 {{ __('Check My Appointment') }}
 @endcomponent
 
-Terima kasih ,<br>
+Terima kasih,<br>
 {{ $branch_name }}
 @endcomponent

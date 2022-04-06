@@ -36,7 +36,7 @@ class StoreAppointment extends Mailable
 
         setlocale(LC_TIME, 'id_ID');
 
-        return $this->from('noreply@kyoo.id', 'KYOO')->subject(__('Branch Appointment'))->markdown('emails.cs.storeAppointment', [
+        return $this->from('noreply@kyoo.id', 'KYOO')->subject('Appointment di ' . $branch->name)->markdown('emails.cs.storeAppointment', [
             'appointment' => $this->appointment,
             'appointment_id' => $appointment_id,
             'branch_id' => $branch->id,
