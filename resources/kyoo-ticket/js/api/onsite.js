@@ -19,9 +19,11 @@ export function createOnsite(data) {
         }
     }
 
-    const storageValue = parseInt(localStorage.getItem(storageKey)) + 1 || 1
-    localStorage.setItem(storageKey, storageValue)
-
     return http.post('direct-queue', data)
-        .then(res => res.data)
+        .then(res => {
+            const storageValue = parseInt(localStorage.getItem(storageKey)) + 1 || 1
+            localStorage.setItem(storageKey, storageValue)
+
+            return res.data
+        })
 }
