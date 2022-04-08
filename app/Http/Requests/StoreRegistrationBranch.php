@@ -39,7 +39,6 @@ class StoreRegistrationBranch extends FormRequest
             'address' => 'required|string',
             'phone' => 'required|numeric|min:5',
             'regency_id' => 'required|exists:indoregion_regencies,id',
-            'g-recaptcha-response' => 'required|captcha',
             'accept_term_condition' => 'required'
         ];
     }

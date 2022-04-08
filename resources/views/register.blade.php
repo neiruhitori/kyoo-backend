@@ -294,15 +294,6 @@
             @enderror
           </div>
 
-          <div style="margin-bottom: 1rem">
-            {!! NoCaptcha::renderJs() !!}
-            {!! NoCaptcha::display() !!}
-
-            @error('g-recaptcha-response')
-            <div class="text-danger mt-2">{{ $message }}</div>
-            @enderror
-          </div>
-
           <div style="margin-bottom: 1.5rem;">
             <div class="k-checkbox">
               <input type="checkbox" name="accept_term_condition" id="accept_term_condition">
