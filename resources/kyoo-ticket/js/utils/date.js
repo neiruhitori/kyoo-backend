@@ -101,5 +101,5 @@ export function formatBrowser(date) {
     if (!date) return null
 
     const dates = date.split('-')
-    return new Date(`${dates[0]}, ${dates[1]}, ${dates[2].slice(0, 2)}`)
+    return new Date(parseInt(dates[0]), parseInt(dates[1]) - 1, parseInt(dates[2].slice(0, 2)))
 }
