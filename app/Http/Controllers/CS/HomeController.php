@@ -151,6 +151,19 @@ class HomeController extends Controller
 
     public function storeAppointment(StoreAppointment $request)
     {
+        $branch = Slot::find($request->slot_id)->Service->Branch;
+
+        $total_current_booking = Appointment::where('date', $request->date ?? date('Y-m-d'))
+            ->whereHas('Slot.Service', function($query) use ($branch) {
+                $query->where('branch_id', $branch->id);
+            })
+            ->count();
+        
+        if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
+            $request->session()->flash('error', 'Jumlah appointment melebihi batas maksimal harian untuk cabang berlisensi gratis');
+            return back()->withInput();
+        }
+
         // copy from App\Http\Controllers\API\AppointmentController.php store()
         /**
          * additional validations:
@@ -239,6 +252,19 @@ class HomeController extends Controller
 
     public function storeExhibition(Request $request)
     {
+        $branch = Slot::find($request->slot_id)->Service->Branch;
+
+        $total_current_booking = Exhibition::where('date', $request->date ?? date('Y-m-d'))
+            ->whereHas('Slot.Service', function($query) use ($branch) {
+                $query->where('branch_id', $branch->id);
+            })
+            ->count();
+        
+        if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
+            $request->session()->flash('error', 'Jumlah antrian melebihi batas maksimal harian untuk cabang berlisensi gratis');
+            return back()->withInput();
+        }
+
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'slot_id' => 'required|exists:slots,id',

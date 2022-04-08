@@ -68,6 +68,21 @@ class DirectQueueController extends Controller
 
     public function store(DirectQueueStore $request)
     {
+        $branch = Service::find($request->service_id)->Branch;
+
+        $total_current_booking = DirectQueue::whereHas('Service', function ($query) use ($branch) {
+            return $query->where('branch_id', $branch->id);
+        })
+            ->whereDate('created_at', date('Y-m-d'))
+            ->count();
+        
+        if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Jumlah antrian melebihi batas maksimal harian untuk cabang berlisensi gratis'
+            ]);
+        }
+
         $service = Service::with('Branch')->where('id', $request->service_id)->first(); 
 
         // cant create direct queue on closed day by schedule template

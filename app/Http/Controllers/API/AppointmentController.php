@@ -36,6 +36,22 @@ class AppointmentController extends Controller
 
     public function store(StoreAppointment $request)
     {
+        $branch = Slot::find($request->slot_id)->Service->Branch;
+
+        $total_current_booking = Appointment::where('date', $request->date ?? date('Y-m-d'))
+            ->whereHas('Slot.Service', function($query) use ($branch) {
+                $query->where('branch_id', $branch->id);
+            })
+            ->count();
+        
+        if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Jumlah appointment melebihi batas maksimal harian untuk cabang berlisensi gratis',
+                'data' => []
+            ]);
+        }
+
         /**
          * additional validations:
          * - user cant create appointment on same time slot

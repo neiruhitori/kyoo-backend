@@ -95,6 +95,18 @@ class DirectQueueController extends Controller
      */
     public function store(StoreDirectQueue $request)
     {
+        $branch = WorkstationService::find($request->workstation_service_id)->Service->Branch;
+
+        $total_current_booking = DirectQueue::whereHas('Service', function ($query) use ($branch) {
+            return $query->where('branch_id', $branch->id);
+        })
+            ->whereDate('created_at', date('Y-m-d'))
+            ->count();
+        
+        if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
+            $request->session()->flash('error', "Jumlah antrian melebihi batas maksimal harian untuk cabang berlisensi gratis");
+            return redirect(route('cs.directQueue.create'));
+        }
 
         /**
          * additional validations:

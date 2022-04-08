@@ -73,7 +73,7 @@
             
             if (!name || !industry_category_id || !email || !country || !mobile_phone || !is_active) {
                 e.preventDefault();
-                swal('', {{ __('page.mandatory', ['page' => 'Branch Profile']) }}, 'info')
+                swal('', '{{ __('page.mandatory', ['page' => 'Branch Profile']) }}', 'info')
                 return
             }
 

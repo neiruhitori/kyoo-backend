@@ -30,6 +30,22 @@ class ExhibitionController extends Controller
 
     public function store(StoreExhibition $request)
     {
+        $branch = Slot::find($request->slot_id)->Service->Branch;
+
+        $total_current_booking = Exhibition::where('date', $request->date ?? date('Y-m-d'))
+            ->whereHas('Slot.Service', function($query) use ($branch) {
+                $query->where('branch_id', $branch->id);
+            })
+            ->count();
+        
+        if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Jumlah antrian melebihi batas maksimal harian untuk cabang berlisensi gratis',
+                'data' => []
+            ]);
+        }
+
         // cant create booking on same time slot
         $same_booking = Exhibition::where(function ($query) use  ($request) {
                 $query->where('email', $request->email)
