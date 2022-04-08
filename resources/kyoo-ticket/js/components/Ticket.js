@@ -1,10 +1,12 @@
 import styled from 'styled-components'
 
+const TicketContainer = styled.div`
+    filter: drop-shadow(0px 7px 40px rgba(0, 0, 0, 0.1));
+`
+
 const TicketCardRoot = styled.div`
     display: flex;
     flex-direction: column;
-    -webkit-filter: drop-shadow(0px 7px 40px rgba(0, 0, 0, 0.1));
-    filter: drop-shadow(0px 7px 40px rgba(0, 0, 0, 0.1));
     overflow: hidden;
 `
 
@@ -46,37 +48,39 @@ const TicketRip = styled.div`
 `
 
 function TicketCard(props) {
-    return <TicketCardRoot style={props.style}>
-        <div style={{
-            height: '132px',
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            borderRadius: '12px 12px 0 0',
-            justifyContent: 'center',
-            padding: '1.625rem 1.625rem 1.125rem 1.625rem'
-        }}>
-            {props.body}
-        </div>
-
-        <TicketRip>
+    return <TicketContainer>
+        <TicketCardRoot style={props.style}>
             <div style={{
-                borderTop: '2px dashed #90B7F1',
-                width: '100%'
-            }}></div>
-        </TicketRip>
+                height: '132px',
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: 'white',
+                borderRadius: '12px 12px 0 0',
+                justifyContent: 'center',
+                padding: '1.625rem 1.625rem 1.125rem 1.625rem'
+            }}>
+                {props.body}
+            </div>
 
-        <div style={{
-            height: '132px',
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            borderRadius: '0 0 12px 12px',
-            padding: '1.125rem 1.625rem 1.625rem 1.625rem'
-        }}>
-            {props.footer}
-        </div>
-    </TicketCardRoot>
+            <TicketRip>
+                <div style={{
+                    borderTop: '2px dashed #90B7F1',
+                    width: '100%'
+                }}></div>
+            </TicketRip>
+
+            <div style={{
+                height: '132px',
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: 'white',
+                borderRadius: '0 0 12px 12px',
+                padding: '1.125rem 1.625rem 1.625rem 1.625rem'
+            }}>
+                {props.footer}
+            </div>
+        </TicketCardRoot>
+    </TicketContainer>
 }
 
 export default TicketCard
