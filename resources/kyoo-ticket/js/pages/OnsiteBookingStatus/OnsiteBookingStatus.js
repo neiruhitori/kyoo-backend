@@ -25,7 +25,7 @@ const BookingTimeCard = styled.div`
     border-radius: 12px;
     width: 84px;
     height: 84px;
-    padding: .875rem;
+    padding: .625rem;
     color: #007EC6;
 `
 
@@ -54,7 +54,7 @@ function TicketFooter(props) {
         display: 'flex',
     }}>
         <BookingTimeCard style={{
-            marginRight: '1.625rem'
+            marginRight: '1.625rem',
         }}>
             <h3 style={{
                 fontSize: '1.625rem',
