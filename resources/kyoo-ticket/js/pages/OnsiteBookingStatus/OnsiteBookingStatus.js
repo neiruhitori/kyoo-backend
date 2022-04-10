@@ -10,6 +10,7 @@ import MainContent from '../../components/MainContent'
 import TicketCard from '../../components/Ticket'
 import InfoAlert from '../../components/InfoAlert'
 import KyooLogo from '../../components/KyooLogo'
+import Chip from '../../components/Chip'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import LocationIcon from '../../icons/LocationIcon'
@@ -29,12 +30,56 @@ const BookingTimeCard = styled.div`
     color: #007EC6;
 `
 
+const OnsiteStatus = styled(Chip)`
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+`
+
+const OnsiteDangerStatus = styled(OnsiteStatus)`
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+`
+
+const OnsiteSuccessStatus = styled(OnsiteStatus)`
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+`
+
 function TicketBody(props) {
-    return <div>
+    let status = ''
+
+    if (props.status == 'waiting') {
+        status = 'Menunggu'
+    } else if (props.status == 'served') {
+        status = 'Sedang Dilayani'
+    } else if (props.status == 'no show') {
+        status = 'Tidak Muncul'
+    } else if (props.status == 'end served') {
+        status = 'Layanan Berakhir'
+    } else if (props.status == 'requeue') {
+        status = 'Antri Ulang'
+    }
+
+    let onsiteStatus = <OnsiteStatus label={status} />
+
+    if (props.status == 'no show') {
+        onsiteStatus = <OnsiteDangerStatus label={status} />
+    } else if (props.status == 'end served') {
+        onsiteStatus = <OnsiteSuccessStatus label={status} />
+    }
+
+    return <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column'
+    }}>
         <p style={{
             fontSize: '1.125rem',
             color: '#7A7A7A',
-            marginBottom: '1.125rem',
+            marginBottom: '.625rem',
             textAlign: 'center'
         }}>Nomor Antrian</p>
 
@@ -42,10 +87,13 @@ function TicketBody(props) {
             fontWeight: '700',
             fontSize: '3.125rem',
             color: '#103C7C',
-            textAlign: 'center'
+            textAlign: 'center',
+            marginBottom: '1rem'
         }}>
             {props.queueNo || 0}
         </h2>
+
+        {onsiteStatus}
     </div>
 }
 
@@ -151,7 +199,7 @@ function OnsiteBookingStatus() {
                 </div>}
 
                 {bookingQuery.status === 'success' && branchQuery.status === 'success' && <TicketCard
-                    body={<TicketBody queueNo={booking.queue_no} />}
+                    body={<TicketBody queueNo={booking.queue_no} status={booking.status} />}
                     footer={<TicketFooter
                         serviceName={booking.service_name}
                         bookingDate={booking.date}

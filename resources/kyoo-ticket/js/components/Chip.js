@@ -6,16 +6,16 @@ const ChipWrapper = styled.div`
     height: 1.75rem;
     display: inline-flex;
     align-items: center;
+    color: #D6D6D6;
 `
 
 const ChipText = styled.span`
     padding: 0 0.5rem;
-    color: #D6D6D6;
     font-size: 0.75rem;
 `
 
 function Chip(props) {
-    return <ChipWrapper>
+    return <ChipWrapper className={props.className}>
         <ChipText>{props.label}</ChipText>
     </ChipWrapper>
 }
