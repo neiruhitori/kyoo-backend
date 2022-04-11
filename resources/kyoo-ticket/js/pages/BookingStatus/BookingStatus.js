@@ -1,7 +1,9 @@
+import { useState, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { useQuery, useMutation } from 'react-query'
 import { getBooking } from '../../api/booking'
 import { fetchServiceById } from '../../api/services'
+import { createFeedback } from '../../api/feedback'
 import { fetchBranch } from '../../api/branch'
 import { getAbrvDate, getDayName, formatBrowser } from '../../utils/date'
 
@@ -15,6 +17,7 @@ import InfoAlert from '../../components/InfoAlert'
 import ChipSuccess from '../../components/ChipSuccess'
 import ChipWarning from '../../components/ChipWarning'
 import ChipDanger from '../../components/ChipDanger'
+import Rating from '../../components/Rating'
 
 import ClockIcon from '../../icons/ClockIcon'
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
@@ -22,6 +25,9 @@ import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 export default function BookingStatus() {
     const { bookingId, queueType, branchId } = useParams()
     const PAGE_TITLE = `Status ${queueType}`
+
+    const [rating, setRating] = useState(0)
+    const [allowRate, setAllowRate] = useState(false)
 
     let booking = null
     let service = null
@@ -39,6 +45,7 @@ export default function BookingStatus() {
     const branchQuery = useQuery('branch', () => fetchBranch(booking?.branch_id), {
         enabled: bookingQuery.status === 'success'
     })
+    const feedbackMutation = useMutation('feedback', (data) => createFeedback(queueType, bookingId, data))
 
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
@@ -79,6 +86,26 @@ export default function BookingStatus() {
                 return el.start_time === booking.start_time
             })
         }
+    }
+
+    useMemo(() => {
+        if (booking) {
+            setRating(booking.rating)
+            setAllowRate(!booking.rating)
+        }
+    }, [booking])
+
+    function handleFeedbackClick() {
+        feedbackMutation.mutate({
+            rating,
+            is_liked: false
+        }, {
+            onSuccess: (data) => {
+                if (data.success) {
+                    setAllowRate(false)
+                }
+            }
+        })
     }
 
     return <>
@@ -340,6 +367,37 @@ export default function BookingStatus() {
                         </div>
                     </div>
                 </div>
+            </Card>}
+
+            {queueType === 'appointment' && booking.status === 'end served' && <Card style={{
+                margin: '1.625rem 0',
+                padding: '1.625rem'
+            }}>
+                <p style={{
+                    textAlign: 'center'
+                }}>Seberapa puas Anda terhadap layanan kami?</p>
+            
+                <div style={{
+                    marginTop: '1.125rem'
+                }}>
+                    <Rating
+                        rate={rating}
+                        onRateClick={rate => allowRate && setRating(rate)}
+                    />
+                </div>
+            
+                {allowRate && <div style={{
+                    textAlign: 'center',
+                    marginTop: '1.125rem'
+                }}>
+                    <button type="submit" style={{
+                        padding: '.625rem 1.125rem',
+                        borderRadius: '14px',
+                        color: '#FFFFFF',
+                        backgroundColor: '#007EC6',
+                        border: 'none'
+                    }} onClick={handleFeedbackClick}>Kirim Feedback</button>
+                </div>}
             </Card>}
 
             <InfoAlert style={{

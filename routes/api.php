@@ -45,6 +45,7 @@ Route::post('slot', 'API\SlotController@index');
 
 Route::post('appointment', 'API\AppointmentController@store');
 Route::get('appointment/{appointment}', 'API\AppointmentController@show');
+Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
 
 Route::post('exhibition', 'API\ExhibitionController@store');
 Route::get('exhibition/{exhibition}', 'API\ExhibitionController@show');
@@ -64,7 +65,6 @@ Route::middleware(['auth:api'])->group(function () {
     // appointment routes
     Route::get('appointment', 'API\AppointmentController@index');
     Route::get('appointment-history', 'API\AppointmentController@history');
-    Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
     Route::get('appointment-upcoming', 'API\AppointmentController@upcoming');
 
     // direct queue routes

@@ -249,8 +249,8 @@ function OnsiteBookingStatus() {
                     marginTop: '1.125rem'
                 }}>
                     <button type="submit" style={{
-                        padding: '1rem 1.125rem',
-                        borderRadius: '18px',
+                        padding: '.625rem 1.125rem',
+                        borderRadius: '14px',
                         color: '#FFFFFF',
                         backgroundColor: '#007EC6',
                         border: 'none'
