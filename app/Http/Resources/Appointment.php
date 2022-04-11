@@ -50,8 +50,8 @@ class Appointment extends JsonResource
             'rating' => $appointment->rating,
             'is_liked' => $appointment->is_liked,
             'queue_no' => (int) $appointment->number,
-            'total_queue' => (int) $queue_total['number'],
-            'current_queue' => (int) $curr_queue['number'],
+            'total_queue' => $queue_total ? (int) $queue_total['number'] : 0,
+            'current_queue' => $curr_queue ? (int) $curr_queue['number'] : null,
             'total_waiting' => AppointmentModel::where('slot_id', $appointment->slot_id)->where('date', $appointment->date)->where('number', '<', $appointment->number)->whereIn('status', ['book', 'check in'])->get()->count(),
             'currently_attending' => isset($currently_attending) ? intval($currently_attending->number) : 0,
         ];

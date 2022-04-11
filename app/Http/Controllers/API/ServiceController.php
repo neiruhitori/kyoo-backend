@@ -70,7 +70,6 @@ class ServiceController extends Controller
                     $q->where('slot_id', $params['slot_id']);
                 })
                 ->where('date', $params['date'])
-                ->whereIn('status', ['book', 'check in'])
                 ->count();
         }
 
@@ -82,7 +81,6 @@ class ServiceController extends Controller
                     $q->where('slot_id', $params['slot_id']);
                 })
                 ->where('date', $params['date'])
-                ->where('status', 'book')
                 ->count();
         }
     }

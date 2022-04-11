@@ -12,6 +12,9 @@ import H2 from '../../components/H2'
 import Card from '../../components/Card'
 import BlueCard from '../../components/BlueCard'
 import InfoAlert from '../../components/InfoAlert'
+import ChipSuccess from '../../components/ChipSuccess'
+import ChipWarning from '../../components/ChipWarning'
+import ChipDanger from '../../components/ChipDanger'
 
 import ClockIcon from '../../icons/ClockIcon'
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
@@ -24,6 +27,7 @@ export default function BookingStatus() {
     let service = null
     let slot = null
     let branch = null
+    let bookingStatus = ''
     
     const bookingQuery = useQuery('booking', () => getBooking(queueType, bookingId))
     const serviceQuery = useQuery('service', () => fetchServiceById(booking?.service_id, {
@@ -38,6 +42,18 @@ export default function BookingStatus() {
 
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
+
+        if (booking.status === 'book') {
+            bookingStatus = 'Dipesan'
+        } else if (booking.status === 'check in') {
+            bookingStatus = 'Check-in'
+        } else if (booking.status === 'served') {
+            bookingStatus = 'Dilayani'
+        } else if (booking.status === 'end served') {
+            bookingStatus = 'Selesai'
+        } else if (booking.status === 'no show') {
+            bookingStatus = 'Tidak Hadir'
+        }
     }
     if (branchQuery.status === 'success') {
         branch = branchQuery.data
@@ -110,7 +126,8 @@ export default function BookingStatus() {
                     flex: '1 1 0%',
                     paddingRight: '1.125rem',
                     display: 'flex',
-                    flexDirection: 'column'
+                    flexDirection: 'column',
+                    gap: '1rem'
                 }}>
                     <div style={{
                         flexGrow: '1'
@@ -153,23 +170,47 @@ export default function BookingStatus() {
                     </div>
 
                     {!!slot && <div style={{
-                        flexGrow: '1'
+                        flexGrow: '1',
+                        display: 'flex',
+                        gap: '.75rem'
                     }}>
                         <div style={{
-                            fontSize: '.875rem',
-                            display: 'inline-block',
-                            marginBottom: '.375rem'
+                            flex: '1 1 0%'
                         }}>
-                            Kode Booking
+                            <div style={{
+                                fontSize: '.875rem',
+                                display: 'inline-block',
+                                marginBottom: '.375rem'
+                            }}>
+                                Kode Booking
+                            </div>
+
+                            <div style={{
+                                color: '#007EC6',
+                                fontWeight: '700',
+                                fontSize: '1rem',
+                                textTransform: 'uppercase'
+                            }}>
+                                {booking.booking_code}
+                            </div>
                         </div>
 
                         <div style={{
-                            color: '#007EC6',
-                            fontWeight: '700',
-                            fontSize: '1rem',
-                            textTransform: 'uppercase'
+                            flex: '1 1 0%'
                         }}>
-                            {booking.booking_code}
+                            <div style={{
+                                fontSize: '.875rem',
+                                display: 'inline-block',
+                                marginBottom: '.625rem'
+                            }}>
+                                Status Antrian
+                            </div>
+
+                            <div>
+                                {!['end served', 'no show'].includes(booking.status) && <ChipWarning label={bookingStatus} />}
+                                {booking.status === 'end served' && <ChipSuccess label={bookingStatus} />}
+                                {booking.status === 'no show' && <ChipDanger label={bookingStatus} />}
+                            </div>
                         </div>
                     </div>}
                 </div>

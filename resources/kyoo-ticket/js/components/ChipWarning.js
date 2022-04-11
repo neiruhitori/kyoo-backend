@@ -3,7 +3,7 @@ import Chip from './Chip'
 
 const ChipWarning = styled(Chip)`
     background-color: #FFE8B4;
-    color: #F5BE3F;
+    color: #765f28;
 `
 
 export default ChipWarning
