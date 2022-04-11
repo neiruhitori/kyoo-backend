@@ -1,16 +1,22 @@
-import { useQuery } from 'react-query'
+import { useState, useMemo } from 'react'
+import { useMutation, useQuery } from 'react-query'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { getBooking } from '../../api/booking'
 import { fetchBranch } from '../../api/branch'
+import { createFeedback } from '../../api/feedback'
 import { formatBrowser, getDayName, getMonthAbrvName } from '../../utils/date'
 
 import MainContent from '../../components/MainContent'
 import TicketCard from '../../components/Ticket'
 import InfoAlert from '../../components/InfoAlert'
 import KyooLogo from '../../components/KyooLogo'
-import Chip from '../../components/Chip'
+import ChipWarning from '../../components/ChipWarning'
+import ChipSuccess from '../../components/ChipSuccess'
+import ChipDanger from '../../components/ChipDanger'
+import Card from '../../components/Card'
+import Rating from '../../components/Rating'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import LocationIcon from '../../icons/LocationIcon'
@@ -24,28 +30,10 @@ const BookingTimeCard = styled.div`
     background: rgba(255, 255, 255, 0.04);
     box-shadow: 0px 7px 40px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
-    width: 84px;
-    height: 84px;
-    padding: .625rem;
+    width: 86px;
+    height: 86px;
+    padding: .875rem;
     color: #007EC6;
-`
-
-const OnsiteStatus = styled(Chip)`
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-`
-
-const OnsiteDangerStatus = styled(OnsiteStatus)`
-    background-color: #f8d7da;
-    color: #721c24;
-    border-color: #f5c6cb;
-`
-
-const OnsiteSuccessStatus = styled(OnsiteStatus)`
-    background-color: #d4edda;
-    color: #155724;
-    border-color: #c3e6cb;
 `
 
 function TicketBody(props) {
@@ -54,21 +42,21 @@ function TicketBody(props) {
     if (props.status == 'waiting') {
         status = 'Menunggu'
     } else if (props.status == 'served') {
-        status = 'Sedang Dilayani'
+        status = 'Dilayani'
     } else if (props.status == 'no show') {
-        status = 'Tidak Muncul'
+        status = 'Tidak Hadir'
     } else if (props.status == 'end served') {
-        status = 'Layanan Berakhir'
+        status = 'Selesai'
     } else if (props.status == 'requeue') {
         status = 'Antri Ulang'
     }
 
-    let onsiteStatus = <OnsiteStatus label={status} />
+    let onsiteStatus = <ChipWarning label={status} />
 
     if (props.status == 'no show') {
-        onsiteStatus = <OnsiteDangerStatus label={status} />
+        onsiteStatus = <ChipDanger label={status} />
     } else if (props.status == 'end served') {
-        onsiteStatus = <OnsiteSuccessStatus label={status} />
+        onsiteStatus = <ChipSuccess label={status} />
     }
 
     return <div style={{
@@ -88,7 +76,7 @@ function TicketBody(props) {
             fontSize: '3.125rem',
             color: '#103C7C',
             textAlign: 'center',
-            marginBottom: '1rem'
+            marginBottom: '.625rem'
         }}>
             {props.queueNo || 0}
         </h2>
@@ -150,24 +138,48 @@ function OnsiteBookingStatus() {
     const PAGE_TITLE = 'Status Antrian Onsite'
     const { branchId, bookingId } = useParams()
 
+    const [rating, setRating] = useState(0)
+    const [allowBooking, setAllowBooking] = useState(true)
+
     let booking = null
     let branch = null
     let schedule = null
 
-    const bookingQuery = useQuery('booking', () => getBooking('onsite', bookingId))
-    const branchQuery = useQuery('branch', () => fetchBranch(branchId), {
+    const bookingQuery = useQuery(['booking', bookingId], () => getBooking('onsite', bookingId))
+    const branchQuery = useQuery(['branch', branchId], () => fetchBranch(branchId), {
         enabled: bookingQuery.status === 'success'
     })
+    const feedbackMutation = useMutation('feedback', (data) => createFeedback('onsite', bookingId, data))
 
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
     }
+
+    useMemo(() => {
+        if (booking) {
+            setRating(booking.rating)
+            setAllowBooking(!booking.rating)
+        }
+    }, [booking])
 
     if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
         branch = branchQuery.data
 
         schedule = branch.schedule.find(v => {
             return v.day === getDayName(formatBrowser(booking.date), 'en')
+        })
+    }
+
+    function handleFeedbackClick() {
+        feedbackMutation.mutate({
+            rating,
+            is_liked: false
+        }, {
+            onSuccess: (data) => {
+                if (data.success) {
+                    setAllowBooking(false)
+                }
+            }
         })
     }
 
@@ -189,8 +201,8 @@ function OnsiteBookingStatus() {
             <div style={{ textTransform: 'capitalize', textAlign: 'center', flex: '1 1 0%' }}>{PAGE_TITLE}</div>
         </div>
 
-        <MainContent>
-            {branchQuery.status === 'success' && <div>
+        {bookingQuery.status === 'success' && <MainContent>
+            <div>
                 {!!branch?.logo && <div style={{
                     textAlign: 'center',
                     marginBottom: '1.5rem'
@@ -199,7 +211,10 @@ function OnsiteBookingStatus() {
                 </div>}
 
                 {bookingQuery.status === 'success' && branchQuery.status === 'success' && <TicketCard
-                    body={<TicketBody queueNo={booking.queue_no} status={booking.status} />}
+                    body={<TicketBody
+                        queueNo={booking.queue_no}
+                        status={booking.status}
+                    />}
                     footer={<TicketFooter
                         serviceName={booking.service_name}
                         bookingDate={booking.date}
@@ -210,7 +225,38 @@ function OnsiteBookingStatus() {
                         marginBottom: '2rem'
                     }}
                 />}
-            </div>}
+            </div>
+
+            {booking.status === 'end served' && <Card style={{
+                marginBottom: '2rem',
+                padding: '1.625rem'
+            }}>
+                <p style={{
+                    textAlign: 'center'
+                }}>Seberapa puas Anda terhadap layanan kami?</p>
+            
+                <div style={{
+                    marginTop: '1.125rem'
+                }}>
+                    <Rating
+                        rate={rating}
+                        onRateClick={rate => allowBooking && setRating(rate)}
+                    />
+                </div>
+            
+                {allowBooking && <div style={{
+                    textAlign: 'center',
+                    marginTop: '1.125rem'
+                }}>
+                    <button type="submit" style={{
+                        padding: '1rem 1.125rem',
+                        borderRadius: '18px',
+                        color: '#FFFFFF',
+                        backgroundColor: '#007EC6',
+                        border: 'none'
+                    }} onClick={handleFeedbackClick}>Kirim Feedback</button>
+                </div>}
+            </Card>}
 
             <InfoAlert>
                 <h4 style={{
@@ -238,7 +284,7 @@ function OnsiteBookingStatus() {
                 Powered by
                 <KyooLogo style={{ marginLeft: '0.5rem' }} />
             </div>
-        </MainContent>
+        </MainContent>}
     </>
 }
 

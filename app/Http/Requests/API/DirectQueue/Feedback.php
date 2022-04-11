@@ -15,10 +15,10 @@ class Feedback extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
-    {
-        return Auth::user();
-    }
+    // public function authorize()
+    // {
+    //     return Auth::user();
+    // }
 
     /**
      * Get the validation rules that apply to the request.

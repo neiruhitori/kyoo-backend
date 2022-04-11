@@ -40,7 +40,7 @@ class Detail extends JsonResource
             'is_liked' => $this->is_liked,
             'rating' => $this->rating,
             'status' => $this->status,
-            'current_queue' => $curr_queue->queue_no,
+            'current_queue' => $curr_queue ? $curr_queue->queue_no : $request->queue_no,
             'industry_category' => $branch->IndustryCategory->name
         ];
     }

@@ -135,7 +135,7 @@
                         class="btn btn-danger fullwidth mb-2"
                         @click="onNoShow"
                       >
-                        Tidak Muncul
+                        Tidak Hadir
                       </button>
                     </div>
                     <div class="col-md-12">
@@ -144,7 +144,7 @@
                         @click="onTransfer"
                         :disabled="!allow_transfer"
                       >
-                        Transfer
+                        Transfer Antrian
                       </button>
                     </div>
                   </template>
@@ -221,12 +221,12 @@
                           <span
                             class="badge badge-danger"
                             v-show="queue.status == 'no show'"
-                            >Tidak Muncul</span
+                            >Tidak Hadir</span
                           >
                           <span
                             class="badge badge-success"
                             v-show="queue.status == 'end served'"
-                            >Layanan Berakhir</span
+                            >Layanan Selesai</span
                           >
                         </td>
                       </tr>

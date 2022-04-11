@@ -31,6 +31,10 @@
         background-color: #E2E2E2;
       }
 
+      button, input {
+        font-family: Inter, sans-serif;
+      }
+
       a {
         text-decoration: none;
         color: #000000;

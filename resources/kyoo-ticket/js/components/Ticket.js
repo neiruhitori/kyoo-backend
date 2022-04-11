@@ -51,7 +51,7 @@ function TicketCard(props) {
     return <TicketContainer>
         <TicketCardRoot style={props.style}>
             <div style={{
-                height: '156px',
+                height: '148px',
                 display: 'flex',
                 alignItems: 'center',
                 backgroundColor: 'white',
@@ -70,7 +70,7 @@ function TicketCard(props) {
             </TicketRip>
 
             <div style={{
-                height: '156px',
+                height: '148px',
                 display: 'flex',
                 alignItems: 'center',
                 backgroundColor: 'white',

@@ -51,6 +51,7 @@ Route::get('exhibition/{exhibition}', 'API\ExhibitionController@show');
 
 Route::post('direct-queue', 'API\DirectQueueController@store');
 Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
+Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
 
 Route::middleware(['auth:api'])->group(function () {
     // user routes
@@ -68,7 +69,6 @@ Route::middleware(['auth:api'])->group(function () {
 
     // direct queue routes
     Route::get('direct-queue-upcoming', 'API\DirectQueueController@upcoming');
-    Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
 
     // favorite routes
     Route::get('favorite', 'API\FavoriteController@index');

@@ -6,7 +6,7 @@ const InfoAlertRoot = styled.div`
     background-color: #E8F4FD;
     color: #005AA3;
     box-sizing: 6px;
-    border: 1px solid #D0E9FB;
+    border: .5px solid #D0E9FB;
     display: flex;
     border-radius: 6px;
     padding: 1.125rem;
