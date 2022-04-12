@@ -1,3 +1,9 @@
+<style>
+    .kyoo-sublink {
+      white-space: normal !important;
+    }
+</style>
+
 <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
@@ -29,10 +35,10 @@
 
         <div class="collapse" id="instruction-of-use" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="{{ route('adminBranch.branchConfigGuide') }}">
+            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.branchConfigGuide') }}">
               {{ __('How to Configure Qeueu') }}
             </a>
-            <a class="collapse-item" href="{{ route('adminBranch.customerGuide') }}">
+            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.customerGuide') }}">
               {{ __('Customer Guide') }}
             </a>
           </div>
@@ -58,10 +64,10 @@
 
         <div class="collapse" id="branch-information" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="{{ route('adminBranch.branch.profile') }}">
+            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.branch.profile') }}">
               {{ __('Profile') }}
             </a>
-            <a class="collapse-item" href="{{ route('adminBranch.branch.location') }}">
+            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.branch.location') }}">
               {{ __('Location') }}
             </a>
           </div>
@@ -76,19 +82,19 @@
 
         <div class="collapse" id="branch-configuration" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="{{ route('adminBranch.department.index') }}">
+            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.department.index') }}">
               {{ __('Department') }}
             </a>
-            <a class="collapse-item" href="{{ route('adminBranch.schedule.index') }}">
+            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.schedule.index') }}">
               {{ __('Schedule') }}
             </a>
-            <a class="collapse-item" href="{{ route('adminBranch.workstation.index') }}">
+            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.workstation.index') }}">
               {{ __('Workstation') }}
             </a>
-            <a class="collapse-item" href="{{ route('adminBranch.user.index') }}">
+            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.user.index') }}">
               {{ __('Virtual Counter') }}
             </a>
-            <a class="collapse-item" href="{{ route('adminBranch.feature') }}">
+            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.feature') }}">
               {{ __('Features') }}
             </a>
           </div>
@@ -106,7 +112,7 @@
         <div class="collapse" id="report" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <a
-              class="collapse-item"
+              class="collapse-item kyoo-sublink"
               href="
                 @if (Auth::user()->Branch->BranchType->is_appointment)
                   {{ route('adminBranch.report.daily') }}
@@ -121,7 +127,7 @@
             </a>
 
             <a
-              class="collapse-item"
+              class="collapse-item kyoo-sublink"
               href="
                 @if (Auth::user()->Branch->BranchType->is_appointment)
                   {{ route('adminBranch.report.appointment.monthly') }}
@@ -133,6 +139,13 @@
               "
             >
               {{ __('Monthly Report') }}
+            </a>
+
+            <a
+              class="collapse-item kyoo-sublink"
+              href="{{ route('adminBranch.report.customerSatisfaction') }}"
+            >
+              Laporan Kepuasan Pelanggan
             </a>
           </div>
         </div>

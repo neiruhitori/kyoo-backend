@@ -113,6 +113,7 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
         Route::get('report/appointment/monthly', 'ReportController@appointmentMonthly')->name('report.appointment.monthly')->middleware('checkAppointmentQueue');
         Route::get('report/directQueue/daily', 'ReportController@directQueueDaily')->name('report.directQueue.daily')->middleware('checkDirectQueue');
         Route::get('report/directQueue/monthly', 'ReportController@directQueueMonthly')->name('report.directQueue.monthly')->middleware('checkDirectQueue');
+        Route::get('report/customerSatisfaction', 'ReportController@customerSatisfaction')->name('report.customerSatisfaction');
     });
 });
 

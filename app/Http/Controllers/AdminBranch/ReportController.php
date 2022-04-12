@@ -8,6 +8,7 @@ use App\Appointment;
 use App\DirectQueue;
 use App\WorkstationService;
 use Auth;
+use DB;
 use App\Interfaces\ExhibitionRepositoryInterface;
 
 class ReportController extends Controller
@@ -258,5 +259,66 @@ class ReportController extends Controller
         }
 
         return view('adminBranch.report.exhibition.monthly', $viewData);
+    }
+
+    public function customerSatisfaction(Request $request)
+    {
+        $queue_type = $this->getUserQueueType();
+
+        $month = $request->month ?? date('n');
+        $year = $request->year ?? date('Y');
+
+        $data['reports'] = [];
+        if ($queue_type == 'appointment') {
+            $data['reports'] = Appointment::select(
+                'date',
+                DB::raw('COUNT(id) AS total_queue'),
+                DB::raw('COUNT(rating) AS total_feedback'),
+                DB::raw('SUM(rating) AS total_rating')
+            )
+                ->whereMonth('date', $month)
+                ->whereYear('date', $year)
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get();
+        } else if ($queue_type == 'direct_queue') {
+            $data['reports'] = DirectQueue::select(
+                DB::raw('DATE(created_at) AS date'),
+                DB::raw('COUNT(id) AS total_queue'),
+                DB::raw('COUNT(rating) AS total_feedback'),
+                DB::raw('SUM(rating) AS total_rating')
+            )
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get();
+        }
+
+        foreach ($data['reports'] as $report) {
+            $report->date = date('j F Y', strtotime($report->date));
+            $report->average_rate = $report->total_feedback ? $report->total_rating / $report->total_feedback : 0;
+            $report->feedback_percentage = (int) floor($report->total_feedback / $report->total_queue * 100);
+        }
+
+        $data['month'] = $month;
+        $data['year'] = $year;
+
+        return view('adminBranch.report.customerSatisfaction', $data);
+    }
+
+    private function getUserQueueType()
+    {
+        $branch_type = Auth::user()->Branch->BranchType;
+
+        $queue_type = 'appointment';
+
+        if ($branch_type->is_direct_queue) {
+            $queue_type = 'direct_queue';
+        } elseif ($branch_type->is_exhibition) {
+            $queue_type = 'exhibition';
+        }
+
+        return $queue_type;
     }
 }
