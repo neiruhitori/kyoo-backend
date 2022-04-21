@@ -224,7 +224,7 @@ class UserController extends Controller
 
         $user = User::findOrFail(Crypt::decrypt($user_id));
         $user->update([
-            'password' => bcrypt($request->password)
+            'password' => $request->password
         ]);
         $request->session()->flash('success', __('module.updated', ['module' => __('Password'), 'name' => $user->name]));
         if (Auth::user()) {
