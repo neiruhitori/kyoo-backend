@@ -85,17 +85,25 @@
             <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.department.index') }}">
               {{ __('Department') }}
             </a>
+
             <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.schedule.index') }}">
               {{ __('Schedule') }}
             </a>
+
             <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.workstation.index') }}">
               {{ __('Workstation') }}
             </a>
+
             <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.user.index') }}">
               {{ __('Virtual Counter') }}
             </a>
+
             <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.feature') }}">
               {{ __('Features') }}
+            </a>
+
+            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.tvDisplayConfiguration.index') }}">
+              Display TV
             </a>
           </div>
         </div>
