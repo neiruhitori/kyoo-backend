@@ -66,6 +66,7 @@
             background-color: rgba(220, 53, 69, .1);
             padding: .2rem .625rem;
             border-radius: 6px;
+            display: none;
         }
     </style>
 @endpush
@@ -80,9 +81,9 @@
 
     <div class="card-body">
         <div class="row">
-            <div class="col-md-4">
-                <div>
-                    <h6 class="font-weight-bold">Display Iklan</h6>
+            <div class="col-md-5">
+                <div class="mb-4">
+                    <h5 class="font-weight-bold">Display Iklan</h5>
                     <p class="text-caption">Tambahkan iklan untuk ditampilkan di monitor antrian</p>
                 </div>
 
@@ -103,7 +104,7 @@
                         <div>
                             <div class="mb-1">Gambar Iklan 1</div>
                             <div>
-                                <button class="delete-image-button">
+                                <button class="delete-image-button" id="delete_button_1" onclick="deleteImage(1)">
                                     <span class="fas fa-times mr-1"></span>
                                     Hapus
                                 </button>
@@ -114,7 +115,6 @@
                     <div class="monitor-image-container">
                         <label for="image_2">
                             <div class="monitor-image-upload">
-                                {{-- Upload image here... --}}
                                 <img id="preview_image_2">
 
                                 <input type="file" name="image_2" id="image_2" onchange="previewImage(this, 2)" hidden>
@@ -126,7 +126,13 @@
                         </label>
 
                         <div>
-                            Gambar Iklan 2
+                            <div class="mb-1">Gambar Iklan 2</div>
+                            <div>
+                                <button class="delete-image-button" id="delete_button_2" onclick="deleteImage(2)">
+                                    <span class="fas fa-times mr-1"></span>
+                                    Hapus
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -144,13 +150,31 @@
                         </label>
 
                         <div>
-                            Gambar Iklan 3
+                            <div class="mb-1">Gambar Iklan 3</div>
+                            <div>
+                                <button class="delete-image-button" id="delete_button_3" onclick="deleteImage(3)">
+                                    <span class="fas fa-times mr-1"></span>
+                                    Hapus
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-8">
+            <div class="col-md-7">
+                <div class="mb-4">
+                    <h5 class="font-weight-bold">Layout Display</h5>
+                    <p class="text-caption">Pilih jenis layout yang sesuai dengan bisnis Anda</p>
+                </div>
+
+                <div>
+                    <div class="form-group" style="width: 200px;">
+                        <select class="form-control">
+                            <option value="Layout 1" selected>Layout 1</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -164,8 +188,15 @@
 
             reader.onload = function (e) {
                 $('#preview_image_' + imageNo).attr('src', e.target.result);
+                $('#delete_button_' + imageNo).show();
             }
         }
+    }
+
+    function deleteImage(imageNo) {
+        $('#image_' + imageNo).val('');
+        $('#preview_image_' + imageNo).removeAttr('src');
+        $('#delete_button_' + imageNo).hide();
     }
 </script>
 
