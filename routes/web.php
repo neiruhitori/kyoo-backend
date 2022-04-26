@@ -70,7 +70,9 @@ Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'chec
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('profile', 'HomeController@edit')->name('profile.edit');
     Route::put('profile', 'HomeController@update')->name('profile.update');
+
     Route::get('tvDisplayConfiguration', 'TVDisplayConfigurationController@index')->name('tvDisplayConfiguration.index');
+    Route::put('tvDisplayConfiguration/{branch}', 'TVDisplayConfigurationController@update')->name('tvDisplayConfiguration.update');
 
     Route::middleware('checkAdminBranchPassword')->group(function () {
         Route::get('export', 'HomeController@exportExcel')->name('export')->middleware('checkAppointmentQueue');
