@@ -45,6 +45,8 @@ Route::get('/direct-queue/branch/{branch_id}/list', 'DirectQueueController@branc
 Route::get('/changeEmail/{id}', 'API\UserController@changeEmail')->name('user.changeEmail');
 Route::get('/userRegister/{id}', 'API\UserController@userRegister')->name('user.userRegister');
 
+Route::get('/display-images/{branch}', 'DisplayImageController@show')->name('display-images');
+
 Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->name('admin.')->group(function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('profile', 'HomeController@edit')->name('profile.edit');

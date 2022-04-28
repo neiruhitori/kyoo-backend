@@ -2,55 +2,34 @@
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <title>Kyoo Admin</title>
+    <link rel="icon" href="{{ asset('img/favico.png') }}" type="image/icon type">
 
-  <title>Kyoo Admin</title>
-  <link rel="icon" href="{{ asset('img/favico.png') }}" type="image/icon type">
-  <!-- Custom fonts for this template-->
-  <link href="{{asset('admin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Custom styles for this template-->
-  <link href="{{asset('admin/css/sb-admin-2.min.css')}}" rel="stylesheet">
-  <style>
-    .img-logo {
-        width: 200px;
-        margin-bottom: 20px;
-    }
-    .img-playstore {
-        width: 200px;
-    }
-    .bg-gradient-primary {
-      background: linear-gradient(121.16deg, #189DCD 0.95%, #0A5194 97.59%);
-    }
-    .fullwidth {
-        width: 100%;
-    }
-    @media(min-width: 300px){
-        p {
-            margin-bottom: 0px;
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
         }
-        .col-md-8 {
-            margin-bottom: 16px;
+  
+        html, body {
+          font-family: Inter, sans-serif;
+          font-weight: 400;
         }
-        .text-right {
-            text-align: left !important;
-        }
-    }
-    @media(min-width: 700px){
-        .text-right {
-            text-align: right !important;
-        }
-    }
-  </style>
+    </style>
 </head>
 
-<body class="bg-gradient-primary">
+<body>
     <div id="app">
         <branch-monitor-component 
             :branch="{{$branch}}"

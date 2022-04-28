@@ -47,6 +47,7 @@ class DirectQueueController extends Controller
         foreach ($services as $service) {
             $service->total_queue = DirectQueue::where('service_id', $service->id)
                 ->whereDate('created_at', date('Y-m-d'))
+                ->where('status', 'waiting')
                 ->count();
         }
 

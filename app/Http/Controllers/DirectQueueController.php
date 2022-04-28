@@ -31,14 +31,24 @@ class DirectQueueController extends Controller
     public function branchList($branch_id)
     {
         $branch_id = Crypt::decrypt($branch_id);
-        $queues = $this->initQuery()->whereHas('WorkstationService.Service', function($query) use ($branch_id){
-            return $query->whereBranchId($branch_id);
-        });
+
+        // OLD CODE
+        // $queues = $this->initQuery()->whereHas('WorkstationService.Service', function($query) use ($branch_id){
+        //     return $query->whereBranchId($branch_id);
+        // });
+
+        $queues = DirectQueue::whereHas('Service', function ($query) use ($branch_id) {
+            return $query->where('branch_id', $branch_id);
+        })
+            ->whereDate('created_at', date('Y-m-d'))
+            ->whereNotIn('status', ['end served', 'no show'])
+            ->orderBy('queue_no')
+            ->get();
 
         return response()->json([
             'success' => true,
             'message' => 'get queues by branch id',
-            'data' => $queues->limit(5)->get()
+            'data' => $queues
         ]);
     }
 }

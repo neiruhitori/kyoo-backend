@@ -15,6 +15,7 @@ use App\Http\Requests\CS\StoreDirectQueue;
 use Auth;
 use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 use App\Events\DirectQueue as DirectQueueEvent;
+use App\Events\QueueStatusUpdated;
 
 class DirectQueueController extends Controller
 {
@@ -323,6 +324,11 @@ class DirectQueueController extends Controller
         $directQueue->called_at = Date('Y-m-d H:i:s');
         $directQueue->save();
 
+        event(new QueueStatusUpdated([
+            'queue_no' => $directQueue->queue_no,
+            'status' => 'served'
+        ]));
+
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on Served',
@@ -455,6 +461,11 @@ class DirectQueueController extends Controller
         $directQueue->done_at = Date('Y-m-d H:i:s');
         $directQueue->save();
 
+        event(new QueueStatusUpdated([
+            'queue_no' => $directQueue->queue_no,
+            'status' => 'end served'
+        ]));
+
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on End Served',
@@ -526,6 +537,11 @@ class DirectQueueController extends Controller
         $directQueue->workstation_service_id = $request->workstation_service_id;
         $directQueue->status = 'waiting';
         $directQueue->save();
+
+        event(new QueueStatusUpdated([
+            'queue_no' => $directQueue->queue_no,
+            'status' => 'waiting'
+        ]));
 
         return response()->json([
             'success' => true,
