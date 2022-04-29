@@ -31,7 +31,7 @@
     <div class="monitor-content">
       <div class="monitor-content-header">
         <div class="monitor-company-logo">
-          <img src="/img/logo-rs-mentari.png" />
+          <img v-if="!!branch.logo" :src="`/storage/${branch.logo}`" />
         </div>
 
         <div class="monitor-time-container">
@@ -157,8 +157,13 @@
   align-items: center;
 }
 
+.monitor-company-logo {
+  display: flex;
+  align-items: center;
+}
+
 .monitor-company-logo img {
-  height: 3rem;
+  height: 3.3rem;
 }
 
 .monitor-time-container {
