@@ -27,6 +27,14 @@
           <span>{{ __('Branch QR Code') }}</span></a>
       </li>
 
+      @if (Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+          <li class="nav-item">
+            <a class="nav-link" href="{{route('adminBranch.directQueue.monitor')}}" target="_blank">
+              <i class="fas fa-fw fa-tv"></i>
+              <span>{{ __('Direct Queue Monitor') }}</span></a>
+          </li>
+      @endif
+
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#instruction-of-use" aria-expanded="true" aria-controls="instruction-of-use">
           <i class="fas fa-fw fa-info-circle"></i>
@@ -44,14 +52,6 @@
           </div>
         </div>
       </li>
-
-      @if (Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
-          <li class="nav-item">
-            <a class="nav-link" href="{{route('adminBranch.directQueue.monitor')}}" target="_blank">
-              <i class="fas fa-fw fa-tv"></i>
-              <span>{{ __('Direct Queue Monitor') }}</span></a>
-          </li>
-      @endif
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
@@ -98,13 +98,17 @@
               {{ __('Virtual Counter') }}
             </a>
 
-            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.feature') }}">
-              {{ __('Features') }}
-            </a>
+            @if (Auth::user()->Branch->BranchType->is_premium)
+              <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.feature') }}">
+                {{ __('Features') }}
+              </a>
+            @endif
 
-            <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.tvDisplayConfiguration.index') }}">
-              Display TV
-            </a>
+            @if (Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+              <a class="collapse-item kyoo-sublink" href="{{ route('adminBranch.tvDisplayConfiguration.index') }}">
+                Monitor Antrian (TV)
+              </a>
+            @endif
           </div>
         </div>
       </li>
