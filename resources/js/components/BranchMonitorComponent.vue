@@ -309,7 +309,7 @@ export default {
       setTimeout(function () {  
         self.activeImage++;
 
-        if (self.activeImage > this.promotionImages.length) {
+        if (self.activeImage > self.promotionImages.length) {
           self.activeImage = 1;
         }
 
