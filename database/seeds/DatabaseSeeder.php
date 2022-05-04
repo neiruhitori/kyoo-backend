@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use App\User;
-
+    
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -12,9 +14,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(UsersTableSeeder::class);
-        $this->call(IndoRegionProvinceSeeder::class);
-        $this->call(IndoRegionRegencySeeder::class);
-        $this->call(BranchTypesTableSeeder::class);
+        $this->call([
+            UsersTableSeeder::class,
+            IndoRegionProvinceSeeder::class,
+            IndoRegionRegencySeeder::class,
+            BranchTypesTableSeeder::class,
+            IndustryCategorySeeder::class,
+            FreeExhibitionLicenseSeeder::class,
+            TVLayoutSeeder::class
+        ]);
     }
 }

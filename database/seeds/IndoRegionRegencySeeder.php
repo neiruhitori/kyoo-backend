@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 /*
  * This file is part of the IndoRegion package.
  *
@@ -7,6 +9,7 @@
  *
  */
 
+use DB;
 use Illuminate\Database\Seeder;
 use AzisHapidin\IndoRegion\RawDataGetter;
 
