@@ -38,7 +38,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/appointment/status/{id}', 'AppointmentController@status')->name('appointment.status');
 
 // Direct Queue Monitor
-Route::get('/direct-queue/monitor/{branch_id}', 'DirectQueueController@monitor')->name('directQueue.monitor')->middleware('signed');
+Route::get('/direct-queue/monitor/{branch_id}', 'DirectQueueController@monitor')
+    ->name('directQueue.monitor')
+    ->middleware('signed');
+
+Route::get('/queue-caller', 'QueueCallerController@call')->name('queueCaller');
+
 Route::get('/direct-queue/branch/{branch_id}/list', 'DirectQueueController@branchList')->name('directQueue.branch.list');
 
 // success state from API

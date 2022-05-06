@@ -375,6 +375,11 @@ class DirectQueueController extends Controller
         $directQueue->called_at = Date('Y-m-d H:i:s');
         $directQueue->save();
 
+        event(new QueueStatusUpdated([
+            'queue_no' => $directQueue->queue_no,
+            'status' => 'recall'
+        ]));
+
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on Served',

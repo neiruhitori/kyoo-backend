@@ -105,7 +105,6 @@
                       <button
                         class="btn btn-info fullwidth mb-2"
                         @click="onRecall"
-                        disabled
                       >
                         Panggil Ulang
                       </button>
@@ -114,6 +113,7 @@
                       <button
                         class="btn btn-success fullwidth mb-2"
                         @click="onEndServed"
+                        :disabled="recallCounter > max_recall"
                       >
                         Layanan Berakhir
                       </button>
@@ -288,6 +288,7 @@ export default {
       isLoading: true,
       keyword: "",
       debounce: null,
+      recallCounter: 0,
       queues: [],
       selected_queue: "",
       isOnServed: false,
@@ -369,12 +370,16 @@ export default {
           queue_no: this.selected_queue,
         });
         this.onServedQueue = queue.data.data;
+
+        await this.getQueues();
+
         if (this.onServedQueue.recall_count >= this.max_recall) {
+          this.selected_queue = this.queues[0]?.queue_no || "";
           this.isOnServed = false;
         } else {
           this.isOnServed = true;
         }
-        this.getQueues();
+        this.recalCounter++;
       } catch (error) {
         alert(error.response.data.message);
       }

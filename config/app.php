@@ -171,6 +171,7 @@ return [
         Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Kawankoding\Fcm\FcmServiceProvider::class,
+        ProtoneMedia\LaravelFFMpeg\Support\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -237,6 +238,7 @@ return [
         'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
         'Fcm' => Kawankoding\Fcm\FcmFacade::class,
+        'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class
     ],
 
 ];

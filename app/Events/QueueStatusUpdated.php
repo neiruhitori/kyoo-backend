@@ -15,14 +15,16 @@ class QueueStatusUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    protected $data;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($data)
     {
-        
+        $this->data = $data;
     }
 
     /**
@@ -33,5 +35,10 @@ class QueueStatusUpdated implements ShouldBroadcast
     public function broadcastOn()
     {
         return new Channel('event_direct_queue_general.' . Auth::user()->branch_id);
+    }
+
+    public function broadcastWith()
+    {
+        return $this->data;
     }
 }
