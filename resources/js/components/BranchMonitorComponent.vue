@@ -12,7 +12,7 @@
 
       <h6 class="sidebar-subtitle">MENUNGGU</h6>
 
-      <div class="waiting-list" v-if="!waitingQueues.length">
+      <div class="waiting-list" v-if="!waitingQueue.length">
         <div class="waiting-card waiting-card-empty"></div>
         <div class="waiting-card waiting-card-empty"></div>
         <div class="waiting-card waiting-card-empty"></div>
@@ -21,7 +21,7 @@
       </div>
 
       <div class="waiting-list">
-        <div class="waiting-card" v-for="q in waitingQueues" :key="q.queue_no">
+        <div class="waiting-card" v-for="q in waitingQueue" :key="q.queue_no">
           <h4 class="queue-no">{{ q.queue_no }}</h4>
           <p v-if="q.name || q.phone">{{ q.name || q.phone }}</p>
         </div>
@@ -94,12 +94,13 @@ export default {
   data() {
     return {
       isLoading: false,
-      waitingQueues: [],
+      waitingQueue: [],
       servingQueue: null,
       activeImage: 1,
       currentDate: new Date(),
       promotionImages: [],
-      isAutoPlayBlocked: false
+      isAutoPlayBlocked: false,
+      playQueue: []
     };
   },
 
@@ -125,6 +126,7 @@ export default {
     this.updateCurrentDate();
 
     this.checkAutoplayPermission();
+    this.subscribeAudioEvent()
   },
 
   computed: {
@@ -148,6 +150,17 @@ export default {
   },
 
   methods: {
+    subscribeAudioEvent() {
+      const self = this;
+      audioEl.onended = function () {
+        if (self.playQueue.length) {
+          audioEl.src = self.playQueue[0];
+          self.playQueue.shift();
+          audioEl.play();
+        }
+      }
+    },
+
     checkAutoplayPermission() {
       audioEl.src = '';
       const audioPromise = audioEl.play();
@@ -172,10 +185,8 @@ export default {
     updateCurrentDate() {
       const self = this
 
-      setTimeout(function () {
+      setInterval(function () {
         self.currentDate = new Date()
-
-        self.updateCurrentDate()
       }, 5000)
     },
 
@@ -200,7 +211,7 @@ export default {
 
         const queues = data.data.data;
         
-        this.waitingQueues = queues.filter(v => v.status === "waiting");
+        this.waitingQueue = queues.filter(v => v.status === "waiting");
         this.servingQueue = queues.find(v => v.status === 'served');
       } catch (error) {
         alert(error.response.data.message);
@@ -214,19 +225,19 @@ export default {
           queue_no: queueNo
         }
       });
-      audioEl.src = audio.data;
 
-      audioEl.play();
+      if (audioEl.paused) {
+        audioEl.src = audio.data;
+        audioEl.play();
+      } else {
+        this.playQueue.push(audio.data);
+      }
     }
   },
 };
 </script>
 
 <style scoped>
-.branch-logo {
-  height: 100px;
-  width: 100px;
-}
 
 .monitor-container {
   padding: 1.625rem;
