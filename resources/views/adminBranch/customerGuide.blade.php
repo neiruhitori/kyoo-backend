@@ -14,7 +14,7 @@
                 </p>
     
                 <div style="display: flex; justify-content: center; align-items: center;">
-                    <a href="{{ url('kyooTicket/' . $queue_type . '/' . Auth::user()->branch_id. '/services') }}" target="__blank" id="kyooTicketUrl">{{ url('kyooTicket/' . $queue_type . '/' . Auth::user()->branch_id. '/services') }}</a>
+                    <a href="{{ $short_url }}" target="_blank">{{ $short_url }}</a>
                     <button class="btn btn-secondary ml-2" onclick="copyToClipboard()">Copy URL</button>
                 </div>
             </div>

@@ -42,7 +42,8 @@ Route::get('/direct-queue/monitor/{branch_id}', 'DirectQueueController@monitor')
     ->name('directQueue.monitor')
     ->middleware('signed');
 
-Route::get('/queue-caller', 'QueueCallerController@call')->name('queueCaller');
+Route::get('/queue-caller', 'QueueCallerController@call')
+    ->name('queueCaller');
 
 Route::get('/direct-queue/branch/{branch_id}/list', 'DirectQueueController@branchList')->name('directQueue.branch.list');
 
@@ -167,3 +168,5 @@ Route::view('/kyooTicket/{queue_type}/{branch_id}/{path?}', 'kyoo-ticket.index')
         'branch_id' => '[0-9]+',
         'path' => '.*',
     ]);
+
+Route::get('/{shortURLKey}', '\AshAllenDesign\ShortURL\Controllers\ShortURLController');
