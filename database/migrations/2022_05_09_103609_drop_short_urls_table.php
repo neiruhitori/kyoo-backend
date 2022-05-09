@@ -13,6 +13,10 @@ class DropShortUrlsTable extends Migration
      */
     public function up()
     {
+        Schema::table('short_url_visits', function (Blueprint $table) {
+            $table->dropForeign('short_url_id');
+        });
+
         Schema::dropIfExists('short_urls');
     }
 
