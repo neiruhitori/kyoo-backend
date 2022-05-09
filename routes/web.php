@@ -169,4 +169,4 @@ Route::view('/kyooTicket/{queue_type}/{branch_id}/{path?}', 'kyoo-ticket.index')
         'path' => '.*',
     ]);
 
-Route::get('/{shortURLKey}', '\AshAllenDesign\ShortURL\Controllers\ShortURLController');
+Route::get('/{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');
