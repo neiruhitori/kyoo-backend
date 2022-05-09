@@ -153,12 +153,14 @@
               {{ __('Monthly Report') }}
             </a>
 
-            <a
-              class="collapse-item kyoo-sublink"
-              href="{{ route('adminBranch.report.customerSatisfaction') }}"
-            >
-              Laporan Kepuasan Pelanggan
-            </a>
+            @if (Auth::user()->Branch->BranchType->is_premium)
+              <a
+                class="collapse-item kyoo-sublink"
+                href="{{ route('adminBranch.report.customerSatisfaction') }}"
+              >
+                Laporan Kepuasan Pelanggan
+              </a>
+            @endif
           </div>
         </div>
       </li>

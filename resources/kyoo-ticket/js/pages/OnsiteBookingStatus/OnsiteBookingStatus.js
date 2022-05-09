@@ -144,6 +144,7 @@ function OnsiteBookingStatus() {
     let booking = null
     let branch = null
     let schedule = null
+    let branchType = 'free'
 
     const bookingQuery = useQuery(['booking', bookingId], () => getBooking('onsite', bookingId))
     const branchQuery = useQuery(['branch', branchId], () => fetchBranch(branchId), {
@@ -164,6 +165,10 @@ function OnsiteBookingStatus() {
 
     if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
         branch = branchQuery.data
+
+        if (branch.branch_type.is_premium) {
+            branchType = 'premium'
+        }
 
         schedule = branch.schedule.find(v => {
             return v.day === getDayName(formatBrowser(booking.date), 'en')
@@ -227,7 +232,7 @@ function OnsiteBookingStatus() {
                 />}
             </div>
 
-            {booking.status === 'end served' && <Card style={{
+            {branchType === 'premium' && booking.status === 'end served' && <Card style={{
                 marginBottom: '2rem',
                 padding: '1.625rem'
             }}>
