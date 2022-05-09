@@ -49,4 +49,9 @@ class DirectQueue extends Model
     {
         return $this->hasOne(WorkstationVct::class, 'workstation_id', 'workstation_id');
     }
+
+    public function Workstation(): BelongsTo
+    {
+        return $this->belongsTo(Workstation::class);
+    }
 }

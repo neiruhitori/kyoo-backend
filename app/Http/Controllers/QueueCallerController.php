@@ -6,16 +6,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use FFMpeg;
 use Storage;
+use App\DirectQueue;
 
 class QueueCallerController extends Controller
 {
     public function call(Request $request)
     {
         $audio_files = ['audio/vo/nomor-antrian.wav'];
+
+        // Queue number audio
         for ($i = 0; $i < strlen($request->queue_no); $i++) {
             array_push($audio_files, 'audio/vo/' . $request->queue_no[$i] . '.wav');
         }
+
         array_push($audio_files, 'audio/vo/mohon-ke-counter.wav');
+
+        // Counter number audio
+        $queue = $this->getQueue($request->queue_no);
+        $counter_id = substr($queue->Workstation->label, 8);
+
+        for ($i = 0; $i < strlen($counter_id); $i++) {
+            array_push($audio_files, 'audio/vo/' . $counter_id[$i] . '.wav');
+        }
 
         FFMpeg::open($audio_files)
             ->export()
@@ -32,5 +44,10 @@ class QueueCallerController extends Controller
                 'data' => 'data:audio/wav;base64,' . $mixed_sound
             ]
         ]);
+    }
+
+    protected function getQueue($queue_no)
+    {
+        return DirectQueue::with('Workstation')->where('queue_no', $queue_no)->first();
     }
 }
