@@ -34,6 +34,7 @@ export default function BookingStatus() {
     let slot = null
     let branch = null
     let bookingStatus = ''
+    let branchType = 'free'
     
     const bookingQuery = useQuery('booking', () => getBooking(queueType, bookingId))
     const serviceQuery = useQuery('service', () => fetchServiceById(booking?.service_id, {
@@ -64,6 +65,9 @@ export default function BookingStatus() {
     }
     if (branchQuery.status === 'success') {
         branch = branchQuery.data
+        if (branch.branch_type.is_premium) {
+            branchType = 'premium'
+        }
     }
     if (bookingQuery.status === 'success' && serviceQuery.status === 'success') {
         service = serviceQuery.data
@@ -369,7 +373,7 @@ export default function BookingStatus() {
                 </div>
             </Card>}
 
-            {queueType === 'appointment' && booking.status === 'end served' && <Card style={{
+            {branchType === 'premium' && queueType === 'appointment' && booking.status === 'end served' && <Card style={{
                 margin: '1.625rem 0',
                 padding: '1.625rem'
             }}>
