@@ -201,30 +201,6 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-xl-12 col-lg-7">
-        <!-- Area Chart -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{ __('Total Visit') }}</h6>
-            </div>
-            <div class="card-body">
-                <div class="chart-area">
-                    <div class="chartjs-size-monitor">
-                        <div class="chartjs-size-monitor-expand">
-                            <div class=""></div>
-                        </div>
-                        <div class="chartjs-size-monitor-shrink">
-                            <div class=""></div>
-                        </div>
-                    </div>
-                    <canvas id="myAreaChartDirectQueue" style="display: block; height: 320px; width: 387px;" width="774"
-                        height="640" class="chartjs-render-monitor"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 @endif
 {{-- END DIRECT QUEUE --}}
 @endsection
