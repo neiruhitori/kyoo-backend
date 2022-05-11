@@ -21,7 +21,7 @@ class DirectQueueController extends Controller
 
     public function monitor(Request $request, $branch_id)
     {
-        $branch = Branch::findOrFail(Crypt::decrypt($branch_id));
+        $branch = Branch::with('BranchConfiguration')->findOrFail(Crypt::decrypt($branch_id));
         return view('directQueue.monitor', [
             'branch' => $branch,
             'branchIdEncrypted' => $branch_id,

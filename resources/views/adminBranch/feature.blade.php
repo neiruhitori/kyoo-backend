@@ -32,6 +32,8 @@
 
 <div class="row">
     <div class="col-md-12">
+        @include('layouts.alert')
+
         @if (Auth::user()->Branch->BranchType->is_direct_queue)
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -41,7 +43,6 @@
                 </div>
                 @csrf
                 <div class="card-body">
-                    @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
                             <form action="{{route('adminBranch.branchConfiguration.update')}}" method="post">
@@ -50,23 +51,58 @@
 
                                 <div class="form-group">
                                     <label for="maximum_recall">{{ __('Max Recall') }}</label>
-                                    <input name="maximum_recall" type="number" min="0" class="form-control @error('maximum_recall') is-invalid @enderror" value="{{old('maximum_recall') ?: Auth::user()->Branch->BranchConfiguration->maximum_recall}}" required>
+                                    <input
+                                        name="maximum_recall"
+                                        type="number"
+                                        min="0"
+                                        class="form-control @error('maximum_recall') is-invalid @enderror"
+                                        value="{{ $branch_config->maximum_recall ?? old('maximum_recall') }}"
+                                        required
+                                    >
                                     @include('layouts.inputError', ['errorName' => 'maximum_recall'])
                                 </div>
 
                                 <div class="form-group">
                                     <label for="maximum_requeue_count">{{ __('Max Requeue') }}</label>
-                                    <input name="maximum_requeue_count" type="number" min="0" class="form-control @error('maximum_requeue_count') is-invalid @enderror" value="{{old('maximum_requeue_count') ?: Auth::user()->Branch->BranchConfiguration->maximum_requeue_count}}" required>
+                                    <input
+                                        name="maximum_requeue_count"
+                                        type="number"
+                                        min="0"
+                                        class="form-control @error('maximum_requeue_count') is-invalid @enderror"
+                                        value="{{ $branch_config->maximum_requeue_count ?? old('maximum_requeue_count') }}"
+                                        required
+                                    >
                                     @include('layouts.inputError', ['errorName' => 'maximum_requeue_count'])
                                 </div>
 
                                 <div class="form-group">
                                     <label for="allow_transfer">{{ __('Allow Transfer') }}</label>
-                                    <select name="allow_transfer" id="allow_transfer" class="form-control @error('allow_transfer') is-invalid @enderror" {{ Auth::user()->Branch->BranchType->is_premium ?: 'disabled' }}>
-                                        <option value="0">{{ __('No') }}</option>
-                                        <option value="1">{{ __('Yes') }}</option>
+                                    <select
+                                        name="allow_transfer"
+                                        id="allow_transfer"
+                                        class="form-control @error('allow_transfer') is-invalid @enderror"
+                                        {{ Auth::user()->Branch->BranchType->is_premium ?: 'disabled' }}
+                                    >
+                                        <option value="0" {{ $branch_config->allow_transfer ?: 'selected' }}>{{ __('No') }}</option>
+                                        <option value="1" {{ !$branch_config->allow_transfer ?: 'selected' }}>{{ __('Yes') }}</option>
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'allow_transfer'])
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="allow_transfer">Panggilan Suara Antrian</label>
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            name="queue_voice"
+                                            class="form-check-input"
+                                            id="queue-voice-label"
+                                            {{ $branch_config->queue_voice || old('queue_voice') ? 'checked' : '' }}
+                                        >
+
+                                        <label for="queue-voice-label" class="form-check-label">Aktifkan</label>
+                                    </div>
+                                    @include('layouts.inputError', ['errorName' => 'queue_voice'])
                                 </div>
 
                                 <button type="submit" class="btn btn-warning">{{ __('Update') }}</button>
@@ -85,7 +121,6 @@
             </div>
             @csrf
             <div class="card-body">
-                @include('layouts.alert')
                 <div class="row">
                     <div class="col-md-12">
                         <b class="my-4">

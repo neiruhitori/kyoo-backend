@@ -92,6 +92,7 @@ export default {
 
   data() {
     return {
+      config: this.branch.branch_configuration,
       isLoading: false,
       waitingQueue: [],
       servingQueue: null,
@@ -111,7 +112,7 @@ export default {
       .listen('QueueStatusUpdated', (message) => {
         this.getQueues();
 
-        if (message.status && ['recall', 'served'].includes(message.status)) {
+        if (this.config.queue_voice && message.status && ['recall', 'served'].includes(message.status)) {
           this.getQueueCallAudio(message.queue_no);
         }
       });
