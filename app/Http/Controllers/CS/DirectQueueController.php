@@ -160,7 +160,7 @@ class DirectQueueController extends Controller
     private function get_queue_status_qr($queue_id)
     {
         return QrCode::size(180)->generate(
-            url('kyooTicket/onsite/' . Auth::user()->branch_id . '/booking-status/' . $queue_id)
+            url('customer/' . Auth::user()->branch_id . '/' . Auth::user()->Branch->queue_type . '/booking-status/' . $queue_id)
         );
     }
 

@@ -160,13 +160,6 @@ Route::group([], __DIR__ . '/web/branch_config_guide.php');
 Route::group([], __DIR__ . '/web/customer_guide.php');
 Route::group([], __DIR__ . '/web/slot_time_guide.php');
 Route::group([], __DIR__ . '/web/branch_qr_code.php');
-
-Route::view('/kyooTicket/{queue_type}/{branch_id}/{path?}', 'kyoo-ticket.index')
-    ->name('kyooTicket.index')
-    ->where([
-        'queue_type' => 'exhibition|appointment|onsite',
-        'branch_id' => '[0-9]+',
-        'path' => '.*',
-    ]);
+Route::group([], __DIR__ . '/web/customer.php');
 
 Route::get('/{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');

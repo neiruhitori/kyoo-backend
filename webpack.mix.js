@@ -16,7 +16,7 @@ mix.js("resources/js/app.js", "public/js").sass(
     "public/css"
 );
 
-mix.react("resources/kyoo-ticket/js/app.js", "public/kyoo-ticket/js");
+mix.react("resources/js/customer/app.js", "public/js/customer");
 
 if (mix.inProduction()) {
     mix.version();

@@ -17,20 +17,9 @@ class BranchQrCodeController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $branchLicense = Auth::user()->Branch->BranchType;
-        $queueType = 'exhibition';
-
-        if ($branchLicense->is_appointment) {
-            $queueType = 'appointment';
-        }
-
-        if ($branchLicense->is_direct_queue) {
-            $queueType = 'onsite';
-        }
-
         $data = [
             'qr' => QrCode::size(180)->generate(
-                url('kyooTicket/' . $queueType  . '/' . Auth::user()->branch_id . '/services')
+                url('customer/' . Auth::user()->branch_id . '/' . Auth::user()->Branch->queue_type)
             )
         ];
 

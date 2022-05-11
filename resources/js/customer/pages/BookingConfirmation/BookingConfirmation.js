@@ -18,9 +18,9 @@ import { fetchServiceById } from '../../api/services'
 import { createBooking } from '../../api/booking'
 
 function BookingConfirmation() {
-    const { queueType, branchId, serviceId } = useParams()
+    const { branchId, serviceId } = useParams()
     const [searchParams] = useSearchParams()
-    const PAGE_TITLE = `Konfirmasi ${queueType}`
+    const PAGE_TITLE = `Konfirmasi Antrian`
 
     const branchRes = useQuery('branch', () => fetchBranch(branchId))
     const serviceRes = useQuery('service', () => fetchServiceById(serviceId, {
@@ -33,6 +33,7 @@ function BookingConfirmation() {
     let service = null
     let slot = null
     let booking = null
+    let queueType = null
 
     if (branchRes.status === 'success') {
         branch = branchRes.data
@@ -124,7 +125,7 @@ function BookingConfirmation() {
                             Antrian Anda sudah tersimpan dan sudah dikirimkan ke Email Anda sebagai bukti antrian telah dibooking
                         </p>
 
-                        <Link to={`/kyooTicket/${queueType}/${branchId}/booking-status/${booking.id}`} style={{
+                        <Link to={`/customer/${branchId}/${queueType}/booking-status/${booking.id}`} style={{
                             padding: '1rem 1.125rem',
                             backgroundColor: '#ECFBFF',
                             color: '#103C7C',

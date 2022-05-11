@@ -195,7 +195,7 @@ function OnsiteBookingStatus() {
             display: 'flex',
             alignItems: 'center'
         }}>
-            <Link to={`/kyooTicket/onsite/${branchId}/services`} style={{
+            <Link to={`/customer/${branchId}/${queueType}/services`} style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center'

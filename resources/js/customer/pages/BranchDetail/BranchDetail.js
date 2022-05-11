@@ -76,7 +76,7 @@ export default function BranchDetail() {
                     <div style={{
                         marginRight:' 0.75rem'
                     }}>
-                        <Link to={`/kyooTicket/${queueType}/${branchId}/services`} style={{
+                        <Link to={`/customer/${branchId}/${queueType}/services`} style={{
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center'

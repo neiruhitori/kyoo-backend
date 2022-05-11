@@ -5,7 +5,6 @@ namespace App\Http\Controllers\AdminBranch;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
-use ShortURL;
 
 class CustomerGuideController extends Controller
 {

@@ -21,6 +21,19 @@ class Branch extends Model
         'regency_id' => 'integer',
     ];
 
+    public function getQueueTypeAttribute()
+    {
+        $queue_type = 'onsite';
+        if ($this->BranchType->is_appointment) {
+            $queue_type = 'appointment';
+        }
+        if ($this->BranchType->is_exhibition) {
+            $queue_type = 'exhibition';
+        }
+
+        return $queue_type;
+    }
+
     public function IndustryCategory()
     {
         return $this->belongsTo('App\IndustryCategory')->withTrashed();

@@ -48,5 +48,5 @@
     <div id="root"></div>
   </body>
 
-  <script src="{{ mix('kyoo-ticket/js/app.js') }}"></script>
+  <script src="{{ mix('js/customer/app.js') }}"></script>
 </html>

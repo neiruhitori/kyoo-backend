@@ -80,7 +80,7 @@ function ServiceList() {
     }
 
     if (bookingMutation.status === 'success' && bookingMutation.data.success) {
-        navigate(`/kyooTicket/${queueType}/${branchId}/booking-status/${bookingMutation.data.data.id}`)
+        navigate(`/customer/${branchId}/${queueType}/booking-status/${bookingMutation.data.data.id}`)
     }
 
     return <>
@@ -112,7 +112,7 @@ function ServiceList() {
                 }}>
                     <Chip label={branch?.industry_category.name} />
 
-                    <Link to={`/kyooTicket/${queueType}/${branchId}/detail`}>
+                    <Link to={`/customer/${branchId}/${queueType}/detail`}>
                         <div style={{
                             color: '#FFFFFF',
                             display: 'flex',

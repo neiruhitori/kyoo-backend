@@ -48,7 +48,7 @@ function VisitorInformation() {
                 notes
             })
 
-            navigate(`/kyooTicket/${queueType}/${branchId}/services/${serviceId}/booking-confirmation?${formData}`)
+            navigate(`/customer/${branchId}/${queueType}/services/${serviceId}/booking-confirmation?${formData}`)
         } else {
             validator.showMessages()
             forceUpdate()

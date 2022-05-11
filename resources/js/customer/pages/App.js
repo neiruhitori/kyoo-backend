@@ -24,13 +24,14 @@ function App() {
     return <AppContainer>
         <QueryClientProvider client={new QueryClient()}>
             <Routes>
-                <Route path="/kyooTicket/:queueType/:branchId/services" element={<ServiceList />} />
-                <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId" element={<TimeSlotList />} />
-                <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId/visitor" element={<VisitorInformation />} />
-                <Route path="/kyooTicket/:queueType/:branchId/services/:serviceId/booking-confirmation" element={<BookingConfirmation />} />
-                <Route path="/kyooTicket/onsite/:branchId/booking-status/:bookingId" element={<OnsiteBookingStatus />} />
-                <Route path="/kyooTicket/:queueType/:branchId/booking-status/:bookingId" element={<BookingStatus />} />
-                <Route path="/kyooTicket/:queueType/:branchId/detail" element={<BranchDetail />} />
+                <Route path="/customer/:branchId/:queueType" element={<ServiceList />} />
+                <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
+                <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
+                <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
+                <Route path="/customer/:branchId/:queueType/services/:serviceId/booking-confirmation" element={<BookingConfirmation />} />
+                <Route path="/customer/:branchId/:queueType/booking-status/:bookingId" element={<OnsiteBookingStatus />} />
+                <Route path="/customer/:branchId/:queueType/booking-status/:bookingId" element={<BookingStatus />} />
+                <Route path="/customer/:branchId/:queueType/detail" element={<BranchDetail />} />
             </Routes>
         </QueryClientProvider>
     </AppContainer>

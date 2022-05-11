@@ -3,7 +3,7 @@
 
 Anda telah membuat appointment pada tanggal {{ $booking_date }} di {{ $branch_name }}. Klik tombol dibawah untuk melacak Appointment Anda.
 
-@component('mail::button', ['url' => url('kyooTicket/appointment/' . $branch_id. '/booking-status/' . $appointment_id)])
+@component('mail::button', ['url' => url('customer/' . $branch_id. '/appointment/booking-status/' . $appointment_id)])
 {{ __('Check My Appointment') }}
 @endcomponent
 

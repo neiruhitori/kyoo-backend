@@ -14,7 +14,7 @@
                 </p>
     
                 <div style="display: flex; justify-content: center; align-items: center;">
-                    <a href="{{ $short_url }}" target="_blank">{{ $short_url }}</a>
+                    <a href="{{ $short_url }}" target="_blank" id="customer-url">{{ $short_url }}</a>
                     <button class="btn btn-secondary ml-2" onclick="copyToClipboard()">Copy URL</button>
                 </div>
             </div>
@@ -56,7 +56,7 @@
 
 <script>
     function copyToClipboard() {
-        const urlEl = document.getElementById('kyooTicketUrl')
+        const urlEl = document.getElementById('customer-url')
         navigator.clipboard.writeText(urlEl.href)
     }
 </script>
