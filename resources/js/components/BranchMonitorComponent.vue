@@ -6,7 +6,6 @@
 
         <div class="calling-card-body">
           <h4 class="queue-no" v-if="servingQueue">{{ servingQueue.queue_no }}</h4>
-          <p v-if="servingQueue && servingQueue.name">{{ servingQueue.name }}</p>
         </div>
       </div>
 
@@ -211,7 +210,7 @@ export default {
 
         const queues = data.data.data;
         
-        this.waitingQueue = queues.filter(v => v.status === "waiting");
+        this.waitingQueue = queues.filter(v => v.status === 'waiting');
         this.servingQueue = queues.find(v => v.status === 'served');
       } catch (error) {
         alert(error.response.data.message);

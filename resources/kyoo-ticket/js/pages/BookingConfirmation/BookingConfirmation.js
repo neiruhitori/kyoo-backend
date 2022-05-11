@@ -10,7 +10,7 @@ import Button from '../../components/Button'
 import Loading from '../../components/Loading'
 import Tooltip from '../../components/Tooltip'
 import TooltipContent from '../../components/TooltipContent'
-import Alert from '../../components/Alert'
+import DangerAlert from '../../components/DangerAlert'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import { fetchBranch } from '../../api/branch'
@@ -99,9 +99,21 @@ function BookingConfirmation() {
             <div style={{
                 flexGrow: '1'
             }}>
-                {bookingMutation.status === 'success' && !bookingMutation.data.success && <Alert style={{
+                {bookingMutation.status === 'success' && !bookingMutation.data.success && <DangerAlert style={{
                     marginBottom: '1rem'
-                }}>Gagal membuat antrian: {bookingMutation.data.message}</Alert>}
+                }}>
+                    <h4 style={{
+                        fontSize: '1rem',
+                        marginBottom: '.375rem',
+                        textTransform: 'capitalize'
+                    }}>Gagal membuat antrian</h4>
+
+                    <p style={{
+                        lineHeight: '1.5',
+                    }}>
+                        {bookingMutation.data.message}
+                    </p>
+                </DangerAlert>}
 
                 {bookingMutation.status === 'success' && bookingMutation.data.success && <Tooltip>
                     <TooltipContent>

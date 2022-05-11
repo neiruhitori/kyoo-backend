@@ -6,8 +6,12 @@ use Illuminate\Support\ServiceProvider;
 
 use App\Interfaces\BranchTypeRepositoryInterface;
 use App\Repositories\BranchTypeRepository;
+
 use App\Interfaces\ExhibitionRepositoryInterface;
 use App\Repositories\ExhibitionRepository;
+
+use App\Interfaces\DirectQueueRepositoryInterface;
+use App\Repositories\DirectQueueRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -20,6 +24,7 @@ class RepositoryServiceProvider extends ServiceProvider
     {
         $this->app->bind(ExhibitionRepositoryInterface::class, ExhibitionRepository::class);
         $this->app->bind(BranchTypeRepositoryInterface::class, BranchTypeRepository::class);
+        $this->app->bind(DirectQueueRepositoryInterface::class, DirectQueueRepository::class);
     }
 
     /**

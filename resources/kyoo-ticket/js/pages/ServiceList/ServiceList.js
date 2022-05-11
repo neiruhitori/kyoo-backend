@@ -23,7 +23,7 @@ import ServiceItem from '../../components/ServiceItem'
 import MainContent from '../../components/MainContent'
 import ServiceItemSkeleton from '../../components/ServiceItemSkeleton'
 import Loading from '../../components/Loading'
-import Alert from '../../components/Alert'
+import DangerAlert from '../../components/DangerAlert'
 
 import AngleRightIcon from '../../icons/AngleRightIcon'
 import CalendarIcon from '../../icons/CalendarIcon'
@@ -153,9 +153,21 @@ function ServiceList() {
         </Banner>}
 
         <MainContent>
-            {bookingMutation.status === 'success' && !bookingMutation.data.success && <Alert style={{
+            {bookingMutation.status === 'success' && !bookingMutation.data.success && <DangerAlert style={{
                 marginBottom: '1.5rem'
-            }}>Gagal membuat antrian: {bookingMutation.data.message}</Alert>}
+            }}>
+                <h4 style={{
+                    fontSize: '1rem',
+                    marginBottom: '.375rem',
+                    textTransform: 'capitalize'
+                }}>Gagal membuat antrian</h4>
+
+                <p style={{
+                    lineHeight: '1.5',
+                }}>
+                    {bookingMutation.data.message}
+                </p>
+            </DangerAlert>}
 
             {showCalendar && <CalendarWrapper
                 onClick={handleCalendarClose}

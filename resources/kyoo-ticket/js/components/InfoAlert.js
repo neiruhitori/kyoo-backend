@@ -5,7 +5,7 @@ import CircleInfoIcon from '../icons/CircleInfoIcon'
 const InfoAlertRoot = styled.div`
     background-color: #E8F4FD;
     color: #005AA3;
-    box-sizing: 6px;
+    box-sizing: border-box;
     border: .5px solid #D0E9FB;
     display: flex;
     border-radius: 6px;

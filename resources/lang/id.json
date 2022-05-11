@@ -152,6 +152,11 @@
     "Notes": "Catatan",
     "Max Recall": "Maks. Panggil Ulang",
     "Max Requeue": "Maks. Antri Ulang",
+    "waiting": "menunggu",
+    "end served": "layanan selesai",
+    "no show": "tidak hadir",
+    "book": "dipesan",
+    "served": "dilayani",
     
     "create.module": "Tambah :Module",
     "edit.module": "Edit :Module",

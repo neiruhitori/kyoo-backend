@@ -17,9 +17,16 @@ use App\Http\Resources\DirectQueue\Detail as DirectQueueDetail;
 use Auth;
 use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 use App\Events\DirectQueue as DirectQueueEvent;
+use App\Interfaces\DirectQueueRepositoryInterface;
 
 class DirectQueueController extends Controller
 {
+    private DirectQueueRepositoryInterface $onsite_repository;
+
+    public function __construct(DirectQueueRepositoryInterface $onsite_repository)
+    {
+        $this->onsite_repository = $onsite_repository;
+    }
 
     private function InitQuery()
     {
@@ -69,84 +76,30 @@ class DirectQueueController extends Controller
 
     public function store(DirectQueueStore $request)
     {
-        $branch = Service::find($request->service_id)->Branch;
+        try {
+            $service = Service::find($request->service_id);
 
-        $total_current_booking = DirectQueue::whereHas('Service', function ($query) use ($branch) {
-            return $query->where('branch_id', $branch->id);
-        })
-            ->whereDate('created_at', date('Y-m-d'))
-            ->count();
-        
-        if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
+            $data = $request->all();
+            $data['ip_address'] = $request->ip();
+            $data['direct_queue_channel'] = 'Mobile Apps';
+
+            $direct_queue = $this->onsite_repository->store($data);
+
+            // send event to update Direct Queue Monitor
+            event(new VCTDirectQueueEvent($direct_queue));
+            event(new DirectQueueEvent($direct_queue, $service->branch_id));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'direct queue created',
+                'data' => $direct_queue
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Jumlah antrian melebihi batas maksimal harian untuk cabang berlisensi gratis'
+                'message' => $e->getMessage()
             ]);
         }
-
-        $service = Service::with('Branch')->where('id', $request->service_id)->first(); 
-
-        // cant create direct queue on closed day by schedule template
-        $holiday = ScheduleTemplateDetail::where('schedule_template_id', $service->Branch->schedule_template_id)
-            ->where('date', date('Y-m-d'))
-            ->first();
-        
-        if ($holiday) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cabang sedang tutup hari ini'
-            ]);
-        }
-
-        // cant create direct queue on closed day
-        $schedule = Schedule::where('branch_id', $service->branch_id)
-            ->where('day', strtolower(date('l')))
-            ->first();
-        
-        if ($schedule->status == 'closed') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cabang sedang tutup hari ini'
-            ]);
-        }
-
-        // cant create direct queue before open time and after closed time
-        if (date('H:i:s') < $schedule->start_time || date('H:i:s') > $schedule->end_time) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cabang sedang tutup hari ini'
-            ]);
-        }
-        
-        $service_order_no = Service::where('branch_id', $service->branch_id)
-            ->where('id', '<=', $request->service_id)
-            ->count();
-        $last_onsite_queue = DirectQueue::where('service_id', $request->service_id)
-            ->whereDate('created_at', date('Y-m-d'))
-            ->orderBy('queue_no', 'desc')
-            ->first();
-
-        if ($last_onsite_queue) {
-            $queue_no = (int) $last_onsite_queue->queue_no + 1;
-        } else {
-            $queue_no = $service_order_no . sprintf('%03s', 1);
-        }
-
-        $input = $request->all();
-        $input['queue_no'] = $queue_no;
-        $input['service_id'] = $request->service_id;
-        $input['direct_queue_channel'] = 'Mobile Apps';
-        $workstation = DirectQueue::create($input);
-
-        // send event to update Direct Queue Monitor
-        event(new VCTDirectQueueEvent($workstation));
-        event(new DirectQueueEvent($workstation, $service->branch_id));
-
-        return response()->json([
-            'success' => true,
-            'message' => 'direct queue created',
-            'data' => $workstation
-        ]);
     }
 
     public function upcoming()

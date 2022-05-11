@@ -16,10 +16,18 @@ use Auth;
 use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 use App\Events\DirectQueue as DirectQueueEvent;
 use App\Events\QueueStatusUpdated;
+use App\Interfaces\DirectQueueRepositoryInterface;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class DirectQueueController extends Controller
 {
-    
+    private DirectQueueRepositoryInterface $onsite_repository;
+
+    public function __construct(DirectQueueRepositoryInterface $onsite_repository)
+    {
+        $this->onsite_repository = $onsite_repository;
+    }
+
     private function InitQuery()
     {
         return DirectQueue::query()
@@ -96,100 +104,28 @@ class DirectQueueController extends Controller
      */
     public function store(StoreDirectQueue $request)
     {
-        $branch = WorkstationService::find($request->workstation_service_id)->Service->Branch;
+        try {
+            $workstation_service = WorkstationService::find($request->workstation_service_id);
 
-        $total_current_booking = DirectQueue::whereHas('Service', function ($query) use ($branch) {
-            return $query->where('branch_id', $branch->id);
-        })
-            ->whereDate('created_at', date('Y-m-d'))
-            ->count();
-        
-        if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
-            $request->session()->flash('error', "Jumlah antrian melebihi batas maksimal harian untuk cabang berlisensi gratis");
+            $data = $request->all();
+            $data['workstation_id'] = $workstation_service->workstation_id;
+            $data['user_id'] = Auth::id();
+            $data['service_id'] = $workstation_service->service_id;
+            $data['direct_queue_channel'] = 'Web';
+
+            $direct_queue = $this->onsite_repository->store($data);
+
+            event(new VCTDirectQueueEvent($direct_queue));
+            event(new DirectQueueEvent($direct_queue));
+
+            $request->session()->flash('success', __('Direct Queue Has Been Created, Queue no: :no', ['no' => $direct_queue->queue_no]));
+            return redirect()->route('cs.directQueue.show', [
+                'directQueue' => $direct_queue->id
+            ]);
+        } catch (\Exception $e) {
+            $request->session()->flash('error', $e->getMessage());
             return redirect(route('cs.directQueue.create'));
         }
-
-        /**
-         * additional validations:
-         * - user cant create same direct queue 3x at same date
-         * - user cant create direct queue on closed day with schedule template
-         * - user cant create direct queue on closed day
-         */
-        
-        $current_date = date('Y-m-d');
-        $current_time = date('H:i');
-        $workstationService = WorkstationService::find($request->workstation_service_id);
-
-        // user cant create same direct queue 3x at same date
-        if ($request->name || $request->phone) {
-            $sameUserQueueCount = DirectQueue::query()
-                                            ->whereHas('WorkstationService.Service', function($query) use($workstationService){
-                                                return $query->where('branch_id', $workstationService->Service->branch_id);
-                                            })
-                                            ->where('name', $request->name)
-                                            ->where('phone', $request->phone)
-                                            ->whereDate('created_at', $current_date)
-                                            ->count();
-
-            if ($sameUserQueueCount > 3) {
-                $request->session()->flash('error', "Only max 3 direct queue number request at the same date");
-                return redirect(route('cs.directQueue.create'));
-            }
-        }
-
-        // cant create direct queue on closed day by schedule template
-        if($workstationService->Service->Branch->schedule_template_id){
-            $schedule_template_details = ScheduleTemplateDetail::query()
-                                                                    ->where('schedule_template_id', $workstationService->Service->Branch->schedule_template_id)
-                                                                    ->where('date', $current_date)
-                                                                    ->first();
-            if($schedule_template_details){
-                $request->session()->flash('error', "Service Provider Already Closed");
-                return redirect(route('cs.directQueue.create'));
-            }
-        }
-
-        // cant create direct queue on closed day
-        $selectedSchedule = Schedule::query()
-                                ->where('branch_id', $workstationService->Service->branch_id)
-                                ->where('day', strtolower(date('l', strtotime($current_date))))
-                                ->get(['day', 'status', 'start_time', 'end_time'])
-                                ->first();
-
-        if (!$selectedSchedule || $selectedSchedule->status == 'closed') {
-            $request->session()->flash('error', "Service Provider Already Closed");
-            return redirect(route('cs.directQueue.create'));
-        }
-
-        // cant create direct queue before open time and after closed time
-        if ($current_time < $selectedSchedule->start_time || $current_time > $selectedSchedule->end_time) {
-            $request->session()->flash('error', "Service Provider Already Closed");
-            return redirect(route('cs.directQueue.create'));
-        }
-
-        $serviceOrderNumber = Service::where('branch_id', $workstationService->Service->branch_id)->where('id', '<=', $workstationService->service_id)->count();
-        $lastDirectQueue = DirectQueue::where('service_id', $workstationService->service_id)->whereDate('created_at', Date('Y-m-d'))->orderBy('queue_no', 'desc')->get();
-
-        if (count($lastDirectQueue) > 0) {
-            $queueNo = (int) $lastDirectQueue[0]->queue_no + 1;
-        }else{
-            $queueNo = $serviceOrderNumber . sprintf('%03s', ((int) count($lastDirectQueue) + 1));
-        }
-
-        $input = $request->all();
-        $input['queue_no'] = $queueNo;
-        $input['service_id'] = $workstationService->service_id;
-        $input['workstation_id'] = $workstationService->workstation_id;
-        $input['user_id'] = Auth::id();
-        $input['direct_queue_channel'] = 'Web';
-        $directQueue = DirectQueue::create($input);
-
-        // send event to update Direct Queue Monitor
-        event(new VCTDirectQueueEvent($directQueue));
-        event(new DirectQueueEvent($directQueue));
-
-        $request->session()->flash('success', __('Direct Queue Has Been Created, Queue no: :no', ['no' => $directQueue->queue_no]));
-        return redirect(route('cs.directQueue.create'));
     }
 
     /**
@@ -198,9 +134,34 @@ class DirectQueueController extends Controller
      * @param  \App\DirectQueue  $directQueue
      * @return \Illuminate\Http\Response
      */
-    public function show(DirectQueue $directQueue)
+    public function show($direct_queue_id)
     {
-        //
+        setlocale(LC_TIME, 'id_ID');
+
+        $direct_queue = DirectQueue::find($direct_queue_id);
+        $workstation = $direct_queue->Workstation;
+        $service = $direct_queue->Service;
+
+        $data = [
+            'queue_no' => $direct_queue->queue_no,
+            'date' => date('j F Y', strtotime($direct_queue->created_at)),
+            'booking_code' => $direct_queue->booking_code,
+            'workstation_label' => $workstation->label,
+            'service_name' => $service->name,
+            'status' => __($direct_queue->status)
+        ];
+
+        return view('cs.directQueue.show', [
+            'direct_queue' => $data,
+            'qr_code' => $this->get_queue_status_qr($direct_queue->id)
+        ]);
+    }
+
+    private function get_queue_status_qr($queue_id)
+    {
+        return QrCode::size(180)->generate(
+            url('kyooTicket/onsite/' . Auth::user()->branch_id . '/booking-status/' . $queue_id)
+        );
     }
 
     /**
