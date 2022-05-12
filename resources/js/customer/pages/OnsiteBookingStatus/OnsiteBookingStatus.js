@@ -136,7 +136,7 @@ function TicketFooter(props) {
 
 function OnsiteBookingStatus() {
     const PAGE_TITLE = 'Status Antrian Onsite'
-    const { branchId, bookingId } = useParams()
+    const { branchId, bookingId, queueType } = useParams()
 
     const [rating, setRating] = useState(0)
     const [allowBooking, setAllowBooking] = useState(true)
