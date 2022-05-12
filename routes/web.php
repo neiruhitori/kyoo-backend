@@ -162,4 +162,7 @@ Route::group([], __DIR__ . '/web/slot_time_guide.php');
 Route::group([], __DIR__ . '/web/branch_qr_code.php');
 Route::group([], __DIR__ . '/web/customer.php');
 
-Route::get('/{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');
+Route::get('search', 'SearchQueueController@index')->name('search.index');
+Route::post('search', 'SearchQueueController@search')->name('search.search');
+
+Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');
