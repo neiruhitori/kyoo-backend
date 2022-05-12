@@ -29,7 +29,7 @@ function App() {
                 <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
                 <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
                 <Route path="/customer/:branchId/:queueType/services/:serviceId/booking-confirmation" element={<BookingConfirmation />} />
-                <Route path="/customer/:branchId/:queueType/booking-status/:bookingId" element={<OnsiteBookingStatus />} />
+                <Route path="/customer/:branchId/onsite/booking-status/:bookingId" element={<OnsiteBookingStatus />} />
                 <Route path="/customer/:branchId/:queueType/booking-status/:bookingId" element={<BookingStatus />} />
                 <Route path="/customer/:branchId/:queueType/detail" element={<BranchDetail />} />
             </Routes>
