@@ -165,4 +165,6 @@ Route::group([], __DIR__ . '/web/customer.php');
 Route::get('search', 'SearchQueueController@index')->name('search.index');
 Route::post('search', 'SearchQueueController@search')->name('search.search');
 
+Route::get('scan', 'QRScannerController@index')->name('scan.index');
+
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');

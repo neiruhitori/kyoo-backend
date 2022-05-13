@@ -1,6 +1,7 @@
 import { createAppointment, getAppointmentById } from './appointment'
 import { createExhibition, getExhibitionById } from './exhibition'
 import { createOnsite, getOnsiteById } from './onsite'
+import http from '../utils/http'
 
 export function getBooking(queueType, id) {
     if (queueType === 'appointment') {
@@ -28,4 +29,13 @@ export function createBooking(queueType, data) {
     if (queueType === 'onsite') {
         return createOnsite(data)
     }
+}
+
+export function searchBookingByBookingCode(bookingCode) {
+    return http.get('search', {
+        params: {
+            booking_code: bookingCode
+        }
+    })
+        .then(res => res.data)
 }

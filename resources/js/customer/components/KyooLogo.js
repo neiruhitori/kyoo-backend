@@ -5,7 +5,7 @@ const KyooLogo = styled.img.attrs(() => ({
     alt: 'App logo'
 }))`
     width: auto;
-    height: 1.6rem;
+    height: ${props => props.width || '1.6rem'};
 `
 
 export default KyooLogo

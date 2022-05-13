@@ -82,6 +82,9 @@ Route::middleware(['auth:api'])->group(function () {
 // guest can be get the data
 Route::get('direct-queue-by-branch/{branch}', 'API\DirectQueueController@index');
 
+// Search queue
+Route::get('search', 'API\SearchQueueController');
+
 /**
  * External API Routes
  */

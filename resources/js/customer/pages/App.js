@@ -9,6 +9,7 @@ import BookingConfirmation from './BookingConfirmation/BookingConfirmation'
 import BookingStatus from './BookingStatus/BookingStatus'
 import OnsiteBookingStatus from './OnsiteBookingStatus/OnsiteBookingStatus'
 import BranchDetail from './BranchDetail/BranchDetail'
+import QRReader from './QRReader/QRReader'
 
 const AppContainer = styled.div`
     max-width: 420px;
@@ -24,6 +25,8 @@ function App() {
     return <AppContainer>
         <QueryClientProvider client={new QueryClient()}>
             <Routes>
+                <Route path="/scan" element={<QRReader />} />
+
                 <Route path="/customer/:branchId/:queueType" element={<ServiceList />} />
                 <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
                 <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
