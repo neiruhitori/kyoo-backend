@@ -97,18 +97,6 @@ export default function QRReader() {
     }
 
     return <QRReaderRoot ref={qrRef}>
-        <style>
-            {`
-                #html5qr-code {
-                    position: absolute;
-                    top: 50%;
-                    left: 0;
-                    right: 0;
-                    transform: translateY(-50%);
-                }
-            `}
-        </style>
-
         <div style={{
             padding: '0 1.5rem',
             position: 'absolute',
