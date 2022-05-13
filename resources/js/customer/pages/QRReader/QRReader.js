@@ -232,7 +232,7 @@ export default function QRReader() {
         {activeSection === 'qr' && (parentWidth > 0) && <Html5QrcodePlugin
             fps={10}
             qrbox={250}
-            aspectRatio={1.0}
+            aspectRatio={0.5}
             onSuccessCallback={onSuccess}
         />}
     </QRReaderRoot>
