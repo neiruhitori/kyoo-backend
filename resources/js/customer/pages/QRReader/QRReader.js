@@ -51,10 +51,7 @@ export default function QRReader() {
     useEffect(function () {
         if (qrRef.current) {
             setParentWidth(qrRef.current.offsetWidth)
-            showMessage(`${parentWidth} / ${initialHeight} = ${qrRef.current.offsetWidth / initialHeight}`)
         }
-
-        console.log('Test', parentWidth)
     }, [])
 
     function onSuccess (decodeText, decodedResult) {
@@ -89,6 +86,14 @@ export default function QRReader() {
         setTimeout(function () {
             setErrorMessage('')
         }, 5000)
+    }
+
+    function getAspectRatio() {
+        if (screen.width > screen.height) {
+            return parentWidth / initialHeight
+        }
+
+        return initialHeight / parentWidth
     }
 
     return <QRReaderRoot ref={qrRef}>
@@ -232,7 +237,7 @@ export default function QRReader() {
         {activeSection === 'qr' && (parentWidth > 0) && <Html5QrcodePlugin
             fps={10}
             qrbox={250}
-            aspectRatio={0.5}
+            aspectRatio={getAspectRatio()}
             onSuccessCallback={onSuccess}
         />}
     </QRReaderRoot>
