@@ -49,9 +49,8 @@ export default function QRReader() {
     useEffect(function () {
         if (qrRef.current) {
             setParentWidth(qrRef.current.offsetWidth)
+            showMessage(qrRef.current.offsetWidth)
         }
-
-        showMessage(window.innerHeight)
     }, [])
 
     function onSuccess (decodeText, decodedResult) {
