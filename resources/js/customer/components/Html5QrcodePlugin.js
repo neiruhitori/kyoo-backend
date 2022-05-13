@@ -8,12 +8,10 @@ export default function Html5QrcodePlugin(props) {
         const config = createConfig(props)
         const verbose = props.verbose === true
 
-        const [device] = await Html5Qrcode.getCameras()
-
         const html5QrCodeScanner = new Html5Qrcode(elementId, verbose)
 
         html5QrCodeScanner.start(
-            device.id,
+            { facingMode: 'environment' },
             config,
             props.onSuccessCallback,
             props.onErrorCallback

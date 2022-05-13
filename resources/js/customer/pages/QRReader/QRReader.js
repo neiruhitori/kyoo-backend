@@ -50,6 +50,8 @@ export default function QRReader() {
         if (qrRef.current) {
             setParentWidth(qrRef.current.offsetWidth)
         }
+
+        showMessage(window.innerHeight)
     }, [])
 
     function onSuccess (decodeText, decodedResult) {
@@ -109,7 +111,7 @@ export default function QRReader() {
                 top: '94px',
                 left: '50%',
                 transform: 'translateX(-50%)'
-            }}>Antrian tidak ditemukan</DangerAlert>}
+            }}>{errorMessage}</DangerAlert>}
 
             {activeSection === 'qr' && <div style={{
                 position: 'absolute',
