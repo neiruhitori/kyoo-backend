@@ -37,6 +37,7 @@ const PageTitle = styled.h4(() => ({
 }))
 
 export default function QRReader() {
+    const initialHeight = window.innerHeight
     const qrRef = useRef(null)
 
     const [parentWidth, setParentWidth] = useState(0)
@@ -49,7 +50,7 @@ export default function QRReader() {
     useEffect(function () {
         if (qrRef.current) {
             setParentWidth(qrRef.current.offsetWidth)
-            showMessage(`${qrRef.current.offsetWidth} / ${window.innerHeight} =`,qrRef.current.offsetWidth / window.innerHeight)
+            showMessage(`${qrRef.current.offsetWidth} / ${initialHeight} = ${qrRef.current.offsetWidth / initialHeight}`)
         }
     }, [])
 
@@ -84,7 +85,7 @@ export default function QRReader() {
 
         setTimeout(function () {
             setErrorMessage('')
-        }, 2000)
+        }, 5000)
     }
 
     return <QRReaderRoot ref={qrRef}>
@@ -114,7 +115,7 @@ export default function QRReader() {
 
             {activeSection === 'qr' && <div style={{
                 position: 'absolute',
-                top: (window.innerHeight - 475) / 2,
+                top: (initialHeight - 475) / 2,
                 left: '50%',
                 transform: 'translateX(-50%)',
                 width: '260px'
@@ -227,7 +228,7 @@ export default function QRReader() {
         {activeSection === 'qr' && parentWidth > 0 && <Html5QrcodePlugin
             fps={10}
             qrbox={250}
-            aspectRatio={parentWidth / window.innerHeight}
+            aspectRatio={parentWidth / initialHeight}
             onSuccessCallback={onSuccess}
         />}
     </QRReaderRoot>
