@@ -36,8 +36,9 @@ const PageTitle = styled.h4(() => ({
     marginBottom: '1rem'
 }))
 
+const initialHeight = window.innerHeight
+
 export default function QRReader() {
-    const initialHeight = window.innerHeight
     const qrRef = useRef(null)
 
     const [parentWidth, setParentWidth] = useState(0)
@@ -52,6 +53,8 @@ export default function QRReader() {
             setParentWidth(qrRef.current.offsetWidth)
             showMessage(`${qrRef.current.offsetWidth} / ${initialHeight} = ${qrRef.current.offsetWidth / initialHeight}`)
         }
+
+        console.log('Test',  parentWidth)
     }, [])
 
     function onSuccess (decodeText, decodedResult) {
@@ -110,7 +113,8 @@ export default function QRReader() {
                 position: 'fixed',
                 top: '94px',
                 left: '50%',
-                transform: 'translateX(-50%)'
+                transform: 'translateX(-50%)',
+                zIndex: 9999999999
             }}>{errorMessage}</DangerAlert>}
 
             {activeSection === 'qr' && <div style={{
@@ -225,9 +229,9 @@ export default function QRReader() {
             </div>
         </div>
 
-        {activeSection === 'qr' && parentWidth > 0 && <Html5QrcodePlugin
+        {activeSection === 'qr' && (parentWidth > 0) && <Html5QrcodePlugin
             fps={10}
-            qrbox={250}
+            qrbox={0}
             aspectRatio={parentWidth / initialHeight}
             onSuccessCallback={onSuccess}
         />}
