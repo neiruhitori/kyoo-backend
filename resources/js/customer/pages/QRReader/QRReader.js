@@ -49,7 +49,7 @@ export default function QRReader() {
     useEffect(function () {
         if (qrRef.current) {
             setParentWidth(qrRef.current.offsetWidth)
-            showMessage(qrRef.current.offsetWidth / window.innerHeight)
+            showMessage(`${qrRef.current.offsetWidth} / ${window.innerHeight} =`,qrRef.current.offsetWidth / window.innerHeight)
         }
     }, [])
 
