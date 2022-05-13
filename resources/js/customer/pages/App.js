@@ -16,7 +16,7 @@ const AppContainer = styled.div`
     margin: 0 auto;
     background-color: #FFFFFF;
     position: relative;
-    min-height: 100vh;
+    min-height: ${window.innerHeight}px;
     display: flex;
     flex-direction: column;
 `
