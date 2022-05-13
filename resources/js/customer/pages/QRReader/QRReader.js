@@ -9,7 +9,7 @@ import KyooLogo from '../../components/KyooLogo'
 import DangerAlert from '../../components/DangerAlert'
 
 const QRReaderRoot = styled.div`
-    min-height: ${window.innerHeight}px;
+    height: ${window.innerHeight}px;
     overflow: hidden;
     background-color: #04111D;
     position: relative;
@@ -101,7 +101,7 @@ export default function QRReader() {
         <style>
             {`
                 #html5qr-code {
-                    top: ${window.innerHeight / 2}px;
+                    top: ${initialHeight / 2}px;
                     transform: translateY(-50%);
                 }
             `}
