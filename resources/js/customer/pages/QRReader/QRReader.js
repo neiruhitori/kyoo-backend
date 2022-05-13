@@ -154,16 +154,16 @@ export default function QRReader() {
 
                 <div style={{
                     backgroundColor: '#FFFFFF',
-                    borderRadius: '8px',
-                    padding: '.75rem'
+                    borderRadius: '8px'
                 }}>
                     <form onSubmit={handleSubmit} style={{
-                        display: 'flex',
-                        alignItems: 'center'
+                        display: 'flex'
                     }}>
                         <div style={{
                             flex: '1 1 0%',
-                            color: '#000000'
+                            color: '#000000',
+                            overflow: 'hidden',
+                            padding: '.75rem'
                         }}>
                             <label htmlFor="bookingCode" style={{
                                 textTransform: 'uppercase',
@@ -190,20 +190,25 @@ export default function QRReader() {
                                 }}
                             />
                         </div>
-
-                        <button style={{
-                            backgroundColor: '#103C7C',
-                            padding: '1rem',
-                            borderRadius: '8px',
-                            color: '#FFFFFF',
-                            border: 'none',
-                            outline: 'none',
-                            width: '112px',
-                            display: 'inline-block',
-                            fontSize: '1.125rem'
+                        
+                        <div style={{
+                            padding: '.75rem',
+                            paddingLeft: 0
                         }}>
-                            Cari
-                        </button>
+                            <button type="submit" style={{
+                                backgroundColor: '#103C7C',
+                                padding: '1rem',
+                                borderRadius: '8px',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                outline: 'none',
+                                width: '112px',
+                                display: 'inline-block',
+                                fontSize: '1.125rem'
+                            }}>
+                                Cari
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>}
