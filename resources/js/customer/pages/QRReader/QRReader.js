@@ -97,6 +97,18 @@ export default function QRReader() {
     }
 
     return <QRReaderRoot ref={qrRef}>
+        <style>
+            {`
+                #html5qr-code {
+                    position: absolute;
+                    top: 50%;
+                    left: 0;
+                    right: 0;
+                    transform: translateY(-50%);
+                }
+            `}
+        </style>
+
         <div style={{
             padding: '0 1.5rem',
             position: 'absolute',
@@ -124,7 +136,7 @@ export default function QRReader() {
 
             {activeSection === 'qr' && <div style={{
                 position: 'absolute',
-                top: (initialHeight - 475) / 2,
+                top: (initialHeight - 440) / 2,
                 left: '50%',
                 transform: 'translateX(-50%)',
                 width: '260px'
@@ -241,9 +253,12 @@ export default function QRReader() {
 
         {activeSection === 'qr' && (parentWidth > 0) && <Html5QrcodePlugin
             fps={10}
-            qrbox={250}
+            qrbox={225}
             aspectRatio={getAspectRatio()}
             onSuccessCallback={onSuccess}
+            style={{
+                margin: 'auto 0 !important'
+            }}
         />}
     </QRReaderRoot>
 }

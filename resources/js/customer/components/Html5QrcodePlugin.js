@@ -22,7 +22,7 @@ export default function Html5QrcodePlugin(props) {
         }
     }, [])
 
-    return <div id={elementId} style={props.style}></div>
+    return <div id={elementId}></div>
 }
 
 function createConfig(props) {
