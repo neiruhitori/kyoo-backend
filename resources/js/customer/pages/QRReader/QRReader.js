@@ -101,7 +101,7 @@ export default function QRReader() {
         <style>
             {`
                 #html5qr-code {
-                    top: 50%;
+                    top: ${window.innerHeight / 2}px;
                     transform: translateY(-50%);
                 }
             `}
@@ -254,9 +254,6 @@ export default function QRReader() {
             qrbox={225}
             aspectRatio={getAspectRatio()}
             onSuccessCallback={onSuccess}
-            style={{
-                margin: 'auto 0 !important'
-            }}
         />}
     </QRReaderRoot>
 }
