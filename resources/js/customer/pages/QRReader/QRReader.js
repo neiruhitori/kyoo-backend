@@ -187,9 +187,9 @@ export default function QRReader() {
                                 type="text"
                                 name="booking_code"
                                 id="bookingCode"
-                                placeholder="Eg. A7h6x8"
+                                placeholder="Eg. A7H6X8"
                                 value={bookingCode}
-                                onChange={(e) => setBookingCode(e.target.value)}
+                                onChange={(e) => setBookingCode(e.target.value.toUpperCase())}
                                 style={{
                                     display: 'block',
                                     fontSize: '1.125rem',
