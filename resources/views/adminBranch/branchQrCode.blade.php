@@ -3,10 +3,10 @@
 @push('css')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;800&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
     @font-face {
-        font-family: 'Open Sans', sans-serif;
+        font-family: 'Inter', sans-serif;
     }
 </style>
 @endpush
@@ -56,12 +56,12 @@
 
         // Poster title
         ctx.fillStyle = '#114077'
-        ctx.font = `800 ${36}px 'Open Sans', sans-serif`
+        ctx.font = `700 ${36}px 'Inter', sans-serif`
         ctx.textBaseline = 'top'
         ctx.fillText('Scan Disini', 197, 42)
 
         // Poster description
-        ctx.font = `normal ${16}px 'Open Sans', sans-serif`
+        ctx.font = `normal ${16}px 'Inter', sans-serif`
         ctx.fillText('Untuk mengambil antrian ataupun check-in,', 134, 94)
         ctx.fillText('scan Kode QR di-bawah', 209, 118)
 
@@ -73,12 +73,12 @@
 
         ctx.fillStyle = '#114077'
         
-        ctx.font = `800 ${24 * scale}px 'Open Sans', sans-serif`
+        ctx.font = `700 ${24 * scale}px 'Inter', sans-serif`
         // Branch name
         const branchNameWidth = ctx.measureText(branchName).width
         ctx.fillText(branchName, (canvas.width / 2) - (branchNameWidth / 2), 419 * scale)
 
-        ctx.font = `normal ${16 * scale}px 'Open Sans', sans-serif`
+        ctx.font = `normal ${16 * scale}px 'Inter', sans-serif`
 
         // Address
         const addressWidth = ctx.measureText(address).width
@@ -143,7 +143,7 @@
 
         // Footer title
         ctx.fillStyle = '#114077'
-        ctx.font = '800 18px \'Open Sans\', sans-serif'
+        ctx.font = '700 18px \'Inter\', sans-serif'
 
         ctx.fillText('CARA SCAN KODE QR', 199, 562)
 
@@ -157,19 +157,24 @@
 
         // Bullet number
         ctx.fillStyle = '#FAFCFF'
-        ctx.font = '16px \'Open Sans\', sans-serif'
+        ctx.font = '16px \'Inter\', sans-serif'
 
         ctx.fillText('1', 50, 637)
-        ctx.fillText('2', 234, 637)
-        ctx.fillText('3', 419, 637)  
+        ctx.fillText('2', 233, 637)
+        ctx.fillText('3', 418, 637)  
 
         // Guide text
         ctx.fillStyle = '#114077'
-        ctx.font = '16px \'Open Sans\', sans-serif'
+        ctx.font = '16px \'Inter\', sans-serif'
 
         ctx.fillText('Gunakan aplikasi', 42, 676)
-        ctx.fillText('Kamera Handphone', 42, 700)
-        ctx.fillText('Anda', 42, 724)
+        ctx.fillText('kamera handphone', 42, 700)
+        ctx.fillText('Anda atau akses', 42, 724)
+
+        ctx.font = '700 16px \'Inter\', sans-serif'
+        ctx.fillText('kyoo.id/scan', 42, 748)
+
+        ctx.font = '16px \'Inter\', sans-serif'
 
         ctx.fillText('Arahkan kamera ke', 226, 676)
         ctx.fillText('kode QR diatas', 226, 700)
