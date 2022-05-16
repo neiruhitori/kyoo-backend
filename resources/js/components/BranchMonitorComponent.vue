@@ -109,11 +109,11 @@ export default {
       .listen('DirectQueue', () => {
         this.getQueues();
       })
-      .listen('QueueStatusUpdated', (message) => {
-        this.getQueues();
+      .listen('QueueStatusUpdated', async (message) => {
+        await this.getQueues();
 
-        if (this.config.queue_voice && message.status && ['recall', 'served'].includes(message.status)) {
-          this.getQueueCallAudio(message.queue_no);
+        if (this.config.queue_voice && this.servingQueue && message.status && ['recall', 'served'].includes(message.status)) {
+          this.getQueueCallAudio();
         }
       });
   },
@@ -219,12 +219,8 @@ export default {
       this.isLoading = false;
     },
 
-    async getQueueCallAudio(queueNo) {
-      const { data: { audio } } = await axios.get(`/queue-caller`, {
-        params: {
-          queue_no: queueNo
-        }
-      });
+    async getQueueCallAudio() {
+      const { data: { audio } } = await axios.get(`/queue-caller/${this.servingQueue.id}`);
 
       if (audioEl.paused) {
         audioEl.src = audio.data;

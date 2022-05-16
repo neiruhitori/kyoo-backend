@@ -42,7 +42,7 @@ Route::get('/direct-queue/monitor/{branch_id}', 'DirectQueueController@monitor')
     ->name('directQueue.monitor')
     ->middleware('signed');
 
-Route::get('/queue-caller', 'QueueCallerController@call')
+Route::get('/queue-caller/{directQueue}', 'QueueCallerController@call')
     ->name('queueCaller');
 
 Route::get('/direct-queue/branch/{branch_id}/list', 'DirectQueueController@branchList')->name('directQueue.branch.list');
