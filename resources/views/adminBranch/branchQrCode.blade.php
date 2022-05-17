@@ -172,7 +172,7 @@
         ctx.fillText('Anda atau akses', 42, 724)
 
         ctx.font = '700 16px \'Inter\', sans-serif'
-        ctx.fillText('kyoo.id/scan', 42, 748)
+        ctx.fillText('scan.kyoo.id', 42, 748)
 
         ctx.font = '16px \'Inter\', sans-serif'
 
