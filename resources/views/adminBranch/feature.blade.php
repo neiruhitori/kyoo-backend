@@ -97,7 +97,7 @@
                                             name="queue_voice"
                                             class="form-check-input"
                                             id="queue-voice-label"
-                                            {{ $branch_config->queue_voice || old('queue_voice') ? 'checked' : '' }}
+                                            {{ ($branch_config && $branch_config->queue_voice) || old('queue_voice') ? 'checked' : '' }}
                                         >
 
                                         <label for="queue-voice-label" class="form-check-label">Aktifkan</label>
