@@ -48,7 +48,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
         $schedule = Schedule::where('branch_id', $service->branch_id)
             ->where('day', strtolower(date('l')))
             ->first();  
-        if ($schedule->status == 'closed') {
+        if ($schedule && $schedule->status == 'closed') {
             throw new \Exception('Cabang sedang tutup hari ini');
         }
 
