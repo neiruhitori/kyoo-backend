@@ -83,8 +83,8 @@
                                         class="form-control @error('allow_transfer') is-invalid @enderror"
                                         {{ Auth::user()->Branch->BranchType->is_premium ?: 'disabled' }}
                                     >
-                                        <option value="0" {{ $branch_config->allow_transfer ?: 'selected' }}>{{ __('No') }}</option>
-                                        <option value="1" {{ !$branch_config->allow_transfer ?: 'selected' }}>{{ __('Yes') }}</option>
+                                        <option value="0" {{ $branch_config && $branch_config->allow_transfer ?: 'selected' }}>{{ __('No') }}</option>
+                                        <option value="1" {{ !$branch_config || !$branch_config->allow_transfer ?: 'selected' }}>{{ __('Yes') }}</option>
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'allow_transfer'])
                                 </div>
