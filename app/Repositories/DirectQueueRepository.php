@@ -53,7 +53,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
         }
 
         // cant create direct queue before open time and after closed time
-        if ($$schedule && (date('H:i:s') < $schedule->start_time || date('H:i:s') > $schedule->end_time)) {
+        if ($schedule && (date('H:i:s') < $schedule->start_time || date('H:i:s') > $schedule->end_time)) {
             throw new \Exception('Cabang sedang tutup hari ini');
         }
 
