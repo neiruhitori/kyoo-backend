@@ -8,7 +8,6 @@ use App\BranchConfiguration;
 use App\Log;
 use App\Http\Requests\AdminBranch\UpdateBranchConfiguration;
 use Auth;
-use App\BranchConfiguration;
 
 class BranchConfigurationController extends Controller
 {
