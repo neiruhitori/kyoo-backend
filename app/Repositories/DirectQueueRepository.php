@@ -27,7 +27,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             }
         }
         if (isset($data['phone'])) {
-            $total_queue = DirectQueue::where('phone', $data['phone'] ?? null)
+            $total_queue = DirectQueue::where('phone', $data['phone'])
                 ->whereDate('created_at', date('Y-m-d'))
                 ->count();
             
@@ -48,11 +48,11 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
         }
         
-        // free license branch cannot create more than 200 queue
+        // free license branch cannot create more than 100 queue
         $total_current_booking = DirectQueue::where('service_id', $data['service_id'])
             ->whereDate('created_at', date('Y-m-d'))
             ->count();
-        if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
+        if (!$branch->BranchType->is_premium && $total_current_booking >= 100) {
             throw new \Exception('Batas maksimal harian untuk cabang berlisensi gratis telah terlampaui');
         }
 
