@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { useQuery, useMutation } from 'react-query'
+import { useQuery } from 'react-query'
 import { format, getDayName, getMonthNames, getDayIndex, getFullDate } from '../../utils/date'
 import { fetchBranch } from '../../api/branch'
 import { fetchServiceByBranchId } from '../../api/services'
-import { createBooking } from '../../api/booking'
 
 import 'react-day-picker/lib/style.css'
 
@@ -22,8 +21,6 @@ import IconButton from '../../components/IconButton'
 import ServiceItem from '../../components/ServiceItem'
 import MainContent from '../../components/MainContent'
 import ServiceItemSkeleton from '../../components/ServiceItemSkeleton'
-import Loading from '../../components/Loading'
-import DangerAlert from '../../components/DangerAlert'
 
 import AngleRightIcon from '../../icons/AngleRightIcon'
 import CalendarIcon from '../../icons/CalendarIcon'
@@ -42,7 +39,6 @@ function ServiceList() {
         queueType,
         date: getFullDate(selectedDate)
     }))
-    const bookingMutation = useMutation('booking', data => createBooking(queueType, data))
 
     let branch = null
     let schedule = null
@@ -54,12 +50,6 @@ function ServiceList() {
     }
     if (servicesRes.status === 'success') {
         services = servicesRes.data
-    }
-
-    function handleServiceClick(serviceId) {
-        bookingMutation.mutate({
-            service_id: serviceId
-        })
     }
 
     function handleDayClick(day, modifiers = {}) {
@@ -79,13 +69,7 @@ function ServiceList() {
         }) : []
     }
 
-    if (bookingMutation.status === 'success' && bookingMutation.data.success) {
-        navigate(`/customer/${branchId}/${queueType}/booking-status/${bookingMutation.data.data.id}`)
-    }
-
     return <>
-        {bookingMutation.status === 'loading' && <Loading />}
-
         {branchRes.status === 'success' && <Banner imageUrl={branch.photo}>
             <Header>
                 <div style={{
@@ -153,22 +137,6 @@ function ServiceList() {
         </Banner>}
 
         <MainContent>
-            {bookingMutation.status === 'success' && !bookingMutation.data.success && <DangerAlert style={{
-                marginBottom: '1.5rem'
-            }}>
-                <h4 style={{
-                    fontSize: '1rem',
-                    marginBottom: '.375rem',
-                    textTransform: 'capitalize'
-                }}>Gagal membuat antrian</h4>
-
-                <p style={{
-                    lineHeight: '1.5',
-                }}>
-                    {bookingMutation.data.message}
-                </p>
-            </DangerAlert>}
-
             {showCalendar && <CalendarWrapper
                 onClick={handleCalendarClose}
             >
@@ -215,10 +183,8 @@ function ServiceList() {
             {servicesRes.status === 'loading' && <ServiceItemSkeleton />}
 
             {servicesRes.status === 'success' && services.map(service => {
-                let serviceProps = {}
-
                 if (queueType == 'onsite') {
-                    serviceProps = {
+                    const serviceProps = {
                         title: service.name,
                         key: service.id,
                         action: {
@@ -226,56 +192,50 @@ function ServiceList() {
                             value: service.total_queue
                         }
                     }
-                } else {
-                    const serviceSubtitle = <div style={{
-                        display: 'flex',
-                        alignItems: 'center'
-                    }}>
-                        <ClockIcon
-                            color="#A5A5A5"
-                            width="0.75rem"
-                            height="0.75rem"
-                            style={{
-                                marginRight: '0.5rem'
-                            }}
-                    />
-                        <span>
-                            {
-                                service.slots.length
-                                    ? service.slots.length + ' Sesi Waktu'
-                                    : 'Tidak Ada Sesi Waktu'
-                            }
-                        </span>
-                    </div>
 
-                    serviceProps = {
-                        title: service.name,
-                        subtitle: serviceSubtitle,
-                        action: {
-                            label: "Total Slot Tersedia",
-                            value: service.totalSlot - service.filledSlot,
-                            total: service.totalSlot
-                        }
+                    return <Link to={`${service.id}/visitor`} key={service.id} style={{
+                        marginBottom: '1.125rem'
+                    }}>
+                        <ServiceItem {...serviceProps} />
+                    </Link>
+                }
+
+                const serviceProps = {
+                    title: service.name,
+                    action: {
+                        label: "Total Slot Tersedia",
+                        value: service.totalSlot - service.filledSlot,
+                        total: service.totalSlot
                     }
                 }
 
-                if (queueType == 'onsite') {
-                    return <ServiceItem
+                return <Link to={`${service.id}?date=${getFullDate(selectedDate)}`} key={service.id} style={{
+                    marginBottom: '1.125rem'
+                }}>
+                    <ServiceItem
                         {...serviceProps}
-                        onClick={() => handleServiceClick(service.id)}
-                        style={{
-                            marginBottom: '1.125rem'
-                        }}
-                    />
-                } else {
-                    return <Link to={`${service.id}?date=${getFullDate(selectedDate)}`} key={service.id} style={{
-                        marginBottom: '1.125rem'
-                    }}>
-                        <ServiceItem
-                            {...serviceProps}
+                        subtitle={<div style={{
+                            display: 'flex',
+                            alignItems: 'center'
+                        }}>
+                            <ClockIcon
+                                color="#A5A5A5"
+                                width="0.75rem"
+                                height="0.75rem"
+                                style={{
+                                    marginRight: '0.5rem'
+                                }}
                         />
-                    </Link>
-                }
+                            <span>
+                                {
+                                    service.slots.length
+                                        ? service.slots.length + ' Sesi Waktu'
+                                        : 'Tidak Ada Sesi Waktu'
+                                }
+                            </span>
+                        </div>}
+                    />
+                </Link>
             })}
         </MainContent>
     </>

@@ -9,11 +9,19 @@ class Validator {
             },
             email: {
                 message: 'Email tidak valid',
-                validate: (value) => this.testRegex(value,/^[A-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
+                validate: (value) => {
+                    if (!value) return true
+
+                    return this.testRegex(value,/^[A-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
+                }
             },
             phone: {
                 message: 'No. Telepon tidak valid',
-                validate: (value) => this.testRegex(value, /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)$/) && !this.testRegex(value, /^\b(\d)\1{8,}\b$/)
+                validate: (value) => {
+                    if (!value) return true
+
+                    return this.testRegex(value, /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)$/) && !this.testRegex(value, /^\b(\d)\1{8,}\b$/)
+                }
             }
         }
     }

@@ -9,7 +9,9 @@ import BookingConfirmation from './BookingConfirmation/BookingConfirmation'
 import BookingStatus from './BookingStatus/BookingStatus'
 import OnsiteBookingStatus from './OnsiteBookingStatus/OnsiteBookingStatus'
 import BranchDetail from './BranchDetail/BranchDetail'
-import QRReader from './QRReader/QRReader'
+import OnsiteVisitorInformation from './OnsiteVisitorInformation/OnsiteVisitorInformation'
+
+// import QRReader from './QRReader/QRReader'
 
 const AppContainer = styled.div`
     max-width: 420px;
@@ -25,12 +27,13 @@ function App() {
     return <AppContainer>
         <QueryClientProvider client={new QueryClient()}>
             <Routes>
-                <Route path="/scan" element={<QRReader />} />
+                {/* <Route path="/scan" element={<QRReader />} /> */}
 
                 <Route path="/customer/:branchId/:queueType" element={<ServiceList />} />
                 <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
                 <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
                 <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
+                <Route path="/customer/:branchId/onsite/services/:serviceId/visitor" element={<OnsiteVisitorInformation />} />
                 <Route path="/customer/:branchId/:queueType/services/:serviceId/booking-confirmation" element={<BookingConfirmation />} />
                 <Route path="/customer/:branchId/onsite/booking-status/:bookingId" element={<OnsiteBookingStatus />} />
                 <Route path="/customer/:branchId/:queueType/booking-status/:bookingId" element={<BookingStatus />} />

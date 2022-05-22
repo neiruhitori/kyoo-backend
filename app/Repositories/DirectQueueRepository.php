@@ -16,13 +16,33 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
         $branch = $service->Branch;
         
         // user cant create same direct queue 3x at same date
-        $total_same_user_queue =  0;
-        if (isset($data['name']) || isset($data['phone']) || isset($data['ip_address'])) {
-            $total_same_user_queue = DirectQueue::where('name', $data['name'] ?? null)
-                ->where('phone', $data['phone'] ?? null)
-                ->where('ip_address', $data['ip_address'] ?? null)
+        $total_same_user_queue = 0;
+        if (isset($data['email'])) {
+            $total_queue = DirectQueue::where('email', $data['email'])
                 ->whereDate('created_at', date('Y-m-d'))
                 ->count();
+            
+            if ($total_queue > $total_same_user_queue) {
+                $total_same_user_queue = $total_queue;
+            }
+        }
+        if (isset($data['phone'])) {
+            $total_queue = DirectQueue::where('phone', $data['phone'] ?? null)
+                ->whereDate('created_at', date('Y-m-d'))
+                ->count();
+            
+            if ($total_queue > $total_same_user_queue) {
+                $total_same_user_queue = $total_queue;
+            }
+        }
+        if (isset($data['ip_address'])) {
+            $total_queue = DirectQueue::where('ip_address', $data['ip_address'])
+                ->whereDate('created_at', date('Y-m-d'))
+                ->count();
+            
+            if ($total_queue > $total_same_user_queue) {
+                $total_same_user_queue = $total_queue;
+            }
         }
         if ($total_same_user_queue >= 3) {
             throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
