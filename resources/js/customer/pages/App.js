@@ -29,7 +29,6 @@ function App() {
             <Routes>
                 {/* <Route path="/scan" element={<QRReader />} /> */}
 
-                <Route path="/customer/:branchId/:queueType" element={<ServiceList />} />
                 <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
                 <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
                 <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
