@@ -226,7 +226,8 @@ class DirectQueueController extends Controller
     {
         $rules = [
             'queue_no' => 'required|integer|min:1|exists:direct_queues',
-            'is_skip' => 'nullable|boolean'
+            'is_skip' => 'nullable|boolean',
+            'service_id' => 'required|integer|exists:services,id'
         ];
 
         $validation = Validator::make($request->all(), $rules);
@@ -239,7 +240,12 @@ class DirectQueueController extends Controller
         }
 
         // check the queue no with created date is today
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereNotIn('status', ['no show', 'end served'])->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no', $request->queue_no)
+            ->where('service_id', $request->service_id)
+            ->whereNotIn('status', ['no show', 'end served'])
+            ->whereDate('created_at', date('Y-m-d'))
+            ->first();
+
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -300,7 +306,8 @@ class DirectQueueController extends Controller
     public function onRecall(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues'
+            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -311,7 +318,11 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+            ->where('service_id', $request->service_id)
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
+
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -351,7 +362,8 @@ class DirectQueueController extends Controller
     public function onRequeue(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues,queue_no'
+            'queue_no' => 'required|integer|min:1|exists:direct_queues,queue_no',
+            'service_id' => 'required|integer|exists:services,id'
         ];
         
         $validation = Validator::make($request->all(), $rules);
@@ -363,7 +375,10 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+            ->where('service_id', $request->service_id)    
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -404,7 +419,8 @@ class DirectQueueController extends Controller
     public function onEndServed(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues'
+            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -415,7 +431,10 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+            ->where('service_id', $request->service_id)
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -442,7 +461,8 @@ class DirectQueueController extends Controller
     public function onNoShow(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues'
+            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -453,7 +473,10 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+            ->where('service_id', $request->service_id)    
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -476,7 +499,8 @@ class DirectQueueController extends Controller
     {
         $rules = [
             'queue_no' => 'required|integer|min:1|exists:direct_queues',
-            'workstation_service_id' => 'required|integer|min:1|exists:workstation_services,id'
+            'workstation_service_id' => 'required|integer|min:1|exists:workstation_services,id',
+            'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -487,7 +511,10 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+            ->where('service_id', $request->service_id)
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,

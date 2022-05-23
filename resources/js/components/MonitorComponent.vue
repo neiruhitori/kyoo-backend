@@ -352,6 +352,7 @@ export default {
       try {
         const queue = await axios.post("/cs/directQueue/onServed", {
           queue_no: this.selected_queue,
+          service_id: selected_queue[0].service_id,
           is_skip: this.manualInput,
         });
         this.onServedQueue = queue.data.data;
@@ -364,10 +365,14 @@ export default {
       this.isLoading = false;
     },
     async onRecall() {
+      const selected_queue = this.queues.filter(
+        (queue) => queue.queue_no === this.selected_queue
+      );
       this.isLoading = true;
       try {
         const queue = await axios.post("/cs/directQueue/onRecall", {
           queue_no: this.selected_queue,
+          service_id: selected_queue[0].service_id
         });
         this.onServedQueue = queue.data.data;
 
@@ -386,10 +391,14 @@ export default {
       this.isLoading = false;
     },
     async onEndServed() {
+      const selected_queue = this.queues.filter(
+        (queue) => queue.queue_no === this.selected_queue
+      );
       this.isLoading = true;
       try {
         const queue = await axios.post("/cs/directQueue/onEndServed", {
           queue_no: this.selected_queue,
+          service_id: selected_queue[0].service_id
         });
         this.onServedQueue = null;
         this.isOnServed = false;
@@ -400,10 +409,14 @@ export default {
       this.isLoading = false;
     },
     async onRequeue() {
+      const selected_queue = this.queues.filter(
+        (queue) => queue.queue_no === this.selected_queue
+      );
       this.isLoading = true;
       try {
         const queue = await axios.post("/cs/directQueue/onRequeue", {
           queue_no: this.selected_queue,
+          service_id: selected_queue[0].service_id
         });
         if (this.onServedQueue.requeue_count >= this.max_requeue) {
           this.isOnServed = false;
@@ -420,10 +433,14 @@ export default {
       this.isLoading = false;
     },
     async onNoShow() {
+      const selected_queue = this.queues.filter(
+        (queue) => queue.queue_no === this.selected_queue
+      );
       this.isLoading = true;
       try {
         const queue = await axios.post("/cs/directQueue/onNoShow", {
           queue_no: this.selected_queue,
+          service_id: selected_queue[0].service_id
         });
         this.onServedQueue = null;
         this.isOnServed = false;
@@ -448,11 +465,15 @@ export default {
       this.isLoading = false;
     },
     async onSubmitTransfer(e) {
+      const selected_queue = this.queues.filter(
+        (queue) => queue.queue_no === e.target.queue_no.value
+      );
       this.isLoading = true;
       try {
         const data = {
           queue_no: e.target.queue_no.value,
           workstation_service_id: e.target.workstation_service_id.value,
+          service_id: selected_queue[0].service_id
         };
         await axios.post("/cs/directQueue/onTransfer", data);
         this.isOnServed = false;
