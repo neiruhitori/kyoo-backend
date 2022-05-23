@@ -50,7 +50,7 @@ Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@fee
 Route::post('exhibition', 'API\ExhibitionController@store');
 Route::get('exhibition/{exhibition}', 'API\ExhibitionController@show');
 
-Route::post('direct-queue', 'API\DirectQueueController@store');
+Route::post('direct-queue', 'API\DirectQueueController@store')->middleware('cookie.clientid');
 Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
 Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
 

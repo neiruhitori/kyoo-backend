@@ -80,7 +80,7 @@ class DirectQueueController extends Controller
             $service = Service::find($request->service_id);
 
             $data = $request->all();
-            $data['ip_address'] = $request->ip();
+            $data['client_id'] = $request->cookie('client_id');
             $data['direct_queue_channel'] = 'Mobile Apps';
 
             $direct_queue = $this->onsite_repository->store($data);

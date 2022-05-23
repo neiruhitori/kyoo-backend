@@ -35,8 +35,8 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                 $total_same_user_queue = $total_queue;
             }
         }
-        if (isset($data['ip_address'])) {
-            $total_queue = DirectQueue::where('ip_address', $data['ip_address'])
+        if (isset($data['client_id'])) {
+            $total_queue = DirectQueue::where('client_id', $data['client_id'])
                 ->whereDate('created_at', date('Y-m-d'))
                 ->count();
             
