@@ -36,57 +36,45 @@ const BookingTimeCard = styled.div`
     color: #007EC6;
 `
 
+function getStatus(status) {
+    if (status == 'served') {
+        return 'Dilayani'
+    }
+    if (status == 'no show') {
+        return 'Tidak Hadir'
+    }
+    if (status == 'end served') {
+        return 'Selesai'
+    }
+    if (status == 'requeue') {
+        return 'Antri Ulang'
+    }
+
+    return 'Menunggu'
+}
+
 function TicketBody(props) {
-    function getStatus(status) {
-        if (status == 'served') {
-            return 'Dilayani'
-        }
-        if (status == 'no show') {
-            return 'Tidak Hadir'
-        }
-        if (status == 'end served') {
-            return 'Selesai'
-        }
-        if (status == 'requeue') {
-            return 'Antri Ulang'
-        }
-
-        return 'Menunggu'
-    }
-
-    let status = getStatus(props.status)
-
-    let onsiteStatus = <ChipWarning label={status} />
-
-    if (props.status == 'no show') {
-        onsiteStatus = <ChipDanger label={status} />
-    } else if (props.status == 'end served') {
-        onsiteStatus = <ChipSuccess label={status} />
-    }
-
     return <div style={{
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'column'
     }}>
         <p style={{
-            fontSize: '1.125rem',
+            fontSize: '1rem',
             color: '#7A7A7A',
-            marginBottom: '.625rem',
+            marginBottom: '.5rem',
             textAlign: 'center'
         }}>Nomor Antrian</p>
 
         <h2 style={{
             fontWeight: '700',
-            fontSize: '3.125rem',
+            fontSize: '3.625rem',
             color: '#103C7C',
             textAlign: 'center',
             marginBottom: '.625rem'
         }}>
             {props.queueNo || 0}
         </h2>
-
-        {onsiteStatus}
     </div>
 }
 
@@ -157,8 +145,16 @@ function OnsiteBookingStatus() {
     })
     const feedbackMutation = useMutation('feedback', (data) => createFeedback('onsite', bookingId, data))
 
+    let onsiteStatus = <ChipWarning label={getStatus('waiting')} />
+
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
+
+        if (booking.status == 'no show') {
+            onsiteStatus = <ChipDanger label={getStatus(booking.status)} />
+        } else if (booking.status == 'end served') {
+            onsiteStatus = <ChipSuccess label={getStatus(booking.status)} />
+        }
     }
 
     useMemo(() => {
@@ -220,10 +216,39 @@ function OnsiteBookingStatus() {
                     <BranchLogo src={`/storage/${branch.logo}`}/>
                 </div>}
 
-                {bookingQuery.status === 'success' && branchQuery.status === 'success' && <TicketCard
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'end',
+                    marginBottom: '1rem'
+                }}>
+                    <div>
+                        <h4 style={{
+                            fontWeight: '700',
+                            fontSize:  '1.5rem'
+                        }}>{booking.total_remaining_queue}</h4>
+                        <p style={{
+                            color: '#7A7A7A',
+                            fontSize: '.875rem',
+                            marginTop: '.625rem'
+                        }}>Antrian Tersisa</p>
+                    </div>
+
+                    <div style={{
+                        textAlign: 'right'
+                    }}>
+                        {onsiteStatus}
+                        <p style={{
+                            color: '#7A7A7A',
+                            fontSize: '.875rem',
+                            marginTop: '.625rem'
+                        }}>Status Antrian</p>
+                    </div>
+                </div>
+
+                {branchQuery.status === 'success' && <TicketCard
                     body={<TicketBody
                         queueNo={booking.queue_no}
-                        status={booking.status}
                     />}
                     footer={<TicketFooter
                         serviceName={booking.service_name}
