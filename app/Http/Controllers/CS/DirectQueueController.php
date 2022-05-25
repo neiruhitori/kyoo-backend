@@ -296,6 +296,21 @@ class DirectQueueController extends Controller
             'status' => 'served'
         ]));
 
+        if ($directQueue->fcm_id) {
+            fcm()
+                ->to([$directQueue->fcm_id])
+                ->priority('high')
+                ->timeToLive(0)
+                ->data([
+                    'title' => 'KYOO',
+                    'body' => "Antrian " . $directQueue->queue_no . " Anda sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
+                    'data' => [
+                        'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id 
+                    ]
+                ])
+                ->send();
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on Served',
@@ -351,6 +366,21 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'recall'
         ]));
+
+        if ($directQueue->fcm_id) {
+            fcm()
+                ->to([$directQueue->fcm_id])
+                ->priority('high')
+                ->timeToLive(0)
+                ->data([
+                    'title' => 'KYOO',
+                    'body' => "Antrian " . $directQueue->queue_no . " Anda sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
+                    'data' => [
+                        'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id 
+                    ]
+                ])
+                ->send();
+        }
 
         return response()->json([
             'success' => true,

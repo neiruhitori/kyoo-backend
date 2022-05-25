@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useMutation } from 'react-query'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 
+import { useToken, useMessaging } from '../../lib/firebase'
 import Validator from '../../utils/validator'
 import { createBooking } from '../../api/booking'
 
@@ -26,6 +27,9 @@ function VisitorInformation() {
     const forceUpdate = useForceUpdate()
     const { branchId, serviceId } = useParams()
     const navigate = useNavigate()
+
+    const messaging = useMessaging()
+    const fcm_id = useToken(messaging, process.env.MIX_FIREBASE_VAPID_KEY)
 
     const [name, setName] = useState('')
     const [phone, setPhone] = useState('')
@@ -56,7 +60,8 @@ function VisitorInformation() {
                 service_id: serviceId,
                 name,
                 phone,
-                email
+                email,
+                fcm_id
             })
 
             if (!booking.success) {

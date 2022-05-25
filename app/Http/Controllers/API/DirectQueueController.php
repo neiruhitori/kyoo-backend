@@ -86,7 +86,7 @@ class DirectQueueController extends Controller
             $direct_queue = $this->onsite_repository->store($data);
 
             // send event to update Direct Queue Monitor
-            event(new VCTDirectQueueEvent($direct_queue));
+            event(new VCTDirectQueueEvent($direct_queue, $service->branch_id));
             event(new DirectQueueEvent($direct_queue, $service->branch_id));
 
             return response()->json([

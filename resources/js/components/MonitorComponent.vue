@@ -302,7 +302,7 @@ export default {
     this.getQueues();
   },
   created() {
-    Echo.private(`event_direct_queue.${this.auth.id}`).listen(
+    Echo.private(`event_direct_queue.${this.auth.branch_id}`).listen(
       "VCTDirectQueue",
       (data) => {
         this.$toast.open({

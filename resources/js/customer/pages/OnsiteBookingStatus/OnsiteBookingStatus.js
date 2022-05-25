@@ -37,19 +37,24 @@ const BookingTimeCard = styled.div`
 `
 
 function TicketBody(props) {
-    let status = ''
+    function getStatus(status) {
+        if (status == 'served') {
+            return 'Dilayani'
+        }
+        if (status == 'no show') {
+            return 'Tidak Hadir'
+        }
+        if (status == 'end served') {
+            return 'Selesai'
+        }
+        if (status == 'requeue') {
+            return 'Antri Ulang'
+        }
 
-    if (props.status == 'waiting') {
-        status = 'Menunggu'
-    } else if (props.status == 'served') {
-        status = 'Dilayani'
-    } else if (props.status == 'no show') {
-        status = 'Tidak Hadir'
-    } else if (props.status == 'end served') {
-        status = 'Selesai'
-    } else if (props.status == 'requeue') {
-        status = 'Antri Ulang'
+        return 'Menunggu'
     }
+
+    let status = getStatus(props.status)
 
     let onsiteStatus = <ChipWarning label={status} />
 
