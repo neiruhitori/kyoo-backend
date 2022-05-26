@@ -154,6 +154,8 @@ function OnsiteBookingStatus() {
             onsiteStatus = <ChipDanger label={getStatus(booking.status)} />
         } else if (booking.status == 'end served') {
             onsiteStatus = <ChipSuccess label={getStatus(booking.status)} />
+        } else {
+            onsiteStatus = <ChipWarning label={getStatus(booking.status)} />
         }
     }
 
