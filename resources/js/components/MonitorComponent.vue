@@ -28,8 +28,28 @@
           <div class="row">
             <!-- START DIRECT QUEUE CALLER -->
             <div class="col-md-4">
+              <div class="mb-5">
+                <p class="text-primary font-weight-bold mb-0">Waktu Layanan</p>
+                <hr class="mt-2 mb-2">
+
+                <div class="d-flex" style="gap: 2rem">
+                  <div class="text-center" style="width: 48px;">
+                    <h4 class="h1 font-weight-bold mb-0 text-dark">{{ clock.hours || '00' }}</h4>
+                    <span>Jam</span>
+                  </div>
+                  <div class="text-center" style="width: 48px;">
+                    <h4 class="h1 font-weight-bold mb-0 text-dark">{{ clock.minutes || '00' }}</h4>
+                    <span>Menit</span>
+                  </div>
+                  <div class="text-center" style="width: 48px;">
+                    <h4 class="h1 font-weight-bold mb-0 text-dark">{{ clock.seconds || '00' }}</h4>
+                    <span>Detik</span>
+                  </div>
+                </div>
+              </div>
+
               <b class="text-primary">Pemanggil Antrian Onsite</b>
-              <hr />
+              <hr class="mt-2 mb-2">
               <div class="row">
                 <div class="col-md-12" v-if="!isOnTransfer">
                   <div class="form-group">
@@ -100,54 +120,55 @@
                       Layani
                     </button>
                   </div>
+
                   <template v-else>
-                    <div class="col-md-6">
-                      <button
-                        class="btn btn-info fullwidth mb-2"
-                        @click="onRecall"
-                      >
-                        Panggil Ulang
-                      </button>
-                    </div>
-                    <div class="col-md-6">
-                      <button
-                        class="btn btn-success fullwidth mb-2"
-                        @click="onEndServed"
-                        :disabled="recallCounter > max_recall"
-                      >
-                        Layanan Berakhir
-                      </button>
-                    </div>
-                    <div class="col-md-6">
-                      <button
-                        class="btn btn-secondary fullwidth mb-2"
-                        @click="onRequeue"
-                        :disabled="
-                          onServedQueue &&
-                          onServedQueue.requeue_count >= max_requeue
-                        "
-                      >
-                        Antri Ulang
-                      </button>
-                    </div>
-                    <div class="col-md-6">
-                      <button
-                        class="btn btn-danger fullwidth mb-2"
-                        @click="onNoShow"
-                      >
-                        Tidak Hadir
-                      </button>
-                    </div>
-                    <div class="col-md-12">
-                      <button
-                        class="btn btn-warning fullwidth mb-2"
-                        @click="onTransfer"
-                        :disabled="!allow_transfer"
-                      >
-                        Transfer Antrian
-                      </button>
-                    </div>
-                  </template>
+                      <div class="col-md-6">
+                        <button
+                          class="btn btn-info fullwidth mb-2"
+                          @click="onRecall"
+                        >
+                          Panggil Ulang
+                        </button>
+                      </div>
+                      <div class="col-md-6">
+                        <button
+                          class="btn btn-success fullwidth mb-2"
+                          @click="onEndServed"
+                          :disabled="recallCounter > max_recall"
+                        >
+                          Layanan Berakhir
+                        </button>
+                      </div>
+                      <div class="col-md-6">
+                        <button
+                          class="btn btn-secondary fullwidth mb-2"
+                          @click="onRequeue"
+                          :disabled="
+                            onServedQueue &&
+                            onServedQueue.requeue_count >= max_requeue
+                          "
+                        >
+                          Antri Ulang
+                        </button>
+                      </div>
+                      <div class="col-md-6">
+                        <button
+                          class="btn btn-danger fullwidth mb-2"
+                          @click="onNoShow"
+                        >
+                          Tidak Hadir
+                        </button>
+                      </div>
+                      <div class="col-md-12">
+                        <button
+                          class="btn btn-warning fullwidth mb-2"
+                          @click="onTransfer"
+                          :disabled="!allow_transfer"
+                        >
+                          Transfer Antrian
+                        </button>
+                      </div>
+                    </template>
                 </template>
               </div>
             </div>
@@ -155,7 +176,7 @@
             <!-- START DIRECT QUEUE LIST -->
             <div class="col-md-8">
               <b class="text-primary">Daftar Antrian Onsite</b>
-              <hr />
+              <hr class="mt-2 mb-2">
               <div class="row">
                 <div class="col-md-12">
                   <div class="form-group">
@@ -296,10 +317,24 @@ export default {
       isOnTransfer: false,
       workstationServices: [],
       manualInput: false,
+      clock: {
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+      },
+      timer: 0,
+      timerInterval: null
     };
   },
-  mounted() {
-    this.getQueues();
+  async mounted() {
+    await this.getQueues();
+
+    const [selected_queue] = this.queues.filter(v => v.status === 'served');
+    if (selected_queue) {
+      this.selectQueue(selected_queue.queue_no);
+      this.timer = Math.floor((Date.now() - new Date(selected_queue.called_at)) / 1000)
+      this.startTimer()
+    }
   },
   created() {
     Echo.private(`event_direct_queue.${this.auth.branch_id}`).listen(
@@ -316,15 +351,36 @@ export default {
     );
   },
   methods: {
+    startTimer() {
+      this.timerInterval = setInterval(() => {
+        this.timer++
+
+        const seconds = Math.floor(this.timer % 3600 % 60)
+        const minutes = Math.floor(this.timer % 3600 / 60)
+        const hours = Math.floor(this.timer / 3600)
+
+        this.clock.seconds = seconds < 10 ? '0' + seconds : seconds
+        this.clock.minutes = minutes < 10 ? '0' + minutes : minutes
+        this.clock.hours = hours < 10 ? '0' + hours : hours
+      }, 1000)
+    },
+
+    resetTimer() {
+      clearInterval(this.timerInterval)
+      this.timer = 0
+      this.clock.hours = 0
+      this.clock.minutes = 0
+      this.clock.seconds = 0
+    },
+
     async getQueues() {
       this.isLoading = true;
       const data = await axios.get(`/cs/directQueue?keyword=${this.keyword}`);
       this.queues = data.data.data;
-      if (this.selected_queue != this.onServedQueue?.queue_no) {
-        this.selectQueue(this.queues[0]?.queue_no);
-      }
+
       this.isLoading = false;
     },
+
     debounceSearch(event) {
       clearTimeout(this.debounce);
       this.debounce = setTimeout(() => {
@@ -332,10 +388,18 @@ export default {
         this.getQueues();
       }, 500);
     },
+
     selectQueue(queue_no) {
       this.manualInput = false;
       this.selected_queue = queue_no;
+      const current_queue = this.queues.filter(v => v.queue_no === queue_no)[0] || null
+
+      if (current_queue.status === 'served') {
+        this.isOnServed = true
+        this.onServedQueue = current_queue
+      }
     },
+
     async onServed() {
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
@@ -348,6 +412,7 @@ export default {
         alert("Status antrian salah");
         return;
       }
+
       this.isLoading = true;
       try {
         const queue = await axios.post("/cs/directQueue/onServed", {
@@ -355,15 +420,20 @@ export default {
           service_id: selected_queue[0].service_id,
           is_skip: this.manualInput,
         });
+
         this.onServedQueue = queue.data.data;
         this.isOnServed = true;
+
         this.getQueues();
+
+        this.startTimer()
       } catch (error) {
         this.getQueues();
         alert(error.response.data.message);
       }
       this.isLoading = false;
     },
+  
     async onRecall() {
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
@@ -390,7 +460,10 @@ export default {
       }
       this.isLoading = false;
     },
+
     async onEndServed() {
+      this.resetTimer()
+
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
       );
@@ -409,6 +482,8 @@ export default {
       this.isLoading = false;
     },
     async onRequeue() {
+      this.resetTimer()
+
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
       );
@@ -432,7 +507,10 @@ export default {
       }
       this.isLoading = false;
     },
+  
     async onNoShow() {
+      this.resetTimer()
+
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
       );
@@ -451,6 +529,7 @@ export default {
       }
       this.isLoading = false;
     },
+  
     async onTransfer() {
       this.isLoading = true;
       try {
@@ -464,7 +543,10 @@ export default {
       }
       this.isLoading = false;
     },
+  
     async onSubmitTransfer(e) {
+      this.resetTimer()
+
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === e.target.queue_no.value
       );
@@ -486,6 +568,7 @@ export default {
       this.isLoading = false;
     },
   },
+
   watch: {
     selected_queue(next) {
       if (next != this.onServedQueue?.queue_no) {
