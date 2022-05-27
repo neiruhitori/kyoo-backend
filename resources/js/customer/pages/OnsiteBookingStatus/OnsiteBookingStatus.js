@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useMutation, useQuery } from 'react-query'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import html2canvas from 'html2canvas'
 
 import { getBooking } from '../../api/booking'
 import { fetchBranch } from '../../api/branch'
@@ -18,8 +19,11 @@ import ChipDanger from '../../components/ChipDanger'
 import Card from '../../components/Card'
 import Rating from '../../components/Rating'
 
+import OnsiteQueueTicket from '../../templates/OnsiteQueueTicket'
+
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import LocationIcon from '../../icons/LocationIcon'
+import SaveIcon from '../../icons/SaveIcon'
 
 const BranchLogo = styled.img`
     display: inline-block;
@@ -127,17 +131,25 @@ function TicketFooter(props) {
     </div>
 }
 
-function OnsiteBookingStatus() {
+function OnsiteBookingStatus(props) {
     const PAGE_TITLE = 'Status Antrian Onsite'
     const { branchId, bookingId } = useParams()
 
     const [rating, setRating] = useState(0)
     const [allowBooking, setAllowBooking] = useState(true)
+    const [isDialogShown, setIsDialogShown] = useState(false)
 
     let booking = null
     let branch = null
     let schedule = null
     let branchType = 'free'
+    const ticketRef = useRef(null)
+
+    useEffect(() => {
+        setIsDialogShown(true)
+
+        return () => setIsDialogShown(false)
+    }, [])
 
     const bookingQuery = useQuery(['booking', bookingId], () => getBooking('onsite', bookingId))
     const branchQuery = useQuery(['branch', branchId], () => fetchBranch(branchId), {
@@ -191,7 +203,107 @@ function OnsiteBookingStatus() {
         })
     }
 
+    function handlePrintTicket(bookingId) {
+        html2canvas(ticketRef.current).then((canvas) => {
+            const imgUrl = canvas.toDataURL('image/png');
+
+            const a = document.createElement('a')
+            a.href = imgUrl
+            a.download = 'my-ticket.png'
+            a.click()
+
+            setIsDialogShown(false)
+        })
+    }
+
     return <>
+        {!!booking && !!branch && <OnsiteQueueTicket
+            ref={ticketRef}
+            booking={booking}
+            branch={branch}
+            style={{
+                position: 'absolute',
+                bottom: '100%',
+                left: 0,
+                right: 0
+            }}
+        />}
+
+        {isDialogShown && <div style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            position: 'fixed',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            left: '0',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: '9999'
+        }}>
+            <Card style={{
+                padding: '2.5rem',
+                maxWidth: '382px'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    width: '68px',
+                    height: '68px',
+                    borderRadius: '999999px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#D0E9FB',
+                    margin: '0 auto',
+                    marginBottom: '1.5rem'
+                }}>
+                    <SaveIcon color="#0172CB" style={{ width: '30px', height: 'auto' }} />
+                </div>
+
+                <div style={{
+                    marginBottom: '1.5rem'
+                }}>
+                    <h4 style={{
+                        textAlign: 'center',
+                        fontSize: '1.3rem',
+                        marginBottom: '1rem'
+                    }}>Simpan Antrianmu?</h4>
+                    <p style={{
+                        textAlign: 'center',
+                        margin: '0 auto',
+                        lineHeight: '1.5'
+                    }}>Simpan tiket antrian agar tidak kehilangan informasi antrianmu</p>
+                </div>
+
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '1rem'
+                }}>
+                    <button style={{
+                        width: '142px',
+                        padding: '.875rem',
+                        borderRadius: '8px',
+                        border: '1px solid #D8D8D8',
+                        outline: 'none',
+                        fontWeight: 'bold',
+                        backgroundColor: '#FFFFFF',
+                        fontSize: '1rem'
+                    }} onClick={() => handlePrintTicket(bookingId)}>Simpan</button>
+
+                    <button style={{
+                        width: '142px',
+                        padding: '.875rem',
+                        borderRadius: '8px',
+                        border: 'none',
+                        outline: 'none',
+                        fontWeight: 'bold',
+                        backgroundColor: '#D8D8D8',
+                        fontSize: '1rem'
+                    }} onClick={() => setIsDialogShown(false)}>Tidak</button>
+                </div>
+            </Card>
+        </div>}
+
         <div style={{
             height: '3.2rem',
             padding: '0 1.375rem',

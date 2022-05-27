@@ -33,6 +33,7 @@ class Detail extends JsonResource
             'date' => $this->created_at,
             'branch_id' => $branch->id,
             'branch_name' => $branch->name,
+            'booking_code' => $this->booking_code,
             'service_id' => $this->service_id,
             'service_name' => $this->Service->name,
             'total_waiting' => Onsite::whereServiceId($this->service_id)
@@ -45,6 +46,7 @@ class Detail extends JsonResource
                 ->count(),
             'name' => $this->name,
             'phone' => $this->phone,
+            'email' => $this->email,
             'queue_no' => $this->queue_no,
             'is_liked' => $this->is_liked,
             'rating' => $this->rating,
