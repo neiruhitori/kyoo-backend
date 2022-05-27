@@ -32,17 +32,17 @@
                 <p class="text-primary font-weight-bold mb-0">Waktu Layanan</p>
                 <hr class="mt-2 mb-2">
 
-                <div class="d-flex" style="gap: 2rem">
-                  <div class="text-center" style="width: 48px;">
-                    <h4 class="h1 font-weight-bold mb-0 text-dark">{{ clock.hours || '00' }}</h4>
+                <div class="d-flex justify-content-between" style="max-width: 160px; gap: 8px;">
+                  <div class="text-center">
+                    <h4 class="h3 font-weight-bold mb-0 text-dark">{{ clock.hours || '00' }}</h4>
                     <span>Jam</span>
                   </div>
-                  <div class="text-center" style="width: 48px;">
-                    <h4 class="h1 font-weight-bold mb-0 text-dark">{{ clock.minutes || '00' }}</h4>
+                  <div class="text-center">
+                    <h4 class="h3 font-weight-bold mb-0 text-dark">{{ clock.minutes || '00' }}</h4>
                     <span>Menit</span>
                   </div>
-                  <div class="text-center" style="width: 48px;">
-                    <h4 class="h1 font-weight-bold mb-0 text-dark">{{ clock.seconds || '00' }}</h4>
+                  <div class="text-center">
+                    <h4 class="h3 font-weight-bold mb-0 text-dark">{{ clock.seconds || '00' }}</h4>
                     <span>Detik</span>
                   </div>
                 </div>
