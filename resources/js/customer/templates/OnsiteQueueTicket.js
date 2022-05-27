@@ -1,4 +1,5 @@
 import  { forwardRef } from 'react'
+import InfoAlert from '../components/InfoAlert'
 import { format } from '../utils/date'
 
 export default forwardRef(function OnsiteQueueTicket({ booking, branch, style }, ref) {
@@ -7,24 +8,14 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
         backgroundColor: '#FFFFFF',
         ...style
     }}>
-        <div style={{
-            display: 'flex',
-            alignItems: 'center',
+        {!!branch.logo && <div style={{
+            textAlign: 'center',
             marginBottom: '1.7rem'
         }}>
-            <div style={{
-                flex: '1'
-            }}>
-                <img src={`/storage/${branch.logo}`} alt="" style={{
-                    height: '24px'
-                }} />
-            </div>
-            
-            <p style={{
-                textAlign: 'right',
-                flex: '1'
-            }}>{format(new Date(booking.date))}</p>
-        </div>
+            <img src={`/storage/${branch.logo}`} alt="" style={{
+                height: '4.5rem'
+            }} />
+        </div>}
 
         <div style={{
             textAlign: 'center'
@@ -69,6 +60,17 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                     fontSize: '1.2rem',
                     fontWeight: '700'
                 }}>{booking.service_name}</div>
+            </div>
+
+            <div>
+                <p style={{
+                    color: '#A7A7A7',
+                    marginBottom: '.6rem'
+                }}>Tanggal Antri</p>
+                <div style={{
+                    fontSize: '1.2rem',
+                    fontWeight: '700'
+                }}>{format(new Date(booking.date))}</div>
             </div>
         </div>
 
@@ -123,7 +125,9 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
             }}></div>
         </>}
 
-        <div>
+        <div style={{
+            marginBottom: '1.7rem'
+        }}>
             <p style={{
                 color: '#A7A7A7',
                 marginBottom: '.6rem'
@@ -133,6 +137,21 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                 fontWeight: '700'
             }}>{branch.name}, {branch.address}</div>
         </div>
+
+        <InfoAlert>
+            <h4 style={{
+                fontSize: '1rem',
+                marginBottom: '.375rem',
+                textTransform: 'capitalize'
+            }}>Informasi Status Antrian</h4>
+
+            <p style={{
+                lineHeight: '1.5',
+                fontSize: '1rem'
+            }}>
+                Akses ke alamat web <strong>scan.kyoo.id</strong>, pilih Kode Unik, masukan Kode Unik antrian anda untuk melihat status antrian
+            </p>
+        </InfoAlert>
 
         <div style={{
             display: 'flex',

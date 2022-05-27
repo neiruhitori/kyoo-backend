@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { onMessage } from 'firebase/messaging'
 import { useMessaging } from '../lib/firebase'
 
+import QRReader from './QRReader/QRReader'
+
 import ServiceList from './ServiceList/ServiceList'
 import TimeSlotList from './TimeSlotList/TimeSlotList'
 import VisitorInformation from './VisitorInformation/VisitorInformation'
@@ -21,7 +23,7 @@ const AppContainer = styled.div`
     margin: 0 auto;
     background-color: #FFFFFF;
     position: relative;
-    min-height: 100vh;
+    min-height: ${window.innerHeight}px;
     display: flex;
     flex-direction: column;
 `
@@ -60,6 +62,8 @@ function App() {
         
         <QueryClientProvider client={new QueryClient()}>
             <Routes>
+                <Route path="/scan" element={<QRReader />} />
+
                 <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
                 <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
                 <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
