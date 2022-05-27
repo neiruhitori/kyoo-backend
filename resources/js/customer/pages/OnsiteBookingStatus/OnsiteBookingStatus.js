@@ -203,13 +203,13 @@ function OnsiteBookingStatus(props) {
         })
     }
 
-    function handlePrintTicket(bookingId) {
+    function handlePrintTicket(queueNo) {
         html2canvas(ticketRef.current).then((canvas) => {
             const imgUrl = canvas.toDataURL('image/png');
 
             const a = document.createElement('a')
             a.href = imgUrl
-            a.download = 'my-ticket.png'
+            a.download = `${queueNo}.png`
             a.click()
 
             setIsDialogShown(false)
@@ -229,7 +229,7 @@ function OnsiteBookingStatus(props) {
             }}
         />}
 
-        {isDialogShown && <div style={{
+        {!!booking && isDialogShown && <div style={{
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             position: 'fixed',
             top: '0',
@@ -288,7 +288,7 @@ function OnsiteBookingStatus(props) {
                         fontWeight: 'bold',
                         backgroundColor: '#FFFFFF',
                         fontSize: '1rem'
-                    }} onClick={() => handlePrintTicket(bookingId)}>Simpan</button>
+                    }} onClick={() => handlePrintTicket(booking.queue_no)}>Simpan</button>
 
                     <button style={{
                         width: '142px',
