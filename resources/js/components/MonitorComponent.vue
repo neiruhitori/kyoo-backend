@@ -28,7 +28,7 @@
           <div class="row">
             <!-- START DIRECT QUEUE CALLER -->
             <div class="col-md-4">
-              <div class="mb-5">
+              <div class="mb-5" v-if="auth.branch.branch_type.is_premium">
                 <p class="text-primary font-weight-bold mb-0">Waktu Layanan</p>
                 <hr class="mt-2 mb-2">
 
@@ -205,6 +205,7 @@
                   <thead>
                     <tr>
                       <th>No. Antrian</th>
+                      <th>Kode Unik</th>
                       <th>Nama</th>
                       <th>Nama Layanan</th>
                       <th>Status</th>
@@ -219,6 +220,7 @@
                         class="pointer"
                       >
                         <td>{{ queue.queue_no }}</td>
+                        <td>{{ queue.booking_code.toUpperCase() }}</td>
                         <td>{{ queue.name || "-" }}</td>
                         <td>
                           {{ queue.service.name }}
@@ -379,6 +381,8 @@ export default {
       this.queues = data.data.data;
 
       this.isLoading = false;
+
+      this.selectQueue(this.queues.length ? this.queues[0].queue_no : '');
     },
 
     debounceSearch(event) {
@@ -392,9 +396,9 @@ export default {
     selectQueue(queue_no) {
       this.manualInput = false;
       this.selected_queue = queue_no;
-      const current_queue = this.queues.filter(v => v.queue_no === queue_no)[0] || null
 
-      if (current_queue.status === 'served') {
+      const current_queue = this.queues.filter(v => v.queue_no === queue_no)[0] || null
+      if (current_queue && current_queue.status === 'served') {
         this.isOnServed = true
         this.onServedQueue = current_queue
       }
