@@ -1,6 +1,6 @@
 import  { forwardRef } from 'react'
 import InfoAlert from '../components/InfoAlert'
-import { format } from '../utils/date'
+import { format, formatBrowser } from '../utils/date'
 
 export default forwardRef(function OnsiteQueueTicket({ booking, branch, style }, ref) {
     return <div ref={ref} style={{
@@ -10,10 +10,11 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
     }}>
         {!!branch.logo && <div style={{
             textAlign: 'center',
-            marginBottom: '1.7rem'
+            marginBottom: '1.7rem',
+            height: '4.5rem'
         }}>
             <img src={`/storage/${branch.logo}`} alt="" style={{
-                height: '4.5rem'
+                height: '100%'
             }} />
         </div>}
 
@@ -70,7 +71,7 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                 <div style={{
                     fontSize: '1.2rem',
                     fontWeight: '700'
-                }}>{format(new Date(booking.date))}</div>
+                }}>{format(formatBrowser(booking.date))}</div>
             </div>
         </div>
 
@@ -164,9 +165,11 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                 marginRight: '.5rem'
             }}>Powered by</div>
 
-            <div>
+            <div style={{
+                height: '24px'
+            }}>
                 <img src="/img/logo-color.svg" alt="" style={{
-                    height: '24px'
+                    height: '100%'
                 }} />
             </div>
         </div>
