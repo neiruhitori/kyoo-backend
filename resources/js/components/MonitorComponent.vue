@@ -455,6 +455,8 @@ export default {
         if (this.onServedQueue.recall_count >= this.max_recall) {
           this.selected_queue = this.queues[0]?.queue_no || "";
           this.isOnServed = false;
+
+          this.resetTimer()
         } else {
           this.isOnServed = true;
         }
