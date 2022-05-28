@@ -1,5 +1,6 @@
 import  { forwardRef } from 'react'
 import InfoAlert from '../components/InfoAlert'
+import KyooLogo from '../components/KyooLogo'
 import { format, formatBrowser } from '../utils/date'
 
 export default forwardRef(function OnsiteQueueTicket({ booking, branch, style }, ref) {
@@ -158,20 +159,11 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: '4.5rem'
+            marginTop: '4.5rem',
+            color: '#A7A7A7'
         }}>
-            <div style={{
-                color: '#A7A7A7',
-                marginRight: '.5rem'
-            }}>Powered by</div>
-
-            <div style={{
-                height: '24px'
-            }}>
-                <img src="/img/logo-color.svg" alt="" style={{
-                    height: '100%'
-                }} />
-            </div>
+            Powered by
+            <KyooLogo style={{ marginLeft: '0.5rem' }} />
         </div>
     </div>
 })
