@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import { onMessage } from 'firebase/messaging'
-import { useMessaging } from '../lib/firebase'
+import { useMessaging, useToken } from '../lib/firebase'
 
 import QRReader from './QRReader/QRReader'
 
@@ -32,6 +32,7 @@ function App() {
     const [infoMessasge, setInfoMessage] = useState('')
 
     const messaging = useMessaging()
+    useToken(messaging, process.env.MIX_FIREBASE_VAPID_KEY)
     onMessage(messaging, ({ data }) => {
         setInfoMessage(data.body)
 
