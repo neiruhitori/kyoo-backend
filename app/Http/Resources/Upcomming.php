@@ -27,9 +27,9 @@ class Upcomming extends JsonResource
             $data['direct_queue'] = [
                 'id' => $directQueue->id,
                 'date' => $directQueue->created_at,
-                'branch_id' => $directQueue->WorkstationService->Service->Branch->id,
-                'branch_name' => $directQueue->WorkstationService->Service->Branch->name,
-                'service_name' => $directQueue->WorkstationService->Service->name,
+                'branch_id' => $directQueue->Service->Branch->id,
+                'branch_name' => $directQueue->Service->Branch->name,
+                'service_name' => $directQueue->Service->name,
                 'total_waiting' => DirectQueue::whereWorkstationServiceId($directQueue->workstation_service_id)->whereStatus('waiting')->where('queue_no', '<', $directQueue->queue_no)->whereDate('created_at', date('Y-m-d'))->count(),
                 'name' => $directQueue->name,
                 'phone' => $directQueue->phone,

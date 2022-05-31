@@ -31,7 +31,7 @@ class DirectQueueController extends Controller
         // user cant create same direct queue 3x at same date
         if ($request->name || $request->phone) {
             $sameUserQueueCount = DirectQueue::query()
-                                            ->whereHas('WorkstationService.Service', function($query) use($workstationService){
+                                            ->whereHas('Service', function($query) use($workstationService){
                                                 return $query->where('branch_id', $workstationService->Service->branch_id);
                                             })
                                             ->where('name', $request->name)

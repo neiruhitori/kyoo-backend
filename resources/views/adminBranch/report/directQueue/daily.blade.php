@@ -110,8 +110,8 @@
                                                         -
                                                     @endif
                                                 </td>
-                                                <td>{{ $directQueue->WorkstationService->Workstation->name }}</td>
-                                                <td>{{ $directQueue->WorkstationService->Service->name }}</td>
+                                                <td>{{ $directQueue->WorkstationService ? $directQueue->WorkstationService->Workstation->name : '' }}</td>
+                                                <td>{{ $directQueue->Service->name }}</td>
                                                 <td>{{ __(ucwords($directQueue->status)) }}</td>
                                             </tr>
                                         @empty

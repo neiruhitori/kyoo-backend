@@ -29,11 +29,19 @@ class HomeController extends Controller
         if ($isAppointment) {
             $appointments = Appointment::whereHas('Slot.Service', function($query){
                 $query->where('branch_id', Auth::user()->branch_id);
-            })->whereMonth('date', date('m'))->get();
+            })
+                ->whereMonth('date', date('m'))
+                ->whereYear('date', date('Y'))
+                ->get();
             // $appointmentGraph = Appointment::select(DB::raw('DAY(date) as `day`'), DB::raw('count(id) as `total`'))->whereMonth('date', date('m'))->groupBy('day')->get(); // for mysql
             $appointmentGraph = Appointment::whereHas('Slot.Service', function($query){
                 $query->where('branch_id', Auth::user()->branch_id);
-            })->select(DB::raw("date_part('day', date) as day"), DB::raw('count(id) as total'))->whereMonth('date', date('m'))->groupBy('day')->get(); // for pgsql
+            })
+                ->select(DB::raw("date_part('day', date) as day"), DB::raw('count(id) as total'))
+                ->whereMonth('date', date('m'))
+                ->whereYear('date', date('Y'))
+                ->groupBy('day')
+                ->get(); // for pgsql
         }
 
         if ($isExhibition) {
@@ -41,6 +49,7 @@ class HomeController extends Controller
                 $query->where('branch_id', Auth::user()->branch_id);
             })
                 ->whereMonth('date', date('m'))
+                ->whereYear('date', date('Y'))
                 ->get();
 
             $exhibition['total'] = count($queue);
@@ -52,18 +61,26 @@ class HomeController extends Controller
             })
                 ->select(DB::raw("date_part('day', date) as day"), DB::raw('count(id) as total'))
                 ->whereMonth('date', date('m'))
+                ->whereYear('date', date('Y'))
                 ->groupBy('day')
                 ->get();
         }
 
         // Direct Queue
         if ($isDirectQueue) {
-            $directQueues = DirectQueue::whereHas('WorkstationService.Service', function($query){
+            $directQueues = DirectQueue::whereHas('Service', function($query){
                 $query->whereBranchId(Auth::user()->branch_id);
-            })->whereMonth('created_at', date('m'))->get();
-            $directQueueGraph = DirectQueue::whereHas('WorkstationService.Service', function($query){
+            })
+                ->whereMonth('created_at', date('m'))
+                ->get();
+            $directQueueGraph = DirectQueue::whereHas('Service', function($query){
                 $query->whereBranchId(Auth::user()->branch_id);
-            })->select(DB::raw("date_part('day', created_at) as day"), DB::raw('count(id) as total'))->whereMonth('created_at', date('m'))->groupBy('day')->get(); // for pgsql
+            })
+                ->select(DB::raw("date_part('day', created_at) as day"), DB::raw('count(id) as total'))
+                ->whereMonth('created_at', date('m'))
+                ->whereYear('created_at', date('Y'))
+                ->groupBy('day')
+                ->get(); // for pgsql
         }
 
         return view('adminBranch.home', [
