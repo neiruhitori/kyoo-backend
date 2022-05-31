@@ -27,9 +27,9 @@ class Validator {
     }
 
     message(field, value, rules) {
+        this.fields[field] = true
+
         for (let rule of rules) {
-            this.fields[field] = true
-    
             if (!this.rules[rule].validate(value)) {
                 this.fields[field] = false
                 
