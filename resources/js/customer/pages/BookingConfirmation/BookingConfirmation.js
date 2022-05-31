@@ -18,7 +18,7 @@ import { fetchServiceById } from '../../api/services'
 import { createBooking } from '../../api/booking'
 
 function BookingConfirmation() {
-    const { branchId, serviceId } = useParams()
+    const { branchId, serviceId, queueType } = useParams()
     const [searchParams] = useSearchParams()
     const PAGE_TITLE = `Konfirmasi Antrian`
 
@@ -33,7 +33,6 @@ function BookingConfirmation() {
     let service = null
     let slot = null
     let booking = null
-    let queueType = null
 
     if (branchRes.status === 'success') {
         branch = branchRes.data
