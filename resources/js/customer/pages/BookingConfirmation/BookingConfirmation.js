@@ -145,7 +145,7 @@ function BookingConfirmation() {
                         marginBottom: '1.625rem'
                     }}>Detail Booking</h4>
 
-                    {serviceRes.status === 'success' && <div>
+                    {branchRes.status === 'success' && serviceRes.status === 'success' && <div>
                         <div style={{
                             display: 'flex',
                             fontSize: '.875rem',
