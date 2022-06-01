@@ -45,13 +45,23 @@ class ServiceController extends Controller
      */
     public function store(StoreService $request)
     {
+        $total_services = Service::where('branch_id', Auth::user()->branch_id)->count();
+
+        if (!Auth::user()->Branch->is_premium && $total_services >= 5) {
+            $request->session()->flash('error', __('Batas maksimal 5 layanan telah terlampaui untuk lisensi gratis'));
+            return redirect(route('adminBranch.service.create'));
+        }
+
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
+
         Service::create($input);
+    
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Insert Service'
         ]);
+
         $request->session()->flash('success', __('module.created', ['module' => __('Service'), 'name' => $request->name]));
         return redirect(route('adminBranch.department.index'));
     }
