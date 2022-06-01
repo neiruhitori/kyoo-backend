@@ -31,11 +31,6 @@ class WorkstationServiceController extends Controller
      */
     public function create(Request $request, Workstation $workstation)
     {
-        // for MVP
-        if (!Auth::user()->Branch->BranchType->is_premium && count($workstation->WorkstationService) > 0) {
-            $request->session()->flash('warning', __('Only one workstations can be created'));
-            return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
-        }
         $services = Service::whereBranchId(Auth::user()->branch_id)->get();
         return view('adminBranch.workstation.workstationService.create')->withWorkstation($workstation)->withServices($services);
     }
@@ -48,16 +43,30 @@ class WorkstationServiceController extends Controller
      */
     public function store(Workstation $workstation, StoreWorkstationService $request)
     {
-        // for MVP
-        if (!Auth::user()->Branch->BranchType->is_premium && count($workstation->WorkstationService) > 0) {
-            $request->session()->flash('warning', __('Only one workstations can be created'));
+        $total_same_workstation_services = WorkstationService::where([
+            'service_id' => $request->service_id,
+            'workstation_id' => $request->workstation_id
+        ])->count();
+        if ($total_same_workstation_services > 0) {
+            $request->session()->flash('error', __('Layanan meja sudah terdaftar. Silahkan pilih layanan lain.'));
             return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
         }
+
+        $total_workstation_services = WorkstationService::whereHas('Service', function ($query) {
+            return $query->where('branch_id', Auth::user()->branch_id);
+        })->count();
+        if (!Auth::user()->Branch->is_premium && $total_workstation_services >= 5) {
+            $request->session()->flash('error', __('Batas maksimal 5 layanan meja telah terlampaui untuk lisensi gratis.'));
+            return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+        }
+
         WorkstationService::create($request->all());
+
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Insert Workstation Service'
         ]);
+
         $request->session()->flash('success', __('Workstation Service has been inserted'));
         return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
     }
