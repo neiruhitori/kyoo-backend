@@ -14,7 +14,7 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('adminBranch.workstation.workstationService.store', $workstation->id)}}" method="post">
+                            <form action="{{route('admin-branch.branch-configuration.workstation.workstation-service.store', $workstation->id)}}" method="post">
                                 @csrf
                                 <input type="hidden" name="workstation_id" value="{{$workstation->id}}">
                                 <div class="form-group">

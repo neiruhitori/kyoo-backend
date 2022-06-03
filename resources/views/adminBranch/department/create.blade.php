@@ -14,7 +14,7 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('adminBranch.department.store')}}" method="post">
+                            <form action="{{route('admin-branch.branch-configuration.department.store')}}" method="post">
                                 @csrf
                                 <input type="hidden" name="branch_id" value="{{Auth::user()->branch_id}}">
                                 <div class="form-group">

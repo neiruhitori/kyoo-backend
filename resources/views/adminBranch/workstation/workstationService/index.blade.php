@@ -45,7 +45,7 @@
 
                     <div class="row">
                         <div class="col-md-12 text-right">
-                            <a href="{{route('adminBranch.workstation.workstationService.create', $workstation->id)}}" class="btn btn-primary">
+                            <a href="{{ route('admin-branch.branch-configuration.workstation.workstation-service.create', $workstation->id) }}" class="btn btn-primary">
                                 {{ __('create.module', ['module' => __('Service')]) }}
                             </a>
                         </div>
@@ -69,7 +69,7 @@
                                                 <td>{{$workstationService->priority}}</td>
                                                 <td>
                                                     <a
-                                                        href="{{route('adminBranch.workstation.workstationService.edit', ["workstation" => $workstation->id, "workstationService" => $workstationService->id])}}"
+                                                        href="{{ route('admin-branch.branch-configuration.workstation.workstation-service.edit', ["workstation" => $workstation->id, "workstation_service" => $workstationService->id]) }}"
                                                         class="btn btn-warning"
                                                         data-toggle="tooltip"
                                                         data-placement="bottom"
@@ -79,9 +79,15 @@
                                                     >
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
-                                                    <form action="{{route('adminBranch.workstation.workstationService.destroy', ["workstation" => $workstation->id, "workstationService" => $workstationService->id])}}" method="post" style="display: inline">
+
+                                                    <form
+                                                        action="{{ route('admin-branch.branch-configuration.workstation.workstation-service.destroy', ["workstation" => $workstation->id, "workstation_service" => $workstationService->id]) }}"
+                                                        method="post"
+                                                        style="display: inline"
+                                                    >
                                                         @csrf
                                                         @method('DELETE')
+
                                                         <button
                                                             type="submit"
                                                             class="btn btn-danger"

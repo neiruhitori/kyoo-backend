@@ -36,7 +36,7 @@ class WorkstationController extends Controller
         // for MVP
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->Workstations) > 0) {
             $request->session()->flash('warning', __('Only one workstations can be created!'));
-            return redirect(route('adminBranch.workstation.index'));
+            return redirect(route('admin-branch.branch-configuration.workstation.index'));
         }
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         return view('adminBranch.workstation.create')->withDepartments($departments);
@@ -53,7 +53,7 @@ class WorkstationController extends Controller
         // for MVP
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->Workstations) > 0) {
             $request->session()->flash('warning', __('Only one workstations can be created'));
-            return redirect(route('adminBranch.workstation.index'));
+            return redirect(route('admin-branch.branch-configuration.workstation.index'));
         }
 
         // validate max counter
@@ -61,7 +61,7 @@ class WorkstationController extends Controller
         $maxCounter = Auth::user()->Branch->max_counter;
         if ($totalWorkstations >= $maxCounter) {
             $request->session()->flash('error', __('Counter creation has reach the limit'));
-            return redirect(route('adminBranch.workstation.create'))->withInput();
+            return redirect(route('admin-branch.branch-configuration.workstation.create'))->withInput();
         }
 
         Workstation::create($request->all());
@@ -72,7 +72,7 @@ class WorkstationController extends Controller
         ]);
         
         $request->session()->flash('success', __('module.created', ['module' => __('Workstation'), 'name' => $request->name]));
-        return redirect(route('adminBranch.workstation.index'));
+        return redirect(route('admin-branch.branch-configuration.workstation.index'));
     }
 
     /**
@@ -121,7 +121,7 @@ class WorkstationController extends Controller
             'description' => 'Update Workstation'
         ]);
         $request->session()->flash('warning', __('module.updated', ['module' => __('Workstation'), 'name' => $request->name]));
-        return redirect(route('adminBranch.workstation.index'));
+        return redirect(route('admin-branch.branch-configuration.workstation.index'));
     }
 
     /**
@@ -142,6 +142,6 @@ class WorkstationController extends Controller
             'description' => 'Remove Workstation'
         ]);
         $request->session()->flash('error', __('module.removed', ['module' => __('Workstation'), 'name' => $workstation->name]));
-        return redirect(route('adminBranch.workstation.index'));
+        return redirect(route('admin-branch.branch-configuration.workstation.index'));
     }
 }

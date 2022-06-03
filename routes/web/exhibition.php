@@ -4,20 +4,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/exhibition/status/{id}', 'ExhibitionController@status')->name('exhibition.status');
 
-Route::namespace('AdminBranch')
-    ->middleware('auth', 'checkAdminBranch', 'checkAdminBranchPassword', 'exhibitionPermissionIsValid')
-    ->prefix('adminBranch/exhibition')
-    ->name('adminBranch.exhibition.')
-    ->group(function () {
-        Route::get('/report/daily', 'ReportController@exhibitionDaily')
-            ->name('report.daily');
-
-        Route::get('/report/monthly', 'ReportController@exhibitionMonthly')
-            ->name('report.monthly');
-
-        Route::get('/export', 'HomeController@exportExcelExhibition')->name('export');
-    });
-
 Route::middleware('auth', 'checkCS')
     ->middleware('exhibitionPermissionIsValid')
     ->namespace('CS')

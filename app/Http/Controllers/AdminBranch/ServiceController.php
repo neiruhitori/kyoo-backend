@@ -49,7 +49,7 @@ class ServiceController extends Controller
 
         if (!Auth::user()->Branch->is_premium && $total_services >= 5) {
             $request->session()->flash('error', __('Batas maksimal 5 layanan telah terlampaui untuk lisensi gratis'));
-            return redirect(route('adminBranch.service.create'));
+            return redirect(route('admin-branch.branch-configuration.service.create'));
         }
 
         $input = $request->all();
@@ -63,7 +63,7 @@ class ServiceController extends Controller
         ]);
 
         $request->session()->flash('success', __('module.created', ['module' => __('Service'), 'name' => $request->name]));
-        return redirect(route('adminBranch.department.index'));
+        return redirect(route('admin-branch.branch-configuration.department.index'));
     }
 
     /**
@@ -116,7 +116,7 @@ class ServiceController extends Controller
             'description' => 'Update Service'
         ]);
         $request->session()->flash('warning', __('module.updated', ['module' => __('Service'), 'name' => $request->name]));
-        return redirect(route('adminBranch.department.index'));
+        return redirect(route('admin-branch.branch-configuration.department.index'));
     }
 
     /**
@@ -138,6 +138,6 @@ class ServiceController extends Controller
             'description' => 'Remove Service'
         ]);
         $request->session()->flash('error', __('module.removed', ['module' => __('Service'), 'name' => $service->name]));
-        return redirect(route('adminBranch.department.index'));
+        return redirect(route('admin-branch.branch-configuration.department.index'));
     }
 }

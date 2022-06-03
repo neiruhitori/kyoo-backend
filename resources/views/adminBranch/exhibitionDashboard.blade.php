@@ -62,7 +62,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col text-right">
-                        <a href="{{ route('adminBranch.exhibition.export') }}" class="btn btn-primary">
+                        <a href="{{ route('admin-branch.export.exhibition') }}" class="btn btn-primary">
                             {{ __('Download Report') }}
                         </a>
                     </div>

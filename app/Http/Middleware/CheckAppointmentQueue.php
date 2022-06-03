@@ -31,7 +31,7 @@ class CheckAppointmentQueue
             Auth::user()->role == 'admin_branch'
         ) {
             $request->session()->flash('warning', __('Only Appointment Queue Branch can access this page'));
-            return redirect(route('adminBranch.home'));
+            return redirect(route('admin-branch.dashboard'));
         }
         return $next($request);
     }

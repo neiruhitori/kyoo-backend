@@ -19,7 +19,7 @@ class ExhibitionPermissionIsValid
     {
         if (!Auth::user()->Branch->BranchType->is_exhibition && Auth::user()->role == 'admin_branch') {
             $request->session()->flash('warning', __('Only Exhibition Branch can access this page'));
-            return redirect(route('adminBranch.home'));
+            return redirect(route('admin-branch.dashboard'));
         }
 
         if (!Auth::user()->Branch->BranchType->is_exhibition && Auth::user()->role == 'cs') {

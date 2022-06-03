@@ -5,7 +5,7 @@
     <div class="col-md-12">
         @include('layouts.alert')
 
-        <form action="{{route('adminBranch.profile.update')}}" method="post">
+        <form action="{{route('admin-branch.profile.update')}}" method="post">
             @csrf
             @method('PUT')
 
@@ -54,8 +54,6 @@
                 </div>
 
                 <div class="card-body">
-                    @include('layouts.alert')
-
                     <div class="row">
                         <div class="col-md-12">
                             @if(!Auth::user()->is_password_changed)
@@ -63,7 +61,7 @@
                                     <button type="button" class="close" data-dismiss="alert">×</button>
                                     <strong>
                                         Your password not changed from registered, <a
-                                            href="{{ route('adminBranch.profile.edit') }}">
+                                            href="{{ route('admin-branch.profile') }}">
                                             {{ __('click here to change.') }}
                                         </a>
                                     </strong>

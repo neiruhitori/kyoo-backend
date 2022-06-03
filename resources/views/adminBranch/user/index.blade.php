@@ -50,7 +50,7 @@
                     @if (Auth::user()->Branch->BranchType->is_premium || count(Auth::user()->Branch->CS) < 1)
                         <div class="row">
                             <div class="col-md-12 text-right">
-                                <a href="{{route('adminBranch.user.create')}}" class="btn btn-primary"">
+                                <a href="{{route('admin-branch.branch-configuration.user.create')}}" class="btn btn-primary"">
                                     {{ __('create.module', ['module' => __('Virtual Counter')]) }}
                                 </a>
                             </div>
@@ -93,7 +93,7 @@
                                                 <td>
                                                     @if (!$user->deleted_at)
                                                         <a
-                                                            href="{{ route('adminBranch.user.edit', $user->id) }}"
+                                                            href="{{ route('admin-branch.branch-configuration.user.edit', $user->id) }}"
                                                             class="btn
                                                             btn-warning" data-toggle="tooltip"
                                                             data-placement="bottom"
@@ -103,7 +103,7 @@
                                                         >
                                                             <i class="fas fa-fw fa-edit"></i>
                                                         </a>
-                                                        <form action="{{ route('adminBranch.user.destroy', $user->id) }}" method="post" style="display: inline">
+                                                        <form action="{{ route('admin-branch.branch-configuration.user.destroy', $user->id) }}" method="post" style="display: inline">
                                                             @csrf
                                                             @method('DELETE')
 
@@ -120,7 +120,7 @@
                                                             </button>
                                                         </form>
                                                     @else
-                                                        <form action="{{route('adminBranch.user.restore')}}" method="post" style="display: inline">
+                                                        <form action="{{route('admin-branch.branch-configuration.user.restore')}}" method="post" style="display: inline">
                                                             @csrf
                                                             @method('PUT')
                                                             <input type="hidden" name="user_id" value="{{$user->id}}">
@@ -136,7 +136,7 @@
                                                         </form>
                                                     @endif
 
-                                                    <form action="{{route('adminBranch.user.resetPassword', $user->id)}}" method="post" style="display: inline">
+                                                    <form action="{{route('admin-branch.branch-configuration.user.reset-password', $user->id)}}" method="post" style="display: inline">
                                                         @csrf   
                                                         <button
                                                             type="submit"

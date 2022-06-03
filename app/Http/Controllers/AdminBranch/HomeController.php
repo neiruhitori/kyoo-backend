@@ -108,7 +108,7 @@ class HomeController extends Controller
         $input['is_password_changed'] = true;
         $user->update($input);
         $request->session()->flash('warning', __('Admin profile has been updated'));
-        return redirect(route('adminBranch.profile.edit'));
+        return redirect(route('admin-branch.profile'));
     }
 
     public function exportExcel()
@@ -145,7 +145,7 @@ class HomeController extends Controller
         }
 
         $branchId = Crypt::encrypt(Auth::user()->branch_id);
-        $url = URL::temporarySignedRoute('directQueue.monitor', now()->addDays(1), ['branch_id' => $branchId]);
+        $url = URL::temporarySignedRoute('queue-monitor', now()->addDays(1), ['branch_id' => $branchId]);
         return redirect($url);
     }
 }

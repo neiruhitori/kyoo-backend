@@ -48,7 +48,7 @@
                     @if (Auth::user()->Branch->BranchType->is_premium || count($departments) < 1)
                         <div class="row">
                             <div class="col-md-12 text-right">
-                                <a href="{{route('adminBranch.department.create')}}" class="btn btn-primary">
+                                <a href="{{route('admin-branch.branch-configuration.department.create')}}" class="btn btn-primary">
                                     {{ __('create.module', ['module' => __('Department')]) }}
                                 </a>
                             </div>
@@ -71,7 +71,7 @@
                                                 <td>
                                                     <a
                                                         href="{{
-                                                            route('adminBranch.department.edit', $department->id)
+                                                            route('admin-branch.branch-configuration.department.edit', $department->id)
                                                         }}"
                                                         class="btn btn-warning"
                                                         data-toggle="tooltip"

@@ -26,7 +26,7 @@
                         </li>
                         <li>
                             Untuk melihat panduan penggunaan slot waktu layanan, silahkan kunjungi
-                            <a href="{{ route('adminBranch.slotTimeGuide') }}" class="font-weight-bold">
+                            <a href="{{ route('admin-branch.product-guide.slot-time') }}" class="font-weight-bold">
                                 <u>disini</u>
                             </a>
                         </li>
@@ -49,7 +49,7 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12 text-right">
-                            <a href="{{route('adminBranch.service.slot.create', $service->id)}}" class="btn btn-primary"">
+                            <a href="{{ route('admin-branch.branch-configuration.service.slot.create', $service->id) }}" class="btn btn-primary">
                                 {{ __('create.module', ['module' => __('Slot')]) }}
                             </a>
                         </div>
@@ -76,7 +76,7 @@
                                                 <td>{{$slot->end_time}}</td>
                                                 <td>
                                                     <a
-                                                        href="{{route('adminBranch.slot.edit', $slot->id)}}"
+                                                        href="{{route('admin-branch.branch-configuration.slot.edit', $slot->id)}}"
                                                         class="btn btn-warning"
                                                         data-toggle="tooltip"
                                                         data-placement="bottom"
@@ -86,7 +86,7 @@
                                                     >
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
-                                                    <form action="{{route('adminBranch.slot.destroy', $slot->id)}}" method="post" style="display: inline">
+                                                    <form action="{{route('admin-branch.branch-configuration.slot.destroy', $slot->id)}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button

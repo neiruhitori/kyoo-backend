@@ -49,7 +49,7 @@ class WorkstationServiceController extends Controller
         ])->count();
         if ($total_same_workstation_services > 0) {
             $request->session()->flash('error', __('Layanan meja sudah terdaftar. Silahkan pilih layanan lain.'));
-            return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+            return redirect(route('admin-branch.branch-configuration.workstation.workstation-service.index', $workstation->id));
         }
 
         $total_workstation_services = WorkstationService::whereHas('Service', function ($query) {
@@ -57,7 +57,7 @@ class WorkstationServiceController extends Controller
         })->count();
         if (!Auth::user()->Branch->is_premium && $total_workstation_services >= 5) {
             $request->session()->flash('error', __('Batas maksimal 5 layanan meja telah terlampaui untuk lisensi gratis.'));
-            return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+            return redirect(route('admin-branch.branch-configuration.workstation.workstation-service.index', $workstation->id));
         }
 
         WorkstationService::create($request->all());
@@ -68,7 +68,7 @@ class WorkstationServiceController extends Controller
         ]);
 
         $request->session()->flash('success', __('Workstation Service has been inserted'));
-        return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+        return redirect(route('admin-branch.branch-configuration.workstation.workstation-service.index', $workstation->id));
     }
 
     /**
@@ -117,7 +117,7 @@ class WorkstationServiceController extends Controller
             'description' => 'Update Workstation Service'
         ]);
         $request->session()->flash('warning', __('Workstation Service has been updated'));
-        return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+        return redirect(route('admin-branch.branch-configuration.workstation.workstation-service.index', $workstation->id));
     }
 
     /**
@@ -138,6 +138,6 @@ class WorkstationServiceController extends Controller
             'description' => 'Remove Workstation Service'
         ]);
         $request->session()->flash('error', __('Workstation Service has been removed'));
-        return redirect(route('adminBranch.workstation.workstationService.index', $workstation->id));
+        return redirect(route('admin-branch.branch-configuration.workstation.workstation-service.index', $workstation->id));
     }
 }

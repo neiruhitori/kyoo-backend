@@ -54,7 +54,7 @@
                     <div class="dropdown-divider"></div>
                     @break
                 @case('admin_branch')
-                    <a class="dropdown-item" href="{{route('adminBranch.profile.edit')}}">
+                    <a class="dropdown-item" href="{{route('admin-branch.profile')}}">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         {{ __('Profile') }}
                     </a>

@@ -13,7 +13,7 @@
             <div class="alert alert-warning alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 <strong>
-                    {{ __('Your password not changed from registered') }}, <a href="{{ route('adminBranch.profile.edit') }}">
+                    {{ __('Your password not changed from registered') }}, <a href="{{ route('admin-branch.profile') }}">
                         {{ __('click here to change.') }}
                     </a>
                 </strong>
@@ -87,7 +87,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col text-right">
-                        <a href="{{ route('adminBranch.export') }}" class="btn btn-primary">
+                        <a href="{{ route('admin-branch.export.appointment') }}" class="btn btn-primary">
                             {{ __('Download Report') }}
                         </a>
                     </div>

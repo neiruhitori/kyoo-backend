@@ -14,7 +14,7 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('adminBranch.workstation.update', $workstation->id)}}" method="post">
+                            <form action="{{route('admin-branch.branch-configuration.workstation.update', $workstation->id)}}" method="post">
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group">

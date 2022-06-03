@@ -18,7 +18,7 @@ class CheckDirectQueue
     {
         if (!Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->role == 'admin_branch') {
             $request->session()->flash('warning', __('Only Direct Queue Branch can access this page'));
-            return redirect(route('adminBranch.home'));
+            return redirect(route('admin-branch.dashboard'));
         }
         if (!Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->role == 'cs') {
             $request->session()->flash('warning', __('Only Direct Queue Branch can access this page'));

@@ -47,7 +47,7 @@
                     @if (Auth::user()->Branch->BranchType->is_premium || count($workstations) < 1)
                         <div class="row">
                             <div class="col-md-12 text-right">
-                                <a href="{{route('adminBranch.workstation.create')}}" class="btn btn-primary"">
+                                <a href="{{route('admin-branch.branch-configuration.workstation.create')}}" class="btn btn-primary"">
                                     {{ __('create.module', ['module' => __('Workstation')]) }}
                                 </a>
                             </div>
@@ -71,7 +71,7 @@
                                                 <td>{{$workstation->Department->name}}</td>
                                                 <td>
                                                     <a
-                                                        href="{{route('adminBranch.workstation.workstationService.index', $workstation->id)}}"
+                                                        href="{{route('admin-branch.branch-configuration.workstation.workstation-service.index', $workstation->id)}}"
                                                         class="btn btn-info"
                                                         data-toggle="tooltip"
                                                         data-placement="bottom"
@@ -80,7 +80,7 @@
                                                         <i class="fas fa-fw fa-list"></i>
                                                     </a>
                                                     <a
-                                                        href="{{route('adminBranch.workstation.edit', $workstation->id)}}"
+                                                        href="{{route('admin-branch.branch-configuration.workstation.edit', $workstation->id)}}"
                                                         class="btn btn-warning"
                                                         data-toggle="tooltip"
                                                         data-placement="bottom"
@@ -90,7 +90,7 @@
                                                     >
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
-                                                    <form action="{{route('adminBranch.workstation.destroy', $workstation->id)}}" method="post" style="display: inline">
+                                                    <form action="{{route('admin-branch.branch-configuration.workstation.destroy', $workstation->id)}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button

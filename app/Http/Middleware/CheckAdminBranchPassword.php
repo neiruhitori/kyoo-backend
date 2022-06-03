@@ -20,7 +20,7 @@ class CheckAdminBranchPassword
             return redirect(route('unauthorized'));
         }
         if (!Auth::user()->is_password_changed) {
-            return redirect(route('adminBranch.profile.edit'));
+            return redirect(route('admin-branch.profile'));
         }
         return $next($request);
     }

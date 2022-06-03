@@ -14,7 +14,7 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('adminBranch.workstation.store')}}" method="post">
+                            <form action="{{route('admin-branch.branch-configuration.workstation.store')}}" method="post">
                                 @csrf
                                 <div class="form-group">
                                     <label for="department_id">{{ __('Department') }}</label>

@@ -14,7 +14,7 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('adminBranch.service.slot.store', $service->id)}}" method="post">
+                            <form action="{{route('admin-branch.branch-configuration.service.slot.store', $service->id)}}" method="post">
                                 @csrf
                                 <div class="form-group">
                                     <label for="max_slots">{{ __('Maximum Slot') }}</label>

@@ -14,10 +14,11 @@
                 @include('layouts.alert')
                 <div class="row">
                     <div class="col-md-12">
-                        <form action="{{route('adminBranch.branch.update')}}" method="post"
+                        <form action="{{route('admin-branch.branch-information.update')}}" method="post"
                             enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
+
                             <input type="hidden" name="id" value="{{$branch->id}}">
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item">

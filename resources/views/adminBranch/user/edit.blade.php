@@ -5,7 +5,7 @@
         <div class="col-md-12">
             @include('layouts.alert')
 
-            <form action="{{route('adminBranch.user.update', $user->id)}}" method="post">
+            <form action="{{route('admin-branch.branch-configuration.user.update', $user->id)}}" method="post">
                 @csrf
                 @method('PUT')
 

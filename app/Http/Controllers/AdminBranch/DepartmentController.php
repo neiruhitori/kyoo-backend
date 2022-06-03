@@ -39,7 +39,7 @@ class DepartmentController extends Controller
         // for MVP
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->Departments) > 0) {
             $request->session()->flash('warning', __('Only one department can be created'));
-            return redirect(route('adminBranch.department.index'));
+            return redirect(route('admin-branch.branch-configuration.department.index'));
         }
         return view('adminBranch.department.create');
     }
@@ -55,7 +55,7 @@ class DepartmentController extends Controller
         // for MVP
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->Departments) > 0) {
             $request->session()->flash('warning', __('Only one department can be created'));
-            return redirect(route('adminBranch.department.index'));
+            return redirect(route('admin-branch.branch-configuration.department.index'));
         }
         Department::create($request->all());
         Log::create([
@@ -63,7 +63,7 @@ class DepartmentController extends Controller
             'description' => 'Insert Department'
         ]);
         $request->session()->flash('success', __('module.created', ['module' => __('Department'), 'name' => $request->name]));
-        return redirect(route('adminBranch.department.index'));
+        return redirect(route('admin-branch.branch-configuration.department.index'));
     }
 
     /**
@@ -110,7 +110,7 @@ class DepartmentController extends Controller
         // for MVP
         if (count(Auth::user()->Branch->Departments) > 0) {
             $request->session()->flash('warning', __('Can not update department info'));
-            return redirect(route('adminBranch.department.index'));
+            return redirect(route('admin-branch.branch-configuration.department.index'));
         }
         $department->update($request->all());
         Log::create([
@@ -118,7 +118,7 @@ class DepartmentController extends Controller
             'description' => 'Update Department'
         ]);
         $request->session()->flash('warning', __('module.updated', ['module' => __('Department'), 'name' => $request->name]));
-        return redirect(route('adminBranch.department.index'));
+        return redirect(route('admin-branch.branch-configuration.department.index'));
     }
 
     /**
@@ -130,7 +130,7 @@ class DepartmentController extends Controller
     public function destroy(Request $request, Department $department)
     {
         // in MVP, can not destroy
-        return redirect(route('adminBranch.department.index'));
+        return redirect(route('admin-branch.branch-configuration.department.index'));
         
         // gate
         if ($department->branch_id != Auth::user()->branch_id) {
@@ -142,6 +142,6 @@ class DepartmentController extends Controller
             'description' => 'Remove Department'
         ]);
         $request->session()->flash('error', __('module.removed', ['module' => __('Department'), 'name' => $department->name]));
-        return redirect(route('adminBranch.department.index'));
+        return redirect(route('admin-branch.branch-configuration.department.index'));
     }
 }
