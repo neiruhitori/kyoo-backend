@@ -1,7 +1,7 @@
 <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-      <a class="sidebar-brand d-flex mb-2" href="{{route('home')}}">
+      <a class="sidebar-brand d-flex mb-2" href="{{route('dashboard')}}">
         <img src="{{asset('img/logo.svg')}}" alt="" style="height: 40px;">
       </a>
 
@@ -24,7 +24,7 @@
 
       @if (Auth::user()->Branch->BranchType->is_appointment)
         <li class="nav-item">
-          <a class="nav-link" href="{{route('home')}}">
+          <a class="nav-link" href="{{route('dashboard')}}">
             <i class="fas fa-list-ul"></i>
             <span>{{ __('Appointment') }}</span></a>
         </li>
@@ -32,7 +32,7 @@
 
       @if (Auth::user()->Branch->BranchType->is_exhibition)
         <li class="nav-item">
-          <a class="nav-link" href="{{route('home')}}">
+          <a class="nav-link" href="{{route('dashboard')}}">
             <i class="fas fa-list-ul"></i>
             <span>{{ __('Exhibition Queue') }}</span></a>
         </li>
