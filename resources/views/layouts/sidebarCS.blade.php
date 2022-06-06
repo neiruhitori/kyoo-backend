@@ -1,9 +1,51 @@
+<style>
+  .kyoo-sublink {
+    white-space: normal !important;
+  }
+
+  .kyoo-logo {
+    width: 72px;
+    height: 72px;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    margin: 0 auto;
+  }
+
+  .kyoo-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .kyoo-logo-link {
+    height: 100%;
+    width: 100%;
+    display: block;
+    padding: .3rem;
+  }
+</style>
+
 <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-      <a class="sidebar-brand d-flex mb-2" href="{{route('dashboard')}}">
-        <img src="{{asset('img/logo.svg')}}" alt="" style="height: 40px;">
-      </a>
+      @if (Auth::user()->Branch->logo)
+        <div class="kyoo-logo mb-3 mt-3">
+          <a href="{{ route('dashboard') }}" class="kyoo-logo-link">
+            <img
+              src="{{ asset(Auth::user()->Branch->logo ? 'storage/' . Auth::user()->Branch->logo : 'img/logo.svg') }}"
+              alt=""
+            >
+          </a>
+        </div>
+      @else
+        <a class="sidebar-brand mb-2 text-center" href="{{ route('dashboard') }}">
+          <img
+            src="{{ asset('img/logo.svg') }}"
+            alt=""
+            style="height: 40px;"
+          >
+        </a>
+      @endif
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
