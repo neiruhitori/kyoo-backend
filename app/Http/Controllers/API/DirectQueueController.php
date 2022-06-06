@@ -3,20 +3,16 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\DirectQueue;
 use App\Branch;
-use App\WorkstationService;
 use App\Service;
-use App\Schedule;
-use App\ScheduleTemplateDetail;
 use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
 use App\Http\Requests\API\DirectQueue\Feedback as DirectQueueFeedback;
-use App\Http\Resources\DirectQueue\All as DirectQueueAll;
 use App\Http\Resources\DirectQueue\Detail as DirectQueueDetail;
 use Auth;
 use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 use App\Events\DirectQueue as DirectQueueEvent;
+use App\Events\OnsiteQueueUpdated;
 use App\Interfaces\DirectQueueRepositoryInterface;
 
 class DirectQueueController extends Controller
@@ -28,23 +24,23 @@ class DirectQueueController extends Controller
         $this->onsite_repository = $onsite_repository;
     }
 
-    private function InitQuery()
-    {
-        return DirectQueue::query()
-                    ->addSelect([
-                        'vct_priority' => WorkstationService::query()
-                                                                ->select('priority')
-                                                                ->whereColumn('service_id', 'direct_queues.service_id')
-                                                                ->where('workstation_id', Auth::user()->WorkstationVct->workstation_id)
-                                                                ->limit(1)
-                    ])
-                    ->with('Service')
-                    ->whereDate('direct_queues.created_at', Date('Y-m-d'))
-                    ->whereNotIn('status', ['end served', 'no show'])
-                    ->orderBy('vct_priority', 'ASC')
-                    ->orderBy('direct_queues.requeue_count', 'ASC')
-                    ->orderBy('direct_queues.queue_no', 'ASC');
-    }
+    // private function InitQuery()
+    // {
+    //     return DirectQueue::query()
+    //         ->addSelect([
+    //             'vct_priority' => WorkstationService::query()
+    //                 ->select('priority')
+    //                 ->whereColumn('service_id', 'direct_queues.service_id')
+    //                 ->where('workstation_id', Auth::user()->WorkstationVct->workstation_id)
+    //                 ->limit(1)
+    //         ])
+    //         ->with('Service')
+    //         ->whereDate('direct_queues.created_at', Date('Y-m-d'))
+    //         ->whereNotIn('status', ['end served', 'no show'])
+    //         ->orderBy('vct_priority', 'ASC')
+    //         ->orderBy('direct_queues.requeue_count', 'ASC')
+    //         ->orderBy('direct_queues.queue_no', 'ASC');
+    // }
 
     public function index(Branch $branch)
     {
@@ -88,6 +84,7 @@ class DirectQueueController extends Controller
             // send event to update Direct Queue Monitor
             event(new VCTDirectQueueEvent($direct_queue, $service->branch_id));
             event(new DirectQueueEvent($direct_queue, $service->branch_id));
+            event(new OnsiteQueueUpdated($direct_queue));
 
             return response()->json([
                 'success' => true,
@@ -104,7 +101,12 @@ class DirectQueueController extends Controller
 
     public function upcoming()
     {
-        $directQueues = DirectQueue::whereUserId(Auth::id())->whereIn('status', ['waiting', 'served', 'requeue'])->whereDate('created_at', '>=', date('Y-m-d'))->orderBy('created_at', 'asc')->get();
+        $directQueues = DirectQueue::whereUserId(Auth::id())
+            ->whereIn('status', ['waiting', 'served', 'requeue'])
+            ->whereDate('created_at', '>=', date('Y-m-d'))
+            ->orderBy('created_at', 'asc')
+            ->get();
+
         return response()->json([
             'success' => true,
             'message' => 'get upcoming direct queues',

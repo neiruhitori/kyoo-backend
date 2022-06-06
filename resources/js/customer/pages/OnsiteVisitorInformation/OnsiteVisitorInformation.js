@@ -81,7 +81,7 @@ function VisitorInformation() {
 
     return <>
         {bookingMutation.status === 'loading' && <Loading />}
-
+        
         <Header style={{
             justifyContent: 'space-between'
         }}>
@@ -105,31 +105,32 @@ function VisitorInformation() {
             </div>
         </Header>
 
-        <MainContent style={{
-            flex: '1 1 0%',
-            height: '100%',
+        <form onSubmit={handleFormSubmit} style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: '1'
         }}>
-            {!!errorMessage && <DangerAlert style={{
-                marginBottom: '1rem'
+            <MainContent style={{
+                flex: '1 1 0%',
+                height: '100%',
             }}>
-                <h4 style={{
-                    fontSize: '1rem',
-                    marginBottom: '.375rem',
-                    textTransform: 'capitalize'
-                }}>Gagal membuat antrian</h4>
-
-                <p style={{
-                    lineHeight: '1.5',
+                {!!errorMessage && <DangerAlert style={{
+                    marginBottom: '1rem'
                 }}>
-                    {errorMessage}
-                </p>
-            </DangerAlert>}
+                    <h4 style={{
+                        fontSize: '1rem',
+                        marginBottom: '.375rem',
+                        textTransform: 'capitalize'
+                    }}>Gagal membuat antrian</h4>
 
-            <form onSubmit={handleFormSubmit} style={{
-                display: 'flex',
-                flexDirection: 'column',
-                flexGrow: '1'
-            }}>
+                    <p style={{
+                        lineHeight: '1.5',
+                    }}>
+                        {errorMessage}
+                    </p>
+                </DangerAlert>}
+
+            
                 <div style={{
                     flex: '1 1 0%'
                 }}>
@@ -171,26 +172,25 @@ function VisitorInformation() {
                         helperText={validationMessage.phone}
                     />
                 </div>
+            </MainContent>
 
-                <div style={{
-                    boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
-                    borderRadius: '16px 16px 0 0',
-                    padding: '1.75rem 1.375rem',
-                    margin: '0 -1.375rem'
-                }}>
-                    <Button color="primary" type="submit" style={{
-                        width: '100%',
-                        fontSize: '1rem',
-                        marginBottom: '.5rem'
-                    }} onClick={() => setSelectedButton('submit')}>Selanjutnya</Button>
+            <div style={{
+                boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
+                borderRadius: '16px 16px 0 0',
+                padding: '1.75rem 1.375rem'
+            }}>
+                <Button color="primary" type="submit" style={{
+                    width: '100%',
+                    fontSize: '1rem',
+                    marginBottom: '.5rem'
+                }} onClick={() => setSelectedButton('submit')}>Selanjutnya</Button>
 
-                    <Button color="link" type="submit" style={{
-                        width: '100%',
-                        fontSize: '1rem'
-                    }} onClick={() => setSelectedButton('skip')}>Lewati</Button>
-                </div>
-            </form>
-        </MainContent>
+                <Button color="link" type="submit" style={{
+                    width: '100%',
+                    fontSize: '1rem'
+                }} onClick={() => setSelectedButton('skip')}>Lewati</Button>
+            </div>
+        </form>
     </>
 }
 

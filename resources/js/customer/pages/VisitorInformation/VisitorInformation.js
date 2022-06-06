@@ -85,14 +85,14 @@ function VisitorInformation() {
             </div>
         </Header>
 
-        <MainContent style={{
-            flex: '1 1 0%',
-            height: '100%',
+        <form onSubmit={handleFormSubmit} style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: '1'
         }}>
-            <form onSubmit={handleFormSubmit} style={{
-                display: 'flex',
-                flexDirection: 'column',
-                flexGrow: '1'
+            <MainContent style={{
+                flex: '1 1 0%',
+                height: '100%',
             }}>
                 <div style={{
                     flex: '1 1 0%'
@@ -145,20 +145,19 @@ function VisitorInformation() {
                         placeholder="Opsional"
                     />
                 </div>
+            </MainContent>
 
-                <div style={{
-                    boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
-                    borderRadius: '16px 16px 0 0',
-                    padding: '1.75rem 1.375rem',
-                    margin: '0 -1.375rem'
-                }}>
-                    <Button color="primary" type="submit" style={{
-                        width: '100%',
-                        fontSize: '1rem'
-                    }}>Selanjutnya</Button>
-                </div>
-            </form>
-        </MainContent>
+            <div style={{
+                boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
+                borderRadius: '16px 16px 0 0',
+                padding: '1.75rem 1.375rem'
+            }}>
+                <Button color="primary" type="submit" style={{
+                    width: '100%',
+                    fontSize: '1rem'
+                }}>Selanjutnya</Button>
+            </div>
+        </form>
     </>
 }
 

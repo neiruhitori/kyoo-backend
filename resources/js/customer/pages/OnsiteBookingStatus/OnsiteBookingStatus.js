@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
-import { useMutation, useQuery } from 'react-query'
+import { useState, useEffect, useRef } from 'react'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import html2canvas from 'html2canvas'
@@ -133,10 +133,12 @@ function TicketFooter(props) {
 
 function OnsiteBookingStatus(props) {
     const PAGE_TITLE = 'Status Antrian Onsite'
+    const REFETCH_INTERVAL = 15000
+
     const { branchId, bookingId } = useParams()
+    const queryClient = useQueryClient()
 
     const [rating, setRating] = useState(0)
-    const [allowBooking, setAllowBooking] = useState(true)
     const [isDialogShown, setIsDialogShown] = useState(false)
 
     let booking = null
@@ -148,10 +150,23 @@ function OnsiteBookingStatus(props) {
     useEffect(() => {
         setIsDialogShown(true)
 
-        return () => setIsDialogShown(false)
+        window.Echo.channel(`onsite_queues.${bookingId}`)
+            .listen('OnsiteQueueUpdated', () => {
+                queryClient.invalidateQueries(['booking', bookingId])
+            })
+
+        return () => {
+            setIsDialogShown(false)
+        }
     }, [])
 
-    const bookingQuery = useQuery(['booking', bookingId], () => getBooking('onsite', bookingId))
+    const bookingQuery = useQuery(['booking', bookingId], () => getBooking('onsite', bookingId), {
+        refetchInterval: () => {
+            return ['end served', 'no show'].includes(booking?.status)
+                ? false
+                : REFETCH_INTERVAL
+        }
+    })
     const branchQuery = useQuery(['branch', branchId], () => fetchBranch(branchId), {
         enabled: bookingQuery.status === 'success'
     })
@@ -171,13 +186,6 @@ function OnsiteBookingStatus(props) {
         }
     }
 
-    useMemo(() => {
-        if (booking) {
-            setRating(booking.rating)
-            setAllowBooking(!booking.rating)
-        }
-    }, [booking])
-
     if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
         branch = branchQuery.data
 
@@ -195,10 +203,9 @@ function OnsiteBookingStatus(props) {
             rating,
             is_liked: false
         }, {
-            onSuccess: (data) => {
-                if (data.success) {
-                    setAllowBooking(false)
-                }
+            onSuccess: ({ data }) => {
+                booking.rating = data.rating
+                queryClient.invalidateQueries(['booking', bookingId])
             }
         })
     }
@@ -388,12 +395,14 @@ function OnsiteBookingStatus(props) {
                     marginTop: '1.125rem'
                 }}>
                     <Rating
-                        rate={rating}
-                        onRateClick={rate => allowBooking && setRating(rate)}
+                        rate={booking.rating || rating}
+                        onRateClick={rate => {
+                            if (!booking.rating) setRating(rate)
+                        }}
                     />
                 </div>
             
-                {allowBooking && <div style={{
+                {!booking.rating && <div style={{
                     textAlign: 'center',
                     marginTop: '1.125rem'
                 }}>
@@ -420,20 +429,20 @@ function OnsiteBookingStatus(props) {
                     Anda akan dipanggil oleh counter yang Anda pilih sesuai dengan nomor antrian Anda
                 </p>
             </InfoAlert>
-
-            <div style={{
-                display: 'flex',
-                fontSize: '.875rem',
-                color: '#7A7A7A',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '1.125rem 0',
-                marginTop: 'auto'
-            }}>
-                Powered by
-                <KyooLogo style={{ marginLeft: '0.5rem' }} />
-            </div>
         </MainContent>}
+
+        <div style={{
+            display: 'flex',
+            fontSize: '.875rem',
+            color: '#7A7A7A',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1.125rem 0',
+            marginTop: 'auto'
+        }}>
+            Powered by
+            <KyooLogo style={{ marginLeft: '0.5rem' }} />
+        </div>
     </>
 }
 

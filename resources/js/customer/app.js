@@ -3,10 +3,20 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 
 import { FirebaseAppProvider } from './lib/firebase'
+import Echo from 'laravel-echo'
+import Pusher from 'pusher-js'
 
 import App from './pages/App'
 
 window.React = React
+
+window.Pusher = Pusher
+window.Echo = new Echo({
+    broadcaster: "pusher",
+    key: process.env.MIX_PUSHER_APP_KEY,    
+    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    forceTLS: true
+})
 
 ReactDOM.render(
     <React.StrictMode>

@@ -308,19 +308,18 @@ function BookingConfirmation() {
                     </div>}
                 </Card>
             </div>
-
-            <div style={{
-                boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
-                borderRadius: '16px 16px 0 0',
-                padding: '1.75rem 1.375rem',
-                margin: '1.625rem -1.375rem 0 -1.375rem'
-            }}>
-                <Button color="primary" onClick={handleClick} style={{
-                    width: '100%',
-                    fontSize: '1rem'
-                }}>Booking Sekarang</Button>
-            </div>
         </MainContent>
+
+        <div style={{
+            boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
+            borderRadius: '16px 16px 0 0',
+            padding: '1.75rem 1.375rem'
+        }}>
+            <Button color="primary" onClick={handleClick} style={{
+                width: '100%',
+                fontSize: '1rem'
+            }}>Booking Sekarang</Button>
+        </div>
     </>
 }
 

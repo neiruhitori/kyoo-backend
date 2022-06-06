@@ -3,11 +3,7 @@
 namespace App\Http\Controllers\CS;
 
 use App\DirectQueue;
-use App\Service;
 use App\WorkstationService;
-use App\WorkstationVct;
-use App\Schedule;
-use App\ScheduleTemplateDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,6 +11,7 @@ use App\Http\Requests\CS\StoreDirectQueue;
 use Auth;
 use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 use App\Events\DirectQueue as DirectQueueEvent;
+use App\Events\OnsiteQueueUpdated;
 use App\Events\QueueStatusUpdated;
 use App\Interfaces\DirectQueueRepositoryInterface;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -117,6 +114,7 @@ class DirectQueueController extends Controller
 
             event(new VCTDirectQueueEvent($direct_queue));
             event(new DirectQueueEvent($direct_queue));
+            event(new OnsiteQueueUpdated($direct_queue));
 
             $request->session()->flash('success', __('Direct Queue Has Been Created, Queue no: :no', ['no' => $direct_queue->queue_no]));
             return redirect()->route('cs.directQueue.show', [
@@ -295,6 +293,7 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'served'
         ]));
+        event(new OnsiteQueueUpdated($directQueue));
 
         if ($directQueue->fcm_id) {
             fcm()
@@ -366,6 +365,7 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'recall'
         ]));
+        event(new OnsiteQueueUpdated($directQueue));
 
         if ($directQueue->fcm_id) {
             fcm()
@@ -439,6 +439,12 @@ class DirectQueueController extends Controller
 
         $directQueue->save();
 
+        event(new QueueStatusUpdated([
+            'queue_no' => $directQueue->queue_no,
+            'status' => 'end served'
+        ]));
+        event(new OnsiteQueueUpdated($directQueue));
+
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on Served',
@@ -480,6 +486,7 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'end served'
         ]));
+        event(new OnsiteQueueUpdated($directQueue));
 
         return response()->json([
             'success' => true,
@@ -518,6 +525,12 @@ class DirectQueueController extends Controller
         $directQueue->done_at = Date('Y-m-d H:i:s');
         $directQueue->save();
 
+        event(new QueueStatusUpdated([
+            'queue_no' => $directQueue->queue_no,
+            'status' => 'end served'
+        ]));
+        event(new OnsiteQueueUpdated($directQueue));
+
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on No Show',
@@ -551,7 +564,7 @@ class DirectQueueController extends Controller
                 'message' => 'Queue not found',
                 'data' => $validation->errors()
             ], 404);
-                }
+        }
 
         $lastDirectQueue = DirectQueue::whereWorkstationServiceId($request->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->count();
         $workstationService = WorkstationService::find($request->workstation_service_id);
@@ -565,6 +578,7 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'waiting'
         ]));
+        event(new OnsiteQueueUpdated($directQueue));
 
         return response()->json([
             'success' => true,
