@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { Link, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import html2canvas from 'html2canvas'
 
@@ -18,6 +18,7 @@ import ChipSuccess from '../../components/ChipSuccess'
 import ChipDanger from '../../components/ChipDanger'
 import Card from '../../components/Card'
 import Rating from '../../components/Rating'
+import Dialog from '../../components/Dialog'
 
 import OnsiteQueueTicket from '../../templates/OnsiteQueueTicket'
 
@@ -138,15 +139,17 @@ function OnsiteBookingStatus(props) {
 
     const { branchId, bookingId } = useParams()
     const queryClient = useQueryClient()
+    const ticketRef = useRef(null)
+    const navigate = useNavigate()
 
     const [rating, setRating] = useState(0)
     const [isDialogShown, setIsDialogShown] = useState(false)
+    const [isConfirmationDialogShown, setIsConfirmationDialogShown] = useState(false)
 
     let booking = null
     let branch = null
     let schedule = null
     let branchType = 'free'
-    const ticketRef = useRef(null)
 
     useEffect(() => {
         setIsDialogShown(true)
@@ -173,30 +176,30 @@ function OnsiteBookingStatus(props) {
     })
     const feedbackMutation = useMutation('feedback', (data) => createFeedback('onsite', bookingId, data))
 
-    let onsiteStatus = <ChipWarning label={getStatus('waiting')} />
-
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
-
-        if (booking.status == 'no show') {
-            onsiteStatus = <ChipDanger label={getStatus(booking.status)} />
-        } else if (booking.status == 'end served') {
-            onsiteStatus = <ChipSuccess label={getStatus(booking.status)} />
-        } else {
-            onsiteStatus = <ChipWarning label={getStatus(booking.status)} />
-        }
     }
 
     if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
         branch = branchQuery.data
 
-        if (branch.branch_type.is_premium) {
-            branchType = 'premium'
-        }
-
         schedule = branch.schedule.find(v => {
             return v.day === getDayName(formatBrowser(booking.date), 'en')
         })
+    }
+
+    let onsiteStatus = <ChipWarning label={getStatus(booking?.status || 'waiting')} />
+
+    if (booking?.status == 'no show') {
+        onsiteStatus = <ChipDanger label={getStatus(booking.status)} />
+    }
+    
+    if (booking?.status == 'end served') {
+        onsiteStatus = <ChipSuccess label={getStatus(booking.status)} />
+    }
+
+    if (branch?.branch_type.is_premium) {
+        branchType = 'premium'
     }
 
     function handleFeedbackClick() {
@@ -237,94 +240,126 @@ function OnsiteBookingStatus(props) {
             }}
         />}
 
-        {!!booking && isDialogShown && <div style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            position: 'fixed',
-            top: '0',
-            right: '0',
-            bottom: '0',
-            left: '0',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: '9999'
-        }}>
-            <Card style={{
-                padding: '2.5rem',
-                maxWidth: '382px'
+        {!!booking && isDialogShown && <Dialog>
+            <div style={{
+                display: 'flex',
+                width: '68px',
+                height: '68px',
+                borderRadius: '999999px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#D0E9FB',
+                margin: '0 auto',
+                marginBottom: '1.5rem'
             }}>
-                <div style={{
-                    display: 'flex',
-                    width: '68px',
-                    height: '68px',
-                    borderRadius: '999999px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#D0E9FB',
+                <SaveIcon color="#0172CB" style={{ width: '30px', height: 'auto' }} />
+            </div>
+
+            <div style={{
+                marginBottom: '1.5rem'
+            }}>
+                <h4 style={{
+                    textAlign: 'center',
+                    fontSize: '1.3rem',
+                    marginBottom: '1rem'
+                }}>Simpan Antrianmu?</h4>
+                <p style={{
+                    textAlign: 'center',
                     margin: '0 auto',
-                    marginBottom: '1.5rem'
-                }}>
-                    <SaveIcon color="#0172CB" style={{ width: '30px', height: 'auto' }} />
-                </div>
+                    lineHeight: '1.5'
+                }}>Simpan tiket antrian agar tidak kehilangan informasi antrianmu</p>
+            </div>
 
-                <div style={{
-                    marginBottom: '1.5rem'
-                }}>
-                    <h4 style={{
-                        textAlign: 'center',
-                        fontSize: '1.3rem',
-                        marginBottom: '1rem'
-                    }}>Simpan Antrianmu?</h4>
-                    <p style={{
-                        textAlign: 'center',
-                        margin: '0 auto',
-                        lineHeight: '1.5'
-                    }}>Simpan tiket antrian agar tidak kehilangan informasi antrianmu</p>
-                </div>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '1rem'
+            }}>
+                <button style={{
+                    width: '142px',
+                    padding: '.875rem',
+                    borderRadius: '8px',
+                    border: '1px solid #D8D8D8',
+                    outline: 'none',
+                    fontWeight: 'bold',
+                    backgroundColor: '#FFFFFF',
+                    fontSize: '1rem'
+                }} onClick={() => handlePrintTicket(booking.queue_no)}>Simpan</button>
 
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    gap: '1rem'
-                }}>
-                    <button style={{
-                        width: '142px',
-                        padding: '.875rem',
-                        borderRadius: '8px',
-                        border: '1px solid #D8D8D8',
-                        outline: 'none',
-                        fontWeight: 'bold',
-                        backgroundColor: '#FFFFFF',
-                        fontSize: '1rem'
-                    }} onClick={() => handlePrintTicket(booking.queue_no)}>Simpan</button>
+                <button style={{
+                    width: '142px',
+                    padding: '.875rem',
+                    borderRadius: '8px',
+                    border: 'none',
+                    outline: 'none',
+                    fontWeight: 'bold',
+                    backgroundColor: '#D8D8D8',
+                    fontSize: '1rem'
+                }} onClick={() => setIsDialogShown(false)}>Tidak</button>
+            </div>
+        </Dialog>}
 
-                    <button style={{
-                        width: '142px',
-                        padding: '.875rem',
-                        borderRadius: '8px',
-                        border: 'none',
-                        outline: 'none',
-                        fontWeight: 'bold',
-                        backgroundColor: '#D8D8D8',
-                        fontSize: '1rem'
-                    }} onClick={() => setIsDialogShown(false)}>Tidak</button>
-                </div>
-            </Card>
-        </div>}
+        {isConfirmationDialogShown && <Dialog>
+            <div style={{
+                marginBottom: '1.5rem'
+            }}>
+                <p style={{
+                    textAlign: 'center',
+                    margin: '0 auto',
+                    lineHeight: '1.5'
+                }}>Apakah Anda yakin ingin meninggalkan halaman ini?</p>
+            </div>
+
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '1rem'
+            }}>
+                <button style={{
+                    width: '142px',
+                    padding: '.875rem',
+                    borderRadius: '8px',
+                    border: 'none',
+                    outline: 'none',
+                    fontWeight: 'bold',
+                    color: '#FFFFFF',
+                    backgroundColor: '#007EC6',
+                    fontSize: '1rem'
+                }} onClick={() => navigate(`/customer/${branchId}/onsite/services`)}>Iya</button>
+
+                <button style={{
+                    width: '142px',
+                    padding: '.875rem',
+                    borderRadius: '8px',
+                    border: 'none',
+                    outline: 'none',
+                    fontWeight: 'bold',
+                    backgroundColor: '#D8D8D8',
+                    fontSize: '1rem'
+                }} onClick={() => setIsConfirmationDialogShown(false)}>Tidak</button>
+            </div>
+        </Dialog>}
 
         <div style={{
             display: 'flex',
             alignItems: 'center'
         }}>
-            <Link to={`/customer/${branchId}/onsite/services`} style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '3.2rem',
-                width: '3.5rem'
-            }}>
+            <button
+                type="button"
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '3.2rem',
+                    width: '3.5rem',
+                    outline: 'none',
+                    backgroundColor: 'transparent',
+                    border: 'none'
+                }}
+                onClick={() => setIsConfirmationDialogShown(true)}
+            >
                 <ArrowLeftIcon />
-            </Link>
+            </button>
 
             <div style={{ textTransform: 'capitalize', textAlign: 'center', flex: '1 1 0%' }}>{PAGE_TITLE}</div>
 
