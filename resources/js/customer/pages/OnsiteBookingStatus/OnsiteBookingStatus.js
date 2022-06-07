@@ -24,6 +24,7 @@ import OnsiteQueueTicket from '../../templates/OnsiteQueueTicket'
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import LocationIcon from '../../icons/LocationIcon'
 import SaveIcon from '../../icons/SaveIcon'
+import RedoIcon from '../../icons/RedoIcon'
 
 const BranchLogo = styled.img`
     display: inline-block;
@@ -131,12 +132,18 @@ function TicketFooter(props) {
     </div>
 }
 
+function useForceUpdate() {
+    const [value, setValue] = useState(0);
+    return () => setValue(value => ++value);
+}
+
 function OnsiteBookingStatus(props) {
     const PAGE_TITLE = 'Status Antrian Onsite'
     const REFETCH_INTERVAL = 15000
 
     const { branchId, bookingId } = useParams()
     const queryClient = useQueryClient()
+    const forceUpdate = useForceUpdate()
 
     const [rating, setRating] = useState(0)
     const [isDialogShown, setIsDialogShown] = useState(false)
@@ -312,20 +319,37 @@ function OnsiteBookingStatus(props) {
         </div>}
 
         <div style={{
-            height: '3.2rem',
-            padding: '0 1.375rem',
             display: 'flex',
             alignItems: 'center'
         }}>
             <Link to={`/customer/${branchId}/onsite/services`} style={{
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'center',
+                height: '3.2rem',
+                width: '3.5rem'
             }}>
                 <ArrowLeftIcon />
             </Link>
 
             <div style={{ textTransform: 'capitalize', textAlign: 'center', flex: '1 1 0%' }}>{PAGE_TITLE}</div>
+
+            <button
+                type="button"
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '3.2rem',
+                    width: '3.5rem',
+                    outline: 'none',
+                    backgroundColor: 'transparent',
+                    border: 'none'
+                }}
+                onClick={() => location.reload()}
+            >
+                <RedoIcon />
+            </button>
         </div>
 
         {bookingQuery.status === 'success' && <MainContent>
