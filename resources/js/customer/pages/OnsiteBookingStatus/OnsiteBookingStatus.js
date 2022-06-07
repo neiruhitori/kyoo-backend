@@ -132,18 +132,12 @@ function TicketFooter(props) {
     </div>
 }
 
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
-}
-
 function OnsiteBookingStatus(props) {
     const PAGE_TITLE = 'Status Antrian Onsite'
     const REFETCH_INTERVAL = 15000
 
     const { branchId, bookingId } = useParams()
     const queryClient = useQueryClient()
-    const forceUpdate = useForceUpdate()
 
     const [rating, setRating] = useState(0)
     const [isDialogShown, setIsDialogShown] = useState(false)
