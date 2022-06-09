@@ -7,10 +7,10 @@ import html2canvas from 'html2canvas'
 import { getBooking } from '../../api/booking'
 import { fetchBranch } from '../../api/branch'
 import { createFeedback } from '../../api/feedback'
-import { formatBrowser, getDayName, getMonthAbrvName } from '../../utils/date'
+import { formatBrowser, getDayName, getMonthAbrvName, formatDatetime } from '../../utils/date'
 
 import MainContent from '../../components/MainContent'
-import TicketCard from '../../components/Ticket'
+import TicketCard from '../../components/TicketCard'
 import InfoAlert from '../../components/InfoAlert'
 import KyooLogo from '../../components/KyooLogo'
 import ChipWarning from '../../components/ChipWarning'
@@ -19,6 +19,7 @@ import ChipDanger from '../../components/ChipDanger'
 import Card from '../../components/Card'
 import Rating from '../../components/Rating'
 import Dialog from '../../components/Dialog'
+import TicketRip from '../../components/TicketRip'
 
 import OnsiteQueueTicket from '../../templates/OnsiteQueueTicket'
 
@@ -42,6 +43,18 @@ const BookingTimeCard = styled.div`
     color: #007EC6;
 `
 
+const OnsiteChipSuccess = styled(ChipSuccess)`
+    font-size: .875rem;
+`
+
+const OnsiteChipWarning = styled(ChipWarning)`
+    font-size: .875rem;
+`
+
+const OnsiteChipDanger = styled(ChipDanger)`
+    font-size: .875rem;
+`
+
 function getStatus(status) {
     if (status == 'served') {
         return 'Dilayani'
@@ -59,11 +72,13 @@ function getStatus(status) {
     return 'Menunggu'
 }
 
-function TicketBody(props) {
+function TicketHead(props) {
     return <div style={{
         display: 'flex',
         alignItems: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        padding: '1.5rem'
+
     }}>
         <p style={{
             fontSize: '1rem',
@@ -87,6 +102,7 @@ function TicketBody(props) {
 function TicketFooter(props) {
     return <div style={{
         display: 'flex',
+        padding: '1.5rem'
     }}>
         <BookingTimeCard style={{
             marginRight: '1.625rem',
@@ -178,6 +194,8 @@ function OnsiteBookingStatus(props) {
 
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
+
+        console.log(booking.date)
     }
 
     if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
@@ -188,14 +206,14 @@ function OnsiteBookingStatus(props) {
         })
     }
 
-    let onsiteStatus = <ChipWarning label={getStatus(booking?.status || 'waiting')} />
+    let onsiteStatus = <OnsiteChipWarning label={getStatus(booking?.status || 'waiting')} />
 
     if (booking?.status == 'no show') {
-        onsiteStatus = <ChipDanger label={getStatus(booking.status)} />
+        onsiteStatus = <OnsiteChipDanger label={getStatus(booking.status)} />
     }
     
     if (booking?.status == 'end served') {
-        onsiteStatus = <ChipSuccess label={getStatus(booking.status)} />
+        onsiteStatus = <OnsiteChipSuccess label={getStatus(booking.status)} />
     }
 
     if (branch?.branch_type.is_premium) {
@@ -321,7 +339,6 @@ function OnsiteBookingStatus(props) {
                     borderRadius: '8px',
                     border: 'none',
                     outline: 'none',
-                    fontWeight: 'bold',
                     color: '#FFFFFF',
                     backgroundColor: '#007EC6',
                     fontSize: '1rem'
@@ -333,7 +350,6 @@ function OnsiteBookingStatus(props) {
                     borderRadius: '8px',
                     border: 'none',
                     outline: 'none',
-                    fontWeight: 'bold',
                     backgroundColor: '#D8D8D8',
                     fontSize: '1rem'
                 }} onClick={() => setIsConfirmationDialogShown(false)}>Tidak</button>
@@ -393,51 +409,76 @@ function OnsiteBookingStatus(props) {
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'end',
-                    marginBottom: '1rem'
+                    alignItems: 'center',
+                    marginBottom: '1.5rem',
+                    padding: '1.125rem',
+                    borderRadius: '8px',
+                    backgroundColor: '#EFF2F5'
                 }}>
                     <div>
-                        <h4 style={{
-                            fontWeight: '700',
-                            fontSize:  '1.5rem'
-                        }}>{booking.total_remaining_queue}</h4>
-                        <p style={{
-                            color: '#7A7A7A',
-                            fontSize: '.875rem',
-                            marginTop: '.625rem'
-                        }}>Antrian Tersisa</p>
+                        {onsiteStatus}
                     </div>
 
                     <div style={{
                         textAlign: 'right'
                     }}>
-                        {onsiteStatus}
                         <p style={{
                             color: '#7A7A7A',
-                            fontSize: '.875rem',
-                            marginTop: '.625rem'
-                        }}>Status Antrian</p>
+                            fontSize: '.875rem'
+                        }}>
+                            {booking.total_remaining_queue
+                                ? <strong style={{
+                                    color: 'black'
+                                }}>{booking.total_remaining_queue}</strong>
+                                : 'Tidak Ada'
+                            } Antrian Tersisa
+                        </p>
                     </div>
                 </div>
 
-                {branchQuery.status === 'success' && <TicketCard
-                    body={<TicketBody
-                        queueNo={booking.queue_no}
-                    />}
-                    footer={<TicketFooter
+                {branchQuery.status === 'success' && <TicketCard style={{
+                    marginBottom: '1.5rem'
+                }}>
+                    <TicketHead queueNo={booking.queue_no} />
+
+                    <TicketRip />
+
+                    <div style={{
+                        padding: '1.5rem',
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '1.5rem',
+                        fontSize: '.875rem'
+                    }}>
+                        <div>
+                            <p style={{ color: '#7A7A7A',
+                                marginBottom: '.6rem'
+                            }}>Kode Unik</p>
+                            <div style={{ fontSize: '1rem' }}>{booking.booking_code.toUpperCase()}</div>
+                        </div>
+
+                        <div>
+                            <p style={{
+                                color: '#7A7A7A',
+                                marginBottom: '.6rem'
+                            }}>Tanggal Antri</p>
+                            <div style={{ fontSize: '1rem' }}>{formatDatetime(formatBrowser(booking.date))}</div>
+                        </div>
+                    </div>
+
+                    <TicketRip />
+
+                    <TicketFooter
                         serviceName={booking.service_name}
                         bookingDate={booking.date}
                         branch={branch}
                         schedule={schedule}
-                    />}
-                    style={{
-                        marginBottom: '2rem'
-                    }}
-                />}
+                    />
+                </TicketCard>}
             </div>
 
             {branchType === 'premium' && booking.status === 'end served' && <Card style={{
-                marginBottom: '2rem',
+                marginBottom: '1.5rem',
                 padding: '1.625rem'
             }}>
                 <p style={{

@@ -1,6 +1,6 @@
 import  { forwardRef } from 'react'
 import InfoAlert from '../components/InfoAlert'
-import { format, formatBrowser } from '../utils/date'
+import { format, formatBrowser, formatDatetime } from '../utils/date'
 
 export default forwardRef(function OnsiteQueueTicket({ booking, branch, style }, ref) {
     return <div ref={ref} style={{
@@ -22,7 +22,7 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
             textAlign: 'center'
         }}>
             <p style={{
-                color: '#A7A7A7',
+                color: '#7A7A7A',
                 marginBottom: '.325rem'
             }}>Nomor Antrian</p>
             <h1 style={{
@@ -31,22 +31,21 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
         </div>
 
         <div style={{
-            borderTop: '1px dashed #A7A7A7',
+            borderTop: '1px dashed #7A7A7A',
             margin: '1.7rem 0'
         }}></div>
 
         <div style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            gap: '1.2rem'
+            gap: '1.5rem'
         }}>
             <div>
-                <p style={{ color: '#A7A7A7',
+                <p style={{ color: '#7A7A7A',
                     marginBottom: '.6rem'
                 }}>Kode Unik</p>
                 <div style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '700'
+                    fontSize: '1.2rem'
                 }}>{booking.booking_code.toUpperCase()}</div>
             </div>
 
@@ -54,29 +53,27 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                 textAlign: 'right'
             }}>
                 <p style={{
-                    color: '#A7A7A7',
+                    color: '#7A7A7A',
                     marginBottom: '.6rem'
                 }}>Layanan</p>
                 <div style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '700'
+                    fontSize: '1.2rem'
                 }}>{booking.service_name}</div>
             </div>
 
             <div>
                 <p style={{
-                    color: '#A7A7A7',
+                    color: '#7A7A7A',
                     marginBottom: '.6rem'
                 }}>Tanggal Antri</p>
                 <div style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '700'
-                }}>{format(formatBrowser(booking.date))}</div>
+                    fontSize: '1.2rem'
+                }}>{formatDatetime(formatBrowser(booking.date))}</div>
             </div>
         </div>
 
         <div style={{
-            borderTop: '1px dashed #A7A7A7',
+            borderTop: '1px dashed #7A7A7A',
             margin: '1.7rem 0'
         }}></div>
 
@@ -84,15 +81,14 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
             <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
-                gap: '1.2rem'
+                gap: '1.5rem'
             }}>
                 {!!booking.name && <div>
-                    <p style={{ color: '#A7A7A7',
+                    <p style={{ color: '#7A7A7A',
                         marginBottom: '.6rem'
                     }}>Nama Pengunjung</p>
                     <div style={{
-                        fontSize: '1.2rem',
-                        fontWeight: '700'
+                        fontSize: '1.2rem'
                     }}>{booking.name}</div>
                 </div>}
 
@@ -100,43 +96,45 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                     textAlign: 'right'
                 }}>
                     <p style={{
-                        color: '#A7A7A7',
+                        color: '#7A7A7A',
                         marginBottom: '.6rem'
                     }}>No. Handphone</p>
                     <div style={{
-                        fontSize: '1.2rem',
-                        fontWeight: '700'
+                        fontSize: '1.2rem'
                     }}>{booking.phone}</div>
                 </div>}
 
                 {!!booking.email && <div>
-                    <p style={{ color: '#A7A7A7',
+                    <p style={{ color: '#7A7A7A',
                         marginBottom: '.6rem'
                     }}>Email</p>
                     <div style={{
-                        fontSize: '1.2rem',
-                        fontWeight: '700'
+                        fontSize: '1.2rem'
                     }}>{booking.email}</div>
                 </div>}
             </div>
 
             <div style={{
-                borderTop: '1px dashed #A7A7A7',
+                borderTop: '1px dashed #7A7A7A',
                 margin: '1.7rem 0'
             }}></div>
         </>}
 
         <div style={{
-            marginBottom: '1.7rem'
+            marginBottom: '2.25rem'
         }}>
             <p style={{
-                color: '#A7A7A7',
+                color: '#7A7A7A',
                 marginBottom: '.6rem'
             }}>Lokasi</p>
             <div style={{
-                fontSize: '1.2rem',
-                fontWeight: '700'
-            }}>{branch.name}, {branch.address}</div>
+                fontSize: '1.2rem'
+            }}>
+                {branch.name}
+                <p style={{
+                    marginTop: '.6rem'
+                }}>{branch.address}</p>
+            </div>
         </div>
 
         <InfoAlert>
@@ -161,7 +159,7 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
             marginTop: '4.5rem'
         }}>
             <div style={{
-                color: '#A7A7A7',
+                color: '#7A7A7A',
                 marginRight: '.625rem'
             }}>Powered by</div>
 
