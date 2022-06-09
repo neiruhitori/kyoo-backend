@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import html2canvas from 'html2canvas'
 
@@ -157,6 +157,7 @@ function OnsiteBookingStatus(props) {
     const queryClient = useQueryClient()
     const ticketRef = useRef(null)
     const navigate = useNavigate()
+    const routerLocation = useLocation()
 
     const [rating, setRating] = useState(0)
     const [isDialogShown, setIsDialogShown] = useState(false)
@@ -168,15 +169,18 @@ function OnsiteBookingStatus(props) {
     let branchType = 'free'
 
     useEffect(() => {
-        setIsDialogShown(true)
+        if (!sessionStorage.getItem('dialog-shown')) {
+            setIsDialogShown(true)
+            sessionStorage.setItem('dialog-shown', 'true')
+        }
 
         window.Echo.channel(`onsite_queues.${bookingId}`)
             .listen('OnsiteQueueUpdated', () => {
                 queryClient.invalidateQueries(['booking', bookingId])
             })
-
+        
         return () => {
-            setIsDialogShown(false)
+            sessionStorage.removeItem('dialog-shown')
         }
     }, [])
 
@@ -194,8 +198,6 @@ function OnsiteBookingStatus(props) {
 
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
-
-        console.log(booking.date)
     }
 
     if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
@@ -440,31 +442,6 @@ function OnsiteBookingStatus(props) {
                     marginBottom: '1.5rem'
                 }}>
                     <TicketHead queueNo={booking.queue_no} />
-
-                    <TicketRip />
-
-                    <div style={{
-                        padding: '1.5rem',
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: '1.5rem',
-                        fontSize: '.875rem'
-                    }}>
-                        <div>
-                            <p style={{ color: '#7A7A7A',
-                                marginBottom: '.6rem'
-                            }}>Kode Unik</p>
-                            <div style={{ fontSize: '1rem' }}>{booking.booking_code.toUpperCase()}</div>
-                        </div>
-
-                        <div>
-                            <p style={{
-                                color: '#7A7A7A',
-                                marginBottom: '.6rem'
-                            }}>Tanggal Antri</p>
-                            <div style={{ fontSize: '1rem' }}>{formatDatetime(formatBrowser(booking.date))}</div>
-                        </div>
-                    </div>
 
                     <TicketRip />
 
