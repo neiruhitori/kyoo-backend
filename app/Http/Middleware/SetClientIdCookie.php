@@ -20,7 +20,7 @@ class SetClientIdCookie
         // Set cookie if not exists
         if (!$request->cookie('client_id')) {
             $expiry_time = intval((strtotime('tomorrow') - strtotime('now')) / 60);
-            Cookie::queue('client_id', uniqid(), $expiry_time);
+            Cookie::queue('client_id', uniqid(), $expiry_time, null, null, null, false);
         }
 
         return $next($request);

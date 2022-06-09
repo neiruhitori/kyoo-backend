@@ -9,12 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CS\StoreDirectQueue;
 use Auth;
+use App\Interfaces\DirectQueueRepositoryInterface;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 use App\Events\DirectQueue as DirectQueueEvent;
 use App\Events\OnsiteQueueUpdated;
 use App\Events\QueueStatusUpdated;
-use App\Interfaces\DirectQueueRepositoryInterface;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Events\OnsiteQueueCalled;
 
 class DirectQueueController extends Controller
 {
@@ -114,7 +116,10 @@ class DirectQueueController extends Controller
 
             event(new VCTDirectQueueEvent($direct_queue));
             event(new DirectQueueEvent($direct_queue));
-            event(new OnsiteQueueUpdated($direct_queue));
+
+            if ($direct_queue->client_id) {
+                event(new OnsiteQueueUpdated($direct_queue));
+            }
 
             $request->session()->flash('success', __('Direct Queue Has Been Created, Queue no: :no', ['no' => $direct_queue->queue_no]));
             return redirect()->route('cs.directQueue.show', [
@@ -293,7 +298,11 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'served'
         ]));
-        event(new OnsiteQueueUpdated($directQueue));
+
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+            event(new OnsiteQueueCalled($directQueue));
+        }
 
         if ($directQueue->fcm_id) {
             fcm()
@@ -302,7 +311,7 @@ class DirectQueueController extends Controller
                 ->timeToLive(0)
                 ->data([
                     'title' => 'KYOO',
-                    'body' => "Antrian " . $directQueue->queue_no . " Anda sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
+                    'body' => "Antrian " . $directQueue->queue_no . " sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
                     'data' => [
                         'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id 
                     ]
@@ -365,7 +374,11 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'recall'
         ]));
-        event(new OnsiteQueueUpdated($directQueue));
+
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+            event(new OnsiteQueueCalled($directQueue));
+        }
 
         if ($directQueue->fcm_id) {
             fcm()
@@ -374,7 +387,7 @@ class DirectQueueController extends Controller
                 ->timeToLive(0)
                 ->data([
                     'title' => 'KYOO',
-                    'body' => "Antrian " . $directQueue->queue_no . " Anda sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
+                    'body' => "Antrian " . $directQueue->queue_no . " sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
                     'data' => [
                         'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id 
                     ]
@@ -441,9 +454,12 @@ class DirectQueueController extends Controller
 
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
-            'status' => 'end served'
+            'status' => 'requeue'
         ]));
-        event(new OnsiteQueueUpdated($directQueue));
+
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+        }
 
         return response()->json([
             'success' => true,
@@ -486,7 +502,10 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'end served'
         ]));
-        event(new OnsiteQueueUpdated($directQueue));
+
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+        }
 
         return response()->json([
             'success' => true,
@@ -527,9 +546,12 @@ class DirectQueueController extends Controller
 
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
-            'status' => 'end served'
+            'status' => 'no show'
         ]));
-        event(new OnsiteQueueUpdated($directQueue));
+
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+        }
 
         return response()->json([
             'success' => true,
@@ -578,7 +600,10 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'waiting'
         ]));
-        event(new OnsiteQueueUpdated($directQueue));
+
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+        }
 
         return response()->json([
             'success' => true,

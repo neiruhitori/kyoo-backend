@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Routes, Route } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from 'react-query'
 
 import { onMessage } from 'firebase/messaging'
 import { useMessaging, useToken } from '../lib/firebase'
+import { getCookie } from '../lib/helper'
 
 import QRReader from './QRReader/QRReader'
 
@@ -16,6 +16,8 @@ import BookingStatus from './BookingStatus/BookingStatus'
 import OnsiteBookingStatus from './OnsiteBookingStatus/OnsiteBookingStatus'
 import BranchDetail from './BranchDetail/BranchDetail'
 import OnsiteVisitorInformation from './OnsiteVisitorInformation/OnsiteVisitorInformation'
+import BookingDetail from './BookingDetail/BookingDetail'
+
 import InfoAlert from '../components/InfoAlert'
 
 const AppContainer = styled.div`
@@ -29,17 +31,35 @@ const AppContainer = styled.div`
 `
 
 function App() {
-    const [infoMessasge, setInfoMessage] = useState('')
+    const CLIENT_ID = getCookie('client_id')
 
+    const [infoMessasge, setInfoMessage] = useState('')
+    
     const messaging = useMessaging()
     useToken(messaging, process.env.MIX_FIREBASE_VAPID_KEY)
-    onMessage(messaging, ({ data }) => {
-        setInfoMessage(data.body)
 
+    useEffect(() => {
+        onMessage(messaging, ({ data }) => {
+            handleShowNotification(data.body)
+        })
+
+        window.Echo.channel(`onsite_queues.${CLIENT_ID}`)
+            .listen('OnsiteQueueCalled', ({ message }) => {
+                handleShowNotification(message)
+            })
+        
+        return () => {
+            window.Echo.leave(`onsite_queues.${CLIENT_ID}`)
+        }
+    }, [])
+
+    function handleShowNotification(message) {
+        setInfoMessage(message)
+    
         setTimeout(function () {
             setInfoMessage('')
         }, 5000)
-    })
+    }
 
     return <AppContainer>
         {!!infoMessasge && <div style={{
@@ -61,26 +81,25 @@ function App() {
             </InfoAlert>
         </div>}
         
-        <QueryClientProvider client={new QueryClient()}>
-            <Routes>
-                <Route path="/scan" element={<QRReader />} />
+        <Routes>
+            <Route path="/scan" element={<QRReader />} />
 
-                <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
-                <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
-                <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
-                <Route path="/customer/:branchId/onsite/services/:serviceId/visitor" element={<OnsiteVisitorInformation />} />
-                <Route
-                    path="/customer/:branchId/:queueType/services/:serviceId/booking-confirmation"
-                    element={<BookingConfirmation />}
-                />
-                <Route
-                    path="/customer/:branchId/onsite/booking-status/:bookingId"
-                    element={<OnsiteBookingStatus />}
-                />
-                <Route path="/customer/:branchId/:queueType/booking-status/:bookingId" element={<BookingStatus />} />
-                <Route path="/customer/:branchId/:queueType/detail" element={<BranchDetail />} />
-            </Routes>
-        </QueryClientProvider>
+            <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
+            <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
+            <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
+            <Route path="/customer/:branchId/onsite/services/:serviceId/visitor" element={<OnsiteVisitorInformation />} />
+            <Route
+                path="/customer/:branchId/:queueType/services/:serviceId/booking-confirmation"
+                element={<BookingConfirmation />}
+            />
+            <Route
+                path="/customer/:branchId/onsite/booking-status/:bookingId"
+                element={<OnsiteBookingStatus />}
+            />
+            <Route path="/customer/:branchId/:queueType/booking-status/:bookingId" element={<BookingStatus />} />
+            <Route path="/customer/:branchId/:queueType/booking-status/:bookingId/detail" element={<BookingDetail />} />
+            <Route path="/customer/:branchId/:queueType/detail" element={<BranchDetail />} />
+        </Routes>
     </AppContainer>
 }
 

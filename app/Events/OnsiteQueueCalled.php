@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use Auth;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,20 +12,20 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\DirectQueue;
 
-class OnsiteQueueUpdated implements ShouldBroadcast
+class OnsiteQueueCalled implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $onsite;
+    protected $onsite_queue;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(DirectQueue $onsite)
+    public function __construct(DirectQueue $directQueue)
     {
-        $this->onsite = $onsite;
+        $this->onsite_queue = $directQueue;
     }
 
     /**
@@ -34,11 +35,14 @@ class OnsiteQueueUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('onsite_queues.' . $this->onsite->client_id);
+        return new Channel('onsite_queues.' . $this->onsite_queue->client_id);
     }
 
     public function broadcastWith()
     {
-        return $this->onsite->toArray();
+        return [
+            'data' => $this->onsite_queue->toArray(),
+            'message' => "Antrian " . $this->onsite_queue->queue_no . " sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label
+        ];
     }
 }

@@ -85,7 +85,10 @@ class DirectQueueController extends Controller
             // send event to update Direct Queue Monitor
             event(new VCTDirectQueueEvent($direct_queue, $service->branch_id));
             event(new DirectQueueEvent($direct_queue, $service->branch_id));
-            event(new OnsiteQueueUpdated($direct_queue));
+
+            if ($direct_queue->client_id) {
+                event(new OnsiteQueueUpdated($direct_queue));
+            }
 
             return response()->json([
                 'success' => true,

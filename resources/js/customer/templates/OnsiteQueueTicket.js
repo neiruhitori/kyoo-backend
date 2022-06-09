@@ -1,6 +1,6 @@
 import  { forwardRef } from 'react'
 import InfoAlert from '../components/InfoAlert'
-import { format, formatBrowser, formatDatetime } from '../utils/date'
+import { formatBrowser, formatDatetime } from '../utils/date'
 
 export default forwardRef(function OnsiteQueueTicket({ booking, branch, style }, ref) {
     return <div ref={ref} style={{

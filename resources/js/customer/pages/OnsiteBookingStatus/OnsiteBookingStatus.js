@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import html2canvas from 'html2canvas'
 
 import { getBooking } from '../../api/booking'
 import { fetchBranch } from '../../api/branch'
 import { createFeedback } from '../../api/feedback'
-import { formatBrowser, getDayName, getMonthAbrvName, formatDatetime } from '../../utils/date'
+import { formatBrowser, getDayName, getMonthAbrvName } from '../../utils/date'
+import { getCookie } from '../../lib/helper'
 
 import MainContent from '../../components/MainContent'
 import TicketCard from '../../components/TicketCard'
@@ -27,6 +28,7 @@ import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import LocationIcon from '../../icons/LocationIcon'
 import SaveIcon from '../../icons/SaveIcon'
 import RedoIcon from '../../icons/RedoIcon'
+import AngleRightIcon from '../../icons/AngleRightIcon'
 
 const BranchLogo = styled.img`
     display: inline-block;
@@ -77,7 +79,7 @@ function TicketHead(props) {
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'column',
-        padding: '1.5rem'
+        padding: '1.75rem'
 
     }}>
         <p style={{
@@ -91,8 +93,7 @@ function TicketHead(props) {
             fontWeight: '700',
             fontSize: '3.625rem',
             color: '#103C7C',
-            textAlign: 'center',
-            marginBottom: '.625rem'
+            textAlign: 'center'
         }}>
             {props.queueNo || 0}
         </h2>
@@ -102,7 +103,7 @@ function TicketHead(props) {
 function TicketFooter(props) {
     return <div style={{
         display: 'flex',
-        padding: '1.5rem'
+        padding: '1.75rem'
     }}>
         <BookingTimeCard style={{
             marginRight: '1.625rem',
@@ -152,12 +153,12 @@ function TicketFooter(props) {
 function OnsiteBookingStatus(props) {
     const PAGE_TITLE = 'Status Antrian Onsite'
     const REFETCH_INTERVAL = 15000
+    const CLIENT_ID = getCookie('client_id')
 
     const { branchId, bookingId } = useParams()
     const queryClient = useQueryClient()
     const ticketRef = useRef(null)
     const navigate = useNavigate()
-    const routerLocation = useLocation()
 
     const [rating, setRating] = useState(0)
     const [isDialogShown, setIsDialogShown] = useState(false)
@@ -174,13 +175,15 @@ function OnsiteBookingStatus(props) {
             sessionStorage.setItem('dialog-shown', 'true')
         }
 
-        window.Echo.channel(`onsite_queues.${bookingId}`)
+        window.Echo.channel(`onsite_queues.${CLIENT_ID}`)
             .listen('OnsiteQueueUpdated', () => {
                 queryClient.invalidateQueries(['booking', bookingId])
             })
         
         return () => {
             sessionStorage.removeItem('dialog-shown')
+            window.Echo.channel(`onsite_queues.${CLIENT_ID}`)
+                .stopListening('OnsiteQueueUpdated')
         }
     }, [])
 
@@ -452,6 +455,25 @@ function OnsiteBookingStatus(props) {
                         schedule={schedule}
                     />
                 </TicketCard>}
+            </div>
+
+            <div style={{
+                marginBottom: '1.5rem',
+                textAlign: 'center'
+            }}>
+                <Link to="detail" style={{
+                    padding: '.5rem',
+                    color: '#0161AC',
+                    fontWeight: 'bold',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                    Lihat Detail Antrian
+                    <AngleRightIcon color="#0161AC" style={{
+                        marginLeft: '.5rem'
+                    }} />
+                </Link>
             </div>
 
             {branchType === 'premium' && booking.status === 'end served' && <Card style={{
