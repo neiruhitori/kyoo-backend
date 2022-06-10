@@ -35,13 +35,13 @@ function App() {
 
     const [infoMessasge, setInfoMessage] = useState('')
     
-    const messaging = useMessaging()
-    useToken(messaging, process.env.MIX_FIREBASE_VAPID_KEY)
+    // const messaging = useMessaging()
+    // useToken(messaging, process.env.MIX_FIREBASE_VAPID_KEY)
 
     useEffect(() => {
-        onMessage(messaging, ({ data }) => {
-            handleShowNotification(data.body)
-        })
+        // onMessage(messaging, ({ data }) => {
+        //     handleShowNotification(data.body)
+        // })
 
         window.Echo.channel(`onsite_queues.${CLIENT_ID}`)
             .listen('OnsiteQueueCalled', ({ message }) => {
