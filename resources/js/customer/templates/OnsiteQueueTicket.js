@@ -1,6 +1,6 @@
 import  { forwardRef } from 'react'
 import InfoAlert from '../components/InfoAlert'
-import { formatBrowser, formatDatetime } from '../utils/date'
+import { formatBrowser, format, formatTime } from '../utils/date'
 
 export default forwardRef(function OnsiteQueueTicket({ booking, branch, style }, ref) {
     return <div ref={ref} style={{
@@ -68,7 +68,19 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                 }}>Tanggal Antri</p>
                 <div style={{
                     fontSize: '1.2rem'
-                }}>{formatDatetime(formatBrowser(booking.date))}</div>
+                }}>{format(formatBrowser(booking.date))}</div>
+            </div>
+
+            <div style={{
+                textAlign: 'right'
+            }}>
+                <p style={{
+                    color: '#7A7A7A',
+                    marginBottom: '.6rem'
+                }}>Waktu</p>
+                <div style={{
+                    fontSize: '1.2rem'
+                }}>{formatTime(formatBrowser(booking.date))}</div>
             </div>
         </div>
 

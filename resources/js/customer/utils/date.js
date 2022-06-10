@@ -53,11 +53,21 @@ const MONTHS_ABBR = {
 }
 
 export function format(date, locale = defaultLocale) {
+    if (!date) return null
+
     return `${date.getDate()} ${MONTHS[locale][date.getMonth()]} ${date.getFullYear()}`
 }
 
 export function formatDatetime(date, locale = defaultLocale) {
+    if (!date) return null
+
     return `${date.getDate()} ${MONTHS[locale][date.getMonth()]} ${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+}
+
+export function formatTime(date) {
+    if (!date) return null
+
+    return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
 }
 
 function pad(number) {
