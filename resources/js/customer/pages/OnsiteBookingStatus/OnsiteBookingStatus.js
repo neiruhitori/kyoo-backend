@@ -464,7 +464,6 @@ function OnsiteBookingStatus(props) {
                 <Link to="detail" style={{
                     padding: '.5rem',
                     color: '#0161AC',
-                    fontWeight: 'bold',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center'
