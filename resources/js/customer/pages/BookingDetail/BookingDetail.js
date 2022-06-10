@@ -178,7 +178,7 @@ export default function BookingDetail() {
                 }}>
                     <h4 style={{
                         marginBottom: '1.625rem'
-                    }}>Detail User</h4>
+                    }}>Detail Pengunjung</h4>
 
                     <div>
                         <div style={{
