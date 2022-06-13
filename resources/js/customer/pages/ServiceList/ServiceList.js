@@ -80,7 +80,7 @@ function ServiceList() {
                         display: 'flex',
                         alignItems: 'center'
                     }}>
-                        <img src="/img/logo-color.svg" height="22" />
+                        <img src={branch.logo ? `/storage/${branch.logo}` : `/img/logo-color.svg`} height="26" />
                     </a>
                 </div>
 
