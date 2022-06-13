@@ -372,17 +372,21 @@ function OnsiteBookingStatus(props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                     height: '3.2rem',
-                    width: '3.5rem',
                     outline: 'none',
                     backgroundColor: 'transparent',
-                    border: 'none'
+                    border: 'none',
+                    padding: '.85rem 1.375rem'
                 }}
                 onClick={() => setIsConfirmationDialogShown(true)}
             >
                 <ArrowLeftIcon />
             </button>
 
-            <div style={{ textTransform: 'capitalize', textAlign: 'center', flex: '1 1 0%' }}>{PAGE_TITLE}</div>
+            <div style={{
+                textTransform: 'capitalize',
+                textAlign: 'center',
+                flex: '1 1 0%'
+            }}>{PAGE_TITLE}</div>
 
             <button
                 type="button"
@@ -391,10 +395,10 @@ function OnsiteBookingStatus(props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                     height: '3.2rem',
-                    width: '3.5rem',
                     outline: 'none',
                     backgroundColor: 'transparent',
-                    border: 'none'
+                    border: 'none',
+                    padding: '.85rem 1.375rem'
                 }}
                 onClick={() => location.reload()}
             >

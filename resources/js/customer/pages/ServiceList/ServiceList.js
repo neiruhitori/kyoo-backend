@@ -10,7 +10,6 @@ import 'react-day-picker/lib/style.css'
 import DayPicker from 'react-day-picker';
 import Header from '../../components/Header'
 import Banner from '../../components/Banner'
-import KyooLogo from "../../components/KyooLogo"
 import Chip from '../../components/Chip'
 import H2 from '../../components/H2'
 import BranchStatus from '../../components/BranchStatus'
@@ -73,16 +72,24 @@ function ServiceList() {
         {branchRes.status === 'success' && <Banner imageUrl={branch.photo}>
             <Header>
                 <div style={{
-                    paddingRight: '0.5rem',
-                    borderRight: '1px solid #EEEEEE',
-                    marginRight:' 0.75rem'
+                    display: 'flex',
+                    height: '100%'
                 }}>
-                    <a href="#">
-                        <KyooLogo />
+                    <a href="#" style={{
+                        padding: '.5rem .85rem .5rem 1.375rem',
+                        display: 'flex',
+                        alignItems: 'center'
+                    }}>
+                        <img src="/img/logo-color.svg" height="22" />
                     </a>
                 </div>
 
-                <div style={{ textTransform: 'capitalize' }}>{PAGE_TITLE}</div>
+                <div style={{
+                    borderLeft: '1px solid #EEEEEE',
+                    textTransform: 'capitalize',
+                    padding: '0 1.375rem 0 .85rem',
+                    flex: '1'
+                }}>{PAGE_TITLE}</div>
             </Header>
 
             <div style={{

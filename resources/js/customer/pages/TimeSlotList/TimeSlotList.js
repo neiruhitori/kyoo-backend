@@ -71,30 +71,29 @@ function TimeSlotList() {
     }
 
     return <>
-        <Header style={{
-            justifyContent: 'space-between'
-        }}>
+        <Header>
             <div style={{
-                flex: '1 1 0%',
+                height: '3.2rem',
                 display: 'flex'
             }}>
-                <div style={{
-                    marginRight:' 0.75rem'
+                <Link to={-1} style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '.85rem 1.375rem'
                 }}>
-                    <Link to={-1} style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <ArrowLeftIcon />
-                    </Link>
-                </div>
-
-                <div style={{ textTransform: 'capitalize' }}>{PAGE_TITLE}</div>
+                    <ArrowLeftIcon />
+                </Link>
             </div>
-        
+
             <div style={{
-                width: '60px'
+                textTransform: 'capitalize',
+                flex: '1 1 0%'
+            }}>{PAGE_TITLE}</div>
+
+            <div style={{
+                width: '100px',
+                padding: '0 1.375rem'
             }}>
                 <ProgressStep active="0" total="3" />
             </div>
