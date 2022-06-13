@@ -123,11 +123,11 @@ export function formatBrowser(date) {
         months = parseInt(dateArr[1]) - 1,
         days = parseInt(dateArr[2].slice(0, 2))
     
-    const times = dateArr[2].split(':')
+    const times = dateArr[2].slice(3).split(':')
     let hours = 0,
         minutes = 0,
         seconds = 0
-    if (times.length) {
+    if (dateArr[2].slice(3) && times.length) {
         hours = parseInt(times[0].slice(-2))
         minutes = parseInt(times[1])
         seconds = parseInt(times[2])
