@@ -53,6 +53,31 @@
         </li>
       @endif
 
+      <li class="nav-item {{ !request()->is('cs/conversations*') ?: 'active' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#audio" aria-expanded="true" aria-controls="audio">
+          <i class="fas fa-microphone"></i>
+          <span>Audio</span>
+        </a>
+
+        <div class="collapse {{ !request()->is('cs/conversations*') ?: 'show' }}" id="audio" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a
+              class="collapse-item kyoo-sublink {{ !request()->is('cs/conversations') ?: 'active' }}"
+              href="{{ route('cs.conversations.index') }}"
+            >
+              Rekam Suara
+            </a>
+
+            <a
+              class="collapse-item kyoo-sublink {{ !request()->is('cs/conversations/record') ?: 'active' }}"
+              href="{{ route('cs.conversations.record') }}"
+            >
+              Riwayat Perekaman
+            </a>
+          </div>
+        </div>
+      </li>
+
       <li class="nav-item">
         <a class="nav-link" href="
             @if (Auth::user()->Branch->BranchType->is_appointment)
@@ -89,6 +114,5 @@
       <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
-
     </ul>
     <!-- End of Sidebar -->

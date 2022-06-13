@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { format, getDayName, getMonthNames, getDayIndex, getFullDate } from '../../utils/date'
 import { fetchBranch } from '../../api/branch'
@@ -28,7 +28,6 @@ import ClockIcon from '../../icons/ClockIcon'
 function ServiceList() {
     const { branchId, queueType } = useParams()
     const PAGE_TITLE = `Antrian ${queueType}`
-    const navigate = useNavigate()
 
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [showCalendar, setShowCalendar] = useState(false)

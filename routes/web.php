@@ -193,6 +193,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 Route::group([], __DIR__ . '/web/exhibition.php');
 Route::group([], __DIR__ . '/web/branch_qr_code.php');
 Route::group([], __DIR__ . '/web/customer.php');
+Route::group([], __DIR__ . '/web/audio_recorder.php');
 
 Route::get('search', 'SearchQueueController@index')->name('search.index');
 Route::post('search', 'SearchQueueController@search')->name('search.search');
