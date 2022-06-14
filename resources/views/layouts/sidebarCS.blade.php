@@ -54,7 +54,7 @@
       @endif
 
       <li class="nav-item">
-        <a class="nav-link" href="{{ route('cs.record-sound') }}">
+        <a class="nav-link" href="{{ route('cs.record-sound.index') }}">
           <i class="fas fa-microphone"></i>
           <span>Rekam Suara</span></a>
       </li>

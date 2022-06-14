@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\CS;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,12 +8,11 @@ use Illuminate\Support\Str;
 use App\Models\Audio;
 use Illuminate\Support\Facades\Storage;
 
-class VoiceRecordingController extends Controller
+class RecordSoundController extends Controller
 {
     public function index()
     {
-        $messageFileName = Audio::orderByDesc('created_at')->get();
-        return response()->json(['message_filenames' => $messageFileName]);
+        return view('cs.record-sound');
     }
 
     public function store(Request $request)
@@ -29,7 +28,9 @@ class VoiceRecordingController extends Controller
             'customer_name' => $customerName,
             'filename' => $uuid,
             'file_size_in_bytes' => filesize(Storage::disk('public')->path($uuid)),
-            'duration' => $duration
+            'duration' => $duration,
+            'branch_id' => $request->branch_id,
+            'workstation_id' => $request->workstation_id
         ]);
 
         return response()->json("success",201);

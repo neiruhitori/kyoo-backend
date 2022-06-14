@@ -10,5 +10,5 @@ class Audio extends Model
     use HasFactory;
 
     protected $table = 'audios';
-    protected $fillable = ['filename', 'customer_name', 'file_size_in_bytes', 'duration'];
+    protected $fillable = ['filename', 'customer_name', 'file_size_in_bytes', 'duration', 'branch_id', 'workstation_id'];
 }

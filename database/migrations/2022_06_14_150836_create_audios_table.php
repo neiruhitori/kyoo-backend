@@ -18,6 +18,18 @@ class CreateAudiosTable extends Migration
             $table->string('filename');
             $table->string('customer_name')->nullable();
             $table->integer('file_size_in_bytes');
+            $table->unsignedBigInteger('duration');
+            $table->foreignId('branch_id')
+                ->nullable()
+                ->references('id')
+                ->on('branches')
+                ->nullOnDelete();
+
+            $table->foreignId('workstation_id')
+                ->nullable()
+                ->references('id')
+                ->on('workstations')
+                ->nullOnDelete();
             $table->timestamps();
         });
     }

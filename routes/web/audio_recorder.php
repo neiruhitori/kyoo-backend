@@ -6,7 +6,8 @@ Route::middleware('auth', 'checkCS')
     ->namespace('CS')
     ->prefix('/cs/record-sound')
     ->group(function ()  {
-        Route::view('/record-sound', 'cs.record-sound')->name('cs.record-sound');
+        Route::get('/', 'RecordSoundController@index')->name('cs.record-sound.index');
+        Route::post('/', 'RecordSoundController@store')->name('cs.record-sound.store');
     });
 
 Route::middleware('auth', 'checkAdminBranch')
@@ -14,5 +15,6 @@ Route::middleware('auth', 'checkAdminBranch')
     ->prefix('/admin-branch/service-quality')
     ->name('admin-branch.service-quality.')
     ->group(function () {
-        Route::view('/recordings', 'adminBranch.service-quality.recordings')->name('recordings');
+        Route::get('/recordings', 'RecordingController@index')->name('recordings.index');
+        Route::get('/recordings/all', 'RecordingController@getRecordings')->name('recordings.get-all');
     });

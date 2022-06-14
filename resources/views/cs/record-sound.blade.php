@@ -320,7 +320,7 @@
         reader.onload = () => {
             const base64AudioMessage = reader.result.split(',')[1];
             let customer_name = document.getElementById('customer_name').value;
-            fetch('/api/audio-recordings', {
+            fetch('/cs/record-sound', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -330,7 +330,9 @@
                 body: JSON.stringify({
                     customer_name: customer_name,
                     duration: duration,
-                    message: base64AudioMessage
+                    message: base64AudioMessage,
+                    branch_id: '{{ Auth::user()->branch_id }}',
+                    workstation_id: '{{ Auth::user()->WorkstationVct->workstation_id }}'
                 })
             }).then(res => {
                 if (res.status === 201) {
@@ -347,7 +349,7 @@
         reader.onload = () => {
             const base64AudioMessage = reader.result.split(',')[1];
 
-            fetch('/api/audio-recordings', {
+            fetch('/cs/record-sound', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

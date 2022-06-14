@@ -158,7 +158,7 @@
 
       <li class="nav-item {{ !request()->is('admin-branch/service-quality/*') ?: 'active' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#service-quality" aria-expanded="true" aria-controls="service-quality">
-          <i class="fas fa-fw fa-cog"></i>
+          <i class="fas fa-star"></i>
           <span>Kualitas Pelayanan</span>
         </a>
 
@@ -166,7 +166,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a
               class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/service-quality/recordings') && !request()->is('admin-branch/service-quality/recordings') && !request()->is('admin-branch/service-quality/recordings') ?: 'active' }}"
-              href="{{ route('admin-branch.service-quality.recordings') }}"
+              href="{{ route('admin-branch.service-quality.recordings.index') }}"
             >
               Putar Rekaman
             </a>
