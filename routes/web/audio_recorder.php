@@ -4,17 +4,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth', 'checkCS')
     ->namespace('CS')
-    ->prefix('/cs/conversations')
-    ->name('cs.conversations.')
+    ->prefix('/cs/record-sound')
     ->group(function ()  {
-        Route::get('/', function () {
-            return view('cs.conversations.index');
-        })->name('index');
-        
-        Route::get('/record', function () {
-            return view('cs.conversations.record');
-        })->name('record');
+        Route::view('/record-sound', 'cs.record-sound')->name('cs.record-sound');
+    });
 
-        Route::get('/messages', 'AudioRecordingController@index');
-        Route::post('/messages', 'AudioRecordingController@store');
+Route::middleware('auth', 'checkAdminBranch')
+    ->namespace('AdminBranch')
+    ->prefix('/admin-branch/service-quality')
+    ->name('admin-branch.service-quality.')
+    ->group(function () {
+        Route::view('/recordings', 'adminBranch.service-quality.recordings')->name('recordings');
     });

@@ -156,6 +156,24 @@
 
       <hr class="sidebar-divider my-0">
 
+      <li class="nav-item {{ !request()->is('admin-branch/service-quality/*') ?: 'active' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#service-quality" aria-expanded="true" aria-controls="service-quality">
+          <i class="fas fa-fw fa-cog"></i>
+          <span>Kualitas Pelayanan</span>
+        </a>
+
+        <div class="collapse {{ !request()->is('admin-branch/service-quality/*') ?: 'show' }}" id="service-quality" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a
+              class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/service-quality/recordings') && !request()->is('admin-branch/service-quality/recordings') && !request()->is('admin-branch/service-quality/recordings') ?: 'active' }}"
+              href="{{ route('admin-branch.service-quality.recordings') }}"
+            >
+              Putar Rekaman
+            </a>
+          </div>
+        </div>
+      </li>
+
       <li class="nav-item {{ !request()->is('admin-branch/report/*') ?: 'active' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#report" aria-expanded="true" aria-controls="report">
           <i class="fas fa-fw fa-file-alt"></i>

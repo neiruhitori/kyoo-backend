@@ -53,29 +53,10 @@
         </li>
       @endif
 
-      <li class="nav-item {{ !request()->is('cs/conversations*') ?: 'active' }}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#audio" aria-expanded="true" aria-controls="audio">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('cs.record-sound') }}">
           <i class="fas fa-microphone"></i>
-          <span>Audio</span>
-        </a>
-
-        <div class="collapse {{ !request()->is('cs/conversations*') ?: 'show' }}" id="audio" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a
-              class="collapse-item kyoo-sublink {{ !request()->is('cs/conversations') ?: 'active' }}"
-              href="{{ route('cs.conversations.index') }}"
-            >
-              Rekam Suara
-            </a>
-
-            <a
-              class="collapse-item kyoo-sublink {{ !request()->is('cs/conversations/record') ?: 'active' }}"
-              href="{{ route('cs.conversations.record') }}"
-            >
-              Riwayat Perekaman
-            </a>
-          </div>
-        </div>
+          <span>Rekam Suara</span></a>
       </li>
 
       <li class="nav-item">

@@ -114,7 +114,7 @@
         const savedAudioMessagesContainer = document.querySelector('#myTable > tbody');
 
         const populateAudioMessages = () => {
-            return fetch('/cs/conversations/messages').then(res => {
+            return fetch('/api/audio-recordings').then(res => {
                 if (res.status === 200) {
                     return res.json().then(json => {
                         json.message_filenames.forEach(data => {

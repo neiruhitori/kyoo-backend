@@ -320,7 +320,7 @@
         reader.onload = () => {
             const base64AudioMessage = reader.result.split(',')[1];
             let customer_name = document.getElementById('customer_name').value;
-            fetch('/cs/conversations/messages', {
+            fetch('/api/audio-recordings', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -347,7 +347,7 @@
         reader.onload = () => {
             const base64AudioMessage = reader.result.split(',')[1];
 
-            fetch('/cs/conversations/messages', {
+            fetch('/api/audio-recordings', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
