@@ -9,7 +9,7 @@
     <button id="play" disabled hidden>Play</button>
     <button id="save" disabled hidden>Save</button>
 
-    <div id="saved-audio-messages" class="flex flex-col h-screen pl-[1rem] w-[1050px] mx-auto pt-[30px]">
+    <div id="saved-audio-messages" class="flex flex-col h-screen pl-[1rem] w-[1050px] mx-auto my-[30px]">
         <div class="container mx-auto flex flex-wrap">
             <div class="basis-full mb-[31px]">
                 <h3 class="text-[18px] leading-[25px] font-bold">
@@ -118,7 +118,6 @@
                 if (res.status === 200) {
                     return res.json().then(json => {
                         json.message_filenames.forEach(data => {
-                            console.log(data)
                             let audioElement = document.querySelector(`[data-audio-filename="${data.filename}"]`);
                             if (!audioElement) {
                                 audioElement = document.createElement('audio');

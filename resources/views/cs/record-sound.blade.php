@@ -80,7 +80,7 @@
 @section('content')
 <div>
     <button id="save" disabled hidden>Save</button>
-    <div class="w-[1050px] mx-auto my-[86px]">
+    <div class="w-[1050px] mx-auto my-[30px]">
         <div class="w-[510px] h-[99px] bg-[#0D61A1] rounded-[12px] text-white text-center mx-auto pt-[18px]">
             <input type="text" id="customer_name" class="bg-[#0D61A1] text-bold text-[20px] border-b-[1px] border-white outline-none text-center mb-[8px] pb-[5px]">
             <p class="text-[rgba(255,255,255,0.52)] text-semibold text-[14px]">Nama Customer</p>
@@ -106,7 +106,11 @@
             </div>
         </div>
 
-        <div class="mt-[27px] mx-auto">
+        <div class="mt-[30px] mx-auto">
+            <h3 class="text-[18px] mb-[27px] leading-[24px] font-bold">
+                Transaksi Rekaman
+            </h3>
+
             <table id="myTable" border="1" class="w-full rounded-tl-[12px]">
                 <thead class="h-[53px] text-white text-center">
                     <tr>
@@ -134,6 +138,8 @@
 
 @push('js')
 <script src="{{ mix('/js/app.js') }}"></script>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script>
     window.Echo.channel('workstations.{{ $workstation_id }}')
@@ -392,6 +398,7 @@
                 })
             }).then(res => {
                 if (res.status === 201) {
+                    swal('', 'Audio berhasil disimpan', 'success')
                     return;
                 }
                 console.log('Invalid status saving audio message: ' + res.status);
@@ -415,6 +422,7 @@
                 })
             }).then(res => {
                 if (res.status === 201) {
+                    swal('', 'Audio berhasil disimpan', 'success')
                     return;
                 }
                 console.log('Invalid status saving audio message: ' + res.status);
