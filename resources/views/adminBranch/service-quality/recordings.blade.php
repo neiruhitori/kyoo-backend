@@ -17,6 +17,11 @@
                 </h3>
             </div>
             <div class="basis-full">
+                <div class="mb-3">
+                    <input type="date" pattern="dd-mm-yyyy" id="created-at" class="py-2 px-3 rounded border w-52 mr-1">
+                    <button type="button" id="reset-button" class="rounded py-2 px-3 border bg-gray-200 text-black">Reset</button>
+                </div>
+
                 <table id="myTable" border="1" class="w-full rounded-tl-[12px]">
                     <thead class="h-[53px] text-white text-center">
                         <tr>
@@ -110,13 +115,16 @@
     </style>
 
     <script>
-      
+        let query = new URLSearchParams();
+
         const savedAudioMessagesContainer = document.querySelector('#myTable > tbody');
 
         const populateAudioMessages = () => {
-            return fetch('/admin-branch/service-quality/recordings/all').then(res => {
+            return fetch('/admin-branch/service-quality/recordings/all?' + query).then(res => {
                 if (res.status === 200) {
                     return res.json().then(json => {
+                        document.getElementById("tbody_id").innerHTML = ''
+
                         json.message_filenames.forEach(data => {
                             let audioElement = document.querySelector(`[data-audio-filename="${data.filename}"]`);
                             if (!audioElement) {
@@ -162,7 +170,6 @@
                                     second = data.duration % 60
                                     cell5.innerHTML = minute + ":" + second;
                                 } else {
-                                    console.log(data.duration)
                                     cell5.innerHTML = data.duration + ' seconds';
                                 }
 
@@ -175,5 +182,20 @@
             });
         };
         populateAudioMessages();
+
+        document.getElementById('created-at').addEventListener('change', function () {
+            query.set('created_at', this.value);
+            
+            Promise.race([populateAudioMessages()])
+                .then(() => {
+                    query.delete('created_at')
+                })
+        })
+
+        document.getElementById('reset-button').addEventListener('click', function () {
+            query.delete('created_at');
+            document.getElementById('created-at').value = ''
+            populateAudioMessages()
+        })
     </script>
 @endsection
