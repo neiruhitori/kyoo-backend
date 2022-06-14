@@ -2,37 +2,6 @@
 
 @push('css')
 <link href="https://cdn.jsdelivr.net/npm/daisyui@2.15.2/dist/full.css" rel="stylesheet" type="text/css" />
-@endpush
-
-@section('content')
-<div>
-    <button id="save" disabled hidden>Save</button>
-    <div class="w-[1050px] mx-auto mt-[86px]">
-        <div class="w-[510px] h-[99px] bg-[#0D61A1] rounded-[12px] text-white text-center mx-auto pt-[18px]">
-            <input type="text" id="customer_name" class="bg-[#0D61A1] text-bold text-[20px] border-b-[1px] border-white outline-none text-center mb-[8px] pb-[5px]">
-            <p class="text-[rgba(255,255,255,0.52)] text-semibold text-[14px]">Nama Customer</p>
-        </div>
-        <div class="shadow-[0px_4px_22px_rgba(0,0,0,0.1)] w-[510px] h-[330px] mx-auto mt-[27px] text-center mt-[24px] pt-[24px] relative">
-            <p class="text-[46px] h-[63px] text-[rgba(0,0,0,0.32)] font-bold leading-[64px]"><span id="seconds">00</span>:<span id="tens" class="text-[#000000]">00</span></p>
-            <div class="w-[151px] h-[152px] mx-auto border-[1px] border-solid border-[rgba(0,0,0,0.13)] mt-[24px] rounded-[100px] flex items-center justify-center">
-                <button class=" w-[76px] h-[76px] button-audio flex items-center justify-center" id="record">
-                    <img src="{{asset('img/audio-conversations/microphone-inactive.png')}}" class="w-[24px] h-[24px]" id="microphone" alt="">
-                </button>
-                <button class=" w-[76px] h-[76px] button-audio flex items-center justify-center hidden" id="stop">
-                    <img src="{{asset('img/audio-conversations/microphone-inactive.png')}}" class="w-[24px] h-[24px]" id="microphone" alt="">
-                </button>
-            </div>
-            <button class="w-[50px] h-[50px] bg-[#FAF8F8] border-[1px] border-solid border-[rgba(0,0,0,0.13)] absolute right-[100px] bottom-[118px] rounded-[25px] flex items-center justify-center hidden" id="pauseresume">
-                <img src="{{asset('img/audio-conversations/pause.png')}}" class="w-[24px] h-[24px]" id="imgPlay" alt="">
-            </button>
-            <div class="flex justify-center items-center mt-[24px]">
-                <h3 class="font-semibold text-[14px] text-[rgba(0,0,0,0.24)]">Klik tombol</h3>
-                <img src="{{asset('img/audio-conversations/microphone-inactive.png')}}" class="w-[20px] h-[20px] mx-[12.9px]" id="recordPreview" alt="">
-                <h3 class="font-semibold text-[14px] text-[rgba(0,0,0,0.24)] flex wording-audio">untuk mulai</h3>
-            </div>
-        </div>
-    </div>
-</div>
 
 <style>
     audio {
@@ -106,7 +75,96 @@
     }
 
 </style>
+@endpush
+
+@section('content')
+<div>
+    <button id="save" disabled hidden>Save</button>
+    <div class="w-[1050px] mx-auto my-[86px]">
+        <div class="w-[510px] h-[99px] bg-[#0D61A1] rounded-[12px] text-white text-center mx-auto pt-[18px]">
+            <input type="text" id="customer_name" class="bg-[#0D61A1] text-bold text-[20px] border-b-[1px] border-white outline-none text-center mb-[8px] pb-[5px]">
+            <p class="text-[rgba(255,255,255,0.52)] text-semibold text-[14px]">Nama Customer</p>
+        </div>
+
+        <div class="shadow-[0px_4px_22px_rgba(0,0,0,0.1)] w-[510px] h-[330px] mx-auto mt-[27px] text-center mt-[24px] pt-[24px] relative">
+            <p class="text-[46px] h-[63px] text-[rgba(0,0,0,0.32)] font-bold leading-[64px]"><span id="seconds">00</span>:<span id="tens" class="text-[#000000]">00</span></p>
+            <div class="w-[151px] h-[152px] mx-auto border-[1px] border-solid border-[rgba(0,0,0,0.13)] mt-[24px] rounded-[100px] flex items-center justify-center">
+                <button class=" w-[76px] h-[76px] button-audio flex items-center justify-center" id="record">
+                    <img src="{{asset('img/audio-conversations/microphone-inactive.png')}}" class="w-[24px] h-[24px]" id="microphone" alt="">
+                </button>
+                <button class=" w-[76px] h-[76px] button-audio flex items-center justify-center hidden" id="stop">
+                    <img src="{{asset('img/audio-conversations/microphone-inactive.png')}}" class="w-[24px] h-[24px]" id="microphone" alt="">
+                </button>
+            </div>
+            <button class="w-[50px] h-[50px] bg-[#FAF8F8] border-[1px] border-solid border-[rgba(0,0,0,0.13)] absolute right-[100px] bottom-[118px] rounded-[25px] flex items-center justify-center hidden" id="pauseresume">
+                <img src="{{asset('img/audio-conversations/pause.png')}}" class="w-[24px] h-[24px]" id="imgPlay" alt="">
+            </button>
+            <div class="flex justify-center items-center mt-[24px]">
+                <h3 class="font-semibold text-[14px] text-[rgba(0,0,0,0.24)]">Klik tombol</h3>
+                <img src="{{asset('img/audio-conversations/microphone-inactive.png')}}" class="w-[20px] h-[20px] mx-[12.9px]" id="recordPreview" alt="">
+                <h3 class="font-semibold text-[14px] text-[rgba(0,0,0,0.24)] flex wording-audio">untuk mulai</h3>
+            </div>
+        </div>
+
+        <div class="mt-[27px] mx-auto">
+            <table id="myTable" border="1" class="w-full rounded-tl-[12px]">
+                <thead class="h-[53px] text-white text-center">
+                    <tr>
+                        <th class="bg-[#0E5EA0] rounded-tl-[12px]">Nama File</th>
+                        <th class="bg-[#0E5EA0]">Nama Pelanggan</th>
+                        <th class="bg-[#0E5EA0]">Tanggal</th>
+                        <th class="bg-[#0E5EA0] rounded-tr-[12px]">Durasi</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_id" class="text-center">
+                    @foreach ($recordings as $recording)
+                        <tr>
+                            <td>{{ $recording->filename }}</td>
+                            <td>{{ $recording->customer_name }}</td>
+                            <td>{{ $recording->recorded_at }}</td>
+                            <td>{{ $recording->duration }} Detik</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('js')
+<script src="{{ mix('/js/app.js') }}"></script>
+
 <script>
+    window.Echo.channel('workstations.{{ $workstation_id }}')
+        .listen('RecordingCreated', recording => {
+            const createdDate = new Date(recording.created_at).toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            const createdTime = new Date(recording.created_at).toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            recording.recorded_at = `${createdDate} ${createdTime}`
+
+            const parentNode = document.querySelector('#tbody_id');
+            const childNodes = document.querySelectorAll('#tbody_id tr')
+            const lastChild = childNodes[childNodes.length - 1]
+
+            if (childNodes.length >= 5) parentNode.removeChild(lastChild)
+
+            const newRow = parentNode.insertRow(0   )
+            newRow.innerHTML = `
+                <td>${recording.filename}</td>
+                <td>${recording.customer_name}</td>
+                <td>${recording.recorded_at}</td>
+                <td>${recording.duration} Detik</td>
+            `
+        })
+
     const recordAudio = () =>
         new Promise(async resolve => {
             var constraints = {
@@ -240,8 +298,6 @@
 
     }
 
-
-
     recordButton.addEventListener('click', async () => {
         // if (microphoneAccess == false) {
         // Swal.fire('Mohon izinkan akses mikrofon')
@@ -336,7 +392,7 @@
                 })
             }).then(res => {
                 if (res.status === 201) {
-                    return populateAudioMessages();
+                    return;
                 }
                 console.log('Invalid status saving audio message: ' + res.status);
             });
@@ -359,11 +415,11 @@
                 })
             }).then(res => {
                 if (res.status === 201) {
-                    return populateAudioMessages();
+                    return;
                 }
                 console.log('Invalid status saving audio message: ' + res.status);
             });
         };
     });
 </script>
-@endsection
+@endpush
