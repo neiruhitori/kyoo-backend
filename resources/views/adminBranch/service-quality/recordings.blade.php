@@ -184,18 +184,20 @@
         populateAudioMessages();
 
         document.getElementById('created-at').addEventListener('change', function () {
-            query.set('created_at', this.value);
+            if (this.value !== query.get('created_at')) {
+                query.set('created_at', this.value);
             
-            Promise.race([populateAudioMessages()])
-                .then(() => {
-                    query.delete('created_at')
-                })
+                populateAudioMessages()
+            }
         })
 
         document.getElementById('reset-button').addEventListener('click', function () {
-            query.delete('created_at');
-            document.getElementById('created-at').value = ''
-            populateAudioMessages()
+            if (query.has('created_at')) {
+                query.delete('created_at');
+                document.getElementById('created-at').value = ''
+
+                populateAudioMessages()
+            }
         })
     </script>
 @endsection
