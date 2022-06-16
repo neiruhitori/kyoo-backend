@@ -140,13 +140,6 @@
   <!-- Custom scripts for all pages-->
   <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
 
-  {{-- Audio Recorder Script --}}
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js" integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
   <script>
     $(document).ready(function () {
       $('.datetimepicker-input').datetimepicker({

@@ -2,6 +2,78 @@
 
 @push('css')
 <link href="https://cdn.jsdelivr.net/npm/daisyui@2.15.2/dist/full.css" rel="stylesheet" type="text/css" />
+
+<style>
+    audio {
+        display: block;
+        margin: 5px;
+    }
+
+    .button-audio {
+        background: #FF3B6A;
+        box-shadow: 6px 15px 45px rgba(0, 0, 0, 0.46), inset 3px 5px 19px rgba(255, 255, 255, 0.47);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+        margin: 10px;
+        height: 20px;
+        width: 20px;
+        transform: scale(1);
+        transition: 0.5s;
+        /* animation: pulse-black 3s infinite; */
+    }
+
+    #record {
+        border-radius: 60px;
+    }
+
+    #stop {
+        border-radius: 20px;
+        transition: 2s all ease-in;
+    }
+
+    #pause {
+        opacity: 0;
+        transition: 0.5s all;
+    }
+
+    @keyframes pulse-black {
+        0% {
+            /* transform: scale(0.95); */
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4);
+        }
+
+        70% {
+            /* transform: scale(1.3); */
+            box-shadow: 0 0 0 35px rgba(0, 0, 0, 0);
+        }
+
+        100% {
+            /* transform: scale(0.95); */
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        }
+    }
+
+    tr {
+        height: 53px;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #FBFBFB;
+    }
+
+    tr:nth-child(even) {
+        background-color: #FDFEFF;
+    }
+
+    tr>td:nth-child(6) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    tr>td:nth-child(1) {
+        width: 200px;
+    }
+</style>
 @endpush
 
 @section('content')
@@ -41,78 +113,10 @@
             </div>
         </div>
     </div>
+@endsection
 
-    <style>
-        audio {
-            display: block;
-            margin: 5px;
-        }
-
-        .button-audio {
-            background: #FF3B6A;
-            box-shadow: 6px 15px 45px rgba(0, 0, 0, 0.46), inset 3px 5px 19px rgba(255, 255, 255, 0.47);
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
-            margin: 10px;
-            height: 20px;
-            width: 20px;
-            transform: scale(1);
-            transition: 0.5s;
-            /* animation: pulse-black 3s infinite; */
-        }
-
-        #record {
-            border-radius: 60px;
-        }
-
-        #stop {
-            border-radius: 20px;
-            transition: 2s all ease-in;
-        }
-
-        #pause {
-            opacity: 0;
-            transition: 0.5s all;
-        }
-
-        @keyframes pulse-black {
-            0% {
-                /* transform: scale(0.95); */
-                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4);
-            }
-
-            70% {
-                /* transform: scale(1.3); */
-                box-shadow: 0 0 0 35px rgba(0, 0, 0, 0);
-            }
-
-            100% {
-                /* transform: scale(0.95); */
-                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
-            }
-        }
-
-        tr {
-            height: 53px;
-        }
-
-        tr:nth-child(odd) {
-            background-color: #FBFBFB;
-        }
-
-        tr:nth-child(even) {
-            background-color: #FDFEFF;
-        }
-
-        tr>td:nth-child(6) {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        tr>td:nth-child(1) {
-            width: 200px;
-        }
-    </style>
+@push('js')
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
         let query = new URLSearchParams();
@@ -200,4 +204,4 @@
             }
         })
     </script>
-@endsection
+@endpush

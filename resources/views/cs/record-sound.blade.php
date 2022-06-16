@@ -137,6 +137,8 @@
 @endsection
 
 @push('js')
+<script src="https://cdn.tailwindcss.com"></script>
+
 <script src="{{ mix('/js/app.js') }}"></script>
 
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
