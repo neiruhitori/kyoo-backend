@@ -42,6 +42,6 @@ class DirectQueue implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('event_direct_queue_general.'.($this->branch_id ?: Auth::user()->branch_id));
+        return new Channel('event_direct_queue_general.'.($this->branch_id ?? Auth::user()->branch_id));
     }
 }

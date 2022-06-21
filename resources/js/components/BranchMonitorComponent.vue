@@ -109,11 +109,11 @@ export default {
       .listen('DirectQueue', () => {
         this.getQueues();
       })
-      .listen('QueueStatusUpdated', (message) => {
-        this.getQueues();
+      .listen('QueueStatusUpdated', async (message) => {
+        await this.getQueues();
 
-        if (this.config.queue_voice && message.status && ['recall', 'served'].includes(message.status)) {
-          this.getQueueCallAudio(message.queue_no);
+        if (this.config.queue_voice && this.servingQueue && message.status && ['recall', 'served'].includes(message.status)) {
+          this.getQueueCallAudio();
         }
       });
   },
@@ -219,12 +219,8 @@ export default {
       this.isLoading = false;
     },
 
-    async getQueueCallAudio(queueNo) {
-      const { data: { audio } } = await axios.get(`/queue-caller`, {
-        params: {
-          queue_no: queueNo
-        }
-      });
+    async getQueueCallAudio() {
+      const { data: { audio } } = await axios.get(`/queue-caller/${this.servingQueue.id}`);
 
       if (audioEl.paused) {
         audioEl.src = audio.data;
@@ -244,6 +240,8 @@ export default {
   display: flex;
   gap: 1.625rem;
   height: 100vh;
+  background-color: #0D1117;
+  color: #FFFFFF;
 }
 
 .monitor-sidebar {
@@ -269,7 +267,7 @@ export default {
 
 .calling-card-body {
   background-color: #103C7C;
-  color: #FFFFFF;
+  color: #C1DBFF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -284,18 +282,19 @@ export default {
 }
 
 .waiting-card {
-  background-color: #FFFFFF;
-  border: 2px solid #AAAAAA;
+  background-color: #161B22;
+  border: 2px solid #30363D;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
   height: 6.3rem;
+  color: #C4CCD4;
 }
 
 .waiting-card-empty {
-  background-color: #AAAAAA;
+  background-color: #161B22;
 }
 
 .calling-card-header {
@@ -356,6 +355,7 @@ export default {
   border-radius: 8px;
   padding: .75rem 1.5rem;
   background-color: #F5BE3F;
+  color: #000000;
   font-weight: 700;
   font-size: 1.5rem;
 }
@@ -363,7 +363,6 @@ export default {
 .monitor-signature {
   display: inline-flex;
   align-items: center;
-  color: #7A7A7A;
   display: flex;
   gap: .5rem;
   float: right;
@@ -376,9 +375,9 @@ export default {
 .monitor-main-content {
   flex: 1 1 0%;
   border-radius: 8px;
-  background-color: #04111D;
+  background-color: #FFFFFF;
   overflow: hidden; 
-  border: .5px solid #DDDDDD;
+  border: .5px solid #30363D;
 }
 
 .monitor-main-content img {

@@ -1,15 +1,17 @@
-import { useState, useMemo } from 'react'
-import { useMutation, useQuery } from 'react-query'
-import { Link, useParams } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import styled from 'styled-components'
+import html2canvas from 'html2canvas'
 
 import { getBooking } from '../../api/booking'
 import { fetchBranch } from '../../api/branch'
 import { createFeedback } from '../../api/feedback'
 import { formatBrowser, getDayName, getMonthAbrvName } from '../../utils/date'
+import { getCookie } from '../../lib/helper'
 
 import MainContent from '../../components/MainContent'
-import TicketCard from '../../components/Ticket'
+import TicketCard from '../../components/TicketCard'
 import InfoAlert from '../../components/InfoAlert'
 import KyooLogo from '../../components/KyooLogo'
 import ChipWarning from '../../components/ChipWarning'
@@ -17,9 +19,16 @@ import ChipSuccess from '../../components/ChipSuccess'
 import ChipDanger from '../../components/ChipDanger'
 import Card from '../../components/Card'
 import Rating from '../../components/Rating'
+import Dialog from '../../components/Dialog'
+import TicketRip from '../../components/TicketRip'
+
+import OnsiteQueueTicket from '../../templates/OnsiteQueueTicket'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import LocationIcon from '../../icons/LocationIcon'
+import SaveIcon from '../../icons/SaveIcon'
+import RedoIcon from '../../icons/RedoIcon'
+import AngleRightIcon from '../../icons/AngleRightIcon'
 
 const BranchLogo = styled.img`
     display: inline-block;
@@ -36,58 +45,65 @@ const BookingTimeCard = styled.div`
     color: #007EC6;
 `
 
-function TicketBody(props) {
-    let status = ''
+const OnsiteChipSuccess = styled(ChipSuccess)`
+    font-size: .875rem;
+`
 
-    if (props.status == 'waiting') {
-        status = 'Menunggu'
-    } else if (props.status == 'served') {
-        status = 'Dilayani'
-    } else if (props.status == 'no show') {
-        status = 'Tidak Hadir'
-    } else if (props.status == 'end served') {
-        status = 'Selesai'
-    } else if (props.status == 'requeue') {
-        status = 'Antri Ulang'
+const OnsiteChipWarning = styled(ChipWarning)`
+    font-size: .875rem;
+`
+
+const OnsiteChipDanger = styled(ChipDanger)`
+    font-size: .875rem;
+`
+
+function getStatus(status) {
+    if (status == 'served') {
+        return 'Dilayani'
+    }
+    if (status == 'no show') {
+        return 'Tidak Hadir'
+    }
+    if (status == 'end served') {
+        return 'Selesai'
+    }
+    if (status == 'requeue') {
+        return 'Antri Ulang'
     }
 
-    let onsiteStatus = <ChipWarning label={status} />
+    return 'Menunggu'
+}
 
-    if (props.status == 'no show') {
-        onsiteStatus = <ChipDanger label={status} />
-    } else if (props.status == 'end served') {
-        onsiteStatus = <ChipSuccess label={status} />
-    }
-
+function TicketHead(props) {
     return <div style={{
         display: 'flex',
         alignItems: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        padding: '1.75rem'
+
     }}>
         <p style={{
-            fontSize: '1.125rem',
+            fontSize: '1rem',
             color: '#7A7A7A',
-            marginBottom: '.625rem',
+            marginBottom: '.5rem',
             textAlign: 'center'
         }}>Nomor Antrian</p>
 
         <h2 style={{
             fontWeight: '700',
-            fontSize: '3.125rem',
+            fontSize: '3.625rem',
             color: '#103C7C',
-            textAlign: 'center',
-            marginBottom: '.625rem'
+            textAlign: 'center'
         }}>
             {props.queueNo || 0}
         </h2>
-
-        {onsiteStatus}
     </div>
 }
 
 function TicketFooter(props) {
     return <div style={{
         display: 'flex',
+        padding: '1.75rem'
     }}>
         <BookingTimeCard style={{
             marginRight: '1.625rem',
@@ -134,19 +150,50 @@ function TicketFooter(props) {
     </div>
 }
 
-function OnsiteBookingStatus() {
+function OnsiteBookingStatus(props) {
     const PAGE_TITLE = 'Status Antrian Onsite'
-    const { branchId, bookingId, queueType } = useParams()
+    const REFETCH_INTERVAL = 15000
+    const CLIENT_ID = getCookie('client_id')
+
+    const { branchId, bookingId } = useParams()
+    const queryClient = useQueryClient()
+    const ticketRef = useRef(null)
+    const navigate = useNavigate()
 
     const [rating, setRating] = useState(0)
-    const [allowBooking, setAllowBooking] = useState(true)
+    const [isDialogShown, setIsDialogShown] = useState(false)
+    const [isConfirmationDialogShown, setIsConfirmationDialogShown] = useState(false)
 
     let booking = null
     let branch = null
     let schedule = null
     let branchType = 'free'
 
-    const bookingQuery = useQuery(['booking', bookingId], () => getBooking('onsite', bookingId))
+    useEffect(() => {
+        if (!sessionStorage.getItem('dialog-shown')) {
+            setIsDialogShown(true)
+            sessionStorage.setItem('dialog-shown', 'true')
+        }
+
+        window.Echo.channel(`onsite_queues.${CLIENT_ID}`)
+            .listen('OnsiteQueueUpdated', () => {
+                queryClient.invalidateQueries(['booking', bookingId])
+            })
+        
+        return () => {
+            sessionStorage.removeItem('dialog-shown')
+            window.Echo.channel(`onsite_queues.${CLIENT_ID}`)
+                .stopListening('OnsiteQueueUpdated')
+        }
+    }, [])
+
+    const bookingQuery = useQuery(['booking', bookingId], () => getBooking('onsite', bookingId), {
+        refetchInterval: () => {
+            return ['end served', 'no show'].includes(booking?.status)
+                ? false
+                : REFETCH_INTERVAL
+        }
+    })
     const branchQuery = useQuery(['branch', branchId], () => fetchBranch(branchId), {
         enabled: bookingQuery.status === 'success'
     })
@@ -156,23 +203,26 @@ function OnsiteBookingStatus() {
         booking = bookingQuery.data?.data
     }
 
-    useMemo(() => {
-        if (booking) {
-            setRating(booking.rating)
-            setAllowBooking(!booking.rating)
-        }
-    }, [booking])
-
     if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
         branch = branchQuery.data
-
-        if (branch.branch_type.is_premium) {
-            branchType = 'premium'
-        }
 
         schedule = branch.schedule.find(v => {
             return v.day === getDayName(formatBrowser(booking.date), 'en')
         })
+    }
+
+    let onsiteStatus = <OnsiteChipWarning label={getStatus(booking?.status || 'waiting')} />
+
+    if (booking?.status == 'no show') {
+        onsiteStatus = <OnsiteChipDanger label={getStatus(booking.status)} />
+    }
+    
+    if (booking?.status == 'end served') {
+        onsiteStatus = <OnsiteChipSuccess label={getStatus(booking.status)} />
+    }
+
+    if (branch?.branch_type.is_premium) {
+        branchType = 'premium'
     }
 
     function handleFeedbackClick() {
@@ -180,30 +230,180 @@ function OnsiteBookingStatus() {
             rating,
             is_liked: false
         }, {
-            onSuccess: (data) => {
-                if (data.success) {
-                    setAllowBooking(false)
-                }
+            onSuccess: ({ data }) => {
+                booking.rating = data.rating
+                queryClient.invalidateQueries(['booking', bookingId])
             }
         })
     }
 
+    function handlePrintTicket(queueNo) {
+        html2canvas(ticketRef.current).then((canvas) => {
+            const imgUrl = canvas.toDataURL('image/png');
+
+            const a = document.createElement('a')
+            a.href = imgUrl
+            a.download = `${queueNo}.png`
+            a.click()
+
+            setIsDialogShown(false)
+        })
+    }
+
     return <>
+        {!!booking && !!branch && <OnsiteQueueTicket
+            ref={ticketRef}
+            booking={booking}
+            branch={branch}
+            style={{
+                position: 'absolute',
+                bottom: '100%',
+                left: 0,
+                right: 0
+            }}
+        />}
+
+        {!!booking && isDialogShown && <Dialog>
+            <div style={{
+                display: 'flex',
+                width: '68px',
+                height: '68px',
+                borderRadius: '999999px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#D0E9FB',
+                margin: '0 auto',
+                marginBottom: '1.5rem'
+            }}>
+                <SaveIcon color="#0172CB" style={{ width: '30px', height: 'auto' }} />
+            </div>
+
+            <div style={{
+                marginBottom: '1.5rem'
+            }}>
+                <h4 style={{
+                    textAlign: 'center',
+                    fontSize: '1.3rem',
+                    marginBottom: '1rem'
+                }}>Simpan Antrianmu?</h4>
+                <p style={{
+                    textAlign: 'center',
+                    margin: '0 auto',
+                    lineHeight: '1.5'
+                }}>Simpan tiket antrian agar tidak kehilangan informasi antrianmu</p>
+            </div>
+
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '1rem'
+            }}>
+                <button style={{
+                    width: '142px',
+                    padding: '.875rem',
+                    borderRadius: '8px',
+                    border: '1px solid #D8D8D8',
+                    outline: 'none',
+                    fontWeight: 'bold',
+                    backgroundColor: '#FFFFFF',
+                    fontSize: '1rem'
+                }} onClick={() => handlePrintTicket(booking.queue_no)}>Simpan</button>
+
+                <button style={{
+                    width: '142px',
+                    padding: '.875rem',
+                    borderRadius: '8px',
+                    border: 'none',
+                    outline: 'none',
+                    fontWeight: 'bold',
+                    backgroundColor: '#D8D8D8',
+                    fontSize: '1rem'
+                }} onClick={() => setIsDialogShown(false)}>Tidak</button>
+            </div>
+        </Dialog>}
+
+        {isConfirmationDialogShown && <Dialog>
+            <div style={{
+                marginBottom: '1.5rem'
+            }}>
+                <p style={{
+                    textAlign: 'center',
+                    margin: '0 auto',
+                    lineHeight: '1.5'
+                }}>Apakah Anda yakin ingin meninggalkan halaman ini?</p>
+            </div>
+
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '1rem'
+            }}>
+                <button style={{
+                    width: '142px',
+                    padding: '.875rem',
+                    borderRadius: '8px',
+                    border: 'none',
+                    outline: 'none',
+                    color: '#FFFFFF',
+                    backgroundColor: '#007EC6',
+                    fontSize: '1rem'
+                }} onClick={() => navigate(`/customer/${branchId}/onsite/services`)}>Iya</button>
+
+                <button style={{
+                    width: '142px',
+                    padding: '.875rem',
+                    borderRadius: '8px',
+                    border: 'none',
+                    outline: 'none',
+                    backgroundColor: '#D8D8D8',
+                    fontSize: '1rem'
+                }} onClick={() => setIsConfirmationDialogShown(false)}>Tidak</button>
+            </div>
+        </Dialog>}
+
         <div style={{
-            height: '3.2rem',
-            padding: '0 1.375rem',
             display: 'flex',
             alignItems: 'center'
         }}>
-            <Link to={`/customer/${branchId}/${queueType}/services`} style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
+            <button
+                type="button"
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '3.2rem',
+                    outline: 'none',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    padding: '.85rem 1.375rem'
+                }}
+                onClick={() => setIsConfirmationDialogShown(true)}
+            >
                 <ArrowLeftIcon />
-            </Link>
+            </button>
 
-            <div style={{ textTransform: 'capitalize', textAlign: 'center', flex: '1 1 0%' }}>{PAGE_TITLE}</div>
+            <div style={{
+                textTransform: 'capitalize',
+                textAlign: 'center',
+                flex: '1 1 0%'
+            }}>{PAGE_TITLE}</div>
+
+            <button
+                type="button"
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '3.2rem',
+                    outline: 'none',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    padding: '.85rem 1.375rem'
+                }}
+                onClick={() => location.reload()}
+            >
+                <RedoIcon />
+            </button>
         </div>
 
         {bookingQuery.status === 'success' && <MainContent>
@@ -215,25 +415,72 @@ function OnsiteBookingStatus() {
                     <BranchLogo src={`/storage/${branch.logo}`}/>
                 </div>}
 
-                {bookingQuery.status === 'success' && branchQuery.status === 'success' && <TicketCard
-                    body={<TicketBody
-                        queueNo={booking.queue_no}
-                        status={booking.status}
-                    />}
-                    footer={<TicketFooter
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1.5rem',
+                    padding: '1.125rem',
+                    borderRadius: '8px',
+                    backgroundColor: '#EFF2F5'
+                }}>
+                    <div>
+                        {onsiteStatus}
+                    </div>
+
+                    <div style={{
+                        textAlign: 'right'
+                    }}>
+                        <p style={{
+                            color: '#7A7A7A',
+                            fontSize: '.875rem'
+                        }}>
+                            {booking.total_remaining_queue
+                                ? <strong style={{
+                                    color: 'black'
+                                }}>{booking.total_remaining_queue}</strong>
+                                : 'Tidak Ada'
+                            } Antrian Tersisa
+                        </p>
+                    </div>
+                </div>
+
+                {branchQuery.status === 'success' && <TicketCard style={{
+                    marginBottom: '1.5rem'
+                }}>
+                    <TicketHead queueNo={booking.queue_no} />
+
+                    <TicketRip />
+
+                    <TicketFooter
                         serviceName={booking.service_name}
                         bookingDate={booking.date}
                         branch={branch}
                         schedule={schedule}
-                    />}
-                    style={{
-                        marginBottom: '2rem'
-                    }}
-                />}
+                    />
+                </TicketCard>}
+            </div>
+
+            <div style={{
+                marginBottom: '1.5rem',
+                textAlign: 'center'
+            }}>
+                <Link to="detail" style={{
+                    padding: '.5rem',
+                    color: '#0161AC',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                    Lihat Detail Antrian
+                    <AngleRightIcon color="#0161AC" style={{
+                        marginLeft: '.5rem'
+                    }} />
+                </Link>
             </div>
 
             {branchType === 'premium' && booking.status === 'end served' && <Card style={{
-                marginBottom: '2rem',
+                marginBottom: '1.5rem',
                 padding: '1.625rem'
             }}>
                 <p style={{
@@ -244,12 +491,14 @@ function OnsiteBookingStatus() {
                     marginTop: '1.125rem'
                 }}>
                     <Rating
-                        rate={rating}
-                        onRateClick={rate => allowBooking && setRating(rate)}
+                        rate={booking.rating || rating}
+                        onRateClick={rate => {
+                            if (!booking.rating) setRating(rate)
+                        }}
                     />
                 </div>
             
-                {allowBooking && <div style={{
+                {!booking.rating && <div style={{
                     textAlign: 'center',
                     marginTop: '1.125rem'
                 }}>
@@ -276,20 +525,20 @@ function OnsiteBookingStatus() {
                     Anda akan dipanggil oleh counter yang Anda pilih sesuai dengan nomor antrian Anda
                 </p>
             </InfoAlert>
-
-            <div style={{
-                display: 'flex',
-                fontSize: '.875rem',
-                color: '#7A7A7A',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '1.125rem 0',
-                marginTop: 'auto'
-            }}>
-                Powered by
-                <KyooLogo style={{ marginLeft: '0.5rem' }} />
-            </div>
         </MainContent>}
+
+        <div style={{
+            display: 'flex',
+            fontSize: '.875rem',
+            color: '#7A7A7A',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1.125rem 0',
+            marginTop: 'auto'
+        }}>
+            Powered by
+            <KyooLogo style={{ marginLeft: '0.5rem' }} />
+        </div>
     </>
 }
 

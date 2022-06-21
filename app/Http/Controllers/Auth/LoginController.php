@@ -70,10 +70,10 @@ class LoginController extends Controller
                     'last_login' => date('Y-m-d H:i:s')
                 ]);
                 
-                return redirect()->route('adminBranch.branchConfigGuide');
+                return redirect()->route('admin-branch.product-guide.queue-configuration');
             }
             
-            return redirect()->route('home');
+            return redirect()->route('dashboard');
 
         }
         // on failed

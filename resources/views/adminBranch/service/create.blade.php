@@ -14,11 +14,11 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('adminBranch.service.store')}}" method="post">
+                            <form action="{{route('admin-branch.branch-configuration.service.store')}}" method="post">
                                 @csrf
                                 <div class="form-group">
                                     <label for="name">{{ __('Name') }}</label>
-                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: 'Customer Service 1'}}" required>
+                                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?? 'Customer Service 1'}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
                                 <div class="form-group">

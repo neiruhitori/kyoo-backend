@@ -14,7 +14,7 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('adminBranch.workstation.workstationService.update', ["workstation" => $workstationService->workstation_id, "workstationService" => $workstationService->id])}}" method="post">
+                            <form action="{{route('admin-branch.branch-configuration.workstation.workstation-service.update', ["workstation" => $workstationService->workstation_id, "workstation_service" => $workstationService->id])}}" method="post">
                                 @csrf
                                 <input type="hidden" name="_method" value="PUT">
                                 <input type="hidden" name="workstation_id" value="{{$workstationService->workstation_id}}">

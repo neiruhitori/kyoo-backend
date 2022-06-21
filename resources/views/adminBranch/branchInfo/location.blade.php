@@ -86,7 +86,7 @@
                 @include('layouts.alert')
 
                 <form
-                    action="{{route('adminBranch.branch.update')}}"
+                    action="{{route('admin-branch.branch-information.update')}}"
                     method="post"
                     enctype="multipart/form-data"
                 >

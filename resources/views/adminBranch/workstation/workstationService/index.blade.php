@@ -22,7 +22,7 @@
                 <p>
                     <ul style="padding-left: 2rem;">
                         <li style="margin-bottom: 0.25rem;">
-                            1 Meja hanya bisa melayani satu jenis Layanan saja.
+                            1 Meja bisa melayani 1 atau lebih jenis Layanan dengan prioritas layanan yang bisa di-atur. Untuk versi gratis maksimal hanya 5 layanan dalam 1 meja saja.
                         </li>
                         <li>
                             Untuk versi Antrian berbayar, 1 atau lebih Meja bisa melayani 1 atau lebih Layanan dengan Prioritas masing-masing Layanan yang bisa diatur.
@@ -42,15 +42,15 @@
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
-                    @if (Auth::user()->Branch->BranchType->is_premium || count($workstation->WorkstationService) < 1)
-                        <div class="row">
-                            <div class="col-md-12 text-right">
-                                <a href="{{route('adminBranch.workstation.workstationService.create', $workstation->id)}}" class="btn btn-primary">
-                                    {{ __('create.module', ['module' => __('Service')]) }}
-                                </a>
-                            </div>
+
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <a href="{{ route('admin-branch.branch-configuration.workstation.workstation-service.create', $workstation->id) }}" class="btn btn-primary">
+                                {{ __('create.module', ['module' => __('Service')]) }}
+                            </a>
                         </div>
-                    @endif
+                    </div>
+
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
@@ -69,7 +69,7 @@
                                                 <td>{{$workstationService->priority}}</td>
                                                 <td>
                                                     <a
-                                                        href="{{route('adminBranch.workstation.workstationService.edit', ["workstation" => $workstation->id, "workstationService" => $workstationService->id])}}"
+                                                        href="{{ route('admin-branch.branch-configuration.workstation.workstation-service.edit', ["workstation" => $workstation->id, "workstation_service" => $workstationService->id]) }}"
                                                         class="btn btn-warning"
                                                         data-toggle="tooltip"
                                                         data-placement="bottom"
@@ -79,9 +79,15 @@
                                                     >
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
-                                                    <form action="{{route('adminBranch.workstation.workstationService.destroy', ["workstation" => $workstation->id, "workstationService" => $workstationService->id])}}" method="post" style="display: inline">
+
+                                                    <form
+                                                        action="{{ route('admin-branch.branch-configuration.workstation.workstation-service.destroy', ["workstation" => $workstation->id, "workstation_service" => $workstationService->id]) }}"
+                                                        method="post"
+                                                        style="display: inline"
+                                                    >
                                                         @csrf
                                                         @method('DELETE')
+
                                                         <button
                                                             type="submit"
                                                             class="btn btn-danger"

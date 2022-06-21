@@ -14,7 +14,7 @@
                     @include('layouts.alert')
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('adminBranch.schedule.store')}}" method="post">
+                            <form action="{{route('admin-branch.branch-configuration.schedule.store')}}" method="post">
                                 @csrf
                                 <div class="form-group">
                                     <label for="day">{{ __('Day') }}</label>

@@ -10,12 +10,12 @@ class Exhibition extends Model
 
     public function getCreatedAtAttribute($value)
     {
-        return date('Y-m-d H:m:s', \strtotime($value));
+        return date('Y-m-d H:i:s', \strtotime($value));
     }
 
     public function getUpdatedAtAttribute($value)
     {
-        return date('Y-m-d H:m:s', \strtotime($value));
+        return date('Y-m-d H:i:s', \strtotime($value));
     }
 
     public function Slot()

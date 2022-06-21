@@ -43,6 +43,6 @@ class VCTDirectQueue implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('event_direct_queue.'.($this->branch_id ?: Auth::id()));
+        return new PrivateChannel('event_direct_queue.'.($this->branch_id ?? Auth::user()->branch_id));
     }
 }

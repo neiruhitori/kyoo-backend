@@ -29,7 +29,7 @@ class HomeController extends Controller
                 return redirect(route('admin.home'));
                 break;
             case 'admin_branch':
-                return redirect(route('adminBranch.home'));
+                return redirect(route('admin-branch.dashboard'));
                 break;
             case 'cs':
                 return redirect(route('cs.home'));

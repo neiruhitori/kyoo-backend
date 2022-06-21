@@ -48,7 +48,7 @@ class SlotController extends Controller
             'description' => 'Insert Slot'
         ]);
         $request->session()->flash('success', __('module.generated', ['module' => __('Slot'), 'name' => $service->name]));
-        return redirect(route('adminBranch.service.slot.index', $service->id));
+        return redirect(route('admin-branch.branch-configuration.service.slot.index', $service->id));
     }
 
     /**
@@ -98,7 +98,7 @@ class SlotController extends Controller
             'description' => 'Update Slot'
         ]);
         $request->session()->flash('warning', __('Slot has been updated'));
-        return redirect(route('adminBranch.service.slot.index', $slot->service_id));
+        return redirect(route('admin-branch.branch-configuration.service.slot.index', $slot->service_id));
     }
 
     /**
@@ -120,6 +120,6 @@ class SlotController extends Controller
             'description' => 'Remove Slot'
         ]);
         $request->session()->flash('error', __('Slot has been removed'));
-        return redirect(route('adminBranch.service.slot.index', $slot->service_id));
+        return redirect(route('admin-branch.branch-configuration.service.slot.index', $slot->service_id));
     }
 }

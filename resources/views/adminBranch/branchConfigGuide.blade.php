@@ -42,7 +42,7 @@
                             <span class="number-indicator bg-primary mr-3">1</span>
 
                             <p>
-                                <strong>Langkah 1</strong>, Anda perlu mengubah informasi tentang kantor Cabang anda di <a href="{{ route('adminBranch.branch.profile') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Informasi Profil Cabang</a>
+                                <strong>Langkah 1</strong>, Anda perlu mengubah informasi tentang kantor Cabang anda di <a href="{{ route('admin-branch.branch-information.profile') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Informasi Profil Cabang</a>
                             </p>
                         </div>
 
@@ -50,7 +50,7 @@
                             <span class="number-indicator bg-primary mr-3">2</span>
 
                             <p>
-                                <strong>Langkah 2</strong>, Anda perlu mengupdate lokasi kantor cabang anda di <a href="{{ route('adminBranch.branch.location') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Informasi Lokasi Cabang</a>
+                                <strong>Langkah 2</strong>, Anda perlu mengupdate lokasi kantor cabang anda di <a href="{{ route('admin-branch.branch-information.location') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Informasi Lokasi Cabang</a>
                             </p>
                         </div>
 
@@ -58,7 +58,7 @@
                             <span class="number-indicator bg-primary mr-3">3</span>
 
                             <p>
-                                <strong>Langkah 3</strong>, Anda perlu mengupdate jenis dan nama layanan kepada pelanggan di <a href="{{ route('adminBranch.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Jenis Layanan</a>
+                                <strong>Langkah 3</strong>, Anda perlu mengupdate jenis dan nama layanan kepada pelanggan di <a href="{{ route('admin-branch.branch-configuration.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Jenis Layanan</a>
                             </p>
                         </div>
 
@@ -66,7 +66,7 @@
                             <span class="number-indicator bg-primary mr-3">4</span>
 
                             <p>
-                                <strong>Langkah 4</strong>, Anda perlu mengupdate jadwal Buka dan Tutup Layanan Anda di <a href="{{ route('adminBranch.schedule.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Jadwal Layanan</a>
+                                <strong>Langkah 4</strong>, Anda perlu mengupdate jadwal Buka dan Tutup Layanan Anda di <a href="{{ route('admin-branch.branch-configuration.schedule.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Jadwal Layanan</a>
                             </p>
                         </div>
 
@@ -74,7 +74,7 @@
                             <span class="number-indicator bg-primary mr-3">5</span>
 
                             <p>
-                                <strong>Langkah 5</strong>, Anda perlu mengupdate akses Petugas Layanan di <a href="{{ route('adminBranch.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Petugas Layanan</a>
+                                <strong>Langkah 5</strong>, Anda perlu mengupdate akses Petugas Layanan di <a href="{{ route('admin-branch.branch-configuration.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Petugas Layanan</a>
                             </p>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                             <span class="number-indicator bg-primary mr-3">1</span>
 
                             <p>
-                                Nama Departemen dari menu <a href="{{ route('adminBranch.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Departemen</a>
+                                Nama Departemen dari menu <a href="{{ route('admin-branch.branch-configuration.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Departemen</a>
                             </p>
                         </div>
 
@@ -96,7 +96,7 @@
                             <span class="number-indicator bg-primary mr-3">2</span>
 
                             <p>
-                                Nama Layanan dari menu <a href="{{ route('adminBranch.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Departemen</a>
+                                Nama Layanan dari menu <a href="{{ route('admin-branch.branch-configuration.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Departemen</a>
                             </p>
                         </div>
 
@@ -104,7 +104,7 @@
                             <span class="number-indicator bg-primary mr-3">3</span>
 
                             <p>
-                                Nama Meja dari menu <a href="{{ route('adminBranch.workstation.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Meja</a>
+                                Nama Meja dari menu <a href="{{ route('admin-branch.branch-configuration.workstation.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Meja</a>
                             </p>
                         </div>
 
@@ -112,7 +112,7 @@
                             <span class="number-indicator bg-primary mr-3">4</span>
 
                             <p>
-                                Nama user petugas layanan dari menu <a href="{{ route('adminBranch.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Petugas Layanan</a>
+                                Nama user petugas layanan dari menu <a href="{{ route('admin-branch.branch-configuration.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Petugas Layanan</a>
                             </p>
                         </div>
                     </div>

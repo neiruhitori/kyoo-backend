@@ -119,18 +119,27 @@ export default function BookingStatus() {
 
         <Header bgType="blur">
             <div style={{
-                marginRight:' 0.75rem'
+                height: '3.2rem',
+                display: 'flex'
             }}>
                 <Link to={`/customer/${branchId}/${queueType}/services`} style={{
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    padding: '.85rem 1.375rem'
                 }}>
                     <ArrowLeftIcon color="#FFFFFF" />
                 </Link>
             </div>
 
-            <div style={{ textTransform: 'capitalize', textAlign: 'center', flex: '1 1 0%' }}>{PAGE_TITLE}</div>
+            <div style={{
+                textTransform: 'capitalize',
+                textAlign: 'center',
+                flex: '1 1 0%',
+                margin: '0 auto'
+            }}>
+                {PAGE_TITLE}
+            </div>
         </Header>
 
         {bookingQuery.status === 'success' && <div style={{

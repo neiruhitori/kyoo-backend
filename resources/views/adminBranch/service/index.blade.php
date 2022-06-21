@@ -7,7 +7,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-12 text-right">
-                <a href="{{route('adminBranch.service.create')}}" class="btn btn-primary"">
+                <a href="{{route('admin-branch.branch-configuration.service.create')}}" class="btn btn-primary"">
                     {{ __('create.module', ['module' => __('Service')]) }}
                 </a>
             </div>
@@ -54,7 +54,7 @@
                                             Auth::user()->Branch->BranchType->is_exhibition
                                         )
                                             <a
-                                                href="{{route('adminBranch.service.slot.index', $service->id)}}"
+                                                href="{{route('admin-branch.branch-configuration.service.slot.index', $service->id)}}"
                                                 class="btn btn-success"
                                                 data-toggle="tooltip"
                                                 data-placement="bottom"
@@ -65,7 +65,7 @@
                                         @endif
 
                                         <a
-                                            href="{{route('adminBranch.service.edit', $service->id)}}"
+                                            href="{{route('admin-branch.branch-configuration.service.edit', $service->id)}}"
                                             class="btn btn-warning"
                                             data-toggle="tooltip"
                                             data-placement="bottom"
@@ -76,7 +76,7 @@
                                             <i class="fas fa-fw fa-edit"></i>
                                         </a>
 
-                                        <form action="{{route('adminBranch.service.destroy', $service->id)}}" method="post" style="display: inline">
+                                        <form action="{{route('admin-branch.branch-configuration.service.destroy', $service->id)}}" method="post" style="display: inline">
                                             @csrf
                                             @method('DELETE')
 

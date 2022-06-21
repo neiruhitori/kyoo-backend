@@ -20,7 +20,7 @@
                                 </div>
                                 <div id="collapseCard{{$index}}" class="collapse" aria-labelledby="heading{{$index}}" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <form action="{{route('adminBranch.schedule.template.update')}}" method="post">
+                                        <form action="{{route('admin-branch.branch-configuration.schedule.template.update')}}" method="post">
                                             @csrf
                                             @method('PUT')
                                             <input type="hidden" name="schedule_template_id" value="{{$schedule->id}}">
@@ -49,7 +49,7 @@
                             </div>
                         @endforeach
                     </div>
-                    <a href="{{route('adminBranch.schedule.index')}}" class="btn btn-primary mt-3">{{ __('Back') }}</a>
+                    <a href="{{route('admin-branch.branch-configuration.schedule.index')}}" class="btn btn-primary mt-3">{{ __('Back') }}</a>
                 </div>
             </div>
         </div>

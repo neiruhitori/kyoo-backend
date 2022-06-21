@@ -36,7 +36,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12 text-right">
-                            <a href="{{route('adminBranch.schedule.create')}}" class="btn btn-primary">
+                            <a href="{{route('admin-branch.branch-configuration.schedule.create')}}" class="btn btn-primary">
                                 {{ __('create.module', ['module' => __('Schedule')]) }}
                             </a>
                         </div>
@@ -76,12 +76,12 @@
                                                 <td>{{$schedule->start_time}}</td>
                                                 <td>{{$schedule->end_time}}</td>
                                                 <td>
-                                                    <a href="{{route('adminBranch.schedule.edit', $schedule->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="{{
+                                                    <a href="{{route('admin-branch.branch-configuration.schedule.edit', $schedule->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="{{
                                                         __('edit.module', ['module' => __('Schedule')])
                                                     }}">
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
-                                                    <form action="{{route('adminBranch.schedule.destroy', $schedule->id)}}" method="post" style="display: inline">
+                                                    <form action="{{route('admin-branch.branch-configuration.schedule.destroy', $schedule->id)}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="{{
@@ -114,7 +114,7 @@
                             @if (Auth::user()->Branch->schedule_template_id)
                                 <h5>Youre using {{Auth::user()->Branch->ScheduleTemplate->name}}</h5>
                             @endif
-                            <a href="{{route('adminBranch.schedule.template.index')}}">
+                            <a href="{{route('admin-branch.branch-configuration.schedule.template.index')}}">
                                 <b>{{ __('Click here to add public holidays schedule as exceptional working days') }}</b>
                             </a>
                         </div>

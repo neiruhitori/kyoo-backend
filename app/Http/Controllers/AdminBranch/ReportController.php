@@ -67,7 +67,7 @@ class ReportController extends Controller
             }
         }
 
-        $directQueue = DirectQueue::query()->whereHas('WorkstationService.Service', function($query){
+        $directQueue = DirectQueue::query()->whereHas('Service', function($query){
             $query->whereBranchId(Auth::user()->branch_id);
         })->whereDate('created_at', $date)->orderBy('created_at');
 
@@ -194,7 +194,7 @@ class ReportController extends Controller
                 'workstation_service_id' => $request->workstation_service_id
             ];
             
-            $viewData['data'] = DirectQueue::whereHas('WorkstationService.Service', function ($query) {
+            $viewData['data'] = DirectQueue::whereHas('Service', function ($query) {
                 $query->whereBranchId(Auth::user()->branch_id);
             })
                 ->when($params['workstation_service_id'], function ($query) use ($params) {

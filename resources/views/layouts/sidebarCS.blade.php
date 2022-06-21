@@ -1,8 +1,23 @@
+<style>
+  .kyoo-sublink {
+    white-space: normal !important;
+  }
+
+  .kyoo-logo-container {
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+</style>
+
 <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-      <a class="sidebar-brand d-flex mb-2" href="{{route('home')}}">
-        <img src="{{asset('img/logo.svg')}}" alt="" style="height: 40px;">
+      <a class="kyoo-logo-container" style="display: flex;" href="{{ route('dashboard') }}">
+        <img
+          src="{{ asset('img/logo.svg') }}"
+          alt=""
+          style="height: 40px;"
+        >
       </a>
 
       <!-- Divider -->
@@ -24,7 +39,7 @@
 
       @if (Auth::user()->Branch->BranchType->is_appointment)
         <li class="nav-item">
-          <a class="nav-link" href="{{route('home')}}">
+          <a class="nav-link" href="{{route('dashboard')}}">
             <i class="fas fa-list-ul"></i>
             <span>{{ __('Appointment') }}</span></a>
         </li>
@@ -32,11 +47,17 @@
 
       @if (Auth::user()->Branch->BranchType->is_exhibition)
         <li class="nav-item">
-          <a class="nav-link" href="{{route('home')}}">
+          <a class="nav-link" href="{{route('dashboard')}}">
             <i class="fas fa-list-ul"></i>
             <span>{{ __('Exhibition Queue') }}</span></a>
         </li>
       @endif
+
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('cs.record-sound.index') }}">
+          <i class="fas fa-microphone"></i>
+          <span>Rekam Suara</span></a>
+      </li>
 
       <li class="nav-item">
         <a class="nav-link" href="
@@ -74,6 +95,5 @@
       <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
-
     </ul>
     <!-- End of Sidebar -->

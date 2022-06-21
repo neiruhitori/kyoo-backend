@@ -13,7 +13,7 @@
             <div class="alert alert-warning alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 <strong>
-                    {{ __('Your password not changed from registered') }}, <a href="{{ route('adminBranch.profile.edit') }}">
+                    {{ __('Your password not changed from registered') }}, <a href="{{ route('admin-branch.profile') }}">
                         {{ __('click here to change.') }}
                     </a>
                 </strong>
@@ -87,7 +87,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col text-right">
-                        <a href="{{ route('adminBranch.export') }}" class="btn btn-primary">
+                        <a href="{{ route('admin-branch.export.appointment') }}" class="btn btn-primary">
                             {{ __('Download Report') }}
                         </a>
                     </div>
@@ -348,21 +348,23 @@
                 type: 'line',
                 data: {
                     labels: directQueueLabels,
-                    datasets: [{
-                    label: "Total Visit",
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(78, 115, 223, 0.05)",
-                    borderColor: "rgba(78, 115, 223, 1)",
-                    pointRadius: 3,
-                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointBorderColor: "rgba(78, 115, 223, 1)",
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                    pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                    data: directQueueData,
-                    }],
+                    datasets: [
+                        {
+                            label: "Total Visit",
+                            lineTension: 0.3,
+                            backgroundColor: "rgba(78, 115, 223, 0.05)",
+                            borderColor: "rgba(78, 115, 223, 1)",
+                            pointRadius: 3,
+                            pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                            pointBorderColor: "rgba(78, 115, 223, 1)",
+                            pointHoverRadius: 3,
+                            pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                            pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                            pointHitRadius: 10,
+                            pointBorderWidth: 2,
+                            data: directQueueData,
+                        }
+                    ]
                 },
                 options: {
                     maintainAspectRatio: false,
@@ -389,39 +391,39 @@
                     }],
                     yAxes: [{
                         ticks: {
-                        maxTicksLimit: 5,
-                        padding: 10,
-                        // Include a dollar sign in the ticks
-                        callback: function(value, index, values) {
-                            return parseInt(value);
-                        }
+                            maxTicksLimit: 5,
+                            padding: 10,
+                            // Include a dollar sign in the ticks
+                            callback: function(value, index, values) {
+                                return parseInt(value);
+                            }
                         },
                         gridLines: {
-                        color: "rgb(234, 236, 244)",
-                        zeroLineColor: "rgb(234, 236, 244)",
-                        drawBorder: false,
-                        borderDash: [2],
-                        zeroLineBorderDash: [2]
+                            color: "rgb(234, 236, 244)",
+                            zeroLineColor: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
                         }
                     }],
                     },
                     legend: {
-                    display: false
+                        display: false
                     },
                     tooltips: {
-                    backgroundColor: "rgb(255,255,255)",
-                    bodyFontColor: "#858796",
-                    titleMarginBottom: 10,
-                    titleFontColor: '#6e707e',
-                    titleFontSize: 14,
-                    borderColor: '#dddfeb',
-                    borderWidth: 1,
-                    xPadding: 15,
-                    yPadding: 15,
-                    displayColors: false,
-                    intersect: false,
-                    mode: 'index',
-                    caretPadding: 10,
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        titleMarginBottom: 10,
+                        titleFontColor: '#6e707e',
+                        titleFontSize: 14,
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        intersect: false,
+                        mode: 'index',
+                        caretPadding: 10,
                     }
                 }
             });

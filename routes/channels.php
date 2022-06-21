@@ -18,7 +18,7 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('event_direct_queue.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+    return (int) $id === Branch::find((int) $id)->id;
 });
 
 Broadcast::channel('event_direct_queue_general.{id}', function ($user, $id) {

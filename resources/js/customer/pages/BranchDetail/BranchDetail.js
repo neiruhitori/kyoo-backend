@@ -74,12 +74,14 @@ export default function BranchDetail() {
             <Banner imageUrl={branch.photo}>
                 <Header bgType="blur">
                     <div style={{
-                        marginRight:' 0.75rem'
+                        height: '100%',
+                        display: 'flex'
                     }}>
                         <Link to={`/customer/${branchId}/${queueType}/services`} style={{
-                            display: 'flex',
+                            display: 'flex',    
                             justifyContent: 'center',
-                            alignItems: 'center'
+                            alignItems: 'center',
+                            padding: '.85rem 1.375rem'
                         }}>
                             <ArrowLeftIcon color="#FFFFFF" />
                         </Link>

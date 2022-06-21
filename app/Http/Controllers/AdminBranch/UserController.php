@@ -38,7 +38,7 @@ class UserController extends Controller
     {
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->CS) > 0) {
             $request->session()->flash('warning', __('You only able insert one account'));
-            return redirect(route('adminBranch.user.index'));
+            return redirect(route('admin-branch.branch-configuration.user.index'));
         }
         $workstations = Workstation::whereHas('Department', function($query){
             return $query->whereBranchId(Auth::user()->branch_id);
@@ -56,7 +56,7 @@ class UserController extends Controller
     {
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->CS) > 0) {
             $request->session()->flash('error', __('You only able insert one account'));
-            return redirect(route('adminBranch.user.index'));
+            return redirect(route('admin-branch.branch-configuration.user.index'));
         }
 
         $input = $request->all();
@@ -75,7 +75,7 @@ class UserController extends Controller
             'description' => 'Create VCT User'
         ]);
         $request->session()->flash('success', __('module.created', ['module' => __('Account'), 'name' => $input['username']]));
-        return redirect(route('adminBranch.user.index'));
+        return redirect(route('admin-branch.branch-configuration.user.index'));
     }
 
     /**
@@ -147,7 +147,7 @@ class UserController extends Controller
             'description' => 'Update VCT User'
         ]);
         $request->session()->flash('warning', __('module.updated', ['module' => __('Account'), 'name' => $input['username']]));
-        return redirect(route('adminBranch.user.index'));
+        return redirect(route('admin-branch.branch-configuration.user.index'));
     }
 
     /**
@@ -168,7 +168,7 @@ class UserController extends Controller
             'description' => 'Remove VCT User'
         ]);
         $request->session()->flash('error', __('module.removed', ['module' => __('Account'), 'name' => $user->name]));
-        return redirect(route('adminBranch.user.index'));
+        return redirect(route('admin-branch.branch-configuration.user.index'));
     }
 
     public function restore(Request $request)
@@ -180,7 +180,7 @@ class UserController extends Controller
             'description' => 'Restore VCT User'
         ]);
         $request->session()->flash('success', __('module.restored', ['module' => __('Account'), 'name' => $user->name]));
-        return redirect(route('adminBranch.user.index'));
+        return redirect(route('admin-branch.branch-configuration.user.index'));
     }
 
     public function resetPassword(Request $request, User $user)
@@ -190,7 +190,7 @@ class UserController extends Controller
         }
         Mail::to(Auth::user()->email)->send(new ResetPassword($user));
         $request->session()->flash('success', __('Please check your email to reset the password'));
-        return redirect(route('adminBranch.user.index'));
+        return redirect(route('admin-branch.branch-configuration.user.index'));
     }
 
     public function reset($user_id)
@@ -219,7 +219,7 @@ class UserController extends Controller
         
         if ($validator->fails()) {
             $request->session()->flash('error', __('Please check password rules'));
-            return redirect(route('adminBranch.user.reset', $user_id));
+            return redirect(route('admin-branch.branch-configuration.user.reset', $user_id));
         }
 
         $user = User::findOrFail(Crypt::decrypt($user_id));
@@ -228,7 +228,7 @@ class UserController extends Controller
         ]);
         $request->session()->flash('success', __('module.updated', ['module' => __('Password'), 'name' => $user->name]));
         if (Auth::user()) {
-            return redirect(route('adminBranch.user.index'));
+            return redirect(route('admin-branch.branch-configuration.user.index'));
         }
         return redirect(route('login'));
     }

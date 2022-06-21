@@ -23,15 +23,24 @@ class Branch extends Model
 
     public function getQueueTypeAttribute()
     {
-        $queue_type = 'onsite';
         if ($this->BranchType->is_appointment) {
-            $queue_type = 'appointment';
-        }
-        if ($this->BranchType->is_exhibition) {
-            $queue_type = 'exhibition';
+            return 'appointment';
         }
 
-        return $queue_type;
+        if ($this->BranchType->is_exhibition) {
+            return 'exhibition';
+        }
+
+        return 'onsite';
+    }
+
+    public function getIsPremiumAttribute()
+    {
+        if ($this->BranchType) {
+            return $this->BranchType->is_premium;
+        }
+
+        return false;
     }
 
     public function IndustryCategory()

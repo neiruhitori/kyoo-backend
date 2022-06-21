@@ -73,7 +73,7 @@ class TVDisplayConfigurationController extends Controller
         }
 
         return redirect()
-            ->route('adminBranch.tvDisplayConfiguration.index')
+            ->route('admin-branch.branch-configuration.queue-monitor')
             ->with('success', 'Konfigurasi display TV berhasil diperbarui.');
     }
 }

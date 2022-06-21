@@ -8,6 +8,6 @@ class ShortURLController extends Controller
 {
     public function customerWebUrl(Branch $branch)
     {
-        return redirect('customer/' . $branch->id . '/' . $branch->queue_type);
+        return redirect('customer/' . $branch->id . '/' . $branch->queue_type . '/services');
     }
 }

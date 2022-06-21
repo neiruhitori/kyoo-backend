@@ -3,21 +3,20 @@
 namespace App\Http\Controllers\CS;
 
 use App\DirectQueue;
-use App\Service;
 use App\WorkstationService;
-use App\WorkstationVct;
-use App\Schedule;
-use App\ScheduleTemplateDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CS\StoreDirectQueue;
 use Auth;
-use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
-use App\Events\DirectQueue as DirectQueueEvent;
-use App\Events\QueueStatusUpdated;
 use App\Interfaces\DirectQueueRepositoryInterface;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
+use App\Events\DirectQueue as DirectQueueEvent;
+use App\Events\OnsiteQueueUpdated;
+use App\Events\QueueStatusUpdated;
+use App\Events\OnsiteQueueCalled;
 
 class DirectQueueController extends Controller
 {
@@ -117,6 +116,10 @@ class DirectQueueController extends Controller
 
             event(new VCTDirectQueueEvent($direct_queue));
             event(new DirectQueueEvent($direct_queue));
+
+            if ($direct_queue->client_id) {
+                event(new OnsiteQueueUpdated($direct_queue));
+            }
 
             $request->session()->flash('success', __('Direct Queue Has Been Created, Queue no: :no', ['no' => $direct_queue->queue_no]));
             return redirect()->route('cs.directQueue.show', [
@@ -226,7 +229,8 @@ class DirectQueueController extends Controller
     {
         $rules = [
             'queue_no' => 'required|integer|min:1|exists:direct_queues',
-            'is_skip' => 'nullable|boolean'
+            'is_skip' => 'nullable|boolean',
+            'service_id' => 'required|integer|exists:services,id'
         ];
 
         $validation = Validator::make($request->all(), $rules);
@@ -239,7 +243,12 @@ class DirectQueueController extends Controller
         }
 
         // check the queue no with created date is today
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereNotIn('status', ['no show', 'end served'])->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no', $request->queue_no)
+            ->where('service_id', $request->service_id)
+            ->whereNotIn('status', ['no show', 'end served'])
+            ->whereDate('created_at', date('Y-m-d'))
+            ->first();
+
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -290,6 +299,26 @@ class DirectQueueController extends Controller
             'status' => 'served'
         ]));
 
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+            event(new OnsiteQueueCalled($directQueue));
+        }
+
+        if ($directQueue->fcm_id) {
+            fcm()
+                ->to([$directQueue->fcm_id])
+                ->priority('high')
+                ->timeToLive(0)
+                ->data([
+                    'title' => 'KYOO',
+                    'body' => "Antrian " . $directQueue->queue_no . " sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
+                    'data' => [
+                        'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id 
+                    ]
+                ])
+                ->send();
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on Served',
@@ -300,7 +329,8 @@ class DirectQueueController extends Controller
     public function onRecall(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues'
+            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -311,7 +341,11 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+            ->where('service_id', $request->service_id)
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
+
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -341,6 +375,26 @@ class DirectQueueController extends Controller
             'status' => 'recall'
         ]));
 
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+            event(new OnsiteQueueCalled($directQueue));
+        }
+
+        if ($directQueue->fcm_id) {
+            fcm()
+                ->to([$directQueue->fcm_id])
+                ->priority('high')
+                ->timeToLive(0)
+                ->data([
+                    'title' => 'KYOO',
+                    'body' => "Antrian " . $directQueue->queue_no . " sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
+                    'data' => [
+                        'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id 
+                    ]
+                ])
+                ->send();
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on Served',
@@ -351,7 +405,8 @@ class DirectQueueController extends Controller
     public function onRequeue(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues,queue_no'
+            'queue_no' => 'required|integer|min:1|exists:direct_queues,queue_no',
+            'service_id' => 'required|integer|exists:services,id'
         ];
         
         $validation = Validator::make($request->all(), $rules);
@@ -363,7 +418,10 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+            ->where('service_id', $request->service_id)    
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -394,6 +452,15 @@ class DirectQueueController extends Controller
 
         $directQueue->save();
 
+        event(new QueueStatusUpdated([
+            'queue_no' => $directQueue->queue_no,
+            'status' => 'requeue'
+        ]));
+
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on Served',
@@ -404,7 +471,8 @@ class DirectQueueController extends Controller
     public function onEndServed(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues'
+            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -415,7 +483,10 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+            ->where('service_id', $request->service_id)
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -432,6 +503,10 @@ class DirectQueueController extends Controller
             'status' => 'end served'
         ]));
 
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on End Served',
@@ -442,7 +517,8 @@ class DirectQueueController extends Controller
     public function onNoShow(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues'
+            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -453,7 +529,10 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+            ->where('service_id', $request->service_id)    
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
@@ -464,6 +543,15 @@ class DirectQueueController extends Controller
         $directQueue->status = 'no show';
         $directQueue->done_at = Date('Y-m-d H:i:s');
         $directQueue->save();
+
+        event(new QueueStatusUpdated([
+            'queue_no' => $directQueue->queue_no,
+            'status' => 'no show'
+        ]));
+
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+        }
 
         return response()->json([
             'success' => true,
@@ -476,7 +564,8 @@ class DirectQueueController extends Controller
     {
         $rules = [
             'queue_no' => 'required|integer|min:1|exists:direct_queues',
-            'workstation_service_id' => 'required|integer|min:1|exists:workstation_services,id'
+            'workstation_service_id' => 'required|integer|min:1|exists:workstation_services,id',
+            'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -487,14 +576,17 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)->whereDate('created_at', Date('Y-m-d'))->first();
+        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+            ->where('service_id', $request->service_id)
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
         if (!$directQueue) {
             return response()->json([
                 'success' => false,
                 'message' => 'Queue not found',
                 'data' => $validation->errors()
             ], 404);
-                }
+        }
 
         $lastDirectQueue = DirectQueue::whereWorkstationServiceId($request->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->count();
         $workstationService = WorkstationService::find($request->workstation_service_id);
@@ -508,6 +600,10 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'waiting'
         ]));
+
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+        }
 
         return response()->json([
             'success' => true,

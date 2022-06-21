@@ -50,7 +50,7 @@ Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@fee
 Route::post('exhibition', 'API\ExhibitionController@store');
 Route::get('exhibition/{exhibition}', 'API\ExhibitionController@show');
 
-Route::post('direct-queue', 'API\DirectQueueController@store');
+Route::post('direct-queue', 'API\DirectQueueController@store')->middleware('cookie.clientid');
 Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
 Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
 
@@ -84,6 +84,10 @@ Route::get('direct-queue-by-branch/{branch}', 'API\DirectQueueController@index')
 
 // Search queue
 Route::get('search', 'API\SearchQueueController');
+
+// Audio Recording
+Route::get('/audio-recordings', 'API\VoiceRecordingController@index');
+Route::post('/audio-recordings', 'API\VoiceRecordingController@store');
 
 /**
  * External API Routes

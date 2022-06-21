@@ -45,7 +45,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('adminBranch.branchConfiguration.update')}}" method="post">
+                            <form action="{{route('admin-branch.branch-configuration.feature.update')}}" method="post">
                                 @csrf
                                 @method('PUT')
 
@@ -83,8 +83,8 @@
                                         class="form-control @error('allow_transfer') is-invalid @enderror"
                                         {{ Auth::user()->Branch->BranchType->is_premium ?: 'disabled' }}
                                     >
-                                        <option value="0" {{ $branch_config->allow_transfer ?: 'selected' }}>{{ __('No') }}</option>
-                                        <option value="1" {{ !$branch_config->allow_transfer ?: 'selected' }}>{{ __('Yes') }}</option>
+                                        <option value="0" {{ $branch_config && $branch_config->allow_transfer ?: 'selected' }}>{{ __('No') }}</option>
+                                        <option value="1" {{ !$branch_config || !$branch_config->allow_transfer ?: 'selected' }}>{{ __('Yes') }}</option>
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'allow_transfer'])
                                 </div>
@@ -97,7 +97,7 @@
                                             name="queue_voice"
                                             class="form-check-input"
                                             id="queue-voice-label"
-                                            {{ $branch_config->queue_voice || old('queue_voice') ? 'checked' : '' }}
+                                            {{ ($branch_config && $branch_config->queue_voice) || old('queue_voice') ? 'checked' : '' }}
                                         >
 
                                         <label for="queue-voice-label" class="form-check-label">Aktifkan</label>

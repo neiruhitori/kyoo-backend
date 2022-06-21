@@ -19,7 +19,7 @@ class BranchQrCodeController extends Controller
     {
         $data = [
             'qr' => QrCode::size(180)->generate(
-                url('customer/' . Auth::user()->branch_id . '/' . Auth::user()->Branch->queue_type)
+                url('customer/' . Auth::user()->branch_id . '/' . Auth::user()->Branch->queue_type . '/services')
             )
         ];
 

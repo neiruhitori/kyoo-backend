@@ -39,7 +39,9 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:1000,1',
+            \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -70,5 +72,6 @@ class Kernel extends HttpKernel
         'checkAppointmentQueue' => \App\Http\Middleware\CheckAppointmentQueue::class,
         'exhibitionPermissionIsValid' => \App\Http\Middleware\ExhibitionPermissionIsValid::class,
         'external.checkBranchToken' => \App\Http\Middleware\API\External\CheckBranchToken::class,
+        'cookie.clientid' => \App\Http\Middleware\SetClientIdCookie::class,
     ];
 }

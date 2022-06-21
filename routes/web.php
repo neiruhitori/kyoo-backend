@@ -1,27 +1,114 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-Route::get('/google', 'RegistrationBranchController@redirectToProvider');
-Route::get('/google/callback', 'RegistrationBranchController@handleProviderCallback');
 
 Route::get('/', function () {
-    return redirect(route('home'));
+    return redirect(route('dashboard'));
 });
 
+Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+
+Route::get('/queue-monitor/{branch_id}', 'DirectQueueController@monitor')
+    ->name('queue-monitor')
+    ->middleware('signed');
+
 Route::get('/unauthorized', function () {
-    return 'unauthorized';
+    return 'Unauthorized';
 })->name('unauthorized');
+
+Route::namespace('AdminBranch')
+    ->prefix('admin-branch')
+    ->middleware('auth', 'checkAdminBranch')
+    ->name('admin-branch.')
+    ->group(function () {
+        Route::get('profile', 'HomeController@edit')->name('profile');
+        Route::put('profile', 'HomeController@update')->name('profile.update');
+
+        Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+
+        Route::get('/branch-qr-code', 'BranchQrCodeController')->name('branch-qr-code');
+        
+        Route::get('/queue-monitor', 'HomeController@directQueueMonitor')
+            ->name('queue-monitor')
+            ->middleware('checkDirectQueue');
+
+        Route::prefix('/export')->name('export.')->group(function () {
+            Route::get('/appointment', 'HomeController@exportExcel')
+                ->name('appointment')
+                ->middleware('checkAppointmentQueue');
+            Route::get('/exhibition', 'HomeController@exportExcelExhibition')
+                ->name('exhibition')
+                ->middleware('exhibitionPermissionIsValid');
+        });
+        
+        Route::prefix('/product-guide')->name('product-guide.')->group(function () {
+            Route::get('/queue-configuration', 'BranchConfigGuideController')
+                ->name('queue-configuration');
+            Route::get('/customer', 'CustomerGuideController')
+                ->name('customer');
+            Route::get('/slot-time', 'SlotTimeGuideController')
+                ->name('slot-time');
+        });
+
+        Route::prefix('/branch-information')->name('branch-information.')->group(function () {
+            Route::get('/profile', 'BranchController@profile')->name('profile');
+            Route::get('/location', 'BranchController@location')->name('location');
+            Route::put('/', 'BranchController@update')->name('update');
+        });
+
+        Route::prefix('/branch-configuration')->name('branch-configuration.')->group(function () {
+            Route::resource('department', 'DepartmentController');
+            Route::resource('service', 'ServiceController');
+            Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
+
+            Route::resource('schedule', 'ScheduleController')->except('show');
+            Route::get('/schedule/list', 'ScheduleController@templateIndex')->name('schedule.template.index');
+            Route::put('/schedule/list', 'ScheduleController@templateUpdate')->name('schedule.template.update');
+
+            Route::resource('workstation', 'WorkstationController');
+            Route::resource('workstation.workstation-service', 'WorkstationServiceController');
+
+            Route::put('/user/restore', 'UserController@restore')->name('user.restore');
+            Route::post('/user/reset-password/{user}', 'UserController@resetPassword')->name('user.reset-password');
+            Route::resource('user', 'UserController');
+
+            Route::get('feature', 'FeatureController@index')
+                ->name('feature')
+                ->middleware('checkDirectQueue');
+            Route::put('feature', 'BranchConfigurationController@update')
+                ->name('feature.update')
+                ->middleware('checkDirectQueue');
+
+            Route::get('queue-monitor', 'TVDisplayConfigurationController@index')->name('queue-monitor');
+            Route::put('queue-monitor/{branch}', 'TVDisplayConfigurationController@update')->name('queue-monitor.update');
+        });
+
+        Route::prefix('/report')->name('report.')->group(function () {
+            Route::get('/daily/appointment', 'ReportController@daily')
+                ->name('daily.appointment')
+                ->middleware('checkAppointmentQueue');
+            Route::get('/monthly/appointment', 'ReportController@appointmentMonthly')
+                ->name('monthly.appointment')
+                ->middleware('checkAppointmentQueue');
+
+            Route::get('/daily/onsite', 'ReportController@directQueueDaily')
+                ->name('daily.onsite')
+                ->middleware('checkDirectQueue');
+            Route::get('/monthly/onsite', 'ReportController@directQueueMonthly')
+                ->name('monthly.onsite')
+                ->middleware('checkDirectQueue');
+            
+            Route::get('/daily/exhibition', 'ReportController@exhibitionDaily')
+                ->name('daily.exhibition')
+                ->middleware('exhibitionPermissionIsValid');
+            Route::get('/monthly/exhibition', 'ReportController@exhibitionMonthly')
+                ->name('monthly.exhibition')
+                ->middleware('exhibitionPermissionIsValid');
+
+            Route::get('/customer-satisfaction', 'ReportController@customerSatisfaction')
+                ->name('customer-satisfaction');
+        });
+    });
 
 Route::resource('registrationBranch', 'RegistrationBranchController')->only(['store', 'edit']);
 Route::get('/register/success', 'RegistrationBranchController@afterRegister')->name('registrationBranch.afterRegister');
@@ -32,17 +119,9 @@ Route::put('/vct/reset-password/{user_id}', 'AdminBranch\UserController@updatePa
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
 // Appointment Status
 Route::get('/appointment/status/{id}', 'AppointmentController@status')->name('appointment.status');
-
-// Direct Queue Monitor
-Route::get('/direct-queue/monitor/{branch_id}', 'DirectQueueController@monitor')
-    ->name('directQueue.monitor')
-    ->middleware('signed');
-
-Route::get('/queue-caller', 'QueueCallerController@call')
+Route::get('/queue-caller/{directQueue}', 'QueueCallerController@call')
     ->name('queueCaller');
 
 Route::get('/direct-queue/branch/{branch_id}/list', 'DirectQueueController@branchList')->name('directQueue.branch.list');
@@ -78,56 +157,13 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
 });
 
 Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch')->name('adminBranch.')->group(function () {
-    Route::get('home', 'HomeController@index')->name('home');
-    Route::get('profile', 'HomeController@edit')->name('profile.edit');
-    Route::put('profile', 'HomeController@update')->name('profile.update');
-
-    Route::get('tvDisplayConfiguration', 'TVDisplayConfigurationController@index')->name('tvDisplayConfiguration.index');
-    Route::put('tvDisplayConfiguration/{branch}', 'TVDisplayConfigurationController@update')->name('tvDisplayConfiguration.update');
-
     Route::middleware('checkAdminBranchPassword')->group(function () {
-        Route::get('export', 'HomeController@exportExcel')->name('export')->middleware('checkAppointmentQueue');
         Route::get('directQueue/monitor', 'HomeController@directQueueMonitor')->name('directQueue.monitor')->middleware('checkDirectQueue');
         Route::get('qr', 'HomeController@qr')->name('qr');
-
-        // Branch routes
-        Route::get('branch/profile', 'BranchController@profile')->name('branch.profile');
-        Route::get('branch/location', 'BranchController@location')->name('branch.location');
-        Route::put('branch', 'BranchController@update')->name('branch.update');
 
         // Branch Configuration routes
         Route::get('branchConfiguration', 'BranchConfigurationController@edit')->name('branchConfiguration.edit')->middleware('checkDirectQueue');
         Route::put('branchConfiguration', 'BranchConfigurationController@update')->name('branchConfiguration.update')->middleware('checkDirectQueue');
-
-        // Department routes
-        Route::resource('department', 'DepartmentController');
-
-        // Schedule routes
-        Route::get('/schedule/list', 'ScheduleController@templateIndex')->name('schedule.template.index');
-        Route::put('/schedule/list', 'ScheduleController@templateUpdate')->name('schedule.template.update');
-        Route::resource('schedule', 'ScheduleController')->except('show');
-
-        // Service routes
-        Route::resource('service', 'ServiceController');
-
-        // Slot routes
-        Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
-
-        // Workstation routes
-        Route::resource('workstation', 'WorkstationController');
-        Route::resource('workstation.workstationService', 'WorkstationServiceController');
-
-        // Counter routes
-        Route::put('user/restore', 'UserController@restore')->name('user.restore');
-        Route::post('user/resetPassword/{user}', 'UserController@resetPassword')->name('user.resetPassword');
-        Route::resource('user', 'UserController');
-
-        // Report routes
-        Route::get('report/daily', 'ReportController@daily')->name('report.daily')->middleware('checkAppointmentQueue');
-        Route::get('report/appointment/monthly', 'ReportController@appointmentMonthly')->name('report.appointment.monthly')->middleware('checkAppointmentQueue');
-        Route::get('report/directQueue/daily', 'ReportController@directQueueDaily')->name('report.directQueue.daily')->middleware('checkDirectQueue');
-        Route::get('report/directQueue/monthly', 'ReportController@directQueueMonthly')->name('report.directQueue.monthly')->middleware('checkDirectQueue');
-        Route::get('report/customerSatisfaction', 'ReportController@customerSatisfaction')->name('report.customerSatisfaction');
     });
 });
 
@@ -143,6 +179,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 
     // Direct Queue
     Route::get('directQueue/monitor', 'DirectQueueController@monitor')->name('directQueue.monitor')->middleware('checkDirectQueue');
+    Route::get('directQueue/workstationServices', 'DirectQueueController@workstationServices')->middleware('checkDirectQueue');
     Route::resource('directQueue', 'DirectQueueController')->middleware('checkDirectQueue');
     Route::post('directQueue/onServed', 'DirectQueueController@onServed')->middleware('checkDirectQueue');
     Route::post('directQueue/onRecall', 'DirectQueueController@onRecall')->middleware('checkDirectQueue');
@@ -150,7 +187,6 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     Route::post('directQueue/onEndServed', 'DirectQueueController@onEndServed')->middleware('checkDirectQueue');
     Route::post('directQueue/onNoShow', 'DirectQueueController@onNoShow')->middleware('checkDirectQueue');
     Route::post('directQueue/onTransfer', 'DirectQueueController@onTransfer')->middleware('checkDirectQueue');
-    Route::get('directQueue/workstationServices', 'DirectQueueController@workstationServices')->middleware('checkDirectQueue');
 
     // Report routes
     Route::get('report/daily', 'ReportController@daily')->name('report.daily');
@@ -158,12 +194,9 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 });
 
 Route::group([], __DIR__ . '/web/exhibition.php');
-Route::group([], __DIR__ . '/web/feature.php');
-Route::group([], __DIR__ . '/web/branch_config_guide.php');
-Route::group([], __DIR__ . '/web/customer_guide.php');
-Route::group([], __DIR__ . '/web/slot_time_guide.php');
 Route::group([], __DIR__ . '/web/branch_qr_code.php');
 Route::group([], __DIR__ . '/web/customer.php');
+Route::group([], __DIR__ . '/web/audio_recorder.php');
 
 Route::get('search', 'SearchQueueController@index')->name('search.index');
 Route::post('search', 'SearchQueueController@search')->name('search.search');

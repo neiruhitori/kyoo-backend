@@ -2,9 +2,8 @@ import styled from 'styled-components'
 
 const HeaderRoot = styled.header`
     font-weight: 600;
-    height: 3.2rem;
+    min-height: 3.2rem;
     display: flex;
-    padding: 0 1.375rem;
     align-items: center;
     position: sticky;
     background-color: ${props => props.bgType === 'blur' ? 'rgba(0, 0, 0, 0.28)' : '#FFFFFF'};

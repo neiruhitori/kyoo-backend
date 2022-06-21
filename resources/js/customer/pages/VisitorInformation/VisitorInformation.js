@@ -56,43 +56,42 @@ function VisitorInformation() {
     }
 
     return <>
-        <Header style={{
-            justifyContent: 'space-between'
-        }}>
+        <Header>
             <div style={{
-                flex: '1 1 0%',
+                height: '3.2rem',
                 display: 'flex'
             }}>
-                <div style={{
-                    marginRight:' 0.75rem'
+                <Link to={-1} style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '.85rem 1.375rem'
                 }}>
-                    <Link to={-1} style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <ArrowLeftIcon />
-                    </Link>
-                </div>
-
-                <div style={{ textTransform: 'capitalize' }}>{PAGE_TITLE}</div>
+                    <ArrowLeftIcon />
+                </Link>
             </div>
+
+            <div style={{
+                textTransform: 'capitalize',
+                flex: '1 1 0%'
+            }}>{PAGE_TITLE}</div>
         
             <div style={{
-                width: '60px'
+                width: '100px',
+                padding: '0 1.375rem'
             }}>
                 <ProgressStep active="1" total="3" />
             </div>
         </Header>
 
-        <MainContent style={{
-            flex: '1 1 0%',
-            height: '100%',
+        <form onSubmit={handleFormSubmit} style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: '1'
         }}>
-            <form onSubmit={handleFormSubmit} style={{
-                display: 'flex',
-                flexDirection: 'column',
-                flexGrow: '1'
+            <MainContent style={{
+                flex: '1 1 0%',
+                height: '100%',
             }}>
                 <div style={{
                     flex: '1 1 0%'
@@ -145,20 +144,19 @@ function VisitorInformation() {
                         placeholder="Opsional"
                     />
                 </div>
+            </MainContent>
 
-                <div style={{
-                    boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
-                    borderRadius: '16px 16px 0 0',
-                    padding: '1.75rem 1.375rem',
-                    margin: '0 -1.375rem'
-                }}>
-                    <Button color="primary" type="submit" style={{
-                        width: '100%',
-                        fontSize: '1rem'
-                    }}>Selanjutnya</Button>
-                </div>
-            </form>
-        </MainContent>
+            <div style={{
+                boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
+                borderRadius: '16px 16px 0 0',
+                padding: '1.75rem 1.375rem'
+            }}>
+                <Button color="primary" type="submit" style={{
+                    width: '100%',
+                    fontSize: '1rem'
+                }}>Selanjutnya</Button>
+            </div>
+        </form>
     </>
 }
 

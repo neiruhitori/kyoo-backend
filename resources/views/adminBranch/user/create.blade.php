@@ -5,7 +5,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <form action="{{route('adminBranch.user.store')}}" method="post">
+            <form action="{{route('admin-branch.branch-configuration.user.store')}}" method="post">
                 @csrf
 
                 <div class="card shadow mb-4">

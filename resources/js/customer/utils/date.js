@@ -53,7 +53,25 @@ const MONTHS_ABBR = {
 }
 
 export function format(date, locale = defaultLocale) {
+    if (!date) return null
+
     return `${date.getDate()} ${MONTHS[locale][date.getMonth()]} ${date.getFullYear()}`
+}
+
+export function formatDatetime(date, locale = defaultLocale) {
+    if (!date) return null
+
+    return `${date.getDate()} ${MONTHS[locale][date.getMonth()]} ${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+}
+
+export function formatTime(date) {
+    if (!date) return null
+
+    return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+}
+
+function pad(number) {
+    return number < 10 ? `0${number}` : number
 }
 
 export function getDayName(date, locale = defaultLocale) {
@@ -100,6 +118,20 @@ export function getAbrvDate(date) {
 export function formatBrowser(date) {
     if (!date) return null
 
-    const dates = date.split('-')
-    return new Date(parseInt(dates[0]), parseInt(dates[1]) - 1, parseInt(dates[2].slice(0, 2)))
+    const dateArr = date.split('-'),
+        years = parseInt(dateArr[0]),
+        months = parseInt(dateArr[1]) - 1,
+        days = parseInt(dateArr[2].slice(0, 2))
+    
+    const times = dateArr[2].slice(3).split(':')
+    let hours = 0,
+        minutes = 0,
+        seconds = 0
+    if (dateArr[2].slice(3) && times.length) {
+        hours = parseInt(times[0].slice(-2))
+        minutes = parseInt(times[1])
+        seconds = parseInt(times[2])
+    }
+
+    return new Date(years, months, days, hours, minutes, seconds)
 }

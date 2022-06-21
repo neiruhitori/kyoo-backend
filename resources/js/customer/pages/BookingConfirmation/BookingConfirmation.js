@@ -18,7 +18,7 @@ import { fetchServiceById } from '../../api/services'
 import { createBooking } from '../../api/booking'
 
 function BookingConfirmation() {
-    const { branchId, serviceId } = useParams()
+    const { branchId, serviceId, queueType } = useParams()
     const [searchParams] = useSearchParams()
     const PAGE_TITLE = `Konfirmasi Antrian`
 
@@ -33,7 +33,6 @@ function BookingConfirmation() {
     let service = null
     let slot = null
     let booking = null
-    let queueType = null
 
     if (branchRes.status === 'success') {
         branch = branchRes.data
@@ -68,26 +67,27 @@ function BookingConfirmation() {
             justifyContent: 'space-between'
         }}>
             <div style={{
-                flex: '1 1 0%',
+                height: '3.2rem',
                 display: 'flex'
             }}>
-                <div style={{
-                    marginRight:' 0.75rem'
+                <Link to={-1} style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '.85rem 1.375rem'
                 }}>
-                    <Link to={-1} style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <ArrowLeftIcon />
-                    </Link>
-                </div>
-
-                <div style={{ textTransform: 'capitalize' }}>{PAGE_TITLE}</div>
+                    <ArrowLeftIcon />
+                </Link>
             </div>
-        
+
             <div style={{
-                width: '60px'
+                textTransform: 'capitalize',
+                flex: '1 1 0%'
+            }}>{PAGE_TITLE}</div>
+
+            <div style={{
+                width: '100px',
+                padding: '0 1.375rem'
             }}>
                 <ProgressStep active="2" total="3" />
             </div>
@@ -146,7 +146,7 @@ function BookingConfirmation() {
                         marginBottom: '1.625rem'
                     }}>Detail Booking</h4>
 
-                    {serviceRes.status === 'success' && <div>
+                    {branchRes.status === 'success' && serviceRes.status === 'success' && <div>
                         <div style={{
                             display: 'flex',
                             fontSize: '.875rem',
@@ -309,19 +309,18 @@ function BookingConfirmation() {
                     </div>}
                 </Card>
             </div>
-
-            <div style={{
-                boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
-                borderRadius: '16px 16px 0 0',
-                padding: '1.75rem 1.375rem',
-                margin: '1.625rem -1.375rem 0 -1.375rem'
-            }}>
-                <Button color="primary" onClick={handleClick} style={{
-                    width: '100%',
-                    fontSize: '1rem'
-                }}>Booking Sekarang</Button>
-            </div>
         </MainContent>
+
+        <div style={{
+            boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
+            borderRadius: '16px 16px 0 0',
+            padding: '1.75rem 1.375rem'
+        }}>
+            <Button color="primary" onClick={handleClick} style={{
+                width: '100%',
+                fontSize: '1rem'
+            }}>Booking Sekarang</Button>
+        </div>
     </>
 }
 

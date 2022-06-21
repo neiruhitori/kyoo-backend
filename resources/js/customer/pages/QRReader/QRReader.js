@@ -9,7 +9,7 @@ import KyooLogo from '../../components/KyooLogo'
 import DangerAlert from '../../components/DangerAlert'
 
 const QRReaderRoot = styled.div`
-    height: 100vh;
+    height: ${window.innerHeight}px;
     overflow: hidden;
     background-color: #04111D;
     position: relative;
@@ -35,6 +35,8 @@ const PageTitle = styled.h4(() => ({
     textAlign: 'center',
     marginBottom: '1rem'
 }))
+
+const initialHeight = window.innerHeight
 
 export default function QRReader() {
     const qrRef = useRef(null)
@@ -83,10 +85,28 @@ export default function QRReader() {
 
         setTimeout(function () {
             setErrorMessage('')
-        }, 2000)
+        }, 5000)
     }
 
+    function getAspectRatio() {
+        if (screen.width > screen.height) {
+            return parentWidth / initialHeight
+        }
+
+        return initialHeight / parentWidth
+    }
+
+
     return <QRReaderRoot ref={qrRef}>
+        <style>
+            {`
+                #html5qr-code {
+                    top: ${initialHeight / 2}px;
+                    transform: translateY(-50%);
+                }
+            `}
+        </style>
+
         <div style={{
             padding: '0 1.5rem',
             position: 'absolute',
@@ -108,12 +128,13 @@ export default function QRReader() {
                 position: 'fixed',
                 top: '94px',
                 left: '50%',
-                transform: 'translateX(-50%)'
-            }}>Antrian tidak ditemukan</DangerAlert>}
+                transform: 'translateX(-50%)',
+                zIndex: 9999999999
+            }}>{errorMessage}</DangerAlert>}
 
             {activeSection === 'qr' && <div style={{
                 position: 'absolute',
-                top: (window.innerHeight - 475) / 2,
+                top: (initialHeight - 440) / 2,
                 left: '50%',
                 transform: 'translateX(-50%)',
                 width: '260px'
@@ -143,16 +164,16 @@ export default function QRReader() {
 
                 <div style={{
                     backgroundColor: '#FFFFFF',
-                    borderRadius: '8px',
-                    padding: '.75rem'
+                    borderRadius: '8px'
                 }}>
                     <form onSubmit={handleSubmit} style={{
-                        display: 'flex',
-                        alignItems: 'center'
+                        display: 'flex'
                     }}>
                         <div style={{
                             flex: '1 1 0%',
-                            color: '#000000'
+                            color: '#000000',
+                            overflow: 'hidden',
+                            padding: '.75rem'
                         }}>
                             <label htmlFor="bookingCode" style={{
                                 textTransform: 'uppercase',
@@ -166,9 +187,9 @@ export default function QRReader() {
                                 type="text"
                                 name="booking_code"
                                 id="bookingCode"
-                                placeholder="Eg. A7h6x8"
+                                placeholder="Eg. A7H6X8"
                                 value={bookingCode}
-                                onChange={(e) => setBookingCode(e.target.value)}
+                                onChange={(e) => setBookingCode(e.target.value.toUpperCase())}
                                 style={{
                                     display: 'block',
                                     fontSize: '1.125rem',
@@ -179,20 +200,25 @@ export default function QRReader() {
                                 }}
                             />
                         </div>
-
-                        <button style={{
-                            backgroundColor: '#103C7C',
-                            padding: '1rem',
-                            borderRadius: '8px',
-                            color: '#FFFFFF',
-                            border: 'none',
-                            outline: 'none',
-                            width: '112px',
-                            display: 'inline-block',
-                            fontSize: '1.125rem'
+                        
+                        <div style={{
+                            padding: '.75rem',
+                            paddingLeft: 0
                         }}>
-                            Cari
-                        </button>
+                            <button type="submit" style={{
+                                backgroundColor: '#103C7C',
+                                padding: '1rem',
+                                borderRadius: '8px',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                outline: 'none',
+                                width: '112px',
+                                display: 'inline-block',
+                                fontSize: '1.125rem'
+                            }}>
+                                Cari
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>}
@@ -223,10 +249,10 @@ export default function QRReader() {
             </div>
         </div>
 
-        {activeSection === 'qr' && parentWidth > 0 && <Html5QrcodePlugin
+        {activeSection === 'qr' && (parentWidth > 0) && <Html5QrcodePlugin
             fps={10}
-            qrbox={250}
-            aspectRatio={parentWidth / window.innerHeight}
+            qrbox={225}
+            aspectRatio={getAspectRatio()}
             onSuccessCallback={onSuccess}
         />}
     </QRReaderRoot>

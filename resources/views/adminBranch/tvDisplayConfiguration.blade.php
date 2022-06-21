@@ -125,7 +125,7 @@
                     <p class="text-caption">Tambahkan iklan untuk ditampilkan di monitor antrian</p>
                 </div>
 
-                <form action="{{ route('adminBranch.tvDisplayConfiguration.update', Auth::user()->branch_id) }}" id="image_form" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update', Auth::user()->branch_id) }}" id="image_form" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 

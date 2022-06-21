@@ -30,7 +30,7 @@
                     Pelanggan dapat melakukan scan QR-code Cabang, Anda dapat men-cetak dan menempatkan QR-code ini di pintu masuk Cabang.
                 </p>
                 <div>
-                    <a href="{{ route('adminBranch.branchQrCode') }}" class="btn btn-warning">Lihat QR-code Cabang</a>
+                    <a href="{{ route('admin-branch.branch-qr-code') }}" class="btn btn-warning">Lihat QR-code Cabang</a>
                 </div>
             </div>
         </div>

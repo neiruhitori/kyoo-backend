@@ -8,6 +8,7 @@ use App\BranchConfiguration;
 use App\Log;
 use App\Http\Requests\AdminBranch\UpdateBranchConfiguration;
 use Auth;
+
 class BranchConfigurationController extends Controller
 {
     public function edit()
@@ -23,7 +24,13 @@ class BranchConfigurationController extends Controller
         }
         
         $branchConfiguration = Auth::user()->Branch->BranchConfiguration;
-        $branchConfiguration->update($data);
+
+        if ($branchConfiguration) {
+            $branchConfiguration->update($data);
+        } else {
+            $data['branch_id'] = Auth::user()->branch_id;
+            BranchConfiguration::create($data);
+        }
 
         Log::create([
             'user_id' => Auth::id(),

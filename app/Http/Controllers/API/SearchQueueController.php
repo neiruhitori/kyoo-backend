@@ -26,7 +26,7 @@ class SearchQueueController extends Controller
                 return response()->json([
                     'success' => true,
                     'data' => [
-                        'url' => 'customer/' . $onsite->Service->branch_id . '/onsite/booking-status/' . $onsite->id
+                        'url' => url('customer/' . $onsite->Service->branch_id . '/onsite/booking-status/' . $onsite->id)
                     ]
                 ]);
             }
@@ -38,7 +38,7 @@ class SearchQueueController extends Controller
                 return response()->json([
                     'success' => true,
                     'data' => [
-                        'url' => 'customer/' . $appointment->Slot->Service->branch_id . '/appointment/booking-status/' . $appointment->id
+                        'url' => url('customer/' . $appointment->Slot->Service->branch_id . '/appointment/booking-status/' . $appointment->id)
                     ]
                 ]);
             };
@@ -50,7 +50,7 @@ class SearchQueueController extends Controller
                 return response()->json([
                     'success' => true,
                     'data' => [
-                        'url' => 'customer/' . $exhibition->Slot->Service->branch_id . '/exhibition/booking-status/' . $exhibition->id
+                        'url' => url('customer/' . $exhibition->Slot->Service->branch_id . '/exhibition/booking-status/' . $exhibition->id)
                     ]
                 ]);
             }
