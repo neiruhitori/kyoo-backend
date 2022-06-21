@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             BranchTypesTableSeeder::class,
             IndustryCategorySeeder::class,
             FreeExhibitionLicenseSeeder::class,
-            TVLayoutSeeder::class
+            TVLayoutSeeder::class,
+            AdditionalFeatureSeeder::class
         ]);
     }
 }

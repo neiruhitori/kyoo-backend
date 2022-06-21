@@ -64,16 +64,34 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <a href="{{route('admin.branch.show', $branch->id)}}"
-                                                        class="btn btn-primary" data-toggle="tooltip"
-                                                        data-placement="bottom" title="{{ __('Show Branch') }}">
+                                                    <a
+                                                        href="{{route('admin.branch.show', $branch->id)}}"
+                                                        class="btn btn-primary"
+                                                        data-toggle="tooltip"
+                                                        data-placement="bottom"
+                                                        title="{{ __('Show Branch') }}"
+                                                    >
                                                         <i class="fas fa-fw fa-eye"></i>
                                                     </a>
-                                                    <a href="{{route('admin.branch.edit', $branch->id)}}"
-                                                        class="btn btn-warning" data-toggle="tooltip"
+
+                                                    <a
+                                                        href="{{route('admin.branch.edit', $branch->id)}}"
+                                                        class="btn btn-warning"
+                                                        data-toggle="tooltip"
                                                         data-placement="bottom"
-                                                        title="{{ __('edit.module', ['module' => __('Branch')]) }}">
+                                                        title="{{ __('edit.module', ['module' => __('Branch')]) }}"
+                                                    >
                                                         <i class="fas fa-fw fa-edit"></i>
+                                                    </a>
+
+                                                    <a
+                                                        href="{{ route('admin.branch.license', $branch->id) }}"
+                                                        class="btn btn-secondary"
+                                                        data-toggle="tooltip"
+                                                        data-placement="bottom"
+                                                        title="Edit Lisensi"
+                                                    >
+                                                        <i class="fas fa-cog"></i>
                                                     </a>
                                                 </td>
                                             </tr>
