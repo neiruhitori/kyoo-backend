@@ -98,7 +98,7 @@
                                             class="form-check-input"
                                             id="queue-voice-label"
                                             {{ ($branch_config && $branch_config->queue_voice) || old('queue_voice') ? 'checked' : '' }}
-                                            {{ !Auth::user()->Branch->hasAccess('Voice Recording') ? 'disabled' : '' }}
+                                            {{ !Auth::user()->Branch->hasAccess('Panggilan Suara') ? 'disabled' : '' }}
                                         >
 
                                         <label for="queue-voice-label" class="form-check-label">Aktifkan</label>
