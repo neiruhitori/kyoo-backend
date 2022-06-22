@@ -42,6 +42,8 @@ class BranchLicenseController extends Controller
             ];
         })->toArray());
 
+        $request->session()->flash('success', 'Lisensi diperbarui');
+
         return redirect()->back();
     }
 }
