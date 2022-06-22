@@ -45,7 +45,7 @@
                                                 <td>
                                                     @isset($branch->logo)
                                                     <img src="{{asset('storage/'.$branch->logo)}}"
-                                                        style="max-width: 200px">
+                                                        style="height: 40px">
                                                     @endisset
                                                 </td>
                                                 <td>{{$branch->IndustryCategory->name}}</td>

@@ -10,4 +10,9 @@ class FeatureSubscription extends Model
     use HasFactory;
 
     protected $fillable = ['branch_id', 'feature_id'];
+
+    public function AdditionalFeature()
+    {
+        return $this->belongsTo('App\Models\AdditionalFeature', 'feature_id', 'id');
+    }
 }

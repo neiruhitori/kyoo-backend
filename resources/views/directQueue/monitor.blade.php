@@ -34,6 +34,7 @@
         <branch-monitor-component 
             :branch="{{$branch}}"
             branch_id_encrypted="{{$branchIdEncrypted}}"
+            :features="{{$features}}"
         />
     </div>
     <script src="{{asset('js/app.js')}}"></script>

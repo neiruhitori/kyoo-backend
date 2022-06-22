@@ -84,6 +84,9 @@ export default {
       type: Object,
       required: true,
     },
+    features: {
+      type: Array
+    },
     branch_id_encrypted: {
       type: String,
       required: true,
@@ -105,6 +108,8 @@ export default {
   },
 
   created() {
+    console.log(this.features)
+
     Echo.channel(`event_direct_queue_general.${this.branch.id}`)
       .listen('DirectQueue', () => {
         this.getQueues();
@@ -112,7 +117,13 @@ export default {
       .listen('QueueStatusUpdated', async (message) => {
         await this.getQueues();
 
-        if (this.config.queue_voice && this.servingQueue && message.status && ['recall', 'served'].includes(message.status)) {
+        if (
+          this.servingQueue &&
+          message.status &&
+          this.config.queue_voice &&
+          this.features.find(v => v.additional_feature.name === 'Panggilan Suara') &&
+          ['recall', 'served'].includes(message.status)
+        ) {
           this.getQueueCallAudio();
         }
       });

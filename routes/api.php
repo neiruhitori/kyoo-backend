@@ -85,10 +85,6 @@ Route::get('direct-queue-by-branch/{branch}', 'API\DirectQueueController@index')
 // Search queue
 Route::get('search', 'API\SearchQueueController');
 
-// Audio Recording
-Route::get('/audio-recordings', 'API\VoiceRecordingController@index');
-Route::post('/audio-recordings', 'API\VoiceRecordingController@store');
-
 /**
  * External API Routes
  */

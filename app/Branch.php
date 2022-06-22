@@ -34,6 +34,22 @@ class Branch extends Model
         return 'onsite';
     }
 
+    public function hasAccess($feature) {
+        if (!$this->getIsPremiumAttribute()) {
+            return false;
+        }
+
+        $branch = $this->whereHas('FeatureSubscription.AdditionalFeature', function ($query) use ($feature) {
+            $query->where('name', $feature);
+        })->first();
+
+        if ($branch) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function getIsPremiumAttribute()
     {
         if ($this->BranchType) {
@@ -46,6 +62,11 @@ class Branch extends Model
     public function IndustryCategory()
     {
         return $this->belongsTo('App\IndustryCategory')->withTrashed();
+    }
+
+    public function FeatureSubscription()
+    {
+        return $this->hasMany('App\Models\FeatureSubscription');
     }
 
     public function Regency()

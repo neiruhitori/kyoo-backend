@@ -36,7 +36,11 @@
           <span>{{ __('Branch QR Code') }}</span></a>
       </li>
 
-      @if (Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+      @if (
+        Auth::user()->Branch->BranchType->is_premium &&
+        Auth::user()->Branch->hasAccess('Web Signage TV') &&
+        Auth::user()->Branch->BranchType->is_direct_queue
+      )
           <li class="nav-item">
             <a class="nav-link" href="{{ route('admin-branch.queue-monitor') }}" target="_blank">
               <i class="fas fa-fw fa-tv"></i>
@@ -142,7 +146,11 @@
               </a>
             @endif
 
-            @if (Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+            @if (
+              Auth::user()->Branch->BranchType->is_premium &&
+              Auth::user()->Branch->hasAccess('Web Signage TV') &&
+              Auth::user()->Branch->BranchType->is_direct_queue
+            )
               <a
                 class="collapse-item kyoo-sublink  {{ !request()->is('admin-branch/branch-configuration/queue-monitor') ?: 'active' }}"
                 href="{{ route('admin-branch.branch-configuration.queue-monitor') }}"
@@ -164,12 +172,17 @@
 
         <div class="collapse {{ !request()->is('admin-branch/service-quality/*') ?: 'show' }}" id="service-quality" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a
-              class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/service-quality/recordings') && !request()->is('admin-branch/service-quality/recordings') && !request()->is('admin-branch/service-quality/recordings') ?: 'active' }}"
-              href="{{ route('admin-branch.service-quality.recordings.index') }}"
-            >
-              Putar Rekaman
-            </a>
+            @if (
+              Auth::user()->Branch->BranchType->is_premium &&
+              Auth::user()->Branch->hasAccess('Voice Recording')
+            )
+              <a
+                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/service-quality/recordings') && !request()->is('admin-branch/service-quality/recordings') && !request()->is('admin-branch/service-quality/recordings') ?: 'active' }}"
+                href="{{ route('admin-branch.service-quality.recordings.index') }}"
+              >
+                Putar Rekaman
+              </a>
+            @endif
           </div>
         </div>
       </li>

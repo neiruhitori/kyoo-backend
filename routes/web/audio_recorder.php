@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth', 'checkCS')
+Route::middleware('auth', 'checkCS', 'access:Voice Recording')
     ->namespace('CS')
     ->prefix('/cs/record-sound')
     ->group(function ()  {
@@ -10,7 +10,7 @@ Route::middleware('auth', 'checkCS')
         Route::post('/', 'RecordSoundController@store')->name('cs.record-sound.store');
     });
 
-Route::middleware('auth', 'checkAdminBranch')
+Route::middleware('auth', 'checkAdminBranch', 'access:Voice Recording')
     ->namespace('AdminBranch')
     ->prefix('/admin-branch/service-quality')
     ->name('admin-branch.service-quality.')

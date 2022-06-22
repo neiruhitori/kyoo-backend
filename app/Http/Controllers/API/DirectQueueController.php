@@ -14,7 +14,6 @@ use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 use App\Events\DirectQueue as DirectQueueEvent;
 use App\Events\OnsiteQueueUpdated;
 use App\Interfaces\DirectQueueRepositoryInterface;
-use Illuminate\Support\Facades\App;
 
 class DirectQueueController extends Controller
 {

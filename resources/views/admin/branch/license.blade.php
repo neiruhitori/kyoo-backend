@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+    <h3 class="mb-3">{{ $branch->name }}</h3>
+
     <form action="{{ route('admin.branch.license.update', $branch->id) }}" method="POST">
         @csrf
         @method('PUT')

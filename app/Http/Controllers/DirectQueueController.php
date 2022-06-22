@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\DirectQueue;
 use App\Branch;
 use Crypt;
+use App\Models\FeatureSubscription;
 
 class DirectQueueController extends Controller
 {
@@ -21,10 +22,13 @@ class DirectQueueController extends Controller
 
     public function monitor(Request $request, $branch_id)
     {
-        $branch = Branch::with('BranchConfiguration')->findOrFail(Crypt::decrypt($branch_id));
+        $branch = Branch::with(['BranchConfiguration'])->findOrFail(Crypt::decrypt($branch_id));
+        $features = FeatureSubscription::with('AdditionalFeature')->where('branch_id', Crypt::decrypt($branch_id))->get();
+
         return view('directQueue.monitor', [
             'branch' => $branch,
             'branchIdEncrypted' => $branch_id,
+            'features' => $features
         ]);
     }
 

@@ -30,7 +30,8 @@ Route::namespace('AdminBranch')
         
         Route::get('/queue-monitor', 'HomeController@directQueueMonitor')
             ->name('queue-monitor')
-            ->middleware('checkDirectQueue');
+            ->middleware('checkDirectQueue', 'access:Web Signage TV')
+            ;
 
         Route::prefix('/export')->name('export.')->group(function () {
             Route::get('/appointment', 'HomeController@exportExcel')
@@ -79,8 +80,8 @@ Route::namespace('AdminBranch')
                 ->name('feature.update')
                 ->middleware('checkDirectQueue');
 
-            Route::get('queue-monitor', 'TVDisplayConfigurationController@index')->name('queue-monitor');
-            Route::put('queue-monitor/{branch}', 'TVDisplayConfigurationController@update')->name('queue-monitor.update');
+            Route::get('queue-monitor', 'TVDisplayConfigurationController@index')->name('queue-monitor')->middleware('access:Web Signage TV');
+            Route::put('queue-monitor/{branch}', 'TVDisplayConfigurationController@update')->name('queue-monitor.update')->middleware('access:Web Signage TV');
         });
 
         Route::prefix('/report')->name('report.')->group(function () {
@@ -122,7 +123,8 @@ Auth::routes();
 // Appointment Status
 Route::get('/appointment/status/{id}', 'AppointmentController@status')->name('appointment.status');
 Route::get('/queue-caller/{directQueue}', 'QueueCallerController@call')
-    ->name('queueCaller');
+    ->name('queueCaller')
+    ->middleware('access:Panggilan Suara');
 
 Route::get('/direct-queue/branch/{branch_id}/list', 'DirectQueueController@branchList')->name('directQueue.branch.list');
 
@@ -158,7 +160,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
 
 Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch')->name('adminBranch.')->group(function () {
     Route::middleware('checkAdminBranchPassword')->group(function () {
-        Route::get('directQueue/monitor', 'HomeController@directQueueMonitor')->name('directQueue.monitor')->middleware('checkDirectQueue');
+        Route::get('directQueue/monitor', 'HomeController@directQueueMonitor')->name('directQueue.monitor')->middleware(['checkDirectQueue', 'access:Web Signage TV']);
         Route::get('qr', 'HomeController@qr')->name('qr');
 
         // Branch Configuration routes
