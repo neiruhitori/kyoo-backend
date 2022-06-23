@@ -27,7 +27,7 @@
                             @foreach ($branch_types as $branch_type)
                                 <option
                                     value="{{ $branch_type->id }}"
-                                    {{ $branch_type->id == $branch_license->id ? 'selected' : '' }}
+                                    {{ $branch_license && $branch_type->id == $branch_license->id ? 'selected' : '' }}
                                 >
                                     {{ $branch_type->code }} - {{ $branch_type->name }}
                                 </option>
@@ -58,7 +58,7 @@
             </div>
 
             <div class="card-body">
-                @if (!$branch_license->is_premium)
+                @if (!$branch_license || !$branch_license->is_premium)
                     <p class="text-danger">Anda memerlukan lisensi premium untuk mengaktifkan fitur ini.</p>
                 @endif
 
@@ -74,7 +74,7 @@
                                 value="{{ $feature->id }}"
                                 autocomplete="off"
                                 {{ sizeof($selected_features->where('feature_id', $feature->id)) ? 'checked' : '' }}
-                                {{ !$branch_license->is_premium ? 'disabled' : '' }}
+                                {{ !$branch_license || !$branch_license->is_premium ? 'disabled' : '' }}
                             >
                         </div>
                     </div>
