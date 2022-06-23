@@ -39,8 +39,8 @@ class Branch extends Model
             return false;
         }
 
-        $branch = $this->whereHas('FeatureSubscription.AdditionalFeature', function ($query) use ($feature) {
-            $query->where('name', $feature);
+        $branch = $this->FeatureSubscription->filter(function ($v) use ($feature) {
+            return $v->AdditionalFeature->name == $feature;
         })->first();
 
         if ($branch) {
