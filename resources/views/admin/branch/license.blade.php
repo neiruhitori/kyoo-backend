@@ -58,6 +58,10 @@
             </div>
 
             <div class="card-body">
+                @if (!$branch_license->is_premium)
+                    <p class="text-danger">Anda memerlukan lisensi premium untuk mengaktifkan fitur ini.</p>
+                @endif
+
                 @foreach ($features as $feature)
                     <div class="license-cfg-item mb-2">
                         <label for="{{ $feature->code }}" class="font-weight-bold">{{ $feature->name }}</label>
@@ -70,6 +74,7 @@
                                 value="{{ $feature->id }}"
                                 autocomplete="off"
                                 {{ sizeof($selected_features->where('feature_id', $feature->id)) ? 'checked' : '' }}
+                                {{ !$branch_license->is_premium ? 'disabled' : '' }}
                             >
                         </div>
                     </div>
