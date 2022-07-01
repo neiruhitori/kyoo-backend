@@ -31,7 +31,13 @@
 
                             <div class="form-group">
                                 <label for="is_premium">{{ __('Is Premium') }}?</label>
-                                <select name="is_premium" id="" class="form-control" required>
+                                <select
+                                    name="is_premium"
+                                    id="is_premium"
+                                    class="form-control"
+                                    required
+                                    autocomplete="off"
+                                >
                                     <option value="0">{{ __('No') }}</option>
                                     <option value="1">{{ __('Yes') }}</option>
                                 </select>
@@ -39,8 +45,33 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="license_type_id">Jenis Lisensi</label>
+
+                                <select
+                                    name="license_type_id"
+                                    id="license_type_id"
+                                    class="form-control"
+                                    required
+                                    disabled
+                                    autocomplete="off"
+                                >
+                                    @foreach ($licenseTypes as $licenseType)
+                                        <option value="{{ $licenseType->id }}">{{ $licenseType->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                @include('layouts.inputError', ['errorName' => 'license_type_id'])
+                            </div>
+
+                            <div class="form-group">
                                 <label for="is_appointment">{{ __('Is Appointment Queue') }}?</label>
-                                <select name="is_appointment" id="" class="form-control" required>
+                                <select
+                                    name="is_appointment"
+                                    id="is_appointment"
+                                    class="form-control"
+                                    required
+                                    autocomplete="off"
+                                >
                                     <option value="0">{{ __('No') }}</option>
                                     <option value="1">{{ __('Yes') }}</option>
                                 </select>
@@ -49,7 +80,13 @@
 
                             <div class="form-group">
                                 <label for="is_direct_queue">{{ __('Is Direct Queue') }}?</label>
-                                <select name="is_direct_queue" id="" class="form-control" required>
+                                <select
+                                    name="is_direct_queue"
+                                    id="is_direct_queue"
+                                    class="form-control"
+                                    required
+                                    autocomplete="off"
+                                >
                                     <option value="0">{{ __('No') }}</option>
                                     <option value="1">{{ __('Yes') }}</option>
                                 </select>
@@ -58,13 +95,19 @@
 
                             <div class="form-group">
                                 <label for="is_exhibition">{{ __('Is Exhibition Queue') }}?</label>
-                                <select name="is_exhibition" id="" class="form-control" required>
+                                <select
+                                    name="is_exhibition"
+                                    id="is_exhibition"
+                                    class="form-control"
+                                    required
+                                    autocomplete="off"
+                                >
                                     <option value="0" {{ !old('is_exhibition') ?: 'selected' }}>{{ __('No') }}</option>
                                     <option value="1" {{ !old('is_exhibition') ?: 'selected' }}>{{ __('Yes') }}</option>
                                 </select>
                                 @include('layouts.inputError', ['errorName' => 'is_exhibition'])
                             </div>
-                            <button class="btn btn-primary">{{ __('Save') }}</button>
+                            <button class="btn btn-warning">{{ __('Save') }}</button>
                         </form>
                     </div>
                 </div>
@@ -73,3 +116,25 @@
     </div>
 </div>
 @endsection
+
+@push('js')
+<script>
+    $(document).ready(function () {
+        const general_license = $('#license_type_id option').filter(function (e) {
+            return $(this).text() === 'Umum'
+        })
+
+        $('#is_premium').change(function (e) {
+            const isPremium = parseInt(e.target.value)
+
+            if (isPremium) {
+                $('#license_type_id').prop('disabled', false)
+                return
+            }
+
+            $('#license_type_id').prop('disabled', true)
+            $('#license_type_id').val(general_license.val()).change()
+        })
+    })
+</script>
+@endpush
