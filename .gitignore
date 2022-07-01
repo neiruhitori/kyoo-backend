@@ -3,6 +3,8 @@
 /public/storage
 /storage/*.key
 /public/firebase-messaging-sw.js
+/public/css/app.css
+/public/js/app.js
 /vendor
 .env
 .env.backup
@@ -11,5 +13,8 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-.package-lock.json
-.composer.lock
+package-lock.json
+composer.lock
+.env.example
+/public/kyoo-ticket
+/public/js/customer
