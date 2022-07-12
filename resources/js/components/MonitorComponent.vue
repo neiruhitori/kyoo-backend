@@ -661,7 +661,14 @@ export default {
           duration: self.timer,
           message: audioFileReader.result.split(',')[1],
           branch_id: self.auth.branch_id,
-          workstation_id: self.workstation.id
+          branch_name: self.auth.branch.name,
+          workstation_id: self.workstation.id,
+          workstation_name: self.workstation.label,
+          vct_id: self.auth.id,
+          vct_name: self.auth.name,
+          queue_id: selectedQueue.id,
+          queue_type: 'direct_queue',
+          queue_no: selectedQueue.queue_no
         })
 
         self.audioChunks = []

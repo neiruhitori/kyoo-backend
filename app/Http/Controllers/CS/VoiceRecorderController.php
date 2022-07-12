@@ -49,16 +49,11 @@ class VoiceRecorderController extends Controller
         $request->validate([
             'message' => 'required',
             'branch_id' => 'required',
-            'workstation_id' => 'required'
+            'workstation_id' => 'required',
+            'vct_id' => 'required'
         ]);
         
-        $audio = $this->audioRecordingRepo->recordAudio([
-            'customer_name' => $request->customer_name,
-            'message' => $request->message,
-            'duration' => $request->duration,
-            'branch_id' => $request->branch_id,
-            'workstation_id' => $request->workstation_id
-        ]);
+        $audio = $this->audioRecordingRepo->recordAudio($request->all());
 
         // Error handling
         if (isset($audio['error'])) {

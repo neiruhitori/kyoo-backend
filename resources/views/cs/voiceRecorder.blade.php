@@ -380,7 +380,11 @@
                     duration: duration,
                     message: base64AudioMessage,
                     branch_id: '{{ Auth::user()->branch_id }}',
-                    workstation_id: '{{ Auth::user()->WorkstationVct->workstation_id }}'
+                    branch_name: '{{ Auth::user()->Branch->name }}',
+                    workstation_id: '{{ Auth::user()->WorkstationVct->workstation_id }}',
+                    workstation_name: '{{ Auth::user()->WorkstationVct->Workstation->label }}',
+                    vct_id: '{{ Auth::user()->id }}',
+                    vct_name: '{{ Auth::user()->name }}'
                 })
             }).then(res => {
                 if (res.status === 201) {
