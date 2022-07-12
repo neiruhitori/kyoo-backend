@@ -18,7 +18,7 @@ class AudioRecordingController extends Controller
     public function index()
     {
         return view('adminBranch.serviceQuality.audioRecording', [
-            'storageUrl' => env('AUDIO_RECORDING_URL')
+            'storageUrl' => env('KYOO_AUDIO_URL')
         ]);
     }
 
