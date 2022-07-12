@@ -53,8 +53,15 @@
                 <x-icon icon="letter" class="k-icon" />
               </div>
 
-              <input type="text" name="email" id="email" placeholder="mail@website.com" value="{{ old('email') }}"
-                required>
+              <input
+                type="text"
+                name="email"
+                id="email"
+                placeholder="mail@website.com"
+                value="{{ old('email') }}"
+                required
+                autofocus
+              >
             </div>
 
             @error('email')
@@ -70,7 +77,13 @@
                 <x-icon icon="lock" class="k-icon" />
               </div>
 
-              <input type="password" name="password" id="password" placeholder="Min. 8 Character" required>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Min. 8 Character"
+                required
+              >
             </div>
 
             @error('password')

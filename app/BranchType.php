@@ -9,5 +9,10 @@ class BranchType extends Model
 {
     use SoftDeletes;
     
-    protected $fillable = ['code', 'name', 'is_premium', 'is_appointment', 'is_direct_queue', 'is_exhibition'];
+    protected $fillable = ['code', 'name', 'is_premium', 'is_appointment', 'is_direct_queue', 'is_exhibition', 'license_type_id'];
+
+    public function LicenseType()
+    {
+        return $this->belongsTo('App\Models\LicenseType');
+    }
 }

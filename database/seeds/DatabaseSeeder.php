@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\User;
     
 class DatabaseSeeder extends Seeder
 {
@@ -22,7 +21,9 @@ class DatabaseSeeder extends Seeder
             IndustryCategorySeeder::class,
             FreeExhibitionLicenseSeeder::class,
             TVLayoutSeeder::class,
-            AdditionalFeatureSeeder::class
+            AdditionalFeatureSeeder::class,
+            LicenseTypeSeeder::class,
+            CorporateLicenseSeeder::class,
         ]);
     }
 }
