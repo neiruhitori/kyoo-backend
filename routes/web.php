@@ -21,18 +21,23 @@ Route::namespace('AdminBranch')
     ->middleware('auth', 'checkAdminBranch')
     ->name('admin-branch.')
     ->group(function () {
+        // User Profile
         Route::get('profile', 'HomeController@edit')->name('profile');
         Route::put('profile', 'HomeController@update')->name('profile.update');
 
+        // Dashboard
         Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 
+        // QR Code Poster
         Route::get('/branch-qr-code', 'BranchQrCodeController')->name('branch-qr-code');
         
+        // Queue Monitor
         Route::get('/queue-monitor', 'HomeController@directQueueMonitor')
             ->name('queue-monitor')
             ->middleware('checkDirectQueue', 'access:Web Signage TV')
             ;
 
+        // Export
         Route::prefix('/export')->name('export.')->group(function () {
             Route::get('/appointment', 'HomeController@exportExcel')
                 ->name('appointment')
@@ -42,6 +47,7 @@ Route::namespace('AdminBranch')
                 ->middleware('exhibitionPermissionIsValid');
         });
         
+        // Product Guide
         Route::prefix('/product-guide')->name('product-guide.')->group(function () {
             Route::get('/queue-configuration', 'BranchConfigGuideController')
                 ->name('queue-configuration');
@@ -51,12 +57,14 @@ Route::namespace('AdminBranch')
                 ->name('slot-time');
         });
 
+        // Branch Information
         Route::prefix('/branch-information')->name('branch-information.')->group(function () {
             Route::get('/profile', 'BranchController@profile')->name('profile');
             Route::get('/location', 'BranchController@location')->name('location');
             Route::put('/', 'BranchController@update')->name('update');
         });
 
+        // Branch Configuration
         Route::prefix('/branch-configuration')->name('branch-configuration.')->group(function () {
             Route::resource('department', 'DepartmentController');
             Route::resource('service', 'ServiceController');
@@ -84,6 +92,16 @@ Route::namespace('AdminBranch')
             Route::put('queue-monitor/{branch}', 'TVDisplayConfigurationController@update')->name('queue-monitor.update')->middleware('access:Web Signage TV');
         });
 
+        // Service Quality
+        Route::middleware('access:Voice Recording')
+            ->prefix('/service-quality')
+            ->name('service-quality.')
+            ->group(function () {
+                Route::get('/audio-recording', 'AudioRecordingController@index')->name('audio-recording.index');
+                Route::get('/audio-recording/all', 'AudioRecordingController@getAll')->name('audio-recording.get-all');
+            });
+        
+        // Report
         Route::prefix('/report')->name('report.')->group(function () {
             Route::get('/daily/appointment', 'ReportController@daily')
                 ->name('daily.appointment')
@@ -158,7 +176,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::resource('scheduleTemplate', 'ScheduleTemplateController');
 });
 
-Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch')->name('adminBranch.')->group(function () {
+Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch', 'checkAdminBranchPassword')->name('adminBranch.')->group(function () {
     Route::middleware('checkAdminBranchPassword')->group(function () {
         Route::get('directQueue/monitor', 'HomeController@directQueueMonitor')->name('directQueue.monitor')->middleware(['checkDirectQueue', 'access:Web Signage TV']);
         Route::get('qr', 'HomeController@qr')->name('qr');
@@ -193,12 +211,15 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     // Report routes
     Route::get('report/daily', 'ReportController@daily')->name('report.daily');
     Route::get('report/directQueue/daily', 'ReportController@directQueueDaily')->name('report.directQueue.daily')->middleware('checkDirectQueue');
+
+    // Voice Recorder
+    Route::get('voice-recorder', 'VoiceRecorderController@index')->name('voiceRecorder.index');
+    Route::post('voice-recorder', 'VoiceRecorderController@store')->name('voiceRecorder.store');
 });
 
 Route::group([], __DIR__ . '/web/exhibition.php');
 Route::group([], __DIR__ . '/web/branch_qr_code.php');
 Route::group([], __DIR__ . '/web/customer.php');
-Route::group([], __DIR__ . '/web/audio_recorder.php');
 
 Route::get('search', 'SearchQueueController@index')->name('search.index');
 Route::post('search', 'SearchQueueController@search')->name('search.search');

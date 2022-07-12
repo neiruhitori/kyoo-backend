@@ -52,13 +52,13 @@
             <span>{{ __('Exhibition Queue') }}</span></a>
         </li>
       @endif
-      
+
       @if (
         Auth::user()->Branch->BranchType->is_premium &&
         Auth::user()->Branch->hasAccess('Voice Recording')
       )
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('cs.record-sound.index') }}">
+          <a class="nav-link" href="{{ route('cs.voiceRecorder.index') }}">
             <i class="fas fa-microphone"></i>
             <span>Rekam Suara</span></a>
         </li>

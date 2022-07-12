@@ -9,7 +9,6 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Audio;
 
 class RecordingCreated implements ShouldBroadcast
 {
@@ -22,7 +21,7 @@ class RecordingCreated implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(Audio $recording)
+    public function __construct($recording)
     {
         $this->recording = $recording;
     }
@@ -34,7 +33,7 @@ class RecordingCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('workstations.' . $this->recording->workstation_id);
+        return new Channel('workstations.' . $this->recording['workstation_id']);
     }
 
     public function broadcastWith()

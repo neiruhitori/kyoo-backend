@@ -50,6 +50,13 @@ class Branch extends Model
         return false;
     }
 
+    public function getFeatures()
+    {
+        return $this->FeatureSubscription->map(function ($fs) {
+            return $fs->AdditionalFeature->name;
+        });
+    }
+
     public function getIsPremiumAttribute()
     {
         if ($this->BranchType) {

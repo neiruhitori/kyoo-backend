@@ -81,7 +81,7 @@
     <button id="play" disabled hidden>Play</button>
     <button id="save" disabled hidden>Save</button>
 
-    <div id="saved-audio-messages" class="flex flex-col h-screen pl-[1rem] w-[1050px] mx-auto my-[30px]">
+    <div id="saved-audio-messages" class="flex flex-col pl-[1rem] w-[1050px] mx-auto my-[30px]">
         <div class="container mx-auto flex flex-wrap">
             <div class="basis-full mb-[31px]">
                 <h3 class="text-[18px] leading-[25px] font-bold">
@@ -90,11 +90,11 @@
             </div>
             <div class="basis-full">
                 <div class="mb-3">
-                    <input type="date" pattern="dd-mm-yyyy" id="created-at" class="py-2 px-3 rounded border w-52 mr-1">
+                    <input type="date" pattern="dd-mm-yyyy" id="created-at" class="py-2 px-3 rounded border w-52 mr-1" autocomplete="off">
                     <button type="button" id="reset-button" class="rounded py-2 px-3 border bg-gray-200 text-black">Reset</button>
                 </div>
 
-                <table id="myTable" border="1" class="w-full rounded-tl-[12px]">
+                <table id="myTable" class="w-full">
                     <thead class="h-[53px] text-white text-center">
                         <tr>
                             <th class="bg-[#0E5EA0] rounded-tl-[12px]">Nama File</th>
@@ -119,21 +119,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
-        let query = new URLSearchParams();
+        let query = new URLSearchParams({
+            branch_id: "{{ Auth::user()->branch_id }}"
+        });
 
         const savedAudioMessagesContainer = document.querySelector('#myTable > tbody');
 
         const populateAudioMessages = () => {
-            return fetch('/admin-branch/service-quality/recordings/all?' + query).then(res => {
+            return fetch('/admin-branch/service-quality/audio-recording/all?' + query).then(res => {
                 if (res.status === 200) {
                     return res.json().then(json => {
                         document.getElementById("tbody_id").innerHTML = ''
 
-                        json.message_filenames.forEach(data => {
+                        json.forEach(data => {
                             let audioElement = document.querySelector(`[data-audio-filename="${data.filename}"]`);
                             if (!audioElement) {
                                 audioElement = document.createElement('audio');
-                                audioElement.src = `/storage/${data.filename}`;
+                                audioElement.src = `{{ $storageUrl }}/storage/recordings/${data.filename}`;
                                 audioElement.setAttribute("controlslist", "nodownload");
                                 audioElement.setAttribute('data-audio-filename', data.filename);
                                 audioElement.setAttribute('controls', true);

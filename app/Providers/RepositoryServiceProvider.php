@@ -13,6 +13,9 @@ use App\Repositories\ExhibitionRepository;
 use App\Interfaces\DirectQueueRepositoryInterface;
 use App\Repositories\DirectQueueRepository;
 
+use App\Interfaces\AudioRecordingRepositoryInterface;
+use App\Repositories\AudioRecordingRepository;
+
 class RepositoryServiceProvider extends ServiceProvider
 {
     /**
@@ -25,6 +28,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ExhibitionRepositoryInterface::class, ExhibitionRepository::class);
         $this->app->bind(BranchTypeRepositoryInterface::class, BranchTypeRepository::class);
         $this->app->bind(DirectQueueRepositoryInterface::class, DirectQueueRepository::class);
+        $this->app->bind(AudioRecordingRepositoryInterface::class, AudioRecordingRepository::class);
     }
 
     /**

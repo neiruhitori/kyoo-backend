@@ -177,8 +177,8 @@
               Auth::user()->Branch->hasAccess('Voice Recording')
             )
               <a
-                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/service-quality/recordings') && !request()->is('admin-branch/service-quality/recordings') && !request()->is('admin-branch/service-quality/recordings') ?: 'active' }}"
-                href="{{ route('admin-branch.service-quality.recordings.index') }}"
+                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/service-quality/audio-recording') && !request()->is('admin-branch/service-quality/audio-recording') && !request()->is('admin-branch/service-quality/audio-recording') ?: 'active' }}"
+                href="{{ route('admin-branch.service-quality.audio-recording.index') }}"
               >
                 Putar Rekaman
               </a>

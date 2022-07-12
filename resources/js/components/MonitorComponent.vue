@@ -288,24 +288,34 @@ export default {
   components: {
     Loading,
   },
+
   props: {
     max_recall: {
       type: Number,
-      default: 0,
+      default: 0
     },
     max_requeue: {
       type: Number,
-      default: 0,
+      default: 0
     },
     allow_transfer: {
       type: Boolean,
-      default: false,
+      default: false
     },
     auth: {
       type: Object,
-      required: true,
+      required: true
     },
+    accessible_features: {
+      type: Array,
+      required: true
+    },
+    workstation: {
+      type: Object,
+      required: true
+    }
   },
+
   data() {
     return {
       isLoading: true,
@@ -325,10 +335,13 @@ export default {
         seconds: 0
       },
       timer: 0,
-      timerInterval: null
+      timerInterval: null,
+      audioChunks: [],
+      mediaRecorder: null
     };
   },
-  async mounted() {
+
+  async mounted () {
     await this.getQueues();
 
     const [selected_queue] = this.queues.filter(v => v.status === 'served');
@@ -338,7 +351,8 @@ export default {
       this.startTimer()
     }
   },
-  created() {
+
+  created () {
     Echo.private(`event_direct_queue.${this.auth.branch_id}`).listen(
       "VCTDirectQueue",
       (data) => {
@@ -351,8 +365,22 @@ export default {
         this.getQueues();
       }
     );
+
+    this.initVoiceRecorder()
   },
+
   methods: {
+    async initVoiceRecorder() {
+      const media = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false
+      })
+
+      this.mediaRecorder = new MediaRecorder(media)
+
+      this.mediaRecorder.addEventListener('dataavailable', this.handleDataAvailable)
+    },
+
     startTimer() {
       this.timerInterval = setInterval(() => {
         this.timer++
@@ -430,6 +458,15 @@ export default {
 
         this.getQueues();
 
+        if (
+          this.auth.branch.branch_type.is_premium &&
+          this.accessible_features.includes('Voice Recording') &&
+          this.mediaRecorder.state === 'inactive'
+        ) {
+          this.audioChunks = []
+          this.mediaRecorder.start()
+        }
+
         this.startTimer()
       } catch (error) {
         this.getQueues();
@@ -443,6 +480,7 @@ export default {
         (queue) => queue.queue_no === this.selected_queue
       );
       this.isLoading = true;
+
       try {
         const queue = await axios.post("/cs/directQueue/onRecall", {
           queue_no: this.selected_queue,
@@ -464,41 +502,57 @@ export default {
       } catch (error) {
         alert(error.response.data.message);
       }
+
       this.isLoading = false;
     },
 
     async onEndServed() {
-      this.resetTimer()
-
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
       );
+
       this.isLoading = true;
+
       try {
+        if (this.mediaRecorder.state === 'recording') {
+          this.mediaRecorder.stop()
+          this.mediaRecorder.addEventListener('stop', this.handleRecorderStop)
+        }
+
         const queue = await axios.post("/cs/directQueue/onEndServed", {
           queue_no: this.selected_queue,
           service_id: selected_queue[0].service_id
         });
+
+        this.resetTimer()
+
         this.onServedQueue = null;
         this.isOnServed = false;
         this.getQueues();
       } catch (error) {
         alert(error.response.data.message);
       }
+
       this.isLoading = false;
     },
+
     async onRequeue() {
+      if (this.mediaRecorder.state === 'recording') {
+        this.mediaRecorder.stop()
+      }
       this.resetTimer()
 
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
       );
       this.isLoading = true;
+
       try {
         const queue = await axios.post("/cs/directQueue/onRequeue", {
           queue_no: this.selected_queue,
           service_id: selected_queue[0].service_id
         });
+
         if (this.onServedQueue.requeue_count >= this.max_requeue) {
           this.isOnServed = false;
         } else {
@@ -508,36 +562,42 @@ export default {
         this.isOnServed = false;
         this.getQueues();
       } catch (error) {
-        console.log({ error });
         alert(error.response.data.message);
       }
+
       this.isLoading = false;
     },
   
     async onNoShow() {
+      if (this.mediaRecorder.state === 'recording') {
+        this.mediaRecorder.stop()
+      }
       this.resetTimer()
 
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
       );
       this.isLoading = true;
+
       try {
         const queue = await axios.post("/cs/directQueue/onNoShow", {
           queue_no: this.selected_queue,
           service_id: selected_queue[0].service_id
         });
+
         this.onServedQueue = null;
         this.isOnServed = false;
         this.getQueues();
       } catch (error) {
-        console.log({ error });
         alert(error.response.data.message);
       }
+
       this.isLoading = false;
     },
   
     async onTransfer() {
       this.isLoading = true;
+      
       try {
         const workstationServices = await axios.get(
           "/cs/directQueue/workstationServices"
@@ -547,16 +607,22 @@ export default {
       } catch (error) {
         alert(error.response.data.message);
       }
+
       this.isLoading = false;
     },
   
     async onSubmitTransfer(e) {
+      if (this.mediaRecorder.state === 'recording') {
+        this.mediaRecorder.stop()
+      }
       this.resetTimer()
 
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === e.target.queue_no.value
       );
+
       this.isLoading = true;
+
       try {
         const data = {
           queue_no: e.target.queue_no.value,
@@ -571,8 +637,39 @@ export default {
       } catch (error) {
         alert(error.response.data.message);
       }
+
       this.isLoading = false;
     },
+
+    handleDataAvailable(e) {
+      this.audioChunks.push(e.data)
+    },
+
+    handleRecorderStop() {
+      const audioFileReader = new FileReader()
+
+      audioFileReader.readAsDataURL(new Blob(this.audioChunks, {
+        type: 'audio/mpeg'
+      }))
+
+      const self = this
+      audioFileReader.onloadend = async function () {
+        const selectedQueue = self.queues.find(q => q.queue_no === self.selected_queue)
+
+        await axios.post('/cs/voice-recorder', {
+          customer_name: selectedQueue.name,
+          duration: self.timer,
+          message: audioFileReader.result.split(',')[1],
+          branch_id: self.auth.branch_id,
+          workstation_id: self.workstation.id
+        })
+
+        self.audioChunks = []
+      }
+
+      this.mediaRecorder.removeEventListener('dataavailable', this.handleDataAvailable)
+      this.mediaRecorder.removeEventListener('stop', this)
+    }
   },
 
   watch: {

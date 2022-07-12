@@ -123,10 +123,10 @@
                 <tbody id="tbody_id" class="text-center">
                     @foreach ($recordings as $recording)
                         <tr>
-                            <td>{{ $recording->filename }}</td>
-                            <td>{{ $recording->customer_name }}</td>
-                            <td>{{ $recording->recorded_at }}</td>
-                            <td>{{ $recording->duration }} Detik</td>
+                            <td>{{ $recording['filename'] }}</td>
+                            <td>{{ $recording['customer_name'] }}</td>
+                            <td>{{ $recording['formatted']['created_at'] }}</td>
+                            <td>{{ $recording['formatted']['duration'] }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -144,32 +144,20 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script>
-    window.Echo.channel('workstations.{{ $workstation_id }}')
+    window.Echo.channel('workstations.{{ Auth::user()->WorkstationVct->workstation_id }}')
         .listen('RecordingCreated', recording => {
-            const createdDate = new Date(recording.created_at).toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-            const createdTime = new Date(recording.created_at).toLocaleTimeString('id-ID', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            recording.recorded_at = `${createdDate} ${createdTime}`
-
             const parentNode = document.querySelector('#tbody_id');
             const childNodes = document.querySelectorAll('#tbody_id tr')
             const lastChild = childNodes[childNodes.length - 1]
 
             if (childNodes.length >= 5) parentNode.removeChild(lastChild)
 
-            const newRow = parentNode.insertRow(0   )
+            const newRow = parentNode.insertRow(0)
             newRow.innerHTML = `
                 <td>${recording.filename}</td>
                 <td>${recording.customer_name}</td>
-                <td>${recording.recorded_at}</td>
-                <td>${recording.duration} Detik</td>
+                <td>${recording.formatted.created_at}</td>
+                <td>${recording.formatted.duration}</td>
             `
         })
 
@@ -195,8 +183,6 @@
             const start = () => {
                 audioChunks = [];
                 mediaRecorder.start();
-                console.log("state: ");
-                console.log(mediaRecorder.state);
             };
 
             const stop = () =>
@@ -205,6 +191,7 @@
                         const audioBlob = new Blob(audioChunks, {
                             type: 'audio/mpeg'
                         });
+
                         const audioUrl = URL.createObjectURL(audioBlob);
                         const audio = new Audio(audioUrl);
                         const play = () => audio.play();
@@ -252,7 +239,6 @@
     let state;
 
     pauseresumeButton.addEventListener('click', async () => {
-
         recordButton.setAttribute('disabled', false);
         if (state == 'active') {
             await recorder.pause()
@@ -270,7 +256,6 @@
             stopButton.style.animation = "pulse-black 2.5s infinite";
             imgPlay.src = "{{asset('img/audio-conversations/pause.png')}}"
         }
-
     });
 
     var appendTens = document.getElementById("tens")
@@ -293,7 +278,6 @@
         }
 
         if (tens > 99) {
-            console.log("seconds");
             seconds++;
             appendSeconds.innerHTML = "0" + seconds;
             tens = 0;
@@ -384,7 +368,7 @@
         reader.onload = () => {
             const base64AudioMessage = reader.result.split(',')[1];
             let customer_name = document.getElementById('customer_name').value;
-            fetch('/cs/record-sound', {
+            fetch('/cs/voice-recorder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -414,7 +398,7 @@
         reader.onload = () => {
             const base64AudioMessage = reader.result.split(',')[1];
 
-            fetch('/cs/record-sound', {
+            fetch('/cs/voice-recorder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
