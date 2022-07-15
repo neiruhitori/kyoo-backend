@@ -6,5 +6,5 @@ interface AudioRecordingRepositoryInterface
 {
     public function getRecordings($params);
     public function getRecentRecordings($params);
-    public function recordAudio($audio);
+    public function recordAudio($audio, $token);
 }

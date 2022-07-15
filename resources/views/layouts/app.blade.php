@@ -137,11 +137,15 @@
   <!-- Core plugin JavaScript-->
   <script src="{{asset('admin/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
   <!-- Custom scripts for all pages-->
   <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
 
   <script>
     $(document).ready(function () {
+      initAuth()
+
       $('.datetimepicker-input').datetimepicker({
         format: 'HH:mm'
       })
@@ -160,6 +164,38 @@
         }
       })
     })
+
+    async function initAuth() {
+      const personalAccessToken = await axios.get('/oauth/personal-access-tokens')
+        .then(res => res.data.pop())
+
+      if (
+        !localStorage.getItem('accessToken') ||
+        !personalAccessToken ||
+        Date.now() > new Date(personalAccessToken.expires_at) ||
+        personalAccessToken.revoked
+      ) {
+          const accessToken = await axios.post('/oauth/personal-access-tokens', {
+            name: 'API Gateway Token'
+          }).then(res => res.data.accessToken)
+
+          const user = await axios.patch('/api/user/{{ Auth::id() }}/personal-access-token', {
+            token: accessToken
+          }, {
+            headers: {
+              Authorization: 'Bearer ' + accessToken,
+              Accept: 'application/json'
+            }
+          })
+
+          console.log(user.data, 'Resultnya')
+
+          localStorage.setItem('accessToken', accessToken)
+          return
+      }
+
+      localStorage.setItem('accessToken', '{{ Auth::user()->token_personal }}')
+    }
   </script>
   @stack('js')
 </body>

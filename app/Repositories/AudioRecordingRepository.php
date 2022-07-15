@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Interfaces\AudioRecordingRepositoryInterface;
-use App\BranchType;
 use Illuminate\Support\Facades\Http;
 
 class AudioRecordingRepository implements AudioRecordingRepositoryInterface
@@ -17,7 +16,10 @@ class AudioRecordingRepository implements AudioRecordingRepositoryInterface
 
     public function getRecordings($params = [])
     {
-        $recordings = Http::get($this->audioRecordingUrl . '/recordings', $params)
+        $recordings = Http::withHeaders([
+            'Accept' => 'application/json'
+        ])
+            ->get($this->audioRecordingUrl . '/recordings', $params)
             ->collect();
 
         return $recordings;
@@ -25,15 +27,21 @@ class AudioRecordingRepository implements AudioRecordingRepositoryInterface
 
     public function getRecentRecordings($params = [])
     {
-        $recentRecordings = Http::get($this->audioRecordingUrl . '/recordings/recent', $params)
+        $recentRecordings = Http::withHeaders([
+            'Accept' => 'application/json'
+        ])
+            ->get($this->audioRecordingUrl . '/recordings/recent', $params)
             ->collect();
         
         return $recentRecordings;
     }
 
-    public function recordAudio($audio)
+    public function recordAudio($audio, $token = null)
     {
-        $recording = Http::post($this->audioRecordingUrl . '/recordings', $audio)
+        $recording = Http::withHeaders([
+            'Accept' => 'application/json'
+        ])
+            ->post($this->audioRecordingUrl . '/recordings', $audio)
             ->collect();
 
         return $recording;

@@ -669,6 +669,11 @@ export default {
           queue_id: selectedQueue.id,
           queue_type: 'direct_queue',
           queue_no: selectedQueue.queue_no
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
         })
 
         self.audioChunks = []

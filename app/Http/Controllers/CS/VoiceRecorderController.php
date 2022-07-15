@@ -53,7 +53,8 @@ class VoiceRecorderController extends Controller
             'vct_id' => 'required'
         ]);
         
-        $audio = $this->audioRecordingRepo->recordAudio($request->all());
+        $audio = $this->audioRecordingRepo
+            ->recordAudio($request->all(), $request->bearerToken());
 
         // Error handling
         if (isset($audio['error'])) {

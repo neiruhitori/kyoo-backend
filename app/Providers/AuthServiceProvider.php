@@ -29,7 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes();
 
         Passport::tokensExpireIn(now()->addYears(15));
-
         Passport::refreshTokensExpireIn(now()->addYears(30));
+        Passport::personalAccessTokensExpireIn(now()->addYears(15));
     }
 }

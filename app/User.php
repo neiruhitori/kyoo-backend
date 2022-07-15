@@ -13,14 +13,13 @@ class User extends Authenticatable
 {
     use Notifiable, SoftDeletes, HasApiTokens;
 
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'email', 'email_verified_at', 'password', 'is_password_changed', 'role', 'token_external', 'platform', 'phone', 'branch_id', 'last_login'
+        'name', 'username', 'email', 'email_verified_at', 'password', 'is_password_changed', 'role', 'token_external', 'platform', 'phone', 'branch_id', 'last_login', 'token_personal'
     ];
 
     /**

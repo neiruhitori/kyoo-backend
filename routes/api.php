@@ -61,6 +61,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('user/update-password', 'API\UserController@updatePassword');
     Route::put('user/update-avatar', 'API\UserController@updateAvatar');
     Route::get('upcoming', 'API\AppointmentController@upcomingCombine');
+    Route::patch('user/{id}/personal-access-token', 'API\UserController@updatePersonalAccessToken');
 
     // appointment routes
     Route::get('appointment', 'API\AppointmentController@index');
@@ -96,3 +97,8 @@ Route::namespace('API\External')->prefix('external')->middleware('external.check
 
     Route::post('appointment', 'AppointmentController@store');
 });
+
+// Verify token
+Route::get('introspect', function () {
+    return response()->noContent();
+})->middleware('auth:api');

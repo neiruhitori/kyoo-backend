@@ -256,12 +256,27 @@ class UserController extends Controller
     {
         $fcm = FcmToken::whereUserIdAndToken($request->user_id, $request->fcm_token)->pluck('id');
         if($fcm)
-            FcmToken::whereIn('id', $fcm)->delete();
+        FcmToken::whereIn('id', $fcm)->delete();
 
         return response()->json([
             'success' => true,
             'message' => 'user logged out',
             'data' => []
+        ]);
+    }
+
+    public function updatePersonalAccessToken(Request $request, $id)
+    {
+        $user = User::where('id', $id)->update([
+            'token_personal' => $request->token
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Personal access token updated',
+            'data' => [
+                'access_token' => $request->token
+            ]
         ]);
     }
 }
