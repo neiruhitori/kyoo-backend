@@ -107,11 +107,6 @@ class DepartmentController extends Controller
         if ($department->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
-        // for MVP
-        if (count(Auth::user()->Branch->Departments) > 0) {
-            $request->session()->flash('warning', __('Can not update department info'));
-            return redirect(route('admin-branch.branch-configuration.department.index'));
-        }
         $department->update($request->all());
         Log::create([
             'user_id' => Auth::id(),

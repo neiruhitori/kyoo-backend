@@ -10,7 +10,7 @@
     }
 </style>
 
-<!-- Sidebar -->
+    <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
       <a class="kyoo-logo-container" href="{{ route('dashboard') }}">
         <img
@@ -183,6 +183,24 @@
                 Putar Rekaman
               </a>
             @endif
+          </div>
+        </div>
+      </li>
+
+      <li class="nav-item {{ !request()->is('admin-branch/monitoring/*') ?: 'active' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#monitoring" aria-expanded="true" aria-controls="monitoring">
+          <i class="fas fa-tv"></i>
+          <span>Monitoring</span>
+        </a>
+
+        <div class="collapse {{ !request()->is('admin-branch/monitoring/*') ?: 'show' }}" id="monitoring" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a
+              class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/monitoring/department') ?: 'active' }}"
+              href="{{ route('admin-branch.monitoring.department') }}"
+            >
+              Departemen
+            </a>
           </div>
         </div>
       </li>

@@ -100,6 +100,12 @@ Route::namespace('AdminBranch')
                 Route::get('/audio-recording', 'AudioRecordingController@index')->name('audio-recording.index');
                 Route::get('/audio-recording/all', 'AudioRecordingController@getAll')->name('audio-recording.get-all');
             });
+
+        // Monitoritng
+        Route::prefix('/monitoring')->name('monitoring.')->group(function () {
+            Route::get('/department', 'DepartmentMonitoringController@index')->name('department');
+            Route::get('/department/{id}', 'DepartmentMonitoringController@getData')->name('department.show');
+        });
         
         // Report
         Route::prefix('/report')->name('report.')->group(function () {

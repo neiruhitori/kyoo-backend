@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Exhibition extends Model
 {
-    protected $fillable = ['user_id', 'slot_id', 'booking_code', 'date', 'name', 'phone', 'email', 'notes', 'status', 'queue_order', 'vct_id', 'rating', 'is_liked', 'end_served_time', 'number', 'channel'];
+    protected $fillable = ['user_id', 'slot_id', 'booking_code', 'date', 'name', 'phone', 'email', 'notes', 'status', 'queue_order', 'vct_id', 'rating', 'is_liked', 'end_served_time', 'number', 'channel', 'service_id'];
 
     public function getCreatedAtAttribute($value)
     {

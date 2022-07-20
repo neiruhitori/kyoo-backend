@@ -233,6 +233,8 @@ class HomeController extends Controller
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
         $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
         $input['appointment_channel'] = 'VCT web';
+        $input['service_id'] = $slot->service_id;
+
         $appointment = Appointment::create($input);
 
         // send email to customer
@@ -338,6 +340,7 @@ class HomeController extends Controller
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
         $input['queue_order'] = Exhibition::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
         $input['channel'] = 'VCT web';
+        $input['service_id'] = $slot->service_id;
 
         $queue = Exhibition::create($input);
 

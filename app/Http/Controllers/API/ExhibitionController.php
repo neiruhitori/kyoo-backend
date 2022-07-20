@@ -102,6 +102,8 @@ class ExhibitionController extends Controller
         $input = $request->all();
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
         $input['queue_order'] = Exhibition::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
+        $input['service_id'] = $slot->service_id;
+
         $booking = Exhibition::create($input);
 
         // send email to customer

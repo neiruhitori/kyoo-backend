@@ -23,6 +23,10 @@ class Branch extends Model
 
     public function getQueueTypeAttribute()
     {
+        if ($this->BranchType->is_direct_queue) {
+            return 'onsite';
+        }
+
         if ($this->BranchType->is_appointment) {
             return 'appointment';
         }
