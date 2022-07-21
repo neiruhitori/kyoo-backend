@@ -433,13 +433,16 @@ export default {
     },
 
     async onServed() {
-      const selected_queue = this.queues.filter(
+      const [selected_queue] = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
       );
+
       if (
-        selected_queue[0]?.status != "waiting" &&
-        selected_queue[0]?.status != "served" &&
-        selected_queue[0]?.status != "requeue"
+        selected_queue &&
+        selected_queue.status &&
+        selected_queue.status != "waiting" &&
+        selected_queue.status != "served" &&
+        selected_queue.status != "requeue"
       ) {
         alert("Status antrian salah");
         return;
@@ -449,8 +452,9 @@ export default {
       try {
         const queue = await axios.post("/cs/directQueue/onServed", {
           queue_no: this.selected_queue,
-          service_id: selected_queue[0].service_id,
+          service_id: selected_queue.service_id,
           is_skip: this.manualInput,
+          waiting_duration: Math.floor(moment().diff(moment(selected_queue.created_at)) / 1000)
         });
 
         this.onServedQueue = queue.data.data;
@@ -507,7 +511,7 @@ export default {
     },
 
     async onEndServed() {
-      const selected_queue = this.queues.filter(
+      const [selected_queue] = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
       );
 
@@ -521,7 +525,8 @@ export default {
 
         const queue = await axios.post("/cs/directQueue/onEndServed", {
           queue_no: this.selected_queue,
-          service_id: selected_queue[0].service_id
+          service_id: selected_queue.service_id,
+          serving_duration: Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000)
         });
 
         this.resetTimer()
@@ -550,7 +555,7 @@ export default {
       try {
         const queue = await axios.post("/cs/directQueue/onRequeue", {
           queue_no: this.selected_queue,
-          service_id: selected_queue[0].service_id
+          service_id: selected_queue.service_id
         });
 
         if (this.onServedQueue.requeue_count >= this.max_requeue) {

@@ -98,10 +98,7 @@ class DepartmentMonitoringController extends Controller
             return;
         }
 
-        $value->now_waiting_duration = (int) DirectQueue::selectRaw(
-            DB::raw('EXTRACT(EPOCH FROM (called_at - created_at)) as now_waiting_duration')
-        )
-            ->whereBetween('created_at', [
+        $value->now_waiting_duration = (int) DirectQueue::whereBetween('created_at', [
                 Carbon::now()->startOfDay(),
                 Carbon::now()->endOfDay()
             ])
@@ -109,31 +106,21 @@ class DepartmentMonitoringController extends Controller
             ->orderByDesc('created_at')
             ->limit(1)
             ->first()
-            ->now_waiting_duration;
+            ->waiting_duration;
 
-        $value->max_waiting_duration = (int) DirectQueue::selectRaw(
-            DB::raw('MAX(EXTRACT(EPOCH FROM (called_at - created_at))) as max_waiting_duration')
-        )
-            ->whereBetween('created_at', [
+        $value->max_waiting_duration = (int) DirectQueue::whereBetween('created_at', [
                 Carbon::now()->startOfDay(),
                 Carbon::now()->endOfDay()
             ])
             ->where('service_id', $value->id)
-            ->limit(1)
-            ->first()
-            ->max_waiting_duration;
+            ->max('waiting_duration');
 
-        $value->avg_waiting_duration = (int) DirectQueue::selectRaw(
-            DB::raw('AVG(EXTRACT(EPOCH FROM (called_at - created_at))) as avg_waiting_duration')
-        )
-            ->whereBetween('created_at', [
+        $value->avg_waiting_duration = (int) DirectQueue::whereBetween('created_at', [
                 Carbon::now()->startOfDay(),
                 Carbon::now()->endOfDay()
             ])
             ->where('service_id', $value->id)
-            ->limit(1)
-            ->first()
-            ->avg_waiting_duration;
+            ->avg('waiting_duration');
     }
 
     private function transformServedDuration(&$value)
@@ -152,10 +139,7 @@ class DepartmentMonitoringController extends Controller
             return;
         }
 
-        $value->now_served_duration = (int) DirectQueue::selectRaw(
-            DB::raw('EXTRACT(EPOCH FROM (done_at - called_at)) as now_served_duration')
-        )
-            ->whereBetween('created_at', [
+        $value->now_served_duration = (int) DirectQueue::whereBetween('created_at', [
                 Carbon::now()->startOfDay(),
                 Carbon::now()->endOfDay()
             ])
@@ -163,30 +147,20 @@ class DepartmentMonitoringController extends Controller
             ->orderByDesc('created_at')
             ->limit(1)
             ->first()
-            ->now_served_duration;
+            ->serving_duration;
 
-        $value->max_served_duration = (int) DirectQueue::selectRaw(
-            DB::raw('MAX(EXTRACT(EPOCH FROM (done_at - called_at))) as max_served_duration')
-        )
-            ->whereBetween('created_at', [
+        $value->max_served_duration = (int) DirectQueue::whereBetween('created_at', [
                 Carbon::now()->startOfDay(),
                 Carbon::now()->endOfDay()
             ])
             ->where('service_id', $value->id)
-            ->limit(1)
-            ->first()
-            ->max_served_duration;
+            ->max('serving_duration');
 
-        $value->avg_served_duration = (int) DirectQueue::selectRaw(
-            DB::raw('AVG(EXTRACT(EPOCH FROM (done_at - called_at))) as avg_served_duration')
-        )
-            ->whereBetween('created_at', [
+        $value->avg_served_duration = (int) DirectQueue::whereBetween('created_at', [
                 Carbon::now()->startOfDay(),
                 Carbon::now()->endOfDay()
             ])
             ->where('service_id', $value->id)
-            ->limit(1)
-            ->first()
-            ->avg_served_duration;
+            ->avg('serving_duration');
     }
 }
