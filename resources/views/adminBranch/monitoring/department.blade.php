@@ -28,8 +28,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="d-flex align-items-center">
-                            <label for="refreshInterval" class="mr-3 mb-0">Refresh / menit</label>
-                            <select class="form-control" autocomplete="off" id="refreshInterval" style="max-width: 60px">
+                            <label for="refreshInterval" class="mr-3 mb-0" style="white-space: nowrap;">Refresh / menit</label>
+                            <select class="form-control" autocomplete="off" id="refreshInterval" style="max-width: 70px">
                                 <option value="5" selected>5</option>
                                 <option value="10">10</option>
                                 <option value="15">15</option>
