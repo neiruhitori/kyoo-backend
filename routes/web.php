@@ -105,6 +105,10 @@ Route::namespace('AdminBranch')
         Route::prefix('/monitoring')->name('monitoring.')->group(function () {
             Route::get('/department', 'DepartmentMonitoringController@index')->name('department');
             Route::get('/department/{id}', 'DepartmentMonitoringController@getData')->name('department.show');
+
+            Route::get('/department/{id}/service', 'ServiceMonitoringController@getServiceByDepartment')->name('department.service');
+            Route::get('/service', 'ServiceMonitoringController@index')->name('service');
+            Route::get('/service/{id}', 'ServiceMonitoringController@show')->name('service.show');
         });
         
         // Report
