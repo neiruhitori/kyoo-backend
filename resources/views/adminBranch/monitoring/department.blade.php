@@ -7,7 +7,7 @@
                 <div class="form-row align-items-end">
                     <div class="col-auto">
                         <label for="deparmentId">Departemen</label>
-                        <select class="form-control" id="departmentId" style="width: 160px;" autocomplete="off">
+                        <select class="form-control" id="departmentId" style="width: 180px;" autocomplete="off">
                             @foreach ($departments as $department)
                                 <option value="{{ $department->id }}">{{ $department->name }}</option>
                             @endforeach
@@ -166,7 +166,7 @@
     function formatTime(value) {
         let hours = Math.floor(value / 3600),
             minutes = Math.floor((value % 3600) / 60),
-            seconds = value % 3600 % 60
+            seconds = Math.floor(value % 3600 % 60)
         
         if (hours < 10) hours = '0' + hours
         if (minutes < 10) minutes = '0' + minutes
