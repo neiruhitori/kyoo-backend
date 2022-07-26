@@ -8,8 +8,10 @@ use App\Service;
 use App\Workstation;
 use App\User;
 use App\DirectQueue;
+use App\Models\CounterActivity;
 use Illuminate\Support\Carbon;
 use Auth;
+use Illuminate\Http\Request;
 
 class ServiceMonitoringController extends Controller
 {
@@ -52,10 +54,8 @@ class ServiceMonitoringController extends Controller
                 Carbon::now()->startOfDay(),
                 Carbon::now()->endOfDay()
             ])
-                ->where([
-                    'workstation_id' => $value->id,
-                    'status' => 'waiting'
-                ])
+                ->where('workstation_id', $value->id)
+                ->whereIn('status', ['served', 'end served'])
                 ->count();
             $value->total_no_show = DirectQueue::whereBetween('created_at', [
                 Carbon::now()->startOfDay(),
@@ -67,15 +67,19 @@ class ServiceMonitoringController extends Controller
                 ])
                 ->count();
             
+            $activity = CounterActivity::where([
+                'date' => date('Y-m-d'),
+                'workstation_id' => $value->id
+            ])->first();
+             
+            $value->now_operation_duration = $activity ? $activity->operation_duration : 0;
             $value->now_waiting_duration = 0;
             $value->avg_waiting_duration = 0;
             
-            if (DirectQueue::whereBetween('created_at', [
-                Carbon::now()->startOfDay(),
-                Carbon::now()->endOfDay()
-            ])
-                ->where('workstation_id', $value->id)->count()) {
-                $value->now_waiting_duration = DirectQueue::whereBetween('created_at', [
+            if (
+                DirectQueue::whereBetween('created_at', [Carbon::now()->startOfDay(), Carbon::now()->endOfDay()])->where('workstation_id', $value->id)->count()
+            ) {
+                $nowWaitingDuration = DirectQueue::whereBetween('created_at', [
                     Carbon::now()->startOfDay(),
                     Carbon::now()->endOfDay()
                 ])
@@ -83,13 +87,27 @@ class ServiceMonitoringController extends Controller
                     ->orderBy('created_at')
                     ->first()
                     ->waiting_duration;
-                $value->avg_waiting_duration = DirectQueue::whereBetween('created_at', [
+                
+                $avgWaitingDuration = DirectQueue::whereBetween('created_at', [
                     Carbon::now()->startOfDay(),
                     Carbon::now()->endOfDay()
                 ])
                     ->where('workstation_id', $value->id)
                     ->avg('waiting_duration');
+
+                $value->now_waiting_duration = $nowWaitingDuration;
+                $value->avg_waiting_duration = floor($avgWaitingDuration);
             }
+
+            $onlineStatus = false;
+
+            if ($value->user->last_login) {
+                $expiredAt = Carbon::parse($value->user->last_login)->add(env('SESSION_LIFETIME'), 'minutes');
+
+                $onlineStatus = $expiredAt > Carbon::now();
+            }
+
+            $value->is_online = $onlineStatus;
             
             return $value;
         });

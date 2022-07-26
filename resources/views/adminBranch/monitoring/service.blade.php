@@ -7,7 +7,7 @@
                 <div class="form-row align-items-end">
                     <div class="col-auto">
                         <label for="deparmentId">Departemen</label>
-                        <select class="form-control" id="departmentId" style="width: 160px;" autocomplete="off">
+                        <select class="form-control" id="departmentId" style="width: 180px;" autocomplete="off">
                             @foreach ($departments as $department)
                                 <option value="{{ $department->id }}">{{ $department->name }}</option>
                             @endforeach
@@ -16,7 +16,7 @@
 
                     <div class="col-auto">
                         <label for="serviceId">Layanan</label>
-                        <select class="form-control" id="serviceId" style="width: 160px;" autocomplete="off">
+                        <select class="form-control" id="serviceId" style="width: 180px;" autocomplete="off">
                             @foreach ($services as $service)
                                 <option value="{{ $service->id }}">{{ $service->name }}</option>
                             @endforeach
@@ -166,14 +166,18 @@
 
     function transformResponse(data) {
         return data.map(v => {
+            const badgeEl = `<span class="badge badge-${v.is_online ? 'success' : 'danger'}">
+                ${v.is_online ? 'Online' : 'Offline'}
+            </span>`
+
             return `<tr>
                 <td>${v.name}</td>
-                <td></td>
+                <td>${badgeEl}</td>
                 <td>${v.user.name}</td>
                 <td class="text-right">${v.total_waiting}</td>
                 <td class="text-right">${v.total_served}</td>
                 <td class="text-right">${v.total_no_show}</td>
-                <td class="text-center"></td>
+                <td class="text-center">${formatTime(v.now_operation_duration)}</td>
                 <td class="text-center">${formatTime(v.now_waiting_duration)}</td>
                 <td class="text-center">${formatTime(v.avg_waiting_duration)}</td>
             </tr>`
@@ -183,7 +187,7 @@
     function formatTime(value) {
         let hours = Math.floor(value / 3600),
             minutes = Math.floor((value % 3600) / 60),
-            seconds = value % 3600 % 60
+            seconds = Math.floor(value % 3600 % 60)
         
         if (hours < 10) hours = '0' + hours
         if (minutes < 10) minutes = '0' + minutes
