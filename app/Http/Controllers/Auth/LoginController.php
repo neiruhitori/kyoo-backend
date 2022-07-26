@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Log;
 use Auth;
 use App\User;
+use App\Models\CounterActivity;
+use Illuminate\Support\Carbon;
 
 class LoginController extends Controller
 {
@@ -65,11 +67,15 @@ class LoginController extends Controller
                 'description' => 'Login Success'
             ]);
 
-            if (Auth::user()->role == 'admin_branch' && !Auth::user()->last_login) {
-                User::find(Auth::id())->update([
-                    'last_login' => date('Y-m-d H:i:s')
-                ]);
-                
+            if (Auth::user()->WorkstationVct) {
+                $this->updateVctActivity();
+            }
+
+            User::find(Auth::id())->update([
+                'last_login' => date('Y-m-d H:i:s')
+            ]);
+
+            if (Auth::user()->role == 'admin_branch') {
                 return redirect()->route('admin-branch.product-guide.queue-configuration');
             }
             
@@ -78,5 +84,72 @@ class LoginController extends Controller
         }
         // on failed
         return redirect()->route('login')->with(['error' => __('Authenticate Failed')]);
+    }
+
+    public function logout(Request $request)
+    {
+        $this->updateActivityDuration();
+
+        User::find(Auth::id())->update([
+            'last_login' => null
+        ]);
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        if ($response = $this->loggedOut($request)) {
+            return $response;
+        }
+
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect('/');
+    }
+
+    private function updateVctActivity()
+    {
+        $activity = CounterActivity::where([
+            'date' => date('Y-m-d'),
+            'workstation_id' => Auth::user()->WorkstationVct->workstation_id,
+            'vct_id' => Auth::id()
+        ])->first();
+
+        $operationDuration = env('SESSION_LIFETIME') * 60;
+
+        if ($activity) {
+            $operationDuration += $activity->operation_duration;
+        }
+
+        CounterActivity::updateOrCreate([
+            'date' => date('Y-m-d'),
+            'workstation_id' => Auth::user()->WorkstationVct->workstation_id,
+            'vct_id' => Auth::id()
+        ], [
+            'operation_duration' => $operationDuration,
+            'last_login' => date('Y-m-d H:i:s')
+        ]);
+    }
+
+    private function updateActivityDuration()
+    {
+        $activity = CounterActivity::where([
+            'date' => date('Y-m-d'),
+            'workstation_id' => Auth::user()->WorkstationVct->workstation_id,
+            'vct_id' => Auth::id()
+        ])->first();
+        
+        if (!$activity) {
+            return;
+        }
+
+        $diff = Carbon::now()->diffInSeconds(Carbon::parse($activity->last_login));
+
+        if ($diff < env('SESSION_LIFETIME') * 60) {
+            $activity->operation_duration -= env('SESSION_LIFETIME') * 60 - $diff;
+            $activity->save(); 
+        }
     }
 }
