@@ -201,6 +201,13 @@
             >
               Departemen
             </a>
+
+            <a
+              class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/monitoring/service') ?: 'active' }}"
+              href="{{ route('admin-branch.monitoring.service') }}"
+            >
+              Layanan
+            </a>
           </div>
         </div>
       </li>
