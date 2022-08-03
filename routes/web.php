@@ -152,6 +152,11 @@ Route::namespace('AdminBranch')
             Route::get('/workstation/all', 'ReportingWorkstationController@getAll')->name('workstation.all');
             Route::get('/workstation/pdf', 'ReportingWorkstationController@exportToPdf')->name('workstation.pdf');
             Route::get('/workstation/excel', 'ReportingWorkstationController@exportToExcel')->name('workstation.excel');
+
+            Route::get('/vct', 'ReportingVctController@index')->name('vct');
+            Route::get('/vct/all', 'ReportingVctController@getAll')->name('vct.all');
+            Route::get('/vct/pdf', 'ReportingVctController@exportToPdf')->name('vct.pdf');
+            Route::get('/vct/excel', 'ReportingVctController@exportToExcel')->name('vct.excel');
         });
     });
 

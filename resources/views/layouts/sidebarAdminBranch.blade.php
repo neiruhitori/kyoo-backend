@@ -280,6 +280,13 @@
               >
                 Laporan Meja
               </a>
+
+              <a
+                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/vct*') ?: 'active' }}"
+                href="{{ route('admin-branch.report.vct') }}"
+              >
+                Laporan User
+              </a>
             @endif
           </div>
         </div>
