@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -30,6 +31,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('appointment:update')->dailyAt('23:55')->timezone('Asia/Jakarta');
         $schedule->command('directQueue:update')->dailyAt('23:55')->timezone('Asia/Jakarta');
         $schedule->command('branchToken:expriy')->dailyAt('01:00')->timezone('Asia/Jakarta');
+        $schedule->command('report:generate')->monthly()->timezone('Asia/Jakarta');
+        $schedule->command('report:feed')->dailyAt('02:00')->timezone('Asia/Jakarta');
     }
 
     /**
