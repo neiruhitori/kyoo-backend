@@ -273,6 +273,13 @@
               >
                 Laporan Layanan
               </a>
+
+              <a
+                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/workstation*') ?: 'active' }}"
+                href="{{ route('admin-branch.report.workstation') }}"
+              >
+                Laporan Meja
+              </a>
             @endif
           </div>
         </div>

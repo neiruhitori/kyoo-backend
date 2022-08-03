@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return redirect(route('dashboard'));
@@ -146,6 +147,11 @@ Route::namespace('AdminBranch')
             Route::get('/service/all', 'ReportingServiceController@getAll')->name('service.all');
             Route::get('/service/pdf', 'ReportingServiceController@exportToPdf')->name('service.pdf');
             Route::get('/service/excel', 'ReportingServiceController@exportToExcel')->name('service.excel');
+
+            Route::get('/workstation', 'ReportingWorkstationController@index')->name('workstation');
+            Route::get('/workstation/all', 'ReportingWorkstationController@getAll')->name('workstation.all');
+            Route::get('/workstation/pdf', 'ReportingWorkstationController@exportToPdf')->name('workstation.pdf');
+            Route::get('/workstation/excel', 'ReportingWorkstationController@exportToExcel')->name('workstation.excel');
         });
     });
 

@@ -15,6 +15,8 @@ use App\Interfaces\ReportingDepartmentRepositoryInterface;
 use App\Repositories\ReportingDepartmentRepository;
 use App\Interfaces\ReportingServiceRepositoryInterface;
 use App\Repositories\ReportingServiceRepository;
+use App\Interfaces\ReportingWorkstationRepositoryInterface;
+use App\Repositories\ReportingWorkstationRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -32,6 +34,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ReportingDepartmentRepositoryInterface::class, ReportingDepartmentRepository::class);
         $this->app->bind(AudioRecordingRepositoryInterface::class, AudioRecordingRepository::class);
         $this->app->bind(ReportingServiceRepositoryInterface::class, ReportingServiceRepository::class);
+        $this->app->bind(ReportingWorkstationRepositoryInterface::class, ReportingWorkstationRepository::class);
     }
 
     /**
