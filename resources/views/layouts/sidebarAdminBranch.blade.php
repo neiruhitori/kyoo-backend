@@ -266,6 +266,13 @@
               >
                 Laporan Departemen
               </a>
+
+              <a
+                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/service*') ?: 'active' }}"
+                href="{{ route('admin-branch.report.service') }}"
+              >
+                Laporan Layanan
+              </a>
             @endif
           </div>
         </div>

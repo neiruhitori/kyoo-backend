@@ -13,6 +13,8 @@ use App\Interfaces\AudioRecordingRepositoryInterface;
 use App\Repositories\AudioRecordingRepository;
 use App\Interfaces\ReportingDepartmentRepositoryInterface;
 use App\Repositories\ReportingDepartmentRepository;
+use App\Interfaces\ReportingServiceRepositoryInterface;
+use App\Repositories\ReportingServiceRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(DirectQueueRepositoryInterface::class, DirectQueueRepository::class);
         $this->app->bind(AudioRecordingRepositoryInterface::class, AudioRecordingRepository::class);
         $this->app->bind(ReportingDepartmentRepositoryInterface::class, ReportingDepartmentRepository::class);
+        $this->app->bind(AudioRecordingRepositoryInterface::class, AudioRecordingRepository::class);
+        $this->app->bind(ReportingServiceRepositoryInterface::class, ReportingServiceRepository::class);
     }
 
     /**
