@@ -38,10 +38,6 @@
         td.text-right, th.text-right {
             text-align: right;
         }
-
-        .report-title {
-            margin-bottom: 
-        }
     </style>
 </head>
 <body>
