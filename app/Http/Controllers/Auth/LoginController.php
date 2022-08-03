@@ -135,6 +135,10 @@ class LoginController extends Controller
 
     private function updateActivityDuration()
     {
+        if (!Auth::user()->WorkstationVct) {
+            return;
+        }
+
         $activity = CounterActivity::where([
             'date' => date('Y-m-d'),
             'workstation_id' => Auth::user()->WorkstationVct->workstation_id,
