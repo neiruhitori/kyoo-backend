@@ -164,28 +164,30 @@
 
       <hr class="sidebar-divider my-0">
 
-      <li class="nav-item {{ !request()->is('admin-branch/service-quality/*') ?: 'active' }}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#service-quality" aria-expanded="true" aria-controls="service-quality">
-          <i class="fas fa-star"></i>
-          <span>Kualitas Pelayanan</span>
-        </a>
+      @if (
+        Auth::user()->Branch->BranchType->is_premium &&
+        Auth::user()->Branch->hasAccess('Voice Recording')
+      )
+        <li class="nav-item {{ !request()->is('admin-branch/service-quality/*') ?: 'active' }}">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#service-quality" aria-expanded="true" aria-controls="service-quality">
+            <i class="fas fa-star"></i>
+            <span>Kualitas Pelayanan</span>
+          </a>
 
-        <div class="collapse {{ !request()->is('admin-branch/service-quality/*') ?: 'show' }}" id="service-quality" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            @if (
-              Auth::user()->Branch->BranchType->is_premium &&
-              Auth::user()->Branch->hasAccess('Voice Recording')
-            )
-              <a
-                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/service-quality/audio-recording') && !request()->is('admin-branch/service-quality/audio-recording') && !request()->is('admin-branch/service-quality/audio-recording') ?: 'active' }}"
-                href="{{ route('admin-branch.service-quality.audio-recording.index') }}"
-              >
-                Putar Rekaman
-              </a>
-            @endif
+          <div class="collapse {{ !request()->is('admin-branch/service-quality/*') ?: 'show' }}" id="service-quality" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              @if (Auth::user()->Branch->hasAccess('Voice Recording'))
+                <a
+                  class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/service-quality/audio-recording') && !request()->is('admin-branch/service-quality/audio-recording') && !request()->is('admin-branch/service-quality/audio-recording') ?: 'active' }}"
+                  href="{{ route('admin-branch.service-quality.audio-recording.index') }}"
+                >
+                  Putar Rekaman
+                </a>
+              @endif
+            </div>
           </div>
-        </div>
-      </li>
+        </li>
+      @endif
 
       <li class="nav-item {{ !request()->is('admin-branch/monitoring/*') ?: 'active' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#monitoring" aria-expanded="true" aria-controls="monitoring">
@@ -256,6 +258,13 @@
                 href="{{ route('admin-branch.report.customer-satisfaction') }}"
               >
                 Laporan Kepuasan Pelanggan
+              </a>
+
+              <a
+                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/department*') ?: 'active' }}"
+                href="{{ route('admin-branch.report.department') }}"
+              >
+                Laporan Departemen
               </a>
             @endif
           </div>

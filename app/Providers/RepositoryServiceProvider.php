@@ -3,18 +3,16 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
 use App\Interfaces\BranchTypeRepositoryInterface;
 use App\Repositories\BranchTypeRepository;
-
 use App\Interfaces\ExhibitionRepositoryInterface;
 use App\Repositories\ExhibitionRepository;
-
 use App\Interfaces\DirectQueueRepositoryInterface;
 use App\Repositories\DirectQueueRepository;
-
 use App\Interfaces\AudioRecordingRepositoryInterface;
 use App\Repositories\AudioRecordingRepository;
+use App\Interfaces\ReportingDepartmentRepositoryInterface;
+use App\Repositories\ReportingDepartmentRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -29,6 +27,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(BranchTypeRepositoryInterface::class, BranchTypeRepository::class);
         $this->app->bind(DirectQueueRepositoryInterface::class, DirectQueueRepository::class);
         $this->app->bind(AudioRecordingRepositoryInterface::class, AudioRecordingRepository::class);
+        $this->app->bind(ReportingDepartmentRepositoryInterface::class, ReportingDepartmentRepository::class);
     }
 
     /**

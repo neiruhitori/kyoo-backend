@@ -136,6 +136,11 @@ Route::namespace('AdminBranch')
 
             Route::get('/customer-satisfaction', 'ReportController@customerSatisfaction')
                 ->name('customer-satisfaction');
+
+            Route::get('/department', 'ReportingDepartmentController@index')->name('department');
+            Route::get('/department/all', 'ReportingDepartmentController@getAll')->name('department.all');
+            Route::get('/department/pdf', 'ReportingDepartmentController@exportToPdf')->name('department.pdf');
+            Route::get('/department/excel', 'ReportingDepartmentController@exportToExcel')->name('department.excel');
         });
     });
 
