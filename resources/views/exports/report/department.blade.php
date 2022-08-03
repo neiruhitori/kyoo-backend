@@ -48,7 +48,9 @@
     <div style="margin-bottom: 1.25rem;">
         <h2 class="report-title">{{ $title }}</h2>
         <div style="margin-bottom: .25rem">{{ $branch['name'] }}</div>
-        <div>{{ $reportTime }}</div>
+        <div>
+            <strong>Tanggal:</strong> {{ $reportTime }}
+        </div>
     </div>
 
     <table class="table" style="width: 100%">

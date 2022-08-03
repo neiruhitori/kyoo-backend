@@ -16,10 +16,15 @@
 
         <tr>
             <td colspan="11" style="text-align: center">
-                Laporan Departemen {{ $date }}
+                Laporan Departemen
             </td>
         </tr>
 
+        <tr></tr>
+        <tr>
+            <td><strong>Tanggal:</strong></td>
+            <td>{{ $date }}</td>
+        </tr>
         <tr></tr>
 
         <thead>

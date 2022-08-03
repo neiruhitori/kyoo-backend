@@ -12,7 +12,7 @@ class ReportingDepartmentRepository implements ReportingDepartmentRepositoryInte
 {
     public function getReport(Request $request = null)
     {
-        $table = date('Y_m_') . 'department_report';
+        $tableDate = date('Y_m_');
 
         $createdAtFilter = [
             Carbon::now()->startOfMonth(),
@@ -27,7 +27,7 @@ class ReportingDepartmentRepository implements ReportingDepartmentRepositoryInte
                 Carbon::parse($requestDate)->endOfMonth()
             ];
 
-            $table = Carbon::parse($requestDate)->format('Y_m_') . 'department_report';
+            $tableDate = Carbon::parse($requestDate)->format('Y_m_');
         }
 
         if ($request->date) {
@@ -36,8 +36,10 @@ class ReportingDepartmentRepository implements ReportingDepartmentRepositoryInte
                 Carbon::parse($request->date)->endOfDay()
             ];
 
-            $table = Carbon::parse($request->date)->format('Y_m_') . 'department_report';
+            $tableDate = Carbon::parse($request->date)->format('Y_m_');
         }
+
+        $table = $tableDate . 'department_report';
 
         if (!Schema::hasTable($table)) {
             return collect([]);
