@@ -39,9 +39,18 @@ class GenerateMonthlyReportTable extends Command
      */
     public function handle()
     {
-        if (!Schema::hasTable(date('Y_m_') . 'department_report')) {
-            Schema::create(date('Y_m_') . 'department_report', function (Blueprint $table) {
+        $tableDate = date('Ym');
+
+        $departmentTable = 'department_general_report_' . $tableDate;
+        $serviceTable = 'service_general_report_' . $tableDate;
+        $serviceDistributionTable = 'service_distribution_general_report_' . $tableDate;
+        $workstationTable = 'workstation_general_report_' . $tableDate;
+        $vctTable = 'vct_general_report_' . $tableDate;
+
+        if (!Schema::hasTable($departmentTable)) {
+            Schema::create($departmentTable, function (Blueprint $table) {
                 $table->id();
+                $table->date('event_date');
                 $table->bigInteger('branch_id');
                 $table->bigInteger('department_id');
                 $table->string('name');
@@ -61,9 +70,10 @@ class GenerateMonthlyReportTable extends Command
             });
         }
 
-        if (!Schema::hasTable(date('Y_m_') . 'service_report')) {
-            Schema::create(date('Y_m_') . 'service_report', function (Blueprint $table) {
+        if (!Schema::hasTable($serviceTable)) {
+            Schema::create($serviceTable, function (Blueprint $table) {
                 $table->id();
+                $table->date('event_date');
                 $table->bigInteger('branch_id');
                 $table->bigInteger('department_id');
                 $table->bigInteger('service_id');
@@ -85,9 +95,33 @@ class GenerateMonthlyReportTable extends Command
             });
         }
 
-        if (!Schema::hasTable(date('Y_m_') . 'workstation_report')) {
-            Schema::create(date('Y_m_') . 'workstation_report', function (Blueprint $table) {
+        if (!Schema::hasTable($serviceDistributionTable)) {
+            Schema::create($serviceDistributionTable, function (Blueprint $table) {
                 $table->id();
+                $table->date('event_date');
+                $table->bigInteger('branch_id');
+                $table->bigInteger('department_id');
+                $table->bigInteger('service_id');
+                $table->string('name');
+                $table->integer('_0_5');
+                $table->integer('_5_10');
+                $table->integer('_10_15');
+                $table->integer('_15_20');
+                $table->integer('_20_25');
+                $table->integer('_25_30');
+                $table->integer('_30_');
+                $table->timestamps();
+
+                $table->foreign('branch_id')->references('id')->on('branches');
+                $table->foreign('department_id')->references('id')->on('departments');
+                $table->foreign('service_id')->references('id')->on('services');
+            });
+        }
+
+        if (!Schema::hasTable($workstationTable)) {
+            Schema::create($workstationTable, function (Blueprint $table) {
+                $table->id();
+                $table->date('event_date');
                 $table->bigInteger('branch_id');
                 $table->bigInteger('department_id');
                 $table->bigInteger('workstation_id');
@@ -111,9 +145,10 @@ class GenerateMonthlyReportTable extends Command
             });
         }
 
-        if (!Schema::hasTable(date('Y_m_') . 'vct_report')) {
-            Schema::create(date('Y_m_') . 'vct_report', function (Blueprint $table) {
+        if (!Schema::hasTable($vctTable)) {
+            Schema::create($vctTable, function (Blueprint $table) {
                 $table->id();
+                $table->date('event_date');
                 $table->bigInteger('branch_id');
                 $table->bigInteger('department_id');
                 $table->bigInteger('vct_id');

@@ -9,10 +9,10 @@ use App\Models\CounterActivity;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Log;
 use App\Service;
 use App\Workstation;
 use App\User;
+use Illuminate\Support\Facades\Log;
 
 class FeedReportTable extends Command
 {
@@ -47,36 +47,52 @@ class FeedReportTable extends Command
      */
     public function handle()
     {
-        if (Schema::hasTable(date('Y_m_') . 'department_report')) {
+        $tableDate = date('Ym');
+
+        $departmentTable = 'department_general_report_' . $tableDate;
+        $serviceTable = 'service_general_report_' . $tableDate;
+        $serviceDistributionTable = 'service_distribution_general_report_' . $tableDate;
+        $workstationTable = 'workstation_general_report_' . $tableDate;
+        $vctTable = 'vct_general_report_' . $tableDate;
+
+        if (Schema::hasTable($departmentTable)) {
             $departments = Department::all();
 
             $data = $this->transformsDepartmentData($departments);
 
-            DB::table(date('Y_m_') . 'department_report')->insert($data->toArray());
+            DB::table($departmentTable)->insert($data->toArray());
         }
 
-        if (Schema::hasTable(date('Y_m_') . 'service_report')) {
+        if (Schema::hasTable($serviceTable)) {
             $services = Service::with('Department')->get();
 
             $data = $this->transformsServiceData($services);
 
-            DB::table(date('Y_m_') . 'service_report')->insert($data->toArray());
+            DB::table($serviceTable)->insert($data->toArray());
         }
 
-        if (Schema::hasTable(date('Y_m_') . 'workstation_report')) {
+        if (Schema::hasTable($serviceDistributionTable)) {
+            $services = Service::with('Department')->get();
+
+            $data = $this->transformsServiceDistributionData($services);
+
+            DB::table($serviceDistributionTable)->insert($data->toArray());
+        }
+
+        if (Schema::hasTable($workstationTable)) {
             $workstations = Workstation::with('Department')->get();
 
             $data = $this->transformsWorkstationData($workstations);
 
-            DB::table(date('Y_m_') . 'workstation_report')->insert($data->toArray());
+            DB::table($workstationTable)->insert($data->toArray());
         }
 
-        if (Schema::hasTable(date('Y_m_') . 'vct_report')) {
+        if (Schema::hasTable($vctTable)) {
             $users = User::whereHas('WorkstationVct')->get();
 
             $data = $this->transformsVctData($users);
 
-            DB::table(date('Y_m_') . 'vct_report')->insert($data->toArray());
+            DB::table($vctTable)->insert($data->toArray());
         }
     }
 
@@ -121,6 +137,7 @@ class FeedReportTable extends Command
             $longest_serve_duration = $endServedDirectQueue->max('serving_duration');
 
             return [
+                'event_date' => Carbon::yesterday()->format('Y-m-d'),
                 'branch_id' => $department->branch_id,
                 'department_id' => $id,
                 'name' => $department->name,
@@ -136,6 +153,65 @@ class FeedReportTable extends Command
                 'created_at' => date('Y-m-d H:i:s')
             ];
         });
+    }
+
+    private function transformsServiceDistributionData($services)
+    {
+        return $services->filter(function ($service) {
+            $total = DirectQueue::where('service_id', $service->id)->whereBetween('created_at', [
+                Carbon::now()->startOfDay(),
+                Carbon::now()->endOfDay()
+            ])->count();
+
+            return $total > 0;
+        })
+            ->map(function ($service) {
+                $directQueue = DirectQueue::select(
+                    'service_id',
+                    DB::raw('CASE
+                        WHEN waiting_duration <= 300 THEN \'_0_5\'
+                        WHEN waiting_duration BETWEEN 301 AND 600 THEN \'_5_10\'
+                        WHEN waiting_duration BETWEEN 601 AND 900 THEN \'_10_15\'
+                        WHEN waiting_duration BETWEEN 901 AND 1200 THEN  \'_15_20\'
+                        WHEN waiting_duration BETWEEN 1201 AND 1500 THEN \'_20_25\'
+                        WHEN waiting_duration BETWEEN 1501 AND 1800 THEN \'_25_30\'
+                        WHEN waiting_duration > 1800 THEN \'_30_\'
+                    END AS wait_time_distribution,
+                    COUNT(*) AS total')
+                )
+                    ->whereBetween('created_at', [
+                        Carbon::now()->startOfDay(),
+                        Carbon::now()->endOfDay()
+                    ])
+                    ->whereIn('status', ['served', 'end served'])
+                    ->where('service_id', $service->id)
+                    ->groupBy('service_id', 'wait_time_distribution')
+                    ->get();
+                
+                $_0_5 = $directQueue->firstWhere('wait_time_distribution', '_0_5');
+                $_5_10 = $directQueue->firstWhere('wait_time_distribution', '_5_10');
+                $_10_15 = $directQueue->firstWhere('wait_time_distribution', '_10_15');
+                $_15_20 = $directQueue->firstWhere('wait_time_distribution', '_15_20');
+                $_20_25 = $directQueue->firstWhere('wait_time_distribution', '_20_25');
+                $_25_30 = $directQueue->firstWhere('wait_time_distribution', '_25_30');
+                $_30_ = $directQueue->firstWhere('wait_time_distribution', '_30_');
+
+                return [
+                    'event_date' => Carbon::yesterday()->format('Y-m-d'),
+                    'branch_id' => $service->Department->branch_id,
+                    'department_id' => $service->department_id,
+                    'service_id' => $service->id,
+                    'name' => $service->name,
+                    '_0_5' => $_0_5 ? $_0_5->total : 0,
+                    '_5_10' => $_5_10 ? $_5_10->total : 0,
+                    '_10_15' => $_10_15 ? $_10_15->total : 0,
+                    '_15_20' => $_15_20 ? $_15_20->total : 0,
+                    '_20_25' => $_20_25 ? $_20_25->total : 0,
+                    '_25_30' => $_25_30 ? $_25_30->total : 0,
+                    '_30_' => $_30_ ? $_30_->total : 0,
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+            });
     }
 
     private function transformsServiceData($services)
@@ -156,6 +232,7 @@ class FeedReportTable extends Command
             $endServedDirectQueue = $directQueue->clone()->where('status', 'end served');
 
             return [
+                'event_date' => Carbon::yesterday()->format('Y-m-d'),
                 'branch_id' => $service->Department->branch_id,
                 'department_id' => $service->department_id,
                 'service_id' => $service->id,
@@ -200,6 +277,7 @@ class FeedReportTable extends Command
             $total_serve_duration = $endServedDirectQueue->sum('serving_duration');
 
             return [
+                'event_date' => Carbon::yesterday()->format('Y-m-d'),
                 'branch_id' => $workstation->Department->branch_id,
                 'department_id' => $workstation->department_id,
                 'workstation_id' => $workstation->id,
@@ -246,6 +324,7 @@ class FeedReportTable extends Command
             $total_serve_duration = $endServedDirectQueue->sum('serving_duration');
 
             return [
+                'event_date' => Carbon::yesterday()->format('Y-m-d'),
                 'branch_id' => $vct->branch_id,
                 'department_id' => $vct->WorkstationVct->Workstation->department_id,
                 'vct_id' => $vct->id,

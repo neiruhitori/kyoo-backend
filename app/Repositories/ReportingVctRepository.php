@@ -12,7 +12,7 @@ class ReportingVctRepository implements ReportingVctRepositoryInterface
 {
     public function getReport(Request $request = null)
     {
-        $tableDate = date('Y_m_');
+        $tableDate = date('Ym');
 
         $createdAtFilter = [
             Carbon::now()->startOfMonth(),
@@ -27,7 +27,7 @@ class ReportingVctRepository implements ReportingVctRepositoryInterface
                 Carbon::parse($requestDate)->endOfMonth()
             ];
 
-            $tableDate = Carbon::parse($requestDate)->format('Y_m_');
+            $tableDate = Carbon::parse($requestDate)->format('Ym');
         }
 
         if ($request->date) {
@@ -36,10 +36,10 @@ class ReportingVctRepository implements ReportingVctRepositoryInterface
                 Carbon::parse($request->date)->endOfDay()
             ];
 
-            $tableDate = Carbon::parse($request->date)->format('Y_m_');
+            $tableDate = Carbon::parse($request->date)->format('Ym');
         }
 
-        $table = $tableDate . 'vct_report';
+        $table = 'vct_general_report_' . $tableDate;
 
         if (!Schema::hasTable($table)) {
             return collect([]);
@@ -65,7 +65,7 @@ class ReportingVctRepository implements ReportingVctRepositoryInterface
                     SUM(total_serve_duration) AS total_serve_duration'
                 )
             )
-            ->whereBetween('created_at', $createdAtFilter)
+            ->whereBetween('event_date', $createdAtFilter)
             ->where('department_id', $request->department_id)
             ->groupBy('vct_id')
             ->get();

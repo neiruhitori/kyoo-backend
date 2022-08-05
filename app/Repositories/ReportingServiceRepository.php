@@ -12,7 +12,7 @@ class ReportingServiceRepository implements ReportingServiceRepositoryInterface
 {
     public function getReport(Request $request = null)
     {
-        $tableDate = date('Y_m_');
+        $tableDate = date('Ym');
 
         $createdAtFilter = [
             Carbon::now()->startOfMonth(),
@@ -27,7 +27,7 @@ class ReportingServiceRepository implements ReportingServiceRepositoryInterface
                 Carbon::parse($requestDate)->endOfMonth()
             ];
 
-            $tableDate = Carbon::parse($requestDate)->format('Y_m_');
+            $tableDate = Carbon::parse($requestDate)->format('Ym');
         }
 
         if ($request->date) {
@@ -36,10 +36,10 @@ class ReportingServiceRepository implements ReportingServiceRepositoryInterface
                 Carbon::parse($request->date)->endOfDay()
             ];
 
-            $tableDate = Carbon::parse($request->date)->format('Y_m_');
+            $tableDate = Carbon::parse($request->date)->format('Ym');
         }
 
-        $table = $tableDate . 'service_report';
+        $table = 'service_general_report_' . $tableDate;
 
         if (!Schema::hasTable($table)) {
             return collect([]);
@@ -63,7 +63,7 @@ class ReportingServiceRepository implements ReportingServiceRepositoryInterface
                     SUM(longest_serve_duration) AS longest_serve_duration'
                 )
             )
-            ->whereBetween('created_at', $createdAtFilter)
+            ->whereBetween('event_date', $createdAtFilter)
             ->where('department_id', $request->department_id)
             ->groupBy('service_id')
             ->get();
