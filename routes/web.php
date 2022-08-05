@@ -143,10 +143,15 @@ Route::namespace('AdminBranch')
             Route::get('/department/pdf', 'ReportingDepartmentController@exportToPdf')->name('department.pdf');
             Route::get('/department/excel', 'ReportingDepartmentController@exportToExcel')->name('department.excel');
 
-            Route::get('/service', 'ReportingServiceController@index')->name('service');
+            Route::get('/service', 'ReportingServiceController@index')->name('service.index');
             Route::get('/service/all', 'ReportingServiceController@getAll')->name('service.all');
             Route::get('/service/pdf', 'ReportingServiceController@exportToPdf')->name('service.pdf');
             Route::get('/service/excel', 'ReportingServiceController@exportToExcel')->name('service.excel');
+
+            Route::get('/service-distribution', 'ReportingServiceDistributionController@index')->name('service-distribution');
+            Route::get('/service-distribution/all', 'ReportingServiceDistributionController@getAll')->name('service-distribution.all');
+            Route::get('/service-distribution/pdf', 'ReportingServiceDistributionController@exportToPdf')->name('service-distribution.pdf');
+            Route::get('/service-distribution/excel', 'ReportingServiceDistributionController@exportToExcel')->name('service-distribution.excel');
 
             Route::get('/workstation', 'ReportingWorkstationController@index')->name('workstation');
             Route::get('/workstation/all', 'ReportingWorkstationController@getAll')->name('workstation.all');

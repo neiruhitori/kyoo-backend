@@ -268,10 +268,17 @@
               </a>
 
               <a
-                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/service*') ?: 'active' }}"
-                href="{{ route('admin-branch.report.service') }}"
+                class="collapse-item kyoo-sublink {{ !request()->routeIs('admin-branch.report.service.*') ?: 'active' }}"
+                href="{{ route('admin-branch.report.service.index') }}"
               >
                 Laporan Layanan
+              </a>
+
+              <a
+                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/service-distribution*') ?: 'active' }}"
+                href="{{ route('admin-branch.report.service-distribution') }}"
+              >
+                Laporan Distribusi Tunggu Layanan
               </a>
 
               <a

@@ -19,6 +19,8 @@ use App\Interfaces\ReportingWorkstationRepositoryInterface;
 use App\Repositories\ReportingWorkstationRepository;
 use App\Interfaces\ReportingVctRepositoryInterface;
 use App\Repositories\ReportingVctRepository;
+use App\Interfaces\ReportingServiceDistributionRepositoryInterface;
+use App\Repositories\ReportingServiceDistributionRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -38,6 +40,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ReportingServiceRepositoryInterface::class, ReportingServiceRepository::class);
         $this->app->bind(ReportingWorkstationRepositoryInterface::class, ReportingWorkstationRepository::class);
         $this->app->bind(ReportingVctRepositoryInterface::class, ReportingVctRepository::class);
+        $this->app->bind(ReportingServiceDistributionRepositoryInterface::class, ReportingServiceDistributionRepository::class);
     }
 
     /**
