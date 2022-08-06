@@ -47,6 +47,8 @@ class FeedReportTable extends Command
      */
     public function handle()
     {
+        Log::info('Feed report cron is running');
+
         $tableDate = date('Ym');
 
         $departmentTable = 'department_general_report_' . $tableDate;

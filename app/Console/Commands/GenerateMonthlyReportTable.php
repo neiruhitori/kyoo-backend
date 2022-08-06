@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Log;
 
 class GenerateMonthlyReportTable extends Command
 {
@@ -39,6 +40,8 @@ class GenerateMonthlyReportTable extends Command
      */
     public function handle()
     {
+        Log::info('Generate monthly report cron is running');
+
         $tableDate = date('Ym');
 
         $departmentTable = 'department_general_report_' . $tableDate;
