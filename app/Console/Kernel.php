@@ -35,7 +35,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('report:feed')->dailyAt('02:00')->timezone('Asia/Jakarta');
         $schedule->call(function () {
             Log::info('Cron test is running');
-        })->everyThirtyMinutes();
+        })->everyMinute();
     }
 
     /**
