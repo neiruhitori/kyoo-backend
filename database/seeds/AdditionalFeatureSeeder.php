@@ -31,8 +31,8 @@ class AdditionalFeatureSeeder extends Seeder
                 'created_at' => date('Y-m-d H:i:s')
             ],
             [
-                'code' => 'TLC',
-                'name' => 'Teleconference',
+                'code' => 'CFD',
+                'name' => 'Customer Feedback',
                 'created_at' => date('Y-m-d H:i:s')
             ]
         ]);

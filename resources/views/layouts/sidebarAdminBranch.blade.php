@@ -166,7 +166,7 @@
 
       @if (
         Auth::user()->Branch->BranchType->is_premium &&
-        Auth::user()->Branch->hasAccess('Voice Recording')
+        (Auth::user()->Branch->hasAccess('Voice Recording') || Auth::user()->Branch->hasAccess('Customer Feedback'))
       )
         <li class="nav-item {{ !request()->is('admin-branch/service-quality/*') ?: 'active' }}">
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#service-quality" aria-expanded="true" aria-controls="service-quality">

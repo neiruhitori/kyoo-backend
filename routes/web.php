@@ -71,9 +71,9 @@ Route::namespace('AdminBranch')
             Route::resource('service', 'ServiceController');
             Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
 
-            Route::resource('schedule', 'ScheduleController')->except('show');
-            Route::get('/schedule/list', 'ScheduleController@templateIndex')->name('schedule.template.index');
             Route::put('/schedule/list', 'ScheduleController@templateUpdate')->name('schedule.template.update');
+            Route::get('/schedule/list', 'ScheduleController@templateIndex')->name('schedule.template.index');
+            Route::resource('schedule', 'ScheduleController')->except('show');
 
             Route::resource('workstation', 'WorkstationController');
             Route::resource('workstation.workstation-service', 'WorkstationServiceController');
