@@ -159,8 +159,8 @@ class FeedReportTable extends Command
     {
         return $services->filter(function ($service) {
             $total = DirectQueue::where('service_id', $service->id)->whereBetween('created_at', [
-                Carbon::now()->startOfDay(),
-                Carbon::now()->endOfDay()
+                Carbon::yesterday()->startOfDay(),
+                Carbon::yesterday()->endOfDay()
             ])->count();
 
             return $total > 0;
@@ -180,8 +180,8 @@ class FeedReportTable extends Command
                     COUNT(*) AS total')
                 )
                     ->whereBetween('created_at', [
-                        Carbon::now()->startOfDay(),
-                        Carbon::now()->endOfDay()
+                        Carbon::yesterday()->startOfDay(),
+                        Carbon::yesterday()->endOfDay()
                     ])
                     ->whereIn('status', ['served', 'end served'])
                     ->where('service_id', $service->id)
