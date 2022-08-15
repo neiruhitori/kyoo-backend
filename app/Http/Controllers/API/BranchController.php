@@ -8,6 +8,7 @@ use App\Branch;
 use App\Appointment;
 use App\DirectQueue;
 use App\ScheduleTemplateDetail;
+use App\Schedule;
 
 class BranchController extends Controller
 {
@@ -98,5 +99,12 @@ class BranchController extends Controller
             'message' => 'get branch type by branch id',
             'data' => $branch->BranchType
         ]);
+    }
+
+    public function getSchedules(Branch $branch)
+    {
+        $schedules = Schedule::where('branch_id', $branch->id)->get();
+
+        return response()->json($schedules);
     }
 }

@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import { format, getDayName, getMonthNames, getDayIndex, getFullDate } from '../../utils/date'
+import { format, getDayName, getMonthNames, getDayIndex, getFullDate, formatBrowser } from '../../utils/date'
 import { fetchBranch } from '../../api/branch'
 import { fetchServiceByBranchId } from '../../api/services'
+import { fetchSchedulesByBranchId } from '../../api/schedules'
+import { fetchHolidays } from '../../api/holidays'
 
 import 'react-day-picker/lib/style.css'
 
@@ -33,21 +35,39 @@ function ServiceList() {
     const [showCalendar, setShowCalendar] = useState(false)
 
     const branchRes = useQuery('branch', () => fetchBranch(branchId))
+
     const servicesRes = useQuery(['services', selectedDate], () => fetchServiceByBranchId(branchId, {
         queueType,
         date: getFullDate(selectedDate)
     }))
 
-    let branch = null
-    let schedule = null
-    let services = []
+    const schedulesRes = useQuery(['schedules', branchId], () => fetchSchedulesByBranchId(branchId))
+
+    const holidaysRes = useQuery('holidays', () => fetchHolidays())
+
+    let branch = null,
+        schedule = null,
+        services = [],
+        schedules = [],
+        holidays = []
 
     if (branchRes.status === 'success') {
         branch = branchRes.data
         schedule = branch?.schedule.find(v => (v.day === getDayName(new Date(), 'en')))
     }
+
     if (servicesRes.status === 'success') {
         services = servicesRes.data
+    }
+
+    if (schedulesRes.status === 'success') {
+        schedules = schedulesRes.data
+    }
+
+    if (holidaysRes.status === 'success') {
+        holidays = holidaysRes.data.map(v => {
+            return formatBrowser(v.date)
+        })
     }
 
     function handleDayClick(day, modifiers = {}) {
@@ -60,11 +80,10 @@ function ServiceList() {
     }
 
     function getClosedDays() {
-        return branch ? branch.schedule.filter(v => {
-            return v.status === 'closed'
-        }).map(val => {
-            return getDayIndex(val.day)
-        }) : []
+        return schedules.filter(v => v.status === 'closed')
+            .map(v => {
+                return getDayIndex(v.day)
+            })
     }
 
     return <>
@@ -152,6 +171,7 @@ function ServiceList() {
                     modifiers={{
                         selected: selectedDate,
                         disabled: [
+                            ...holidays,
                             { daysOfWeek: getClosedDays() },
                             { before: new Date() }
                         ]

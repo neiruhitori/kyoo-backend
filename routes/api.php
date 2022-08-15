@@ -35,6 +35,10 @@ Route::get('branch/keyword/{keyword}', 'API\BranchController@getAllByKeyword');
 Route::get('branch/industry-category/{industry_category_id}', 'API\BranchController@getAllByIndustryCategory');
 Route::get('branch/type/{branch}', 'API\BranchController@getBranchType');
 Route::get('branch/{branch}', 'API\BranchController@show');
+Route::get('branch/{branch}/schedules', 'API\BranchController@getSchedules');
+
+// holidays
+Route::get('holidays', 'API\HolidayController@index');
 
 // service routes
 Route::get('service/branch/{branch_id}', 'API\ServiceController@getAllByBranchId');
