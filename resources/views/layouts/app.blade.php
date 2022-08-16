@@ -142,6 +142,8 @@
   <!-- Custom scripts for all pages-->
   <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
 
+  <script src="{{asset('admin/vendor/chart.js/Chart.min.js')}}"></script>
+
   <script>
     $(document).ready(function () {
       initAuth()
@@ -197,6 +199,7 @@
       localStorage.setItem('accessToken', '{{ Auth::user()->token_personal }}')
     }
   </script>
+
   @stack('js')
 </body>
 

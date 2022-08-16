@@ -72,9 +72,13 @@
                             <span class="fas fa-file-pdf mr-2"></span>PDF
                         </button>
 
-                        <button id="excelButton" class="btn btn-outline-dark">
+                        <button id="excelButton" class="btn btn-outline-dark mr-1">
                             <span class="fas fa-file-excel mr-2"></span>Excel
                         </button>
+
+                        <a href="{{ route('admin-branch.report.department.chart') }}" class="btn btn-outline-dark">
+                            <span class="fas fa-chart-pie mr-2"></span>Chart
+                        </a>
                     </div>
 
                     <div class="table-responsive">

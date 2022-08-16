@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<script src="{{asset('admin/vendor/chart.js/Chart.min.js')}}"></script>
-
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">{{ __('Dashboard') }} {{ Auth::user()->Branch->name }}</h1>
 </div>

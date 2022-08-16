@@ -7,6 +7,10 @@ use App\DirectQueue;
 use App\Service;
 use App\Schedule;
 use App\ScheduleTemplateDetail;
+use Illuminate\Support\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DirectQueueRepository implements DirectQueueRepositoryInterface 
 {
@@ -111,5 +115,116 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
         }
     
         return $random_string;
+    }
+
+    public function getHourlyQueueByDepartment($departmentId, Request $request)
+    {
+        $date = [
+            Carbon::now()->startOfDay(),
+            Carbon::now()->endOfDay()
+        ];
+
+        if ($request->date) {
+            $date = [
+                Carbon::parse($request->date)->startOfDay(),
+                Carbon::parse($request->date)->endOfDay()
+            ];
+        }
+
+        $sub = DirectQueue::whereHas('Service', function ($query) use ($departmentId) {
+            $query->where('department_id', $departmentId);
+        })
+            ->select(
+                'status',
+                DB::raw('EXTRACT(HOUR FROM called_at) AS hour'),
+                DB::raw('COUNT(*) AS total')
+            )
+            ->whereIn('status', ['served', 'end served', 'no show'])
+            ->whereBetween('created_at', $date)
+            ->groupBy('status', 'hour')
+            ->orderBy('hour');
+        
+        return DB::table(DB::raw("({$sub->toSql()}) AS sub"))
+            ->mergeBindings($sub->getQuery())
+            ->select(
+                'hour',
+                DB::raw("{$request->department_id} AS department_id"),
+                DB::raw('SUM(CASE
+                    WHEN status != \'no show\' THEN total
+                    ELSE 0
+                END) AS total_served'),
+                DB::raw('SUM(CASE
+                    WHEN status = \'no show\' THEN total
+                    ELSE 0
+                END) AS total_no_show'),
+            )
+            ->groupBy('hour')
+            ->get();
+    }
+
+    public function getDailyQueueByDepartment($departmentId, Request $request)
+    {
+        if ((int) $request->month < 10) {
+            $request->month = '0' . $request->month;
+        }
+
+        $table = 'department_general_report_' . $request->year . $request->month;
+
+        $dateBetween = [
+            Carbon::parse("{$request->year}-{$request->month}-01")->startOfMonth(),
+            Carbon::parse("{$request->year}-{$request->month}-01")->endOfMonth()
+        ];
+
+        return DB::table($table)->select(
+            DB::raw("{$request->department_id} AS department_id"),
+            DB::raw('EXTRACT(DOW FROM event_date) AS day'),
+            DB::raw('SUM(total_served) AS total_served'),
+            DB::raw('SUM(total_no_show) AS total_no_show'),
+        )
+            ->whereBetween('event_date', $dateBetween)
+            ->groupBy('day')
+            ->orderBy('day')
+            ->get();
+    }
+
+    public function getMonthlyQueueByDepartment($departmentId, Request $request)
+    {
+        $responses = [];
+        $tables = [];
+
+        for ($i = 0; $i < 12; $i++) {
+            $month = $i + 1;
+
+            if ($month < 10) {
+                $month = '0' . $month;
+            }
+
+            $table = 'department_general_report_' . $request->year . $month;
+
+            if (Schema::hasTable($table)) {
+                array_push($tables, (object) [
+                    'month' => $i,
+                    'year' => $request->year,
+                    'table' => $table
+                ]);
+            }
+        }
+
+        for ($i = 0; $i < count($tables); $i++) {
+            $row = DB::table($tables[$i]->table)
+                ->select(
+                    'department_id',
+                    DB::raw("{$tables[$i]->month} AS month"),
+                    DB::raw('SUM(total_served) AS total_served'),
+                    DB::raw('SUM(total_no_show) AS total_no_show')
+                )
+                ->where('department_id', $request->department_id)
+                ->groupBy('department_id')
+                ->first();
+            
+            array_push($responses, $row);
+        }
+
+        return collect($responses);
     }
 }
