@@ -5,16 +5,22 @@ namespace App\Http\Controllers\AdminBranch;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\DirectQueueRepositoryInterface;
+use App\Interfaces\ReportingDepartmentRepositoryInterface;
 use App\Department;
 use Illuminate\Support\Facades\Auth;
 
 class ChartDepartmentController extends Controller
 {
     private DirectQueueRepositoryInterface $directQueueRepo;
+    private ReportingDepartmentRepositoryInterface $reportingDepartmentRepo;
 
-    public function __construct(DirectQueueRepositoryInterface $directQueueRepo)
+    public function __construct(
+        DirectQueueRepositoryInterface $directQueueRepo,
+        ReportingDepartmentRepositoryInterface $reportingDepartmentRepo
+    )
     {
         $this->directQueueRepo = $directQueueRepo;
+        $this->reportingDepartmentRepo = $reportingDepartmentRepo;
     }
 
     public function index()
@@ -33,11 +39,11 @@ class ChartDepartmentController extends Controller
         }
 
         if ($request->report_type == 'daily') {
-            $data = $this->directQueueRepo->getDailyQueueByDepartment($request->department_id, $request);
+            $data = $this->reportingDepartmentRepo->getDailyQueueByDepartment($request->department_id, $request);
         }
 
         if ($request->report_type == 'monthly') {
-            $data = $this->directQueueRepo->getMonthlyQueueByDepartment($request->department_id, $request);
+            $data = $this->reportingDepartmentRepo->getMonthlyQueueByDepartment($request->department_id, $request);
         }
 
         return response()->json($data);

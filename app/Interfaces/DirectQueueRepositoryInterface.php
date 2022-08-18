@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 interface DirectQueueRepositoryInterface 
 {
     public function store($data);
-    public function getHourlyQueueByDepartment($departmentId, Request $request);
-    public function getDailyQueueByDepartment($departmentId, Request $request);
-    public function getMonthlyQueueByDepartment($departmentId, Request $request);
+    public function getHourlyQueueByDepartment($id, Request $request);
+    public function getHourlyQueueByService($id, Request $request);
 }

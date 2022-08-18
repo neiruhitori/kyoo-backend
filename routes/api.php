@@ -43,6 +43,7 @@ Route::get('holidays', 'API\HolidayController@index');
 // service routes
 Route::get('service/branch/{branch_id}', 'API\ServiceController@getAllByBranchId');
 Route::get('service/{service_id}', 'API\ServiceController@getById');
+Route::get('service/department/{department_id}', 'API\ServiceController@getByDepartmentId');
 
 // slot routes
 Route::post('slot', 'API\SlotController@index');

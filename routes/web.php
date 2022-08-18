@@ -149,6 +149,8 @@ Route::namespace('AdminBranch')
             Route::get('/service/all', 'ReportingServiceController@getAll')->name('service.all');
             Route::get('/service/pdf', 'ReportingServiceController@exportToPdf')->name('service.pdf');
             Route::get('/service/excel', 'ReportingServiceController@exportToExcel')->name('service.excel');
+            Route::get('/service/chart', 'ChartServiceController@index')->name('service.chart');
+            Route::get('/service/chart/all', 'ChartServiceController@getAll')->name('service.chart.all');
 
             Route::get('/service-distribution', 'ReportingServiceDistributionController@index')->name('service-distribution');
             Route::get('/service-distribution/all', 'ReportingServiceDistributionController@getAll')->name('service-distribution.all');

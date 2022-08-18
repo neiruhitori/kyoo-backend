@@ -80,14 +80,22 @@
                 </div>
 
                 <div class="card-body">
-                    <div class="mb-3">
-                        <button id="pdfButton" class="btn btn-outline-dark mr-1">
-                            <span class="fas fa-file-pdf mr-2"></span>PDF
-                        </button>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <a href="{{ route('admin-branch.report.service.chart') }}" class="btn btn-outline-dark">
+                                <span class="fas fa-chart-pie mr-2"></span>Chart
+                            </a>
+                        </div>
 
-                        <button id="excelButton" class="btn btn-outline-dark">
-                            <span class="fas fa-file-excel mr-2"></span>Excel
-                        </button>
+                        <div>
+                            <button id="pdfButton" class="btn btn-outline-dark mr-1">
+                                <span class="fas fa-file-pdf mr-2"></span>PDF
+                            </button>
+
+                            <button id="excelButton" class="btn btn-outline-dark mr-1">
+                                <span class="fas fa-file-excel mr-2"></span>Excel
+                            </button>
+                        </div>
                     </div>
 
                     <div class="table-responsive">

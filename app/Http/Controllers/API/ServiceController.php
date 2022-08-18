@@ -84,4 +84,9 @@ class ServiceController extends Controller
                 ->count();
         }
     }
+
+    public function getByDepartmentId($id)
+    {
+        return Service::where('department_id', $id)->get();
+    }
 }
