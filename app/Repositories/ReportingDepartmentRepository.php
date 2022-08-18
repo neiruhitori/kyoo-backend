@@ -130,7 +130,9 @@ class ReportingDepartmentRepository implements ReportingDepartmentRepositoryInte
                 ->groupBy('department_id')
                 ->first();
             
-            array_push($responses, $row);
+            if ($row) {
+                array_push($responses, $row);
+            }
         }
 
         return collect($responses);

@@ -8,4 +8,5 @@ interface DirectQueueRepositoryInterface
     public function store($data);
     public function getHourlyQueueByDepartment($id, Request $request);
     public function getHourlyQueueByService($id, Request $request);
+    public function getHourlyQueueByWorkstation($id, Request $request);
 }

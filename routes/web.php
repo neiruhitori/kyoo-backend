@@ -161,6 +161,8 @@ Route::namespace('AdminBranch')
             Route::get('/workstation/all', 'ReportingWorkstationController@getAll')->name('workstation.all');
             Route::get('/workstation/pdf', 'ReportingWorkstationController@exportToPdf')->name('workstation.pdf');
             Route::get('/workstation/excel', 'ReportingWorkstationController@exportToExcel')->name('workstation.excel');
+            Route::get('/workstation/chart', 'ChartWorkstationController@index')->name('workstation.chart');
+            Route::get('/workstation/chart/all', 'ChartWorkstationController@getAll')->name('workstation.chart.all');
 
             Route::get('/vct', 'ReportingVctController@index')->name('vct');
             Route::get('/vct/all', 'ReportingVctController@getAll')->name('vct.all');

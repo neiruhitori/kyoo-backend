@@ -131,7 +131,9 @@ class ReportingServiceRepository implements ReportingServiceRepositoryInterface
                 ->groupBy('service_id')
                 ->first();
             
-            array_push($responses, $row);
+            if ($row) {
+                array_push($responses, $row);
+            }
         }
 
         return collect($responses);
