@@ -92,6 +92,7 @@ class ReportingWorkstationRepository implements ReportingWorkstationRepositoryIn
             DB::raw('SUM(total_served) AS total_served'),   
             DB::raw('SUM(total_no_show) AS total_no_show'),
         )
+            ->where('workstation_id', $id)
             ->whereBetween('event_date', $dateBetween)
             ->groupBy('day')
             ->orderBy('day')
@@ -129,7 +130,7 @@ class ReportingWorkstationRepository implements ReportingWorkstationRepositoryIn
                     DB::raw('SUM(total_served) AS total_served'),
                     DB::raw('SUM(total_no_show) AS total_no_show')
                 )
-                ->where('workstation_id', $request->workstation_id)
+                ->where('workstation_id', $id)
                 ->groupBy('workstation_id')
                 ->first();
             

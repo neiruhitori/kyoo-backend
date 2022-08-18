@@ -71,7 +71,7 @@ class ReportingServiceRepository implements ReportingServiceRepositoryInterface
         return $data;
     }
 
-    public function getDailyQueueByService($departmentId, Request $request)
+    public function getDailyQueueByService($id, Request $request)
     {
         if ((int) $request->month < 10) {
             $request->month = '0' . $request->month;
@@ -90,13 +90,14 @@ class ReportingServiceRepository implements ReportingServiceRepositoryInterface
             DB::raw('SUM(total_served) AS total_served'),
             DB::raw('SUM(total_no_show) AS total_no_show'),
         )
+            ->where('service_id', $id)
             ->whereBetween('event_date', $dateBetween)
             ->groupBy('day')
             ->orderBy('day')
             ->get();
     }
 
-    public function getMonthlyQueueByService($departmentId, Request $request)
+    public function getMonthlyQueueByService($id, Request $request)
     {
         $responses = [];
         $tables = [];
@@ -127,7 +128,7 @@ class ReportingServiceRepository implements ReportingServiceRepositoryInterface
                     DB::raw('SUM(total_served) AS total_served'),
                     DB::raw('SUM(total_no_show) AS total_no_show')
                 )
-                ->where('service_id', $request->service_id)
+                ->where('service_id', $id)
                 ->groupBy('service_id')
                 ->first();
             

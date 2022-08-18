@@ -168,6 +168,8 @@ Route::namespace('AdminBranch')
             Route::get('/vct/all', 'ReportingVctController@getAll')->name('vct.all');
             Route::get('/vct/pdf', 'ReportingVctController@exportToPdf')->name('vct.pdf');
             Route::get('/vct/excel', 'ReportingVctController@exportToExcel')->name('vct.excel');
+            Route::get('/vct/chart', 'ChartVctController@index')->name('vct.chart');
+            Route::get('/vct/chart/all', 'ChartVctController@getAll')->name('vct.chart.all');
         });
     });
 

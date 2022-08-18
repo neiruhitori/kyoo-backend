@@ -9,4 +9,5 @@ interface DirectQueueRepositoryInterface
     public function getHourlyQueueByDepartment($id, Request $request);
     public function getHourlyQueueByService($id, Request $request);
     public function getHourlyQueueByWorkstation($id, Request $request);
+    public function getHourlyQueueByVct($id, Request $request);
 }

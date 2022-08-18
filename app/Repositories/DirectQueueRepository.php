@@ -247,4 +247,47 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             ->groupBy('hour')
             ->get();
     }
+
+    public function getHourlyQueueByVct($id, Request $request)
+    {
+        $date = [
+            Carbon::now()->startOfDay(),
+            Carbon::now()->endOfDay()
+        ];
+
+        if ($request->date) {
+            $date = [
+                Carbon::parse($request->date)->startOfDay(),
+                Carbon::parse($request->date)->endOfDay()
+            ];
+        }
+
+        $sub = DirectQueue::select(
+                'status',
+                DB::raw('EXTRACT(HOUR FROM called_at) AS hour'),
+                DB::raw('COUNT(*) AS total')
+            )
+            ->where('vct_id', $id)
+            ->whereIn('status', ['served', 'end served', 'no show'])
+            ->whereBetween('created_at', $date)
+            ->groupBy('status', 'hour')
+            ->orderBy('hour');
+        
+        return DB::table(DB::raw("({$sub->toSql()}) AS sub"))
+            ->mergeBindings($sub->getQuery())
+            ->select(
+                'hour',
+                DB::raw("{$request->vct_id} AS vct_id"),
+                DB::raw('SUM(CASE
+                    WHEN status != \'no show\' THEN total
+                    ELSE 0
+                END) AS total_served'),
+                DB::raw('SUM(CASE
+                    WHEN status = \'no show\' THEN total
+                    ELSE 0
+                END) AS total_no_show'),
+            )
+            ->groupBy('hour')
+            ->get();
+    }
 }

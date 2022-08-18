@@ -70,7 +70,7 @@ class ReportingDepartmentRepository implements ReportingDepartmentRepositoryInte
         return $data;
     }
 
-    public function getDailyQueueByDepartment($departmentId, Request $request)
+    public function getDailyQueueByDepartment($id, Request $request)
     {
         if ((int) $request->month < 10) {
             $request->month = '0' . $request->month;
@@ -89,13 +89,14 @@ class ReportingDepartmentRepository implements ReportingDepartmentRepositoryInte
             DB::raw('SUM(total_served) AS total_served'),
             DB::raw('SUM(total_no_show) AS total_no_show'),
         )
+            ->where('department_id', $id)
             ->whereBetween('event_date', $dateBetween)
             ->groupBy('day')
             ->orderBy('day')
             ->get();
     }
 
-    public function getMonthlyQueueByDepartment($departmentId, Request $request)
+    public function getMonthlyQueueByDepartment($id, Request $request)
     {
         $responses = [];
         $tables = [];
@@ -126,7 +127,7 @@ class ReportingDepartmentRepository implements ReportingDepartmentRepositoryInte
                     DB::raw('SUM(total_served) AS total_served'),
                     DB::raw('SUM(total_no_show) AS total_no_show')
                 )
-                ->where('department_id', $request->department_id)
+                ->where('department_id', $id)
                 ->groupBy('department_id')
                 ->first();
             

@@ -72,4 +72,73 @@ class ReportingVctRepository implements ReportingVctRepositoryInterface
         
         return $data;
     }
+
+    public function getDailyQueueByVct($id, Request $request)
+    {
+        if ((int) $request->month < 10) {
+            $request->month = '0' . $request->month;
+        }
+
+        $table = 'vct_general_report_' . $request->year . $request->month;
+
+        $dateBetween = [
+            Carbon::parse("{$request->year}-{$request->month}-01")->startOfMonth(),
+            Carbon::parse("{$request->year}-{$request->month}-01")->endOfMonth()
+        ];
+
+        return DB::table($table)->select(
+            DB::raw("{$request->vct_id} AS vct_id"),
+            DB::raw('EXTRACT(DOW FROM event_date) AS day'),
+            DB::raw('SUM(total_served) AS total_served'),
+            DB::raw('SUM(total_no_show) AS total_no_show'),
+        )
+            ->where('vct_id', $id)
+            ->whereBetween('event_date', $dateBetween)
+            ->groupBy('day')
+            ->orderBy('day')
+            ->get();
+    }
+
+    public function getMonthlyQueueByVct($id, Request $request)
+    {
+        $responses = [];
+        $tables = [];
+
+        for ($i = 0; $i < 12; $i++) {
+            $month = $i + 1;
+
+            if ($month < 10) {
+                $month = '0' . $month;
+            }
+
+            $table = 'vct_general_report_' . $request->year . $month;
+
+            if (Schema::hasTable($table)) {
+                array_push($tables, (object) [
+                    'month' => $i,
+                    'year' => $request->year,
+                    'table' => $table
+                ]);
+            }
+        }
+
+        for ($i = 0; $i < count($tables); $i++) {
+            $row = DB::table($tables[$i]->table)
+                ->select(
+                    'vct_id',
+                    DB::raw("{$tables[$i]->month} AS month"),
+                    DB::raw('SUM(total_served) AS total_served'),
+                    DB::raw('SUM(total_no_show) AS total_no_show')
+                )
+                ->where('vct_id', $id)
+                ->groupBy('vct_id')
+                ->first();
+            
+            if ($row) {
+                array_push($responses, $row);
+            }
+        }
+
+        return collect($responses);
+    }
 }
