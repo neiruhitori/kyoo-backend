@@ -31,7 +31,11 @@ class WorkstationServiceController extends Controller
      */
     public function create(Request $request, Workstation $workstation)
     {
-        $services = Service::whereBranchId(Auth::user()->branch_id)->get();
+        $services = Service::where([
+            'branch_id' => Auth::user()->branch_id,
+            'department_id' => $workstation->department_id
+        ])->get();
+
         return view('adminBranch.workstation.workstationService.create')->withWorkstation($workstation)->withServices($services);
     }
 
