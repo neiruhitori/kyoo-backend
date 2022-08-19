@@ -56,6 +56,8 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    'kyoo_audio_url' => env('KYOO_AUDIO_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

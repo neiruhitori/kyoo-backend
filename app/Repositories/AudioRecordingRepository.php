@@ -11,7 +11,7 @@ class AudioRecordingRepository implements AudioRecordingRepositoryInterface
 
     public function __construct()
     {
-        $this->audioRecordingUrl = env('KYOO_AUDIO_URL') . '/api';
+        $this->audioRecordingUrl = config('app.kyoo_audio_url') . '/api';
     }
 
     public function getRecordings($params = [])
