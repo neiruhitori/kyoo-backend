@@ -19,9 +19,15 @@ class WorkstationServiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Workstation $workstation)
+    public function index($workstationId)
     {
-        return view('adminBranch.workstation.workstationService.index')->withWorkstation($workstation);
+        $workstation = Workstation::with('WorkstationService.Service')
+            ->where('id', $workstationId)
+            ->first();
+
+        return view('adminBranch.workstation.workstationService.index', [
+            'workstation' =>  $workstation
+        ]);
     }
 
     /**
