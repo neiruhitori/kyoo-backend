@@ -67,7 +67,7 @@
                                             <tr>
                                                 <td>{{
                                                     $workstationService->Service
-                                                        ? $workstationService->Service->name
+                                                        ? $workstationService->Service['name']
                                                         : ''
                                                 }}</td>
                                                 <td>{{$workstationService->priority}}</td>
