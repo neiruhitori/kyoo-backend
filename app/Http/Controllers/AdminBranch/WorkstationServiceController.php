@@ -10,7 +10,7 @@ use App\Log;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreWorkstationService;
 use App\Http\Requests\AdminBranch\UpdateWorkstationService;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class WorkstationServiceController extends Controller
 {
@@ -35,14 +35,21 @@ class WorkstationServiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request, Workstation $workstation)
+    public function create(Request $request, $workstationId)
     {
+        $workstation = Workstation::with('WorkstationService.Service')
+            ->where('id', $workstationId)
+            ->first();
+        
         $services = Service::where([
             'branch_id' => Auth::user()->branch_id,
             'department_id' => $workstation->department_id
         ])->get();
 
-        return view('adminBranch.workstation.workstationService.create')->withWorkstation($workstation)->withServices($services);
+        return view('adminBranch.workstation.workstationService.create', [
+            'workstation' => $workstation,
+            'services' => $services
+        ]);
     }
 
     /**
