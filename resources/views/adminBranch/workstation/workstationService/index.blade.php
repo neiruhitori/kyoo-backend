@@ -65,7 +65,11 @@
                                     <tbody>
                                         @foreach ($workstation->WorkstationService as $workstationService)
                                             <tr>
-                                                <td>{{$workstationService->Service->name}}</td>
+                                                <td>{{
+                                                    $workstationService->Service
+                                                        ? $workstationService->Service->name
+                                                        : ''
+                                                }}</td>
                                                 <td>{{$workstationService->priority}}</td>
                                                 <td>
                                                     <a
