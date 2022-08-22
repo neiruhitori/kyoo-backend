@@ -9,7 +9,7 @@ use App\Log;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreWorkstation;
 use App\Http\Requests\AdminBranch\UpdateWorkstation;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class WorkstationController extends Controller
 {
@@ -23,7 +23,10 @@ class WorkstationController extends Controller
         $workstations = Workstation::whereHas('Department', function($query){
             return $query->whereBranchId(Auth::user()->branch_id);
         })->get();
-        return view('adminBranch.workstation.index')->withWorkstations($workstations);
+
+        return view('adminBranch.workstation.index', [
+            'workstations' => $workstations
+        ]);
     }
 
     /**
@@ -38,8 +41,12 @@ class WorkstationController extends Controller
             $request->session()->flash('warning', __('Only one workstations can be created!'));
             return redirect(route('admin-branch.branch-configuration.workstation.index'));
         }
+
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
-        return view('adminBranch.workstation.create')->withDepartments($departments);
+        
+        return view('adminBranch.workstation.create', [
+            'departments' => $departments
+        ]);
     }
 
     /**
@@ -94,12 +101,16 @@ class WorkstationController extends Controller
      */
     public function edit(Workstation $workstation)
     {
-        // gate
         if ($workstation->Department->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
+
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
-        return view('adminBranch.workstation.edit')->withWorkstation($workstation)->withDepartments($departments);
+        
+        return view('adminBranch.workstation.edit', [
+            'workstation' => $workstation,
+            'departments' => $departments
+        ]);
     }
 
     /**
@@ -132,16 +143,27 @@ class WorkstationController extends Controller
      */
     public function destroy(Request $request, Workstation $workstation)
     {
-        // gate
-        if ($workstation->Department->branch_id != Auth::user()->branch_id) {
-            return redirect(route('unauthorized'));
+        try {
+            if ($workstation->Department->branch_id != Auth::user()->branch_id) {
+                return redirect(route('unauthorized'));
+            }
+    
+            $workstation->delete();
+            
+            Log::create([
+                'user_id' => Auth::id(),
+                'description' => 'Remove Workstation'
+            ]);
+            
+            $request->session()->flash('error', __('module.removed', ['module' => __('Workstation'), 'name' => $workstation->name]));
+            
+            return redirect(route('admin-branch.branch-configuration.workstation.index'));
+        } catch (\Throwable $e) {
+            if (str_contains($e->getMessage(), 'SQLSTATE[23503]')) {
+                return back()->with('error', 'Hapus meja gagal. Data masih direferensikan dari tabel lain');
+            }
+
+            return back()->with('error', $e->getMessage());
         }
-        $workstation->delete();
-        Log::create([
-            'user_id' => Auth::id(),
-            'description' => 'Remove Workstation'
-        ]);
-        $request->session()->flash('error', __('module.removed', ['module' => __('Workstation'), 'name' => $workstation->name]));
-        return redirect(route('admin-branch.branch-configuration.workstation.index'));
     }
 }

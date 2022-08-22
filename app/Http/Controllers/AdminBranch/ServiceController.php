@@ -9,7 +9,7 @@ use App\Department;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreService;
 use App\Http\Requests\AdminBranch\UpdateService;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -21,7 +21,10 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::whereBranchId(Auth::user()->branch_id)->get();
-        return view('adminBranch.service.index')->withServices($services);
+        
+        return view('adminBranch.service.index', [
+            'services' => $services
+        ]);
     }
 
     /**
@@ -127,17 +130,27 @@ class ServiceController extends Controller
      */
     public function destroy(Request $request, Service $service)
     {
-        // gate
-        if ($service->branch_id != Auth::user()->branch_id) {
-            return redirect(route('unauthorized'));
+        try {
+            if ($service->branch_id != Auth::user()->branch_id) {
+                return redirect(route('unauthorized'));
+            }
+            
+            $service->delete();
+            
+            Log::create([
+                'user_id' => Auth::id(),
+                'description' => 'Remove Service'
+            ]);
+            
+            $request->session()->flash('error', __('module.removed', ['module' => __('Service'), 'name' => $service->name]));
+
+            return redirect(route('admin-branch.branch-configuration.department.index'));
+        } catch (\Throwable $e) {
+            if (str_contains($e->getMessage(), 'SQLSTATE[23503]')) {
+                return back()->with('error', 'Hapus layanan gagal. Data masih direferensikan dari tabel lain');
+            }
+
+            return back()->with('error', $e->getMessage());
         }
-        
-        $service->delete();
-        Log::create([
-            'user_id' => Auth::id(),
-            'description' => 'Remove Service'
-        ]);
-        $request->session()->flash('error', __('module.removed', ['module' => __('Service'), 'name' => $service->name]));
-        return redirect(route('admin-branch.branch-configuration.department.index'));
     }
 }
