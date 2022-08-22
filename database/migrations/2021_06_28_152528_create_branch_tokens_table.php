@@ -18,7 +18,7 @@ class CreateBranchTokensTable extends Migration
             $table->foreignId('branch_id');
             $table->string('token');
             $table->timestamps();
-            $table->softDeletes();
+            
             $table->foreign('branch_id')->references('id')->on('branches');
         });
     }

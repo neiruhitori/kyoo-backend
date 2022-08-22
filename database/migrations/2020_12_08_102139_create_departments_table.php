@@ -18,7 +18,6 @@ class CreateDepartmentsTable extends Migration
             $table->foreignId('branch_id');
             $table->string('name', 100);
             $table->timestamps();
-            $table->softDeletes();
             
             $table->foreign('branch_id')->references('id')->on('branches');
         });

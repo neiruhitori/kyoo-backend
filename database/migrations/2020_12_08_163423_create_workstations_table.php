@@ -20,7 +20,6 @@ class CreateWorkstationsTable extends Migration
             $table->string('label', 100);
             $table->string('display_id', 100);
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('department_id')->references('id')->on('departments');
         });

@@ -3,13 +3,10 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Service extends Model
 {
-    use SoftDeletes;
-    
     protected $fillable = ['branch_id', 'name', 'department_id'];
 
     public function Slot()

@@ -21,7 +21,6 @@ class CreateCustomersTable extends Migration
             $table->enum('gender', ['male', 'female']);
             $table->string('photo')->nullable();
             $table->timestamps();
-            $table->softdeletes();
 
             $table->foreign('user_id')->references('id')->on('users');
         });
