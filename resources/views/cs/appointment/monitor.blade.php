@@ -4,6 +4,8 @@
     <div id="app">
         <appointment-monitor
             :branch="{{ Auth::user()->Branch }}"
+            :vct="{{ Auth::user() }}"
+            :workstation="{{ Auth::user()->WorkstationVct->Workstation }}"
         />
     </div>
 @endsection

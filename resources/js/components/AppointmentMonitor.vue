@@ -172,9 +172,19 @@
 </template>
 
 <script>
+import audioRecorder from "../utils/audio-recorder"
+
 export default {
     props: {
         branch: {
+            type: Object,
+            required: true
+        },
+        workstation: {
+            type: Object,
+            required: true
+        },
+        vct: {
             type: Object,
             required: true
         }
@@ -229,13 +239,51 @@ export default {
         async onServed(id) {
             await axios.patch(`/cs/appointments/${id}/served`)
 
+            audioRecorder.start()
+                .then(() => {
+                    console.log('Recording audio...')
+                })
+
             this.getQueues()
         },
 
         async onEndServed(id) {
-            await axios.patch(`/cs/appointments/${id}/end-served`)
+            const { data } = await axios.patch(`/cs/appointments/${id}/end-served`)
 
             this.getQueues()
+
+            console.log('Stopping audio recording...')
+
+            data.message = await audioRecorder.stop()
+
+            this.saveAudio(data)
+        },
+
+        saveAudio(appointment)  {
+            const self = this
+
+            const fileReader = new FileReader()
+
+            fileReader.readAsDataURL(appointment.message)
+            
+            fileReader.onloadend = async function () {
+                await axios.post('/cs/voice-recorder', {
+                    customer_name: appointment.name,
+                    branch_id: self.branch.id,
+                    branch_name: self.branch.name,
+                    workstation_id: self.workstation.id,
+                    workstation_name: self.workstation.label,
+                    vct_id: self.vct.id,
+                    vct_name: self.vct.name,
+                    queue_id: appointment.id,
+                    queue_type: 'appointment',
+                    queue_no: appointment.number,
+                    message: fileReader.result.split(',')[1],
+                    duration: Math.floor(moment().diff(moment(appointment.served_time)) / 1000)
+                })
+
+                console.log("Audio saved.")
+            }
         }
     }
 }

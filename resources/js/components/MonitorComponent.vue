@@ -347,7 +347,7 @@ export default {
     const [selected_queue] = this.queues.filter(v => v.status === 'served');
     if (selected_queue) {
       this.selectQueue(selected_queue.queue_no);
-      this.timer = Math.floor((Date.now() - new Date(selected_queue.called_at)) / 1000)
+      this.timer = Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000)
       this.startTimer()
     }
   },

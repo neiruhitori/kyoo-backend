@@ -14,9 +14,9 @@ use App\Service;
 use App\Http\Requests\CS\StoreAppointment;
 use App\Mail\CS\StoreAppointment as StoreAppointmentMail;
 use App\Mail\CS\StoreExhibitionMail;
-use Auth;
-use Mail;
 use App\Interfaces\ExhibitionRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -48,22 +48,7 @@ class HomeController extends Controller
         }
         
         if (Auth::user()->Branch->BranchType->is_appointment) {
-            $appointments = Appointment::whereHas('Slot.Service', function($query) {
-                $query->where('branch_id', Auth::user()->branch_id);
-            })->where('date', $dateNow)->whereIn('status', ['book', 'check in', 'served'])->get()->sortBy(function($query){
-                return $query->slot->start_time;
-            });
-    
-            $historyAppointments = Appointment::whereHas('Slot.Service', function($query) {
-                $query->where('branch_id', Auth::user()->branch_id);
-            })->where('date', $dateNow)->whereIn('status', ['no show', 'end served'])->get()->sortBy(function($query){
-                return $query->slot->start_time;
-            });
-
-            return view('cs.home', [
-                'appointments' => $appointments,
-                'historyAppointments' => $historyAppointments
-            ]);
+            return redirect()->route('cs.appointments.monitor');
         }
 
         if (Auth::user()->Branch->BranchType->is_exhibition) {
@@ -80,65 +65,6 @@ class HomeController extends Controller
                 'finishedQueue' => $finishedQueue
             ]);
         }
-    }
-    
-    public function updateAppointment(Request $request, Appointment $appointment)
-    {
-        switch ($request->status) {
-            case 'check in':
-                $appointment->update([
-                    'vct_id' => Auth::id(),
-                    'status' => $request->status,
-                    'checkin_time' => date(now())
-                ]);
-                Log::create([
-                    'user_id' => Auth::id(),
-                    'description' => 'Update Appointment to Check in'
-                ]);       
-                break;
-
-            case 'served':
-                $onServed = Appointment::where('slot_id', $appointment->slot_id)->where('date', $appointment->date)->where('status', 'served')->first();
-                if (isset($onServed)) {
-                    $request->session()->flash('error', __('appointment.in_progres', ['service' => $appointment->Slot->Service->name]));
-                    return redirect(route('cs.home'));
-                }
-                $appointment->update([
-                    'vct_id' => Auth::id(),
-                    'status' => $request->status,
-                    'served_time' => date(now())
-                ]);
-                Log::create([
-                    'user_id' => Auth::id(),
-                    'description' => 'Update Appointment to Served'
-                ]);    
-                break;
-
-            case 'end served':
-                $appointment->update([
-                    'vct_id' => Auth::id(),
-                    'status' => $request->status,
-                    'end_served_time' => date(now())
-                ]);
-                Log::create([
-                    'user_id' => Auth::id(),
-                    'description' => 'Update Appointment to End Served'
-                ]);    
-                break;
-            case 'no show':
-                $appointment->update([
-                    'vct_id' => Auth::id(),
-                    'status' => $request->status,
-                    'served_time' => date(now())
-                ]);
-                Log::create([
-                    'user_id' => Auth::id(),
-                    'description' => 'Update Appointment to No Show'
-                ]);    
-                break;
-        }
-        $request->session()->flash('success', __('Appointment #:no status has been changed', ['no' => $appointment->number]));
-        return redirect(route('cs.home'));
     }
 
     public function createAppointment()
@@ -163,17 +89,6 @@ class HomeController extends Controller
             $request->session()->flash('error', 'Jumlah appointment melebihi batas maksimal harian untuk cabang berlisensi gratis');
             return back()->withInput();
         }
-
-        // copy from App\Http\Controllers\API\AppointmentController.php store()
-        /**
-         * additional validations:
-         * - user cant create appointment on different day with day on slot
-         * - user cant create appointment when slot is full
-         * - user cant create appointment on same time slot
-         * - user cant create appointment on closed day with schedule template
-         * - user cant create appointment on closed day
-         * - user cant create appointment with past time slot for today
-         */
         
         // cant create appointment on same time slot
         $sameAppointment = Appointment::where(['email' => $request->email])
