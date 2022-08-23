@@ -234,6 +234,7 @@ class HomeController extends Controller
         $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
         $input['appointment_channel'] = 'VCT web';
         $input['service_id'] = $slot->service_id;
+        $input['workstation_id'] = Auth::user()->WorkstationVct->workstation_id;
 
         $appointment = Appointment::create($input);
 
@@ -241,7 +242,7 @@ class HomeController extends Controller
         Mail::to($request->email)->send(new StoreAppointmentMail($appointment));
 
         $request->session()->flash('success', __('Appointment has been inserted'));
-        return redirect(route('cs.appointment.create'));
+        return redirect(route('cs.appointments.monitor'));
     }
 
     public function createExhibition()

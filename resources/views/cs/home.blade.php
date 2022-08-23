@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <div class="row mb-5">
                         <div class="col text-right">
-                            <a href="{{ route('cs.appointment.create') }}">
+                            <a href="{{ route('cs.appointments.create') }}">
                                 <button class="btn btn-primary">
                                     Daftar Appointment
                                 </button>
@@ -65,7 +65,7 @@
                                             @switch($appointment->status)
                                                 @case('book')
                                                     <div class="row">
-                                                        <form action="{{route('cs.appointment.update', $appointment->id)}}" method="post">
+                                                        <form action="{{route('cs.appointments.update', $appointment->id)}}" method="post">
                                                             @csrf
                                                             @method('PUT')
                                                             <input type="hidden" name="status" value="check in">
@@ -73,7 +73,7 @@
                                                                 Check In
                                                             </button>
                                                         </form>
-                                                        <form action="{{route('cs.appointment.update', $appointment->id)}}" method="post">
+                                                        <form action="{{route('cs.appointments.update', $appointment->id)}}" method="post">
                                                             @csrf
                                                             @method('PUT')
                                                             <input type="hidden" name="status" value="no show">
@@ -84,7 +84,7 @@
                                                     </div>
                                                     @break
                                                 @case('check in')
-                                                    <form action="{{route('cs.appointment.update', $appointment->id)}}" method="post">
+                                                    <form action="{{route('cs.appointments.update', $appointment->id)}}" method="post">
                                                             @csrf
                                                             @method('PUT')
                                                             <input type="hidden" name="status" value="served">
@@ -94,7 +94,7 @@
                                                         </form>
                                                     @break        
                                                 @case('served')
-                                                    <form action="{{route('cs.appointment.update', $appointment->id)}}" method="post">
+                                                    <form action="{{route('cs.appointments.update', $appointment->id)}}" method="post">
                                                             @csrf
                                                             @method('PUT')
                                                             <input type="hidden" name="status" value="end served">

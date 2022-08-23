@@ -236,10 +236,18 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     Route::put('appointment/{appointment}', 'HomeController@updateAppointment')->name('appointment.update')->middleware('checkAppointmentQueue');
     Route::get('mini-report', 'HomeController@miniReport')->name('miniReport');
     Route::get('qr', 'HomeController@qr')->name('qr');
-
-    // Appointment
-    Route::get('appointment/create', 'HomeController@createAppointment')->name('appointment.create')->middleware('checkAppointmentQueue');
-    Route::post('appointment/create', 'HomeController@storeAppointment')->name('appointment.store')->middleware('checkAppointmentQueue');
+    
+    // Appointment Monitor
+    Route::middleware('checkAppointmentQueue')->group(function () {
+        Route::get('appointments/monitor', 'AppointmentMonitorController@index')->name('appointments.monitor');
+        Route::get('appointments', 'AppointmentMonitorController@getAll')->name('appointments.getAll');
+        Route::get('appointments/create', 'HomeController@createAppointment')->name('appointments.create');
+        Route::post('appointments/create', 'HomeController@storeAppointment')->name('appointments.store');
+        Route::patch('appointments/{id}/checkin', 'AppointmentMonitorController@checkIn')->name('appointments.checkin');
+        Route::patch('appointments/{id}/no-show', 'AppointmentMonitorController@noShow')->name('appointments.noShow');
+        Route::patch('appointments/{id}/served', 'AppointmentMonitorController@served')->name('appointments.served');
+        Route::patch('appointments/{id}/end-served', 'AppointmentMonitorController@endServed')->name('appointments.endServed');
+    });
 
     // Direct Queue
     Route::get('directQueue/monitor', 'DirectQueueController@monitor')->name('directQueue.monitor')->middleware('checkDirectQueue');

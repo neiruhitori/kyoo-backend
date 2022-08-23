@@ -19,7 +19,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">{{ __('Active Appointment') }}</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('cs.appointment.store') }}" method="post">
+                    <form action="{{ route('cs.appointments.store') }}" method="post">
                         @csrf
                         <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                         <div class="col-md-12 form-group">
@@ -74,6 +74,8 @@
     <script>
         $(document).ready(function() {
             const service_idValue = '{{ old('service_id') }}';
+
+            getSlots()
                 
             if(service_idValue !== '') {
                 $('#service_id').val(service_idValue);
@@ -103,12 +105,12 @@
                     .then(res => res.json())
                     .then(data => {
                         $('#slot_id option').remove()
-                        console.log('res', data);
+
                         data.data.forEach(slot => {
                             $('#slot_id')
                                 .append($("<option></option>")
                                 .attr("value", slot.id)
-                                .text(`${slot.start_time} - ${slot.end_time} (${slot.filledSlot}/${slot.max_slots})`)); 
+                                .text(`${slot.start_time} - ${slot.end_time} (${slot.filledSlot}/${slot.max_slots})`));
                         });
                     })
                     .catch(err => console.log(err))
