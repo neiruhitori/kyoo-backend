@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Appointment;
 use Illuminate\Support\Carbon;
+use App\Events\AppointmentServed;
+use App\Events\AppointmentEndServed;
 
 class AppointmentMonitorController extends Controller
 {
@@ -79,6 +81,11 @@ class AppointmentMonitorController extends Controller
         
         $appointment->save();
 
+        $appointment->branch_id = Auth::user()->branch_id;
+
+        // Send event
+        AppointmentServed::dispatch($appointment);
+
         return response()->json($appointment, 200);
     }
 
@@ -93,6 +100,11 @@ class AppointmentMonitorController extends Controller
         $appointment->serving_duration = $serving_duration;
         
         $appointment->save();
+
+        $appointment->branch_id = Auth::user()->branch_id;
+
+        // Send event
+        AppointmentEndServed::dispatch($appointment);
 
         return response()->json($appointment, 200);
     }

@@ -13,10 +13,10 @@ use App\ScheduleTemplateDetail;
 use App\DirectQueue;
 use App\Http\Resources\Appointment as AppointmentCollection;
 use App\Http\Resources\Upcomming as UpcommingCollection;
-use Auth;
-use Collection;
-use Mail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use App\Mail\CS\StoreAppointment as StoreAppointmentMail;
+use App\Events\AppointmentCreated;
 
 class AppointmentController extends Controller
 {
@@ -115,12 +115,22 @@ class AppointmentController extends Controller
 
         $input = $request->all();
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
-        $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
+        $input['number'] = Appointment::whereHas('Service', function ($query) use ($branch) {
+            $query->where('branch_id', $branch->id);
+        })
+            ->where('date', $request->date)
+            ->get()
+            ->count() + 1;
         $input['service_id'] = $slot->service_id;
         $appointment = Appointment::create($input);
 
+        $appointment->branch_id = $branch->id;
+
         Mail::to($request->email)
             ->send(new StoreAppointmentMail($appointment));
+
+        // Send event
+        AppointmentCreated::dispatch($appointment);
 
         return response()->json([
             'success' => true,
@@ -131,7 +141,10 @@ class AppointmentController extends Controller
 
     public function index()
     {
-        $appointments = Appointment::where('user_id', Auth::id())->whereIn('status', ['book', 'check in', 'served'])->orderBy('date', 'desc')->get();
+        $appointments = Appointment::where('user_id', Auth::id())
+            ->whereIn('status', ['book', 'check in', 'served'])
+            ->orderBy('date', 'desc')
+            ->get();
         
         return response()->json([
             'success' => true,

@@ -9,13 +9,14 @@ use App\User;
 use App\Appointment;
 use App\DirectQueue;
 use App\Models\Exhibition;
-use Auth;
-use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Exports\AdminBranch\ReportExport;
 use App\Exports\AdminBranch\ReportExportExhibition;
-use Excel;
-use Crypt;
-use URL;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\URL;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class HomeController extends Controller
 {
@@ -131,21 +132,37 @@ class HomeController extends Controller
             ]);
 
         $barcode = base64_encode($json_barcode);
-        $image = \QrCode::format('png')
+        $image = QrCode::format('png')
                          ->size(500)->errorCorrection('H')
                          ->generate($barcode);
       return response($image)->header('Content-type','image/png');
     }
 
-    public function directQueueMonitor(Request $request)
+    public function queueMonitor(Request $request)
     {
-        if (!Auth::user()->Branch->BranchType->is_premium) {
+        $branchType = Auth::user()->Branch->BranchType;
+
+        if (!$branchType->is_premium) {
             $request->session()->flash('warning', __('This feature for premium account only'));
             return redirect()->back();
         }
 
         $branchId = Crypt::encrypt(Auth::user()->branch_id);
-        $url = URL::temporarySignedRoute('queue-monitor', now()->addDays(1), ['branch_id' => $branchId]);
+
+        $routeName = '';
+
+        if ($branchType->is_appointment) {
+            $routeName = 'appointments.signage';
+        }
+
+        if ($branchType->is_direct_queue) {
+            $routeName = 'directQueues.signage';
+        }
+
+        $url = URL::temporarySignedRoute(
+            $routeName, now()->addDays(1), ['branch_id' => $branchId]
+        );
+
         return redirect($url);
     }
 }

@@ -17,6 +17,7 @@ use App\Mail\CS\StoreExhibitionMail;
 use App\Interfaces\ExhibitionRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Events\AppointmentCreated;
 
 class HomeController extends Controller
 {
@@ -92,10 +93,11 @@ class HomeController extends Controller
         
         // cant create appointment on same time slot
         $sameAppointment = Appointment::where(['email' => $request->email])
-                                            ->where(['phone' => $request->phone]) 
-                                            ->where(['slot_id' => $request->slot_id]) 
-                                            ->where(['date' => $request->date])
-                                            ->first(); 
+            ->where(['phone' => $request->phone]) 
+            ->where(['slot_id' => $request->slot_id]) 
+            ->where(['date' => $request->date])
+            ->first();
+
         if ($sameAppointment) {
             $request->session()->flash('error', __('Can not create the same appointment at the same time'));
             return back()->withInput();
@@ -108,8 +110,8 @@ class HomeController extends Controller
 
         // cant create appointment when slot is full
         $sameAppointment = Appointment::where(['slot_id' => $request->slot_id]) 
-                                            ->where(['date' => $request->date])
-                                            ->count(); 
+            ->where(['date' => $request->date])
+            ->count(); 
 
         if ($sameAppointment >= $slot->max_slots) {
             $request->session()->flash('error', __("Appointment maximum limit already reached, please find other timeslot schedule"));
@@ -125,6 +127,7 @@ class HomeController extends Controller
         // cant create appointment on closed day by schedule template
         if($slot->Service->Branch->schedule_template_id){
             $schedule_template_details = ScheduleTemplateDetail::where('schedule_template_id', $slot->Service->Branch->schedule_template_id)->where('date', $request->date)->first();
+
             if($schedule_template_details){
                 $request->session()->flash('error', __('Service Provider Already Closed'));
                 return back()->withInput();
@@ -146,15 +149,25 @@ class HomeController extends Controller
 
         $input = $request->all();
         $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
-        $input['number'] = Appointment::whereDateAndSlotId($request->date, $request->slot_id)->get()->count() + 1;
+        $input['number'] = Appointment::whereHas('Service', function ($query) {
+            $query->where('branch_id', Auth::user()->branch_id);
+        })
+            ->where('date', $request->date)
+            ->get()
+            ->count() + 1;
         $input['appointment_channel'] = 'VCT web';
         $input['service_id'] = $slot->service_id;
         $input['workstation_id'] = Auth::user()->WorkstationVct->workstation_id;
 
         $appointment = Appointment::create($input);
 
+        $appointment->branch_id = Auth::user()->branch_id;
+
         // send email to customer
         Mail::to($request->email)->send(new StoreAppointmentMail($appointment));
+
+        // Broadcast event
+        AppointmentCreated::dispatch($appointment);
 
         $request->session()->flash('success', __('Appointment has been inserted'));
         return redirect(route('cs.appointments.monitor'));

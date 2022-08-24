@@ -7,15 +7,23 @@ Route::get('/', function () {
     return redirect(route('dashboard'));
 });
 
-Route::get('/dashboard', 'HomeController@index')->name('dashboard');
-
-Route::get('/queue-monitor/{branch_id}', 'DirectQueueController@monitor')
-    ->name('queue-monitor')
-    ->middleware('signed');
-
 Route::get('/unauthorized', function () {
     return 'Unauthorized';
 })->name('unauthorized');
+
+Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+
+Route::middleware('signed')->group(function () {
+    Route::get('/direct-queues/signage/{branch_id}', 'DirectQueueController@monitor')
+        ->name('directQueues.signage');
+});
+
+Route::get('/branches/{branch_id}/signage/appointments', 'AppointmentSignageController@index')
+    ->name('appointments.signage');
+Route::get('/branches/{branch_id}/appointments', 'AppointmentSignageController@getAppointments')
+    ->name('branches.appointments');
+
+Route::get('/appointments/{appointment_id}/call',  'AppointmentCallController@call');
 
 Route::namespace('AdminBranch')
     ->prefix('admin-branch')
@@ -31,12 +39,11 @@ Route::namespace('AdminBranch')
 
         // QR Code Poster
         Route::get('/branch-qr-code', 'BranchQrCodeController')->name('branch-qr-code');
-        
+
         // Queue Monitor
-        Route::get('/queue-monitor', 'HomeController@directQueueMonitor')
+        Route::get('/queue-monitor', 'HomeController@queueMonitor')
             ->name('queue-monitor')
-            ->middleware('checkDirectQueue', 'access:Web Signage TV')
-            ;
+            ->middleware('access:Web Signage TV');
 
         // Export
         Route::prefix('/export')->name('export.')->group(function () {
@@ -89,8 +96,12 @@ Route::namespace('AdminBranch')
                 ->name('feature.update')
                 ->middleware('checkDirectQueue');
 
-            Route::get('queue-monitor', 'TVDisplayConfigurationController@index')->name('queue-monitor')->middleware('access:Web Signage TV');
-            Route::put('queue-monitor/{branch}', 'TVDisplayConfigurationController@update')->name('queue-monitor.update')->middleware('access:Web Signage TV');
+            Route::get('queue-monitor', 'TVDisplayConfigurationController@index')
+                ->name('queue-monitor')
+                ->middleware('access:Web Signage TV');
+            Route::put('queue-monitor/{branch}', 'TVDisplayConfigurationController@update')
+                ->name('queue-monitor.update')
+                ->middleware('access:Web Signage TV');
         });
 
         // Service Quality
@@ -184,6 +195,7 @@ Auth::routes();
 
 // Appointment Status
 Route::get('/appointment/status/{id}', 'AppointmentController@status')->name('appointment.status');
+
 Route::get('/queue-caller/{directQueue}', 'QueueCallerController@call')
     ->name('queueCaller')
     ->middleware('access:Panggilan Suara');

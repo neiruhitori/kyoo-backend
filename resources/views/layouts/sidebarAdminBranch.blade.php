@@ -38,13 +38,13 @@
 
       @if (
         Auth::user()->Branch->BranchType->is_premium &&
-        Auth::user()->Branch->hasAccess('Web Signage TV') &&
-        Auth::user()->Branch->BranchType->is_direct_queue
+        Auth::user()->Branch->hasAccess('Web Signage TV')
       )
           <li class="nav-item">
             <a class="nav-link" href="{{ route('admin-branch.queue-monitor') }}" target="_blank">
               <i class="fas fa-fw fa-tv"></i>
-              <span>{{ __('Direct Queue Monitor') }}</span></a>
+              <span>Web Monitor Antrian</span>
+            </a>
           </li>
       @endif
 
@@ -137,7 +137,10 @@
               {{ __('Virtual Counter') }}
             </a>
 
-            @if (Auth::user()->Branch->BranchType->is_premium)
+            @if (
+              Auth::user()->Branch->BranchType->is_premium &&
+              Auth::user()->Branch->BranchType->is_direct_queue
+            )
               <a
                 class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/feature') ?: 'active' }}"
                 href="{{ route('admin-branch.branch-configuration.feature') }}"
@@ -148,8 +151,7 @@
 
             @if (
               Auth::user()->Branch->BranchType->is_premium &&
-              Auth::user()->Branch->hasAccess('Web Signage TV') &&
-              Auth::user()->Branch->BranchType->is_direct_queue
+              Auth::user()->Branch->hasAccess('Web Signage TV')
             )
               <a
                 class="collapse-item kyoo-sublink  {{ !request()->is('admin-branch/branch-configuration/queue-monitor') ?: 'active' }}"

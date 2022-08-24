@@ -1,11 +1,33 @@
 <template>
   <div class="monitor-container">
     <div class="monitor-sidebar">
-      <div class="calling-card">
-        <div class="calling-card-header">DIPANGGIL</div>
+      <h6 class="sidebar-subtitle">DIPANGGIL</h6>
 
-        <div class="calling-card-body">
-          <h4 class="queue-no" v-if="servingQueue">{{ servingQueue.queue_no }}</h4>
+      <div class="calling-card">
+        <div class="calling-counter" v-if="servingQueue">
+          <div class="calling-card-header">Counter</div>
+
+          <div class="calling-card-body">
+            <h4 class="queue-no">
+              {{
+                servingQueue.workstation
+                  ? servingQueue.workstation.label[servingQueue.workstation.label.length - 1]
+                  : ''
+              }}
+            </h4>
+          </div>
+        </div>
+
+        <div class="calling-service" v-if="servingQueue">
+          <div class="calling-card-header">
+            {{ servingQueue && servingQueue.service
+              ? servingQueue.service.name
+              : 'Layanan' }}
+          </div>
+  
+          <div class="calling-card-body">
+            <h4 class="queue-no">{{ servingQueue.number }}</h4>
+          </div>
         </div>
       </div>
 
@@ -20,9 +42,14 @@
       </div>
 
       <div class="waiting-list">
-        <div class="waiting-card" v-for="q in waitingQueue" :key="q.queue_no">
-          <h4 class="queue-no">{{ q.queue_no }}</h4>
-          <p v-if="q.name || q.phone">{{ q.name || q.phone }}</p>
+        <div class="waiting-card" v-for="q in waitingQueue" :key="q.booking_code">
+          <div class="waiting-card-header">
+            {{ q.service ? q.service.name : ' ' }}
+          </div>
+  
+          <div class="waiting-card-body">
+            <h4 class="queue-no">{{ q.number }}</h4>
+          </div>
         </div>
       </div>
     </div>
@@ -87,7 +114,7 @@ export default {
     features: {
       type: Array
     },
-    branch_id_encrypted: {
+    signature: {
       type: String,
       required: true,
     },
@@ -95,7 +122,6 @@ export default {
 
   data() {
     return {
-      config: this.branch.branch_configuration,
       isLoading: false,
       waitingQueue: [],
       servingQueue: null,
@@ -108,22 +134,19 @@ export default {
   },
 
   created() {
-    Echo.channel(`event_direct_queue_general.${this.branch.id}`)
-      .listen('DirectQueue', () => {
+    Echo.channel(`branches.${this.branch.id}.appointments`)
+      .listen('AppointmentCreated', () => {
         this.getQueues();
       })
-      .listen('QueueStatusUpdated', async (message) => {
+      .listen('AppointmentServed', async (q) => {
         await this.getQueues();
 
-        if (
-          this.servingQueue &&
-          message.status &&
-          this.config.queue_voice &&
-          this.features.find(v => v.additional_feature.name === 'Panggilan Suara') &&
-          ['recall', 'served'].includes(message.status)
-        ) {
-          this.getQueueCallAudio();
+        if (this.features.find(v => v.additional_feature.name === 'Panggilan Suara')) {
+          this.getQueueCallAudio(q.id);
         }
+      })
+      .listen('AppointmentEndServed', () => {
+        this.getQueues();
       });
   },
 
@@ -214,22 +237,22 @@ export default {
     async getQueues() {
       this.isLoading = true;
       try {
-        const data = await axios.get(
-          `/direct-queue/branch/${this.$props.branch_id_encrypted}/list`
+        const { data } = await axios.get(
+          `/branches/${this.$props.signature}/appointments`
         );
 
-        const queues = data.data.data;
+        const servingQueue = data.filter(v => v.status === 'served');
         
-        this.waitingQueue = queues.filter(v => v.status === 'waiting');
-        this.servingQueue = queues.find(v => v.status === 'served');
+        this.waitingQueue = data.filter(v => v.status !== 'served');
+        this.servingQueue = servingQueue[servingQueue.length - 1];
       } catch (error) {
         alert(error.response.data.message);
       }
       this.isLoading = false;
     },
 
-    async getQueueCallAudio() {
-      const { data: { audio } } = await axios.get(`/queue-caller/${this.servingQueue.id}`);
+    async getQueueCallAudio(id) {
+      const { data: { audio } } = await axios.get(`/appointments/${id}/call`);
 
       if (audioEl.paused) {
         audioEl.src = audio.data;
@@ -243,7 +266,6 @@ export default {
 </script>
 
 <style scoped>
-
 .monitor-container {
   padding: 1.625rem;
   display: flex;
@@ -260,28 +282,39 @@ export default {
 }
 
 .calling-card {
+  display: flex;
   border-radius: 8px;
   overflow: hidden;
-  margin-bottom: 1.125rem;
+  margin-bottom: 2rem;
+  background-color: #103C7C;
+  min-height: 6.5rem;
 }
 
 .calling-card-header {
-  background-color: #1C56AA;
   color: #FFFFFF;
-  height: 2.2rem;
+  height: 2.5rem;
   align-items: center;
   display: flex;
   justify-content: center;
 }
 
 .calling-card-body {
-  background-color: #103C7C;
   color: #C1DBFF;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  height: 6.3rem;
+  height: 5.5rem;
+}
+
+.calling-counter {
+  background-color: #1C56AA;
+  border-radius: 8px;
+  width: 7.5rem; 
+}
+
+.calling-service {
+  flex: 1 1 0%;
 }
 
 .waiting-list {
@@ -291,19 +324,33 @@ export default {
 }
 
 .waiting-card {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: .5rem;
   background-color: #161B22;
-  border: 2px solid #30363D;
+  border: 1px solid #30363D;
+}
+
+.waiting-card-header {
+  background-color: #30363D;
+  color: #FFFFFF;
+  height: 2.5rem;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.waiting-card-body {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  height: 6.3rem;
+  height: 5.5rem;
   color: #C4CCD4;
 }
 
 .waiting-card-empty {
   background-color: #161B22;
+  height: 6.5rem;
 }
 
 .calling-card-header {
@@ -318,11 +365,12 @@ export default {
   text-align: center;
   font-size: 1rem;
   letter-spacing: 0.06em;
-  margin-bottom: .5rem;
+  margin-bottom: 1rem;
 }
 
 .queue-no {
   font-size: 3rem;
+  text-transform: uppercase;
 }
 
 .monitor-content {
