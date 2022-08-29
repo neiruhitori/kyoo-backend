@@ -38,7 +38,7 @@
 
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-12 text-right">
+                        <div class="col-md-12">
                             <a href="{{route('admin-branch.branch-configuration.schedule.create')}}" class="btn btn-primary">
                                 {{ __('create.module', ['module' => __('Schedule')]) }}
                             </a>
