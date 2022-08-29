@@ -10,7 +10,8 @@ use App\Log;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreSchedule;
 use App\Http\Requests\AdminBranch\UpdateSchedule;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use App\Models\BranchScheduleTemplateDetail;
 
 class ScheduleController extends Controller
 {
@@ -30,7 +31,15 @@ class ScheduleController extends Controller
                             WHEN Day = 'friday' THEN 6
                             WHEN Day = 'saturday' THEN 7 END ASC"
                       )->get();
-        return view('adminBranch.schedule.index')->withSchedules($schedules);
+
+        $holidays = BranchScheduleTemplateDetail::where('branch_id', Auth::user()->branch_id)
+            ->orderBy('date')
+            ->get();
+
+        return view('adminBranch.schedule.index')->with([
+            'schedules' => $schedules,
+            'holidays' => $holidays
+        ]);
     }
 
     /**
@@ -91,7 +100,7 @@ class ScheduleController extends Controller
             return redirect(route('unauthorized'));
         }
 
-        return view('adminBranch.schedule.edit')->withSchedule($schedule);
+        return view('adminBranch.schedule.edit')->with(['schedule' => $schedule]);
     }
 
     /**

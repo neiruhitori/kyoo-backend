@@ -29,10 +29,13 @@
 
     <div class="row">
         <div class="col-md-12">
+            @include('layouts.alert')
+
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">{{ __('Working Days Schedule') }}</h6>
                 </div>
+
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12 text-right">
@@ -41,25 +44,25 @@
                             </a>
                         </div>
                     </div>
-                    @include('layouts.alert')
+                    
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('No.') }}</th>
+                                            <th class="text-right">{{ __('No.') }}</th>
                                             <th>{{ __('Day') }}</th>
                                             <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Start Time') }}</th>
-                                            <th>{{ __('End Time') }}</th>
-                                            <th>{{ __('Action') }}</th>
+                                            <th class="text-center">{{ __('Start Time') }}</th>
+                                            <th class="text-center">{{ __('End Time') }}</th>
+                                            <th class="text-center">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($schedules as $index => $schedule)
                                             <tr>
-                                                <td>{{ ++$index }}</td>
+                                                <td class="text-right">{{ ++$index }}</td>
                                                 <td>{{ __(ucfirst($schedule->day)) }}</td>
                                                 <td>
                                                     @switch($schedule->status)
@@ -73,9 +76,9 @@
                                                             <span class="badge badge-primary">{{ __('Open') }}</span>
                                                     @endswitch
                                                 </td>
-                                                <td>{{$schedule->start_time}}</td>
-                                                <td>{{$schedule->end_time}}</td>
-                                                <td>
+                                                <td class="text-center">{{$schedule->start_time}}</td>
+                                                <td class="text-center">{{$schedule->end_time}}</td>
+                                                <td class="text-center">
                                                     <a href="{{route('admin-branch.branch-configuration.schedule.edit', $schedule->id)}}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="{{
                                                         __('edit.module', ['module' => __('Schedule')])
                                                     }}">
@@ -106,38 +109,58 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Public Holiday') }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Hari Libur</h6>
                 </div>
+
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-12 alert alert-primary">
-                            @if (Auth::user()->Branch->schedule_template_id)
-                                <h5>Youre using {{Auth::user()->Branch->ScheduleTemplate->name}}</h5>
-                            @endif
-                            <a href="{{route('admin-branch.branch-configuration.schedule.template.index')}}">
-                                <b>{{ __('Click here to add public holidays schedule as exceptional working days') }}</b>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 mt-3">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <a
+                                    href="{{ route('admin-branch.branch-configuration.holiday.create') }}"
+                                    class="btn btn-primary"
+                                >
+                                    Tambah Hari Libur
+                                </a>
+
+                                <a
+                                    href="{{ route('admin-branch.branch-configuration.holiday.template.create') }}"
+                                    class="btn btn-primary"
+                                >
+                                    Pilih Template Hari Libur
+                                </a>
+                            </div>
+
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('Description') }}</th>
-                                            <th>{{ __('Date') }}</th>
+                                            <th class="text-center">Tanggal</th>
+                                            <th>Deskripsi</th>
+                                            <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (Auth::user()->Branch->schedule_template_id)
-                                            @foreach (Auth::user()->Branch->ScheduleTemplate->ScheduleTemplateDetail as $schedule)
-                                                <tr>
-                                                    <td>{{$schedule->description}}</td>
-                                                    <td>{{$schedule->date}}</td>
-                                                </tr>
-                                            @endforeach
-                                        @endif
+                                        @forelse ($holidays as $holiday)
+                                            <tr>
+                                                <td class="text-center">{{ $holiday->date }}</td>
+                                                <td>{{ $holiday->name }}</td>
+                                                <td class="text-center">
+                                                    <form action="{{ route('admin-branch.branch-configuration.holiday.destroy', $holiday->id) }}" method="POST">
+                                                        @method('DELETE')
+                                                        @csrf
+
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <span class="fas fa-trash"></span>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="3" class="text-center">Data tidak ditemukan</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>

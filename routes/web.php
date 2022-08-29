@@ -77,9 +77,13 @@ Route::namespace('AdminBranch')
             Route::resource('department', 'DepartmentController');
             Route::resource('service', 'ServiceController');
             Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
+            
+            Route::get('holiday/template', 'HolidayController@template')->name('holiday.template.create');
+            Route::post('holiday/template', 'HolidayController@storeAll')->name('holiday.template.store');
+            Route::get('holiday/create', 'HolidayController@create')->name('holiday.create');
+            Route::post('holiday', 'HolidayController@store')->name('holiday.store');
+            Route::delete('holiday/{holiday_id}', 'HolidayController@destroy')->name('holiday.destroy');
 
-            Route::put('/schedule/list', 'ScheduleController@templateUpdate')->name('schedule.template.update');
-            Route::get('/schedule/list', 'ScheduleController@templateIndex')->name('schedule.template.index');
             Route::resource('schedule', 'ScheduleController')->except('show');
 
             Route::resource('workstation', 'WorkstationController');
