@@ -38,7 +38,7 @@ Route::get('branch/{branch}', 'API\BranchController@show');
 Route::get('branch/{branch}/schedules', 'API\BranchController@getSchedules');
 
 // holidays
-Route::get('holidays', 'API\HolidayController@index');
+Route::get('branch/{branch_id}/holiday', 'API\HolidayController@getHolidayByBranchId');
 
 // service routes
 Route::get('service/branch/{branch_id}', 'API\ServiceController@getAllByBranchId');

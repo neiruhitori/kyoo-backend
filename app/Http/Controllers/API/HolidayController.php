@@ -4,14 +4,18 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\ScheduleTemplateDetail;
+use App\Models\BranchScheduleTemplateDetail;
 
 class HolidayController extends Controller
 {
-    public function index()
+    public function getHolidayByBranchId($id)
     {
-        $scheduleTemplates = ScheduleTemplateDetail::all();
+        $holidays = BranchScheduleTemplateDetail::where('branch_id', $id)->get();
 
-        return response()->json($scheduleTemplates);
+        return response()->json([
+            'success' => true,
+            'message' => 'get holidays by branch id',
+            'data' => $holidays
+        ]);
     }
 }

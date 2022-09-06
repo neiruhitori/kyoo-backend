@@ -5,7 +5,7 @@ import { format, getDayName, getMonthNames, getDayIndex, getFullDate, formatBrow
 import { fetchBranch } from '../../api/branch'
 import { fetchServiceByBranchId } from '../../api/services'
 import { fetchSchedulesByBranchId } from '../../api/schedules'
-import { fetchHolidays } from '../../api/holidays'
+import { fetchHolidaysByBranchId } from '../../api/holidays'
 
 import 'react-day-picker/lib/style.css'
 
@@ -43,7 +43,7 @@ function ServiceList() {
 
     const schedulesRes = useQuery(['schedules', branchId], () => fetchSchedulesByBranchId(branchId))
 
-    const holidaysRes = useQuery('holidays', () => fetchHolidays())
+    const holidaysRes = useQuery(['branch.holidays', branchId], () => fetchHolidaysByBranchId(branchId))
 
     let branch = null,
         schedule = null,
