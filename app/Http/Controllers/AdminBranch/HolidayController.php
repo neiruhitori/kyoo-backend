@@ -51,7 +51,10 @@ class HolidayController extends Controller
 
         $scheduleTemplateId = $request->schedule_template_id;
 
-        $branchScheduleTemplateDetailIds = BranchScheduleTemplateDetail::where('schedule_template_id', $scheduleTemplateId)
+        $branchScheduleTemplateDetailIds = BranchScheduleTemplateDetail::where([
+            'branch_id' => Auth::user()->branch_id,
+            'schedule_template_id' => $scheduleTemplateId
+        ])
             ->get()
             ->map(function ($branchScheduleTemplateDetail) {
                 return $branchScheduleTemplateDetail->schedule_template_detail_id;
