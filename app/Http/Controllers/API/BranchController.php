@@ -48,20 +48,6 @@ class BranchController extends Controller
         $branch->IndustryCategory;
         $branch->BranchType;
 
-        $week = $this->getWeek();
-
-        if ($branch->schedule_template_id) {
-            $scheduleTemplate = ScheduleTemplateDetail::where('schedule_template_id', $branch->schedule_template_id)->whereBetween('date', [$week['week_start'],$week['week_end']])->get();
-            foreach ($branch->Schedule as $key => $schedule) {
-                foreach ($scheduleTemplate as $key2 => $template) {
-                    if ($schedule->day == strtolower(date("l", strtotime($template->date)))) {
-                        $branch->Schedule[$key]['status'] = 'closed';   
-                        $branch->Schedule[$key]['close_description'] = $template->description;   
-                    }
-                }
-            }
-        }
-
         $branch->likes = Appointment::whereHas('Slot.Service', function($query) use ($branch){
             $query->where('branch_id', $branch->id);
         })->where('is_liked', true)->count();
