@@ -56,8 +56,6 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
-    'kyoo_audio_url' => env('KYOO_AUDIO_URL'),
-
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -124,6 +122,8 @@ return [
     'key' => env('APP_KEY'),
 
     'cipher' => 'AES-256-CBC',
+
+    'kyoo_audio_url' => env('KYOO_AUDIO_URL'),
 
     /*
     |--------------------------------------------------------------------------
