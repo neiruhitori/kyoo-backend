@@ -11,6 +11,7 @@ use App\Branch;
 use App\Schedule;
 use App\ScheduleTemplateDetail;
 use App\Appointment;
+use App\Models\BranchScheduleTemplateDetail;
 
 class SlotController extends Controller
 {
@@ -24,16 +25,18 @@ class SlotController extends Controller
             $query->where('id', $request->service_id);
         })->get()->first();
 
-        // validation by schedule template
-        if ($branch->schedule_template_id) {
-            $schedule_template_details = ScheduleTemplateDetail::where('schedule_template_id', $branch->schedule_template_id)->where('date', $request->date)->count();
-            if ($schedule_template_details > 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No Available Time Slot',
-                    'data' => []
-                ]);
-            }
+        // Return empty if slot in holidays
+        $isHoliday = BranchScheduleTemplateDetail::where([
+            'branch_id' => $branch->id,
+            'date' => $request->date
+        ])->count();
+
+        if ($isHoliday) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No Available Time Slot',
+                'data' => []
+            ]);
         }
         
         // validation by day
