@@ -33,18 +33,19 @@ class AppointmentService
         }
 
         // Prevent double appointments
-        $email = '';
-        $phone = '';
+        $email = $phone = '';
 
         if (isset($data['email'])) $email = $data['email'];
         if (isset($data['phone'])) $phone = $data['phone'];
 
-        $sameAppointment = Appointment::where('email', $email)
-            ->orWhere('phone', $phone)
-            ->where([
+        $sameAppointment = Appointment::where([
                 'slot_id' => $data['slot_id'],
                 'date' => $date
             ])
+            ->where(function ($query) use ($email, $phone) {
+                $query->where('email', $email)
+                    ->orWhere('phone', $phone);
+            })
             ->first();
 
         if ($sameAppointment) {

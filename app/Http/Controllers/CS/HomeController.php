@@ -4,7 +4,6 @@ namespace App\Http\Controllers\CS;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Appointment;
 use App\Models\Exhibition;
 use App\Log;
 use App\Slot;
@@ -12,21 +11,26 @@ use App\ScheduleTemplateDetail;
 use App\Schedule;
 use App\Service;
 use App\Http\Requests\CS\StoreAppointment;
-use App\Mail\CS\StoreAppointment as StoreAppointmentMail;
 use App\Mail\CS\StoreExhibitionMail;
 use App\Interfaces\ExhibitionRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use App\Events\AppointmentCreated;
+use App\Services\AppointmentService;
 
 class HomeController extends Controller
 {
     private $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    private ExhibitionRepositoryInterface $exhibitionRepository;
 
-    public function __construct(ExhibitionRepositoryInterface $exhibitionRepository)
+    protected ExhibitionRepositoryInterface $exhibitionRepository;
+    protected AppointmentService $appointmentService;
+
+    public function __construct(
+        ExhibitionRepositoryInterface $exhibitionRepository,
+        AppointmentService $appointmentService
+    )
     {
         $this->exhibitionRepository = $exhibitionRepository;
+        $this->appointmentService = $appointmentService;
     }
 
     private function generate_booking_code($input, $strength = 5) {
@@ -78,99 +82,21 @@ class HomeController extends Controller
 
     public function storeAppointment(StoreAppointment $request)
     {
-        $branch = Slot::find($request->slot_id)->Service->Branch;
-
-        $total_current_booking = Appointment::where('date', $request->date ?? date('Y-m-d'))
-            ->whereHas('Slot.Service', function($query) use ($branch) {
-                $query->where('branch_id', $branch->id);
-            })
-            ->count();
-        
-        if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
-            $request->session()->flash('error', 'Jumlah appointment melebihi batas maksimal harian untuk cabang berlisensi gratis');
-            return back()->withInput();
-        }
-        
-        // cant create appointment on same time slot
-        $sameAppointment = Appointment::where(['email' => $request->email])
-            ->where(['phone' => $request->phone]) 
-            ->where(['slot_id' => $request->slot_id]) 
-            ->where(['date' => $request->date])
-            ->first();
-
-        if ($sameAppointment) {
-            $request->session()->flash('error', __('Can not create the same appointment at the same time'));
-            return back()->withInput();
-        }
-
-        $current_date = date('Y-m-d');
-        $current_time = date('H:i');
-        $selected_day = strtolower(date('l', strtotime($request->date)));
         $slot = Slot::find($request->slot_id);
 
-        // cant create appointment when slot is full
-        $sameAppointment = Appointment::where(['slot_id' => $request->slot_id]) 
-            ->where(['date' => $request->date])
-            ->count(); 
+        $data = $request->all();
+        $data['branch_id'] = $slot->Service->Department->branch_id;
+        $data['service_id'] = $slot->service_id;
 
-        if ($sameAppointment >= $slot->max_slots) {
-            $request->session()->flash('error', __("Appointment maximum limit already reached, please find other timeslot schedule"));
+        try {
+            $this->appointmentService->create($data);
+    
+            $request->session()->flash('success', __('Appointment has been inserted'));
+            return redirect(route('cs.appointments.monitor'));
+        } catch (\Throwable $e) {
+            $request->session()->flash('error', $e->getMessage());
             return back()->withInput();
         }
-
-        // user cant create appointment on different day with day on slot
-        if ($selected_day != $slot->day) {
-            $request->session()->flash('error', __("This service open at :day", ['day' => $slot->day]));
-            return back()->withInput();
-        }
-
-        // cant create appointment on closed day by schedule template
-        if($slot->Service->Branch->schedule_template_id){
-            $schedule_template_details = ScheduleTemplateDetail::where('schedule_template_id', $slot->Service->Branch->schedule_template_id)->where('date', $request->date)->first();
-
-            if($schedule_template_details){
-                $request->session()->flash('error', __('Service Provider Already Closed'));
-                return back()->withInput();
-            }
-        }
-
-        // cant create appointment on closed day
-        $slot_day = Schedule::where('branch_id', $slot->Service->branch_id)->where('day', $selected_day)->get(['day', 'status'])->first();
-        if ($slot_day->status == 'closed') {
-            $request->session()->flash('error', __('Service Provider Already Closed'));
-            return back()->withInput();
-        }
-
-        // cant create appointment with past time slot
-        if ($request->date == $current_date && $slot->end_time < $current_time) {
-            $request->session()->flash('error', __('Service Provider Already Closed'));
-            return back()->withInput();
-        }
-
-        $input = $request->all();
-        $input['booking_code'] = $this->generate_booking_code($this->permitted_chars, 5);
-        $input['number'] = Appointment::whereHas('Service', function ($query) {
-            $query->where('branch_id', Auth::user()->branch_id);
-        })
-            ->where('date', $request->date)
-            ->get()
-            ->count() + 1;
-        $input['appointment_channel'] = 'VCT web';
-        $input['service_id'] = $slot->service_id;
-        $input['workstation_id'] = Auth::user()->WorkstationVct->workstation_id;
-
-        $appointment = Appointment::create($input);
-
-        $appointment->branch_id = Auth::user()->branch_id;
-
-        // send email to customer
-        Mail::to($request->email)->send(new StoreAppointmentMail($appointment));
-
-        // Broadcast event
-        AppointmentCreated::dispatch($appointment);
-
-        $request->session()->flash('success', __('Appointment has been inserted'));
-        return redirect(route('cs.appointments.monitor'));
     }
 
     public function createExhibition()
