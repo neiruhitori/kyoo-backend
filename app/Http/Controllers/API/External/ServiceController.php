@@ -11,6 +11,7 @@ use App\Branch;
 use App\ScheduleTemplateDetail;
 use App\Schedule;
 use App\Http\Requests\API\External\Service\Slot as GetSlot;
+use App\Models\BranchScheduleTemplateDetail;
 
 class ServiceController extends Controller
 {
@@ -67,16 +68,18 @@ class ServiceController extends Controller
             $query->where('id', $service->id);
         })->get()->first();
 
-        // validation by schedule template
-        if ($branch->schedule_template_id) {
-            $schedule_template_details = ScheduleTemplateDetail::where('schedule_template_id', $branch->schedule_template_id)->where('date', $request->date)->count();
-            if ($schedule_template_details > 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No Available Time Slot',
-                    'data' => []
-                ]);
-            }
+        // validation by holiday
+        $holiday = BranchScheduleTemplateDetail::where([
+            'branch_id' => $branch->id,
+            'date' => $request->date
+        ])->first();
+
+        if ($holiday) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No Available Time Slot',
+                'data' => []
+            ]);
         }
         
         // validation by day
