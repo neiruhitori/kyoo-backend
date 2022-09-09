@@ -4,9 +4,9 @@ namespace App\Repositories;
 
 use App\Interfaces\DirectQueueRepositoryInterface;
 use App\DirectQueue;
+use App\Models\BranchScheduleTemplateDetail;
 use App\Service;
 use App\Schedule;
-use App\ScheduleTemplateDetail;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -61,9 +61,11 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
         }
 
         // cant create direct queue on closed day by schedule template
-        $holiday = ScheduleTemplateDetail::where('schedule_template_id', $branch->schedule_template_id)
-            ->where('date', date('Y-m-d'))
-            ->first();
+        $holiday = BranchScheduleTemplateDetail::where([
+            'branch_id' => $branch->id,
+            'date' => date('Y-m-d')
+        ])->first();
+
         if ($holiday) {
             throw new \Exception('Cabang sedang tutup hari ini');
         }
