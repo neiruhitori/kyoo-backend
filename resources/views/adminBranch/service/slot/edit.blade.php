@@ -46,6 +46,7 @@
                                         class="form-control datetimepicker-input @error('start_time') is-invalid @enderror"
                                         data-toggle="datetimepicker"
                                         value="{{ $slot->start_time }}"
+                                        autocomplete="off"
                                     />
 
                                     @include('layouts.inputError', ['errorName' => 'start_time'])
@@ -60,6 +61,7 @@
                                         class="form-control datetimepicker-input @error('end_time') is-invalid @enderror"
                                         data-toggle="datetimepicker"
                                         value="{{ $slot->end_time }}"
+                                        autocomplete="off"
                                     />
 
                                     @include('layouts.inputError', ['errorName' => 'end_time'])

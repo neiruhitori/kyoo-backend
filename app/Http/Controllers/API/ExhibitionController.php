@@ -12,6 +12,7 @@ use App\Http\Resources\Exhibition as ExhibitionCollection;
 use App\Http\Requests\API\StoreExhibition;
 use Mail;
 use App\Mail\CS\StoreExhibitionMail;
+use App\Models\BranchScheduleTemplateDetail;
 
 class ExhibitionController extends Controller
 {
@@ -69,15 +70,17 @@ class ExhibitionController extends Controller
         $slot = Slot::find($request->slot_id);
 
         // cant create booking on closed day by schedule template
-        if($slot->Service->Branch->schedule_template_id){
-            $schedule_template_details = ScheduleTemplateDetail::where('schedule_template_id', $slot->Service->Branch->schedule_template_id)->where('date', $request->date)->first();
-            if($schedule_template_details){
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Service Provider Already Closed',
-                    'data' => []
-                ]);    
-            }
+        $holiday = BranchScheduleTemplateDetail::where([
+            'branch_id' => $branch->id,
+            'date' => $request->date
+        ])->first();
+
+        if ($holiday) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Service Provider Already Closed',
+                'data' => []
+            ]);
         }
 
         // cant create booking on closed day

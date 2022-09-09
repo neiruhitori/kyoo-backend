@@ -71,11 +71,11 @@ class ExhibitionRepository implements ExhibitionRepositoryInterface
 
     public function isSlotExceeded($params)
     {
-        $slot = Slot::find($request->slot_id);
+        $slot = Slot::find($params['slot_id']);
 
         $usedSlot = Exhibition::where([
-            'slot_id' => $request->slot_id,
-            'date' => $request->date
+            'slot_id' => $params['slot_id'],
+            'date' => $params['date']
         ])->count();
 
         return $usedSlot > $slot->max_slots;

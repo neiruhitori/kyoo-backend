@@ -13,6 +13,7 @@ use App\Service;
 use App\Http\Requests\CS\StoreAppointment;
 use App\Mail\CS\StoreExhibitionMail;
 use App\Interfaces\ExhibitionRepositoryInterface;
+use App\Models\BranchScheduleTemplateDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Services\AppointmentService;
@@ -164,15 +165,14 @@ class HomeController extends Controller
         }
 
         // cant create queue on closed day by schedule template
-        if($slot->Service->Branch->schedule_template_id) {
-            $schedule_template_details = ScheduleTemplateDetail::where('schedule_template_id', $slot->Service->Branch->schedule_template_id)
-                ->where('date', $request->date)
-                ->first();
+        $holiday = BranchScheduleTemplateDetail::where([
+            'branch_id' => $branch->id,
+            'date' => $request->date
+        ])->first();
 
-            if($schedule_template_details){
-                $request->session()->flash('error', __('Service Provider Already Closed'));
-                return back()->withInput();
-            }
+        if ($holiday) {
+            $request->session()->flash('error', __('Service Provider Already Closed'));
+            return back()->withInput();
         }
 
         // cant create queue on closed day
