@@ -17,9 +17,10 @@ class AppointmentService
     {
         $date = date('Y-m-d', strtotime($data['date']));
 
-        // Limit free appointments
         $branch = Branch::find($data['branch_id']);
+        $slot = Slot::find($data['slot_id']);
 
+        // Limit free appointments
         $totalTodayAppointments = Appointment::where([
             'branch_id' => $data['branch_id'],
             'date' => $date
@@ -52,6 +53,17 @@ class AppointmentService
             throw new \Exception('Appointment telah terdaftar');
         }
 
+        // Prevent appointment on empty slots
+        $totalTodayAppointmentsBySlot = Appointment::where([
+                'slot_id' => $data['slot_id'],
+                'date' => $date
+            ])
+            ->count();
+        
+        if ($totalTodayAppointmentsBySlot >= $slot->max_slots) {
+            throw new \Exception('Sesi appointment tidak tersedia');
+        }
+
         // Prevent appointment on holidays
         $selectedHoliday = BranchScheduleTemplateDetail::where([
             'branch_id' => $data['branch_id'],
@@ -75,8 +87,6 @@ class AppointmentService
         }
 
         // Can't select past
-        $slot = Slot::find($data['slot_id']);
-
         $appointmentEndDateTime = date('Y-m-d H:i:s', strtotime($data['date'] . ' ' . $slot->end_time . ':00'));
         $currentDateTime = date('Y-m-d H:i:s');
 

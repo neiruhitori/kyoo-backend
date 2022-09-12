@@ -226,11 +226,15 @@ function ServiceList() {
                     </Link>
                 }
 
+                const availableSlot = service.filledSlot < service.totalSlot
+                    ? service.totalSlot - service.filledSlot
+                    : 0
+
                 const serviceProps = {
                     title: service.name,
                     action: {
                         label: "Total Slot Tersedia",
-                        value: service.totalSlot - service.filledSlot,
+                        value: availableSlot,
                         total: service.totalSlot
                     }
                 }

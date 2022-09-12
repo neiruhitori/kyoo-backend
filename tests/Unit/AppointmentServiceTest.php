@@ -26,6 +26,7 @@ class AppointmentServiceTest extends TestCase
 
         $this->slot = Slot::factory()->state([
             'service_id' => $this->service->id,
+            'max_slots' => 2,
             'start_time' => Carbon::now()->subHours(3)->format('H:i'),
             'end_time' => Carbon::now()->subMinutes(1)->format('H:i')
         ])->create();
@@ -35,8 +36,6 @@ class AppointmentServiceTest extends TestCase
 
     public function test_free_appointment_exceeded()
     {
-        $this->slot = Slot::factory()->state(['service_id' => $this->service->id])->create();
-
         Appointment::factory()
             ->count(5)
             ->state([
@@ -52,7 +51,8 @@ class AppointmentServiceTest extends TestCase
         try {
             $this->appointmentService->create([
                 'branch_id' => $this->branch->id,
-                'date' => date('Y-m-d')
+                'date' => date('Y-m-d'),
+                'slot_id' => $this->slot->id
             ]);
         } catch (Throwable $e) {
             $message = $e->getMessage();
@@ -90,6 +90,34 @@ class AppointmentServiceTest extends TestCase
         }
 
         $this->assertEquals($message, 'Appointment telah terdaftar');
+    }
+
+    public function test_appointment_exceed_max_slot()
+    {
+        Appointment::factory()
+            ->count(2)
+            ->state([
+                'branch_id' => $this->branch->id,
+                'service_id' => $this->service->id,
+                'date' => date('Y-m-d'),
+                'slot_id' => $this->slot->id
+            ])
+            ->create();
+        
+        $message = 'Sesi appointment tersedia';
+
+        try {
+            $this->appointmentService->create([
+                'branch_id' => $this->branch->id,
+                'service_id' => $this->service->id,
+                'date' => date('Y-m-d'),
+                'slot_id' => $this->slot->id
+            ]);
+        } catch (Throwable $e) {
+            $message = $e->getMessage();
+        }
+
+        $this->assertEquals($message, 'Sesi appointment tidak tersedia');
     }
 
     public function test_appointment_on_holiday()
