@@ -21,7 +21,8 @@ class AppointmentSignageController extends Controller
         return view('appointments.monitor', [
             'branch' => $branch,
             'signature' => $branchId,
-            'features' => $features
+            'features' => $features,
+            'config' => $branch->BranchConfiguration
         ]);
     }
 

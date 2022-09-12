@@ -33,6 +33,7 @@
             :branch="{{$branch}}"
             signature="{{$signature}}"
             :features="{{$features}}"
+            :config="{{$config}}"
         />
     </div>
 

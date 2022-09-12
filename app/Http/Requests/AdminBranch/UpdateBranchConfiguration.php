@@ -3,7 +3,7 @@
 namespace App\Http\Requests\AdminBranch;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateBranchConfiguration extends FormRequest
 {
@@ -25,9 +25,9 @@ class UpdateBranchConfiguration extends FormRequest
     public function rules()
     {
         return [
-            'maximum_recall' => 'required|numeric|min:0',
-            'maximum_requeue_count' => 'required|numeric|min:0',
-            'allow_transfer' => 'required|boolean',
+            'maximum_recall' => 'numeric|min:0',
+            'maximum_requeue_count' => 'numeric|min:0',
+            'allow_transfer' => 'boolean',
         ];
     }
 }

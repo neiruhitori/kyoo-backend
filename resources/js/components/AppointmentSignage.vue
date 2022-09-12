@@ -118,6 +118,10 @@ export default {
       type: String,
       required: true,
     },
+    config: {
+      type: Object,
+      required: true
+    }
   },
 
   data() {
@@ -141,7 +145,10 @@ export default {
       .listen('AppointmentServed', async (q) => {
         await this.getQueues();
 
-        if (this.features.find(v => v.additional_feature.name === 'Panggilan Suara')) {
+        if (
+          this.features.find(v => v.additional_feature.name === 'Panggilan Suara') &&
+          this.config.queue_voice
+        ) {
           this.getQueueCallAudio(q.id);
         }
       })

@@ -93,12 +93,8 @@ Route::namespace('AdminBranch')
             Route::post('/user/reset-password/{user}', 'UserController@resetPassword')->name('user.reset-password');
             Route::resource('user', 'UserController');
 
-            Route::get('feature', 'FeatureController@index')
-                ->name('feature')
-                ->middleware('checkDirectQueue');
-            Route::put('feature', 'BranchConfigurationController@update')
-                ->name('feature.update')
-                ->middleware('checkDirectQueue');
+            Route::get('feature', 'FeatureController@index')->name('feature');
+            Route::put('feature', 'BranchConfigurationController@update')->name('feature.update');
 
             Route::get('queue-monitor', 'TVDisplayConfigurationController@index')
                 ->name('queue-monitor')
@@ -200,9 +196,7 @@ Auth::routes();
 // Appointment Status
 Route::get('/appointment/status/{id}', 'AppointmentController@status')->name('appointment.status');
 
-Route::get('/queue-caller/{directQueue}', 'QueueCallerController@call')
-    ->name('queueCaller')
-    ->middleware('access:Panggilan Suara');
+Route::get('/queue-caller/{directQueue}', 'QueueCallerController@call')->name('queueCaller');
 
 Route::get('/direct-queue/branch/{branch_id}/list', 'DirectQueueController@branchList')->name('directQueue.branch.list');
 

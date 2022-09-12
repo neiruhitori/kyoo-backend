@@ -21,20 +21,25 @@
                 <div class="card-body">
                     <form action="{{ route('cs.appointments.store') }}" method="post">
                         @csrf
+
                         <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                         <div class="col-md-12 form-group">
                             <label for="date">{{ __('Date') }}</label>
                             <input type="date" name="date" id="date" class="form-control" value="{{ old('date') ?: date('Y-m-d') }}" required>
                         </div>
+
                         <div class="col-md-12 form-group">
                             <label for="service_id">{{ __('Service') }}</label>
                             <select name="service_id" id="service_id" class="form-control">
                                 <option value="" selected disabled>{{ __('Choose Service') }}</option>
                                 @foreach ($services as $service)
-                                    <option value="{{ $service->id }}">{{ $service->name }}</option>
+                                    <option value="{{ $service->id }}" {{ $service->id == old('service_id') ? 'selected' : '' }}>
+                                        {{ $service->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="col-md-12 form-group">
                             <label for="slot_id">{{ __('Slot') }}</label>
                             <select name="slot_id" id="slot_id" class="form-control">
@@ -44,22 +49,27 @@
                                 @endforeach --}}
                             </select>
                         </div>
+
                         <div class="col-md-12 form-group">
                             <label for="name">{{ __('Name') }}</label>
                             <input type="text" name="name" id="" class="form-control" value="{{ old('name') }}" required>
                         </div>
+
                         <div class="col-md-12 form-group">
                             <label for="phone">{{ __('Phone Number') }}</label>
                             <input type="tel" name="phone" id="" class="form-control" value="{{ old('phone') }}" required>
                         </div>
+
                         <div class="col-md-12 form-group">
                             <label for="email">{{ __('Email') }}</label>
                             <input type="email" name="email" id="" class="form-control" value="{{ old('email') }}" required>
                         </div>
+
                         <div class="col-md-12 form-group">
                             <label for="notes">{{ __('Notes') }}</label>
                             <textarea name="notes" id="" cols="" rows="" class="form-control">{{ old('notes') }}</textarea>
                         </div>
+
                         <div class="col-md-12">
                             <button class="btn btn-primary">{{ __('Save') }}</button>
                         </div>
@@ -73,13 +83,7 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            const service_idValue = '{{ old('service_id') }}';
-
             getSlots()
-                
-            if(service_idValue !== '') {
-                $('#service_id').val(service_idValue);
-            }
 
             $('#service_id').change(() => {
                 getSlots()

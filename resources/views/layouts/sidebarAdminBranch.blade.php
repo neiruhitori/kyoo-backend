@@ -137,10 +137,7 @@
               {{ __('Virtual Counter') }}
             </a>
 
-            @if (
-              Auth::user()->Branch->BranchType->is_premium &&
-              Auth::user()->Branch->BranchType->is_direct_queue
-            )
+            @if (Auth::user()->Branch->BranchType->is_premium)
               <a
                 class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/feature') ?: 'active' }}"
                 href="{{ route('admin-branch.branch-configuration.feature') }}"

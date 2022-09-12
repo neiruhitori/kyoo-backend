@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\AdminBranch;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\BranchConfiguration;
 use App\Log;
 use App\Http\Requests\AdminBranch\UpdateBranchConfiguration;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class BranchConfigurationController extends Controller
 {
