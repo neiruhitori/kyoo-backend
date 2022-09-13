@@ -4,8 +4,6 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -16,7 +14,6 @@ class AppointmentCreated implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $appointment;
-    public $id;
 
     /**
      * Create a new event instance.
@@ -26,7 +23,6 @@ class AppointmentCreated implements ShouldBroadcast
     public function __construct(Appointment $appointment)
     {
         $this->appointment = $appointment;
-        $this->id = $this->appointment->branch_id;
     }
 
     /**
@@ -36,6 +32,6 @@ class AppointmentCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('branches.'.$this->id.'.appointments');
+        return new Channel('branches.' . $this->appointment->branch_id . '.appointments');
     }
 }

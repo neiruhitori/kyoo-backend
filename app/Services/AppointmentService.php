@@ -7,7 +7,6 @@ use App\Branch;
 use App\Appointment;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Schedule;
-use App\Mail\CS\StoreAppointment as StoreAppointmentMail;
 use App\Events\AppointmentCreated;
 use Illuminate\Support\Facades\Mail;
 
@@ -104,9 +103,6 @@ class AppointmentService
         
         // Store appointment to db
         $appointment = Appointment::create($data);
-
-        // Send Email
-        Mail::to($data['email'])->send(new StoreAppointmentMail($appointment));
     
         // Dispatch created event
         AppointmentCreated::dispatch($appointment);

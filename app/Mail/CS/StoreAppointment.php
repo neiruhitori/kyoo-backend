@@ -7,12 +7,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Appointment;
-use Crypt;
 
 class StoreAppointment extends Mailable
 {
     use Queueable, SerializesModels;
-    public $appointment;
+
+    protected $appointment;
 
     /**
      * Create a new message instance.
@@ -31,17 +31,19 @@ class StoreAppointment extends Mailable
      */
     public function build()
     {
-        $appointment_id = $this->appointment->id;
         $branch = $this->appointment->Slot->Service->Branch;
 
         setlocale(LC_TIME, 'id_ID');
 
-        return $this->from('noreply@kyoo.id', 'KYOO')->subject('Appointment di ' . $branch->name)->markdown('emails.cs.storeAppointment', [
-            'appointment' => $this->appointment,
-            'appointment_id' => $appointment_id,
-            'branch_id' => $branch->id,
-            'branch_name' => $branch->name,
-            'booking_date' => date('j F Y', strtotime($this->appointment->date))
-        ]);
+        return $this
+            ->from('noreply@kyoo.id', 'KYOO')
+            ->subject('Appointment di ' . $branch->name)
+            ->markdown('emails.cs.storeAppointment', [
+                'appointment' => $this->appointment,
+                'appointment_id' => $this->appointment->id,
+                'branch_id' => $branch->id,
+                'branch_name' => $branch->name,
+                'booking_date' => date('j F Y', strtotime($this->appointment->date))
+            ]);
     }
 }
