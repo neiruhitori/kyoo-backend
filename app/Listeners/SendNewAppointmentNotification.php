@@ -31,8 +31,6 @@ class SendNewAppointmentNotification implements ShouldQueue
      */
     public function handle(AppointmentCreated $event)
     {
-        Log::info("Kontol");
-
         Mail::to($event->appointment->email)->queue(
             (new StoreAppointment($event->appointment))->onQueue('mails')
         );
