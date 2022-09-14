@@ -9,26 +9,31 @@ use App\Models\BranchScheduleTemplateDetail;
 use App\Schedule;
 use App\Events\AppointmentCreated;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AppointmentService
 {
     public function create($data): ?Appointment
     {
         try {
+            DB::beginTransaction();
+
             $date = date('Y-m-d', strtotime($data['date']));
 
             $branch = Branch::find($data['branch_id']);
             $slot = Slot::find($data['slot_id']);
 
             // Limit free appointments
-            $totalTodayAppointments = Appointment::where([
+            $todayAppointments = Appointment::where([
                 'branch_id' => $data['branch_id'],
                 'date' => $date
-            ])->count();
+            ])
+                ->sharedLock()
+                ->get();
 
             if (
                 !$branch->BranchType->is_premium &&
-                $totalTodayAppointments >= config('appointment.free_appointment_limit')
+                count($todayAppointments) >= config('appointment.free_appointment_limit')
             ) {
                 throw new \Exception('Batas appointment gratis hari ini terlampaui');
             }
@@ -96,19 +101,19 @@ class AppointmentService
                 throw new \Exception('Sesi appointment sudah berakhir');
             }
 
-            $lastAppointment = Appointment::where([
-                'branch_id' => $data['branch_id'],
-                'date' => $date
-            ])
-                ->orderByDesc('number')
-                ->sharedLock()
-                ->first();
+            $lastAppointmentNumber = count($todayAppointments) > 0
+                ? (int) $todayAppointments[count($todayAppointments) - 1]->number
+                : 0;
+
+            Log::info("Last appoinment number: " . $lastAppointmentNumber);
 
             $data['booking_code'] = $this->generateBookingCode();
-            $data['number'] = $lastAppointment ? (int) $lastAppointment->number + 1 : 1;
+            $data['number'] = $lastAppointmentNumber + 1;
             
             // Store appointment to db
             $appointment = Appointment::create($data);
+
+            DB::commit();
         
             // Dispatch created event
             AppointmentCreated::dispatch($appointment);
