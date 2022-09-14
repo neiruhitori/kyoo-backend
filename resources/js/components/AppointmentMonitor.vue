@@ -208,11 +208,11 @@ export default {
             this.pastAppointments = data.filter(v => {
                 return v.status === 'end served' || v.status === 'no show'
             }).sort((a, b) => {
-                if (a.created_at > b.created_at) {
+                if (a.number > b.number) {
                     return -1
                 }
 
-                if (a.created_at < b.created_at) {
+                if (a.number < b.number) {
                     return 1
                 }
 

@@ -35,7 +35,7 @@ class AppointmentMonitorController extends Controller
                 $query->whereNull('workstation_id')
                     ->orWhere('workstation_id', $workstationVct->workstation_id);
             })
-            ->orderBy('created_at')
+            ->orderBy('number')
             ->get();
 
         return response()->json($data, 200);
