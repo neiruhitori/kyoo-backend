@@ -110,7 +110,7 @@ class AppointmentService
                 ->sortByDesc('number')
                 ->first();
             
-            Log::info("Last appointment number: " . $lastAppointment->number);
+            Log::info($data['email'] . " last appointment number: " . $lastAppointment->number);
 
             $data['booking_code'] = $this->generateBookingCode();
             $data['number'] = $lastAppointment ? $lastAppointment->number + 1 : 1;
