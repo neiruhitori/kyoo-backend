@@ -26,7 +26,7 @@ class AppointmentService
                 'branch_id' => $data['branch_id'],
                 'date' => $date
             ])
-                ->sharedLock()
+                ->lockForUpdate()
                 ->get();
 
             if (
@@ -50,7 +50,7 @@ class AppointmentService
                     $query->where('email', $email)
                         ->orWhere('phone', $phone);
                 })
-                ->sharedLock()
+                ->lockForUpdate()
                 ->first();
 
             if ($sameAppointment) {
@@ -62,7 +62,7 @@ class AppointmentService
                     'slot_id' => $data['slot_id'],
                     'date' => $date
                 ])
-                ->sharedLock()
+                ->lockForUpdate()
                 ->get();
             
             if (count($todayAppointmentsBySlot) >= $slot->max_slots) {
@@ -103,7 +103,7 @@ class AppointmentService
                 'branch_id' => $data['branch_id'],
                 'date' => $date
             ])
-                ->sharedLock()
+                ->lockForUpdate()
                 ->get()
                 ->sortByDesc('number')
                 ->first();
