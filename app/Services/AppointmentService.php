@@ -28,7 +28,7 @@ class AppointmentService
                 'branch_id' => $data['branch_id'],
                 'date' => $date
             ])
-                ->lockForUpdate()
+                ->sharedLock()
                 ->get();
 
             if (
@@ -52,7 +52,7 @@ class AppointmentService
                     $query->where('email', $email)
                         ->orWhere('phone', $phone);
                 })
-                ->lockForUpdate()
+                ->sharedLock()
                 ->first();
 
             if ($sameAppointment) {
@@ -64,7 +64,7 @@ class AppointmentService
                     'slot_id' => $data['slot_id'],
                     'date' => $date
                 ])
-                ->lockForUpdate()
+                ->sharedLock()
                 ->get();
             
             if (count($todayAppointmentsBySlot) >= $slot->max_slots) {
@@ -101,12 +101,19 @@ class AppointmentService
                 throw new \Exception('Sesi appointment sudah berakhir');
             }
 
-            $lastAppointmentNumber = count($todayAppointments) > 0
-                ? (int) $todayAppointments[count($todayAppointments) - 1]->number
-                : 0;
+            $lastAppointment = Appointment::where([
+                'branch_id' => $data['branch_id'],
+                'date' => $date
+            ])
+                ->sharedLock()
+                ->get()
+                ->sortByDesc('number')
+                ->first();
+            
+            Log::info("Last appointment number: " . $lastAppointment->number);
 
             $data['booking_code'] = $this->generateBookingCode();
-            $data['number'] = $lastAppointmentNumber + 1;
+            $data['number'] = $lastAppointment ? $lastAppointment->number + 1 : 1;
             
             // Store appointment to db
             $appointment = Appointment::create($data);
