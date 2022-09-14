@@ -16,8 +16,6 @@ class AppointmentService
     public function create($data): ?Appointment
     {
         try {
-            DB::beginTransaction();
-
             $date = date('Y-m-d', strtotime($data['date']));
 
             $branch = Branch::find($data['branch_id']);
@@ -117,16 +115,12 @@ class AppointmentService
             
             // Store appointment to db
             $appointment = Appointment::create($data);
-
-            DB::commit();
         
             // Dispatch created event
             AppointmentCreated::dispatch($appointment);
 
             return $appointment;
         } catch (\Exception $e) {
-            DB::rollBack();
-
             throw $e;
         }
     }
