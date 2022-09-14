@@ -8,14 +8,14 @@ use App\Appointment;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Schedule;
 use App\Events\AppointmentCreated;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class AppointmentService
 {
     public function create($data): ?Appointment
     {
-        try {
+        return Cache::lock('appointments', 10)->block(5, function () use ($data) {
             $date = date('Y-m-d', strtotime($data['date']));
 
             $branch = Branch::find($data['branch_id']);
@@ -26,7 +26,6 @@ class AppointmentService
                 'branch_id' => $data['branch_id'],
                 'date' => $date
             ])
-                ->lockForUpdate()
                 ->get();
 
             if (
@@ -50,7 +49,6 @@ class AppointmentService
                     $query->where('email', $email)
                         ->orWhere('phone', $phone);
                 })
-                ->lockForUpdate()
                 ->first();
 
             if ($sameAppointment) {
@@ -62,7 +60,6 @@ class AppointmentService
                     'slot_id' => $data['slot_id'],
                     'date' => $date
                 ])
-                ->lockForUpdate()
                 ->get();
             
             if (count($todayAppointmentsBySlot) >= $slot->max_slots) {
@@ -103,7 +100,6 @@ class AppointmentService
                 'branch_id' => $data['branch_id'],
                 'date' => $date
             ])
-                ->lockForUpdate()
                 ->get()
                 ->sortByDesc('number')
                 ->first();
@@ -115,14 +111,12 @@ class AppointmentService
             
             // Store appointment to db
             $appointment = Appointment::create($data);
-        
+
             // Dispatch created event
             AppointmentCreated::dispatch($appointment);
 
             return $appointment;
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        });
     }
 
     private function generateBookingCode()
