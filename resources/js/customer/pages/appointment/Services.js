@@ -45,7 +45,7 @@ function Services() {
     const branchHolidaysQuery = useBranchHolidays(branchId)
     const branchServicesQuery = useBranchServices(branchId, {
         queueType: 'appointment',
-        date: selectedDate
+        date: format(selectedDate, 'yyyy-MM-dd')
     })
 
     const branch = branchQuery?.data
