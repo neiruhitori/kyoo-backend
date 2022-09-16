@@ -17,6 +17,7 @@ import OnsiteBookingStatus from './OnsiteBookingStatus/OnsiteBookingStatus'
 import BranchDetail from './BranchDetail/BranchDetail'
 import OnsiteVisitorInformation from './OnsiteVisitorInformation/OnsiteVisitorInformation'
 import BookingDetail from './BookingDetail/BookingDetail'
+import AppointmentServices from './appointment/Services'
 
 import InfoAlert from '../components/InfoAlert'
 
@@ -84,6 +85,7 @@ function App() {
         <Routes>
             <Route path="/scan" element={<QRReader />} />
 
+            <Route path="/customer/:branchId/appointment/services" element={<AppointmentServices />} />
             <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
             <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
             <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />

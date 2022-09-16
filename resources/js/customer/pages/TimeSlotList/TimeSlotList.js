@@ -241,7 +241,7 @@ function TimeSlotList() {
                         color: '#A5A5A5',
                         fontSize: '.875rem'
                     }}>
-                        Pilih tanggal lain untuk temukan sesi waktu yang tersedia
+                        Pilih tanggal lain untuk menemukan sesi waktu yang tersedia
                     </p>
                 </div>}
 

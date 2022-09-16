@@ -11,7 +11,8 @@ import Header from '../../components/Header'
 import Banner from '../../components/Banner'
 import Chip from '../../components/Chip'
 import H2 from '../../components/H2'
-import BranchStatus from '../../components/BranchStatus'
+import BranchStatusOpen from '../../components/BranchStatusOpen'
+import BranchStatusClosed from '../../components/BranchStatusClosed'
 import MainContent from '../../components/MainContent'
 import Card from '../../components/Card'
 import BranchMap from '../../components/BranchMap'
@@ -47,6 +48,7 @@ export default function BranchDetail() {
         enabled: branchQuery.status === 'success'
     })
 
+    let isBranchOpen = false
     const [isOpen, setIsOpen] = useState(false)
 
     if (branchQuery.status === 'success') {
@@ -55,6 +57,7 @@ export default function BranchDetail() {
         currentSchedule = branch.schedule.find(schedule => {
             return schedule.day === getDayName(new Date(), 'en')
         })
+        isBranchOpen = currentSchedule.status === 'open'
     }
 
     if (regencyQuery.status === 'success') {
@@ -110,10 +113,16 @@ export default function BranchDetail() {
                     marginTop: 'auto',
                     padding: '0 1.375rem'
                 }}>
-                    {!!currentSchedule && <BranchStatus
-                        isOpen={currentSchedule.status !== 'closed'}
+                    {!!currentSchedule && isBranchOpen
+                    ? <BranchStatusOpen
                         startTime={currentSchedule.start_time.slice(0, 5)}
                         endTime={currentSchedule.end_time.slice(0, 5)}
+                        style={{
+                            borderBottomLeftRadius: '0',
+                            borderBottomRightRadius: '0',
+                        }}
+                    />
+                    : <BranchStatusClosed
                         style={{
                             borderBottomLeftRadius: '0',
                             borderBottomRightRadius: '0',

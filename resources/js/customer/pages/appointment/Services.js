@@ -1,79 +1,89 @@
-import { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
-import { format, getDayName, getMonthNames, getDayIndex, getFullDate, formatBrowser } from '../../utils/date'
-import { fetchBranch } from '../../api/branch'
-import { fetchServiceByBranchId } from '../../api/services'
-import { fetchSchedulesByBranchId } from '../../api/schedules'
-import { fetchHolidaysByBranchId } from '../../api/holidays'
+import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import { format, eachMonthOfInterval, parseISO } from 'date-fns'
+import id from 'date-fns/locale/id'
+
+import useBranch from '../../hooks/useBranch'
+import useBranchSchedules from '../../hooks/useBranchSchedules'
+import useBranchHolidays from '../../hooks/useBranchHolidays'
+import useBranchServices from '../../hooks/useBranchServices' 
 
 import 'react-day-picker/lib/style.css'
 
-import DayPicker from 'react-day-picker';
-import Header from '../../components/Header'
+import { Link } from 'react-router-dom'
+import DayPicker from 'react-day-picker'
+
 import Banner from '../../components/Banner'
+import Header from '../../components/Header'
 import Chip from '../../components/Chip'
 import H2 from '../../components/H2'
 import BranchStatusOpen from '../../components/BranchStatusOpen'
 import BranchStatusClosed from '../../components/BranchStatusClosed'
 import SliderIndicator from '../../components/SliderIndicator'
-import CalendarWrapper from '../../components/CalendarWrapper'
+import MainContent from '../../components/MainContent'
 import TextField from '../../components/TextField'
 import IconButton from '../../components/IconButton'
-import ServiceItem from '../../components/ServiceItem'
-import MainContent from '../../components/MainContent'
+import CalendarWrapper from '../../components/CalendarWrapper'
 import ServiceItemSkeleton from '../../components/ServiceItemSkeleton'
+import ServiceItem from '../../components/ServiceItem'
 
 import AngleRightIcon from '../../icons/AngleRightIcon'
 import CalendarIcon from '../../icons/CalendarIcon'
 import ClockIcon from '../../icons/ClockIcon'
+import BoxOpenIcon from '../../icons/BoxOpenIcon'
 
-function ServiceList() {
-    const { branchId, queueType } = useParams()
-    const PAGE_TITLE = `Antrian ${queueType}`
+function Services() {
+    const { branchId } = useParams()
+
+    const PAGE_TITLE = 'Antrian Appointment'
 
     const [selectedDate, setSelectedDate] = useState(new Date())
-    const [showCalendar, setShowCalendar] = useState(false)
-    
-    const branchRes = useQuery('branch', () => fetchBranch(branchId))
+    const [isCalendarShow, setIsCalendarShow] = useState(false)
 
-    const servicesRes = useQuery(
-        ['services', selectedDate],
-        () => fetchServiceByBranchId(branchId, {
-            queueType,
-            date: getFullDate(selectedDate)
+    const branchQuery = useBranch(branchId)
+    const branchSchedulesQuery = useBranchSchedules(branchId)
+    const branchHolidaysQuery = useBranchHolidays(branchId)
+    const branchServicesQuery = useBranchServices(branchId, {
+        queueType: 'appointment',
+        date: selectedDate
+    })
+
+    const branch = branchQuery?.data
+    const schedules = branchSchedulesQuery?.data
+    const holidays = branchHolidaysQuery?.data
+    const services = branchServicesQuery?.data
+
+    const todaySchedule = schedules?.find(v => v.day === format(selectedDate, 'eeee').toLowerCase())
+    const todayHoliday = holidays?.find(v => v.date === format(selectedDate, 'yyyy-MM-dd'))
+
+    useEffect(() => {
+        branchSchedulesQuery.refetch()
+        branchHolidaysQuery.refetch()
+        branchServicesQuery.refetch()
+    }, [selectedDate])
+
+    function isBranchOpen() {
+        return todaySchedule?.status === 'open' && !todayHoliday
+    }
+
+    function getClosedDayIndexes() {
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+
+        return schedules
+            .filter(v => v.status === 'closed')
+            .map(v => days.indexOf(v.day))
+    }
+
+    function getMonthNames() {
+        const now = new Date()
+
+        return eachMonthOfInterval({
+            start: new Date(now.getFullYear(), 1, 1),
+            end: new Date(now.getFullYear(), 12, 1)
         })
-    )
-
-    const schedulesRes = useQuery(['schedules', branchId], () => fetchSchedulesByBranchId(branchId))
-
-    const holidaysRes = useQuery(['branch.holidays', branchId], () => fetchHolidaysByBranchId(branchId))
-
-    let branch = null,
-        schedule = null,
-        services = [],
-        schedules = [],
-        holidays = [],
-        isBranchOpen = false
-
-    if (branchRes.status === 'success') {
-        branch = branchRes.data
-        schedule = branch?.schedule.find(v => (v.day === getDayName(new Date(), 'en')))
-        isBranchOpen = schedule.status === 'open'
-    }
-
-    if (servicesRes.status === 'success') {
-        services = servicesRes.data
-    }
-
-    if (schedulesRes.status === 'success') {
-        schedules = schedulesRes.data
-    }
-
-    if (holidaysRes.status === 'success') {
-        holidays = holidaysRes.data.map(v => {
-            return formatBrowser(v.date)
-        })
+            .map(v => {
+                return format(v, 'MMMM', { locale: id })
+            })
     }
 
     function handleDayClick(day, modifiers = {}) {
@@ -82,18 +92,11 @@ function ServiceList() {
     }
 
     function handleCalendarClose() {
-        setShowCalendar(false)
-    }
-
-    function getClosedDays() {
-        return schedules.filter(v => v.status === 'closed')
-            .map(v => {
-                return getDayIndex(v.day)
-            })
+        setIsCalendarShow(false)
     }
 
     return <>
-        {branchRes.status === 'success' && <Banner imageUrl={branch.photo}>
+        <Banner imageUrl={branch?.photo}>
             <Header>
                 <div style={{
                     display: 'flex',
@@ -104,7 +107,7 @@ function ServiceList() {
                         display: 'flex',
                         alignItems: 'center'
                     }}>
-                        <img src={branch.logo ? `/storage/${branch.logo}` : `/img/logo-color.svg`} height="26" />
+                        <img src={branch?.logo ? `/storage/${branch?.logo}` : `/img/logo-color.svg`} height="26" />
                     </a>
                 </div>
 
@@ -127,7 +130,7 @@ function ServiceList() {
                 }}>
                     <Chip label={branch?.industry_category.name} />
 
-                    <Link to={`/customer/${branchId}/${queueType}/detail`}>
+                    <Link to={`/customer/${branch?.id}/appointment/detail`}>
                         <div style={{
                             color: '#FFFFFF',
                             display: 'flex',
@@ -138,6 +141,7 @@ function ServiceList() {
                             <span style={{
                                 padding: '0 0.75rem'
                             }}>Lihat Detail</span>
+
                             <AngleRightIcon color="#FFFFFF" />
                         </div>
                     </Link>
@@ -149,19 +153,20 @@ function ServiceList() {
                     }}>{branch?.name}</H2>
                 </div>
 
-                {schedule && isBranchOpen
-                ? <BranchStatusOpen
-                    startTime={schedule.start_time.slice(0, -3)}
-                    endTime={schedule.end_time.slice(0, -3)}
-                    style={{
-                        marginTop: '1rem'
-                    }}
-                />
-                : <BranchStatusClosed
-                    style={{
-                        marginTop: '1rem'
-                    }}
-                />}
+                {isBranchOpen()
+                    ? <BranchStatusOpen
+                        startTime={todaySchedule?.start_time.slice(0, -3)}
+                        endTime={todaySchedule?.end_time.slice(0, -3)}
+                        style={{
+                            marginTop: '1rem'
+                        }}
+                    />
+                    : <BranchStatusClosed
+                        style={{
+                            marginTop: '1rem'
+                        }}
+                    />
+                }
 
                 <SliderIndicator active={0} total={3} style={{
                     position: 'absolute',
@@ -170,10 +175,10 @@ function ServiceList() {
                     transform: 'translateX(-50%)'
                 }} />
             </div>
-        </Banner>}
+        </Banner>
 
         <MainContent>
-            {showCalendar && <CalendarWrapper
+            {isCalendarShow && <CalendarWrapper
                 onClick={handleCalendarClose}
             >
                 <DayPicker
@@ -182,8 +187,8 @@ function ServiceList() {
                     modifiers={{
                         selected: selectedDate,
                         disabled: [
-                            ...holidays,
-                            { daysOfWeek: getClosedDays() },
+                            ...holidays.map(v => parseISO(v.date)),
+                            { daysOfWeek: getClosedDayIndexes() },
                             { before: new Date() }
                         ]
                     }}
@@ -196,65 +201,44 @@ function ServiceList() {
                 />
             </CalendarWrapper>}
 
-            {queueType != 'onsite' && <TextField
+            <TextField
                 label="Tanggal"
                 style={{
                     marginBottom: '1.5rem'
                 }}
-                value={format(selectedDate)}
+                value={format(selectedDate, 'dd MMMM yyyy', { locale: id })}
                 readOnly
                 endAdornment={
                     <IconButton
-                        onClick={() => setShowCalendar(true)}
+                        onClick={() => setIsCalendarShow(true)}
                     >
                         <CalendarIcon height="24" width="24" />
                     </IconButton>
                 }
-            />}
+            />
 
             <h4 style={{
                 fontSize: '1rem',
                 marginBottom: '1.125rem'
             }}>Layanan</h4>
 
-            {servicesRes.status === 'loading' && <ServiceItemSkeleton />}
+            {branchServicesQuery.isLoading && <ServiceItemSkeleton />}
 
-            {isBranchOpen && servicesRes.status === 'success' && services.map(service => {
-                if (queueType == 'onsite') {
-                    const serviceProps = {
-                        title: service.name,
-                        key: service.id,
-                        action: {
-                            label: 'Total Antrian',
-                            value: service.total_queue
-                        }
-                    }
-
-                    return <Link to={`${service.id}/visitor`} key={service.id} style={{
-                        marginBottom: '1.125rem'
-                    }}>
-                        <ServiceItem {...serviceProps} />
-                    </Link>
-                }
-
+            {isBranchOpen() && services?.map(service => {
                 const availableSlot = service.filledSlot < service.totalSlot
                     ? service.totalSlot - service.filledSlot
                     : 0
 
-                const serviceProps = {
-                    title: service.name,
-                    action: {
-                        label: "Total Slot Tersedia",
-                        value: availableSlot,
-                        total: service.totalSlot
-                    }
-                }
-
-                return <Link to={`${service.id}?date=${getFullDate(selectedDate)}`} key={service.id} style={{
+                return <Link to={`${service.id}?date=${format(selectedDate, 'yyyy-MM-dd')}`} key={service.id} style={{
                     marginBottom: '1.125rem'
                 }}>
                     <ServiceItem
-                        {...serviceProps}
+                        title={service.name}
+                        action={{
+                            label: "Total Slot Tersedia",
+                            value: availableSlot,
+                            total: service.totalSlot
+                        }}
                         subtitle={<div style={{
                             display: 'flex',
                             alignItems: 'center'
@@ -278,8 +262,39 @@ function ServiceList() {
                     />
                 </Link>
             })}
+
+            {!isBranchOpen() && <div style={{
+                flex: '1 1 0%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <div style={{
+                    display: 'inline-flex',
+                    borderRadius: '99999999px',
+                    backgroundColor: '#F5F5F5',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '7.5rem',
+                    width: '7.5rem',
+                    marginBottom: '1.5rem'
+                }}>
+                    <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
+                </div>
+                <h4>Tidak Ada Layanan</h4>
+                <p style={{
+                    textAlign: 'center',
+                    width: '280px',
+                    marginTop: '0.5rem',
+                    color: '#A5A5A5',
+                    fontSize: '.875rem'
+                }}>
+                    Pilih tanggal lain untuk menemukan layanan yang tersedia
+                </p>
+            </div>}
         </MainContent>
     </>
 }
 
-export default ServiceList
+export default Services
