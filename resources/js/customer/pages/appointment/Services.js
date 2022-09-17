@@ -78,8 +78,8 @@ function Services() {
         const now = new Date()
 
         return eachMonthOfInterval({
-            start: new Date(now.getFullYear(), 1, 1),
-            end: new Date(now.getFullYear(), 12, 1)
+            start: new Date(now.getFullYear(), 0, 1),
+            end: new Date(now.getFullYear(), 11, 1)
         })
             .map(v => {
                 return format(v, 'MMMM', { locale: id })
