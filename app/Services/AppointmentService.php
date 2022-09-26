@@ -7,13 +7,14 @@ use App\Branch;
 use App\Appointment;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Schedule;
-use App\Events\AppointmentCreated;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use App\Events\AppointmentCanceledEvent;
+use App\Events\AppointmentCreated;
+use App\Supports\BookingCode;
 
 class AppointmentService
 {
-    public function create($data): ?Appointment
+    public function create(array $data): Appointment
     {
         return Cache::lock('appointments', 10)->block(5, function () use ($data) {
             $date = date('Y-m-d', strtotime($data['date']));
@@ -41,7 +42,7 @@ class AppointmentService
             if (isset($data['email'])) $email = $data['email'];
             if (isset($data['phone'])) $phone = $data['phone'];
 
-            $sameAppointment = Appointment::where([
+            $sameAppointment = Appointment::withoutCanceled()->where([
                     'slot_id' => $data['slot_id'],
                     'date' => $date
                 ])
@@ -56,7 +57,7 @@ class AppointmentService
             }
 
             // Prevent appointment on empty slots
-            $todayAppointmentsBySlot = Appointment::where([
+            $todayAppointmentsBySlot = Appointment::withoutCanceled()->where([
                     'slot_id' => $data['slot_id'],
                     'date' => $date
                 ])
@@ -96,7 +97,7 @@ class AppointmentService
                 throw new \Exception('Sesi appointment sudah berakhir');
             }
 
-            $lastAppointment = Appointment::where([
+            $lastAppointment = Appointment::withoutCanceled()->where([
                 'branch_id' => $data['branch_id'],
                 'date' => $date
             ])
@@ -104,7 +105,7 @@ class AppointmentService
                 ->sortByDesc('number')
                 ->first();
 
-            $data['booking_code'] = $this->generateBookingCode();
+            $data['booking_code'] = BookingCode::generate();
             $data['number'] = $lastAppointment ? $lastAppointment->number + 1 : 1;
             
             // Store appointment to db
@@ -117,15 +118,19 @@ class AppointmentService
         });
     }
 
-    private function generateBookingCode()
+    public function cancel(int $appointmentId)
     {
-        $permittedChars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $appointment = Appointment::find($appointmentId);
 
-        $randomString = '';
-        for($i = 0; $i < 5; $i++) {
-            $randomString .= $permittedChars[mt_rand(0, strlen($permittedChars) - 1)];
+        if (!in_array($appointment->status, ['book', 'check in'])) {
+            throw new \Exception('Layanan appointment sedang berlangsung');
         }
-    
-        return $randomString;
+
+        Appointment::where('id', $appointmentId)->update([
+            'status' => 'canceled',
+            'canceled_time' => date('Y-m-d H:i:s'),
+        ]);
+
+        AppointmentCanceledEvent::dispatch($appointment);
     }
 }
