@@ -59,7 +59,7 @@ class SlotController extends Controller
 
 
         foreach ($slots as $slot) {
-            $filledSlot = Appointment::whereHas('Slot', function($query) use ($slot) {
+            $filledSlot = Appointment::withoutCanceled()->whereHas('Slot', function($query) use ($slot) {
                 $query->where('slot_id', $slot->id);
             })->where('date', $request->date)->get();
 

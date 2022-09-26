@@ -63,7 +63,7 @@ class ServiceController extends Controller
     public function getFilledSlot($queue_type, $params)
     {
         if ($queue_type == 'appointment') {
-            return Appointment::whereHas('Slot', function ($query) use ($params) {
+            return Appointment::withoutCanceled()->whereHas('Slot', function ($query) use ($params) {
                 $query->where('service_id', $params['service_id']);
             })
                 ->when(isset($params['slot_id']), function ($q) use ($params) {
