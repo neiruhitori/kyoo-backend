@@ -6,8 +6,9 @@
 
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">User {{ __('Virtual Counter') }} {{Auth::user()->Branch->name}}</h1>
+        <h1 class="h3 mb-0 text-gray-800">Tambah Appointment</h1>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             @include('layouts.alert')
@@ -72,6 +73,7 @@
 
                         <div class="col-md-12">
                             <button class="btn btn-primary">{{ __('Save') }}</button>
+                            <a href="{{ route('cs.appointments.monitor') }}" class="btn btn-secondary ml-1">Kembali</a>
                         </div>
                     </form>
                 </div>
