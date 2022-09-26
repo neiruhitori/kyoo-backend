@@ -61,6 +61,8 @@ export default function BookingStatus() {
             bookingStatus = 'Selesai'
         } else if (booking.status === 'no show') {
             bookingStatus = 'Tidak Hadir'
+        } else if (booking.status === 'canceled') {
+            bookingStatus = 'Dibatalkan'
         }
     }
     if (branchQuery.status === 'success') {
@@ -247,9 +249,9 @@ export default function BookingStatus() {
                             </div>
 
                             <div>
-                                {!['end served', 'no show'].includes(booking.status) && <ChipWarning label={bookingStatus} />}
+                                {['waiting', 'served', 'check in', 'book'].includes(booking.status) && <ChipWarning label={bookingStatus} />}
                                 {booking.status === 'end served' && <ChipSuccess label={bookingStatus} />}
-                                {booking.status === 'no show' && <ChipDanger label={bookingStatus} />}
+                                {['canceled', 'no show'].includes(booking.status) && <ChipDanger label={bookingStatus} />}
                             </div>
                         </div>
                     </div>}
@@ -292,7 +294,7 @@ export default function BookingStatus() {
                         Antrian Sekarang
                     </div>
 
-                    <span>{booking.current_queue}</span>
+                    <span>{booking.current_queue || 0}</span>
                 </BlueCard>
             </Card>
 
