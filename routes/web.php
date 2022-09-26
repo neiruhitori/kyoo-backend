@@ -257,6 +257,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
         Route::patch('appointments/{id}/no-show', 'AppointmentMonitorController@noShow')->name('appointments.noShow');
         Route::patch('appointments/{id}/served', 'AppointmentMonitorController@served')->name('appointments.served');
         Route::patch('appointments/{id}/end-served', 'AppointmentMonitorController@endServed')->name('appointments.endServed');
+        Route::patch('appointments/{id}/cancel', 'AppointmentMonitorController@cancel')->name('appointments.cancel');
     });
 
     // Direct Queue

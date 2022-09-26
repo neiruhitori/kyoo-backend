@@ -9,9 +9,17 @@ use App\Appointment;
 use Illuminate\Support\Carbon;
 use App\Events\AppointmentServed;
 use App\Events\AppointmentEndServed;
+use App\Services\AppointmentService;
 
 class AppointmentMonitorController extends Controller
 {
+    private $appointmentService;
+
+    public function __construct(AppointmentService $appointmentService)
+    {
+        $this->appointmentService = $appointmentService;
+    }
+
     public function index()
     {
         return view('cs.appointment.monitor');
@@ -107,5 +115,12 @@ class AppointmentMonitorController extends Controller
         AppointmentEndServed::dispatch($appointment);
 
         return response()->json($appointment, 200);
+    }
+
+    public function cancel($appointmentId)
+    {
+        $this->appointmentService->cancel($appointmentId);
+
+        return response()->noContent();
     }
 }
