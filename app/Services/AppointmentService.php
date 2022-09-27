@@ -123,6 +123,32 @@ class AppointmentService
         });
     }
 
+    public function checkIn(int $appointmentId)
+    {
+        $appointment = Appointment::find($appointmentId);
+
+        if (!$appointment) {
+            throw new \Exception('Appointment tidak ditemukan');
+        }
+
+        if ($appointment->status === 'check in') {
+            throw new \Exception('Customer sudah hadir');
+        }
+
+        if ($appointment->status === 'served') {
+            throw new \Exception('Appointment sudah dilayani');
+        }
+
+        if (in_array($appointment->status, ['end served', 'no show', 'canceled'])) {
+            throw new \Exception('Appointment sudah selesai');
+        }
+
+        Appointment::where('id', $appointment->id)->update([
+            'status' => 'check in',
+            'checkin_time' => date('Y-m-d H:i:s')
+        ]);
+    }
+
     public function serve(int $appointmentId)
     {
         $appointment = Appointment::find($appointmentId);

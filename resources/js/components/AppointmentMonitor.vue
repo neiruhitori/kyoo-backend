@@ -267,7 +267,16 @@ export default {
         },
 
         async onCheckIn(id) {
-            await axios.patch(`/cs/appointments/${id}/checkin`)
+            try {
+                await axios.patch(`/cs/appointments/${id}/checkin`)
+
+                this.showAlert('Appointment diperbarui')
+            } catch (e) {
+                this.showAlert(
+                    e.response.data?.message || 'Gagal perbarui appointment',
+                    'danger'
+                )
+            }
 
             this.getQueues()
         },
