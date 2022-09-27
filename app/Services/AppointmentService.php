@@ -7,10 +7,15 @@ use App\Branch;
 use App\Appointment;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Schedule;
-use Illuminate\Support\Facades\Cache;
+
 use App\Events\AppointmentCanceledEvent;
 use App\Events\AppointmentCreated;
+use App\Events\AppointmentServed;
+
+use Illuminate\Support\Facades\Cache;
 use App\Supports\BookingCode;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class AppointmentService
 {
@@ -116,6 +121,33 @@ class AppointmentService
 
             return $appointment;
         });
+    }
+
+    public function serve(int $appointmentId)
+    {
+        $appointment = Appointment::find($appointmentId);
+
+        if (!$appointment) {
+            throw new \Exception('Appointment tidak ditemukan');
+        }
+
+        if ($appointment->status === 'served') {
+            throw new \Exception('Appointment sudah dilayani');
+        }
+
+        if (in_array($appointment->status, ['end served', 'no show', 'canceled'])) {
+            throw new \Exception('Appointment sudah selesai');
+        }
+
+        Appointment::where('id', $appointment->id)->update([
+            'status' => 'served',
+            'served_time' => date('Y-m-d H:i:s'),
+            'workstation_id' => Auth::user()->WorkstationVct->workstation_id,
+            'vct_id' => Auth::id(),
+            'waiting_duration' => Carbon::now()->diffInseconds(Carbon::parse($appointment->checkin_time))
+        ]);
+
+        AppointmentServed::dispatch($appointment);
     }
 
     public function cancel(int $appointmentId)

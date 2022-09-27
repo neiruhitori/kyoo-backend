@@ -75,26 +75,19 @@ class AppointmentMonitorController extends Controller
 
     public function served($id)
     {
-        $workstation_id = Auth::user()->WorkstationVct->workstation_id;
-        
-        $appointment = Appointment::find($id);
+        try {
+            $this->appointmentService->serve($id);
 
-        $waiting_duration = Carbon::now()->diffInseconds(Carbon::parse($appointment->checkin_time));
-        
-        $appointment->status = 'served';
-        $appointment->vct_id = Auth::id();
-        $appointment->workstation_id = $workstation_id;
-        $appointment->served_time = date('Y-m-d H:i:s');
-        $appointment->waiting_duration = $waiting_duration;
-        
-        $appointment->save();
-
-        $appointment->branch_id = Auth::user()->branch_id;
-
-        // Send event
-        AppointmentServed::dispatch($appointment);
-
-        return response()->json($appointment, 200);
+            return response()->json([
+                'success' => true,
+                'message' => 'Appointment dilayani'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function endServed($id)

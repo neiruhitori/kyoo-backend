@@ -231,7 +231,7 @@ export default {
 
             isShowAlert: false,
             alert: {
-                type: '',
+                type: 'success',
                 message: ''
             },
         }
@@ -279,12 +279,18 @@ export default {
         },
 
         async onServed(id) {
-            await axios.patch(`/cs/appointments/${id}/served`)
+            try {
+                await axios.patch(`/cs/appointments/${id}/served`)
 
-            audioRecorder.start()
-                .then(() => {
-                    console.log('Recording audio...')
-                })
+                this.showAlert('Appointment dilayani')
+
+                audioRecorder.start()
+            } catch (e) {
+                this.showAlert(
+                    e.response.data?.message || 'Gagal melayani appointment',
+                    'danger'
+                )
+            }
 
             this.getQueues()
         },
@@ -312,20 +318,23 @@ export default {
                 this.showAlert('Appointment dibatalkan')
             } catch (e) {
                 this.isShowModal = false
-                this.showAlert('danger', e.response.data?.message || 'Pembatalan appointment gagal')
+                this.showAlert(
+                    e.response.data?.message || 'Pembatalan appointment gagal',
+                    'danger'
+                )
             }
 
             this.getQueues()
         },
 
-        showAlert(type = 'success', message) {
+        showAlert(message, type = 'success') {
             this.alert = { type, message }
             this.isShowAlert = true
 
             setTimeout(() => {
                 this.isShowAlert = false
                 this.alert = { type, message: '' }
-            }, 2500)
+            }, 3000)
         },
 
         saveAudio(appointment)  {
