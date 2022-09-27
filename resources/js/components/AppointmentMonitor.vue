@@ -282,7 +282,16 @@ export default {
         },
 
         async onNoShow(id) {
-            await axios.patch(`/cs/appointments/${id}/no-show`)
+            try {
+                await axios.patch(`/cs/appointments/${id}/no-show`)
+
+                this.showAlert('Appointment diperbarui')
+            } catch (e) {
+                this.showAlert(
+                    e.response.data?.message || 'Gagal perbarui appointment',
+                    'danger'
+                )
+            }
 
             this.getQueues()
         },

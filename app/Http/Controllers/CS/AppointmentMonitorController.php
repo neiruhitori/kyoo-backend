@@ -68,14 +68,19 @@ class AppointmentMonitorController extends Controller
 
     public function noShow($id)
     {
-        $appointment = Appointment::find($id);
+        try {
+            $this->appointmentService->noShow($id);
 
-        $appointment->status = 'no show';
-        $appointment->checkin_time = date('Y-m-d H:i:s');
-
-        $appointment->save();
-
-        return response()->json($appointment, 200);
+            return response()->json([
+                'success' => true,
+                'message' => 'Appointment diperbarui'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function served($id)
