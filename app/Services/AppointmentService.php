@@ -165,6 +165,10 @@ class AppointmentService
             throw new \Exception('Appointment sudah selesai');
         }
 
+        if ($appointment->status !== 'check in') {
+            throw new \Exception('Customer belum hadir');
+        }
+
         Appointment::where('id', $appointment->id)->update([
             'status' => 'served',
             'served_time' => date('Y-m-d H:i:s'),
