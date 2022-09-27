@@ -11,6 +11,7 @@ use App\Schedule;
 use App\Events\AppointmentCanceledEvent;
 use App\Events\AppointmentCreated;
 use App\Events\AppointmentServed;
+use App\Events\AppointmentEndServed;
 
 use Illuminate\Support\Facades\Cache;
 use App\Supports\BookingCode;
@@ -233,5 +234,30 @@ class AppointmentService
         }
 
         Appointment::where('id', $appointmentId)->update(['status' => 'no show']);
+    }
+
+    public function endServe(int $appointmentId)
+    {
+        $appointment = Appointment::find($appointmentId);
+
+        if (!$appointment) {
+            throw new \Exception('Appointment tidak ditemukan');
+        }
+
+        if (in_array($appointment->status, ['no show', 'canceled', 'end served'])) {
+            throw new \Exception('Appointment sudah selesai');
+        }
+
+        if ($appointment->status != 'served') {
+            throw new \Exception('Appointment belum dilayani');
+        }
+
+        Appointment::where('id', $appointmentId)->update([
+            'status' => 'end served',
+            'end_served_time' => date('Y-m-d H:i:s'),
+            'serving_duration' => Carbon::now()->diffInseconds(Carbon::parse($appointment->served_time))
+        ]);
+
+        AppointmentEndServed::dispatch($appointment);
     }
 }

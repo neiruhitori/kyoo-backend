@@ -102,22 +102,19 @@ class AppointmentMonitorController extends Controller
 
     public function endServed($id)
     {
-        $appointment = Appointment::find($id);
+        try {
+            $this->appointmentService->endServe($id);
 
-        $serving_duration = Carbon::now()->diffInseconds(Carbon::parse($appointment->served_time));
-        
-        $appointment->status = 'end served';
-        $appointment->end_served_time = date('Y-m-d H:i:s');
-        $appointment->serving_duration = $serving_duration;
-        
-        $appointment->save();
-
-        $appointment->branch_id = Auth::user()->branch_id;
-
-        // Send event
-        AppointmentEndServed::dispatch($appointment);
-
-        return response()->json($appointment, 200);
+            return response()->json([
+                'success' => true,
+                'message' => 'Appointment selesai'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function cancel($appointmentId)

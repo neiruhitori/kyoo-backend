@@ -314,13 +314,25 @@ export default {
         },
 
         async onEndServed(id) {
-            const { data } = await axios.patch(`/cs/appointments/${id}/end-served`)
+            try {
+                await axios.patch(`/cs/appointments/${id}/end-served`)
 
-            this.getQueues()
+                this.showAlert('Appointment selesai')
 
-            data.message = await audioRecorder.stop()
+                audioRecorder.start()
+            } catch (e) {
+                this.showAlert(
+                    e.response.data?.message || 'Gagal mengakhiri appointment',
+                    'danger'
+                )
+            }
 
-            this.saveAudio(data)
+            await this.getQueues()
+
+            const appointment = this.finishAppointments.find(v => v.id === id)
+            appointment.message = await audioRecorder.stop()
+
+            this.saveAudio(appointment)
         },
 
         async onCancel(id) {
