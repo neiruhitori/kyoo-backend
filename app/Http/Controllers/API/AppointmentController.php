@@ -145,4 +145,21 @@ class AppointmentController extends Controller
             'data' => UpcommingCollection::collection($histories)
         ]);
     }
+
+    public function cancel($appointmentId)
+    {
+        try {
+            $this->appointmentService->cancel($appointmentId);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Appointment dibatalkan'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

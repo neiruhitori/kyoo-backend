@@ -4,7 +4,7 @@ const StyledButton = styled.button`
     font-family: Inter, sans-serif;
     background-color: #E8EDF1;
     color: #252A31;
-    padding: 1rem 1.125rem;
+    padding: .875rem 1rem;
     border: none;
     border-radius: 6px;
     outline: none;
@@ -20,6 +20,11 @@ const PrimaryButton = styled(StyledButton)`
     color: #FFFFFF;
 `
 
+const SecondaryButton = styled(StyledButton)`
+    background-color: #E8EDF1;
+    color: #252A31;
+`
+
 function Button(props) {
     if (props.color === 'link') {
         return <LinkButton {...props}>
@@ -31,6 +36,12 @@ function Button(props) {
         return <PrimaryButton {...props}>
             {props.children}
         </PrimaryButton>
+    }
+
+    if (props.color === 'secondary') {
+        return <SecondaryButton {...props}>
+            {props.children}
+        </SecondaryButton>
     }
 
     return <StyledButton {...props}>

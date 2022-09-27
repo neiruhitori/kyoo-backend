@@ -122,8 +122,20 @@ class AppointmentService
     {
         $appointment = Appointment::find($appointmentId);
 
-        if (!in_array($appointment->status, ['book', 'check in'])) {
-            throw new \Exception('Layanan appointment sedang berlangsung');
+        if (!$appointment) {
+            throw new \Exception('Appointment tidak ditemukan');
+        }
+
+        if ($appointment->status === 'canceled') {
+            throw new \Exception('Appointment sudah dibatalkan');
+        }
+
+        if ($appointment->status === 'served') {
+            throw new \Exception('Apointment sedang berlangsung');
+        }
+
+        if (in_array($appointment->status, ['end served', 'no show'])) {
+            throw new \Exception('Appointment sudah selesai');
         }
 
         Appointment::where('id', $appointmentId)->update([

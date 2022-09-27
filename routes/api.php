@@ -57,6 +57,7 @@ Route::post('slot', 'API\SlotController@index');
 Route::post('appointment', 'API\AppointmentController@store');
 Route::get('appointment/{appointment}', 'API\AppointmentController@show');
 Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
+Route::patch('appointment/{id}/cancel', 'API\AppointmentController@cancel');
 
 Route::post('exhibition', 'API\ExhibitionController@store');
 Route::get('exhibition/{exhibition}', 'API\ExhibitionController@show');

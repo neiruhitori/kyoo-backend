@@ -4,8 +4,12 @@
             <h1 class="h3 mb-0 text-gray-800" v-once>Daftar Appointment {{ branch.name }}</h1>
         </div>
 
-        <div class="alert alert-success" role="alert" v-if="isShowAlert">
-            {{ alertMessage }}
+        <div
+            :class="`alert ${alert.type === 'success' ? 'alert-success' : 'alert-danger'}`"
+            role="alert"
+            v-if="isShowAlert"
+        >
+            {{ alert.message }}
         </div>
 
         <div class="row">
@@ -226,7 +230,10 @@ export default {
             selectedAppointment: null,
 
             isShowAlert: false,
-            alertMessage: '',
+            alert: {
+                type: '',
+                message: ''
+            },
         }
     },
 
@@ -298,22 +305,27 @@ export default {
         },
 
         async confirmCancel(id) {
-            await axios.patch(`/cs/appointments/${id}/cancel`)
-
-            this.isShowModal = false
-            this.showAlert('Appointment dibatalkan')
+            try  {
+                await axios.patch(`/cs/appointments/${id}/cancel`)
+    
+                this.isShowModal = false
+                this.showAlert('Appointment dibatalkan')
+            } catch (e) {
+                this.isShowModal = false
+                this.showAlert('danger', e.response.data?.message || 'Pembatalan appointment gagal')
+            }
 
             this.getQueues()
         },
 
-        showAlert(message) {
-            this.alertMessage = message
+        showAlert(type = 'success', message) {
+            this.alert = { type, message }
             this.isShowAlert = true
 
             setTimeout(() => {
                 this.isShowAlert = false
-                this.alertMessage = ''
-            }, 2000)
+                this.alert = { type, message: '' }
+            }, 2500)
         },
 
         saveAudio(appointment)  {

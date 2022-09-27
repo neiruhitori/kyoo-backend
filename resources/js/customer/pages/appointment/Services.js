@@ -206,7 +206,7 @@ function Services() {
                 style={{
                     marginBottom: '1.5rem'
                 }}
-                value={format(selectedDate, 'dd MMMM yyyy', { locale: id })}
+                value={format(selectedDate, 'd MMMM yyyy', { locale: id })}
                 readOnly
                 endAdornment={
                     <IconButton

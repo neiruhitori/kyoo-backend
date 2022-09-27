@@ -119,8 +119,18 @@ class AppointmentMonitorController extends Controller
 
     public function cancel($appointmentId)
     {
-        $this->appointmentService->cancel($appointmentId);
+        try {
+            $this->appointmentService->cancel($appointmentId);
 
-        return response()->noContent();
+            return response()->json([
+                'success' => true,
+                'message' => 'Appointment dibatalkan'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }
