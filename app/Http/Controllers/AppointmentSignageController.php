@@ -31,6 +31,7 @@ class AppointmentSignageController extends Controller
         $id = Crypt::decrypt($branchId);
 
         $data = Appointment::with(['Service', 'Workstation'])
+            ->withoutCanceled()
             ->whereHas('Service', function ($query) use ($id) {
                 $query->where('branch_id', $id);
             })
