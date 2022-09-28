@@ -29,6 +29,6 @@ class AppointmentCanceledEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel('branches.' . $this->appointment->branch_id . '.cs');
+        return new Channel('branches.' . $this->appointment->branch_id . '.appointments');
     }
 }
