@@ -266,10 +266,6 @@ export default function BookingStatus() {
                             fontWeight: '700',
                             color: '#FFFFFF'
                         }}>{booking?.queue_no}</span>
-                        {!!slot && <span style={{
-                            color: '#D6D6D6',
-                            fontSize: '1rem'
-                        }}>/{booking?.total_queue}</span>}
                     </div>
 
                     <div style={{
