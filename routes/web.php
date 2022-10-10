@@ -278,6 +278,15 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     // Voice Recorder
     Route::get('voice-recorder', 'VoiceRecorderController@index')->name('voiceRecorder.index');
     Route::post('voice-recorder', 'VoiceRecorderController@store')->name('voiceRecorder.store');
+
+    // Future Appointments
+    Route::get('appointment/future', 'FutureAppointmentController@index')->name('appointment.future.index');
+    Route::get('appointment/future/get', 'FutureAppointmentController@getFutureAppointments')->name('appointment.future.get');
+    Route::get('appointment/slots', 'FutureAppointmentController@getAppointmentSlots')->name('appointment.slots.index');
+    Route::get('appointment/slots/{id}', 'FutureAppointmentController@showAppointmentSlot')->name('appointment.slots.get');
+
+    // Holidays
+    Route::get('holidays', 'HolidayController@getHolidaysByDate')->name('holidays');
 });
 
 Route::group([], __DIR__ . '/web/exhibition.php');

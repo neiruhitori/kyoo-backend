@@ -41,7 +41,15 @@
         <li class="nav-item">
           <a class="nav-link" href="{{route('dashboard')}}">
             <i class="fas fa-list-ul"></i>
-            <span>{{ __('Appointment') }}</span></a>
+            <span>Appointment Aktif</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{{ route('cs.appointment.future.index') }}" class="nav-link">
+            <i class="fas fa-list-ul"></i>
+            <span>Daftar Appointment</span>
+          </a>
         </li>
       @endif
 

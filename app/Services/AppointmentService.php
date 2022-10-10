@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Supports\BookingCode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentService
 {
@@ -259,5 +260,63 @@ class AppointmentService
         ]);
 
         AppointmentEndServed::dispatch($appointment);
+    }
+
+    public function getFutureAppointmentsByDate($date)
+    {
+        if (strtotime($date) < strtotime(date('Y-m-d'))) {
+            throw new \InvalidArgumentException('Appointment lama tidak tersedia');
+        }
+
+        return Appointment::with(['Service', 'Slot', 'Branch', 'Workstation'])
+            ->where([
+                'branch_id' => Auth::user()->branch_id,
+                'date' => $date
+            ])
+            ->whereIn(
+                'service_id',
+                Auth::user()->WorkstationVct->Workstation->WorkstationService
+                    ->map(function ($workstationService) {
+                        return $workstationService->service_id;
+                    })
+            )
+            ->where(function ($query) {
+                $query->whereNull('workstation_id')
+                    ->orWhere('workstation_id', Auth::user()->WorkstationVct->workstation_id);
+            })
+            ->orderBy('created_at')
+            ->get();
+    }
+
+    public function getAppointmentSlotsByDateRange($from, $to)
+    {
+        if (strtotime($from) > strtotime($to)) {
+            throw new \InvalidArgumentException('Tanggal awal tidak boleh lebih dari tanggal akhir');
+        }
+
+        return Appointment::with('Service.Slot')
+            ->withoutCanceled()
+            ->select(
+                'date', 'service_id',
+                DB::raw('COUNT(*) as filled_slots')
+            )
+            ->whereBetween('date', [$from, $to])
+            ->groupBy(['date', 'service_id'])
+            ->orderBy('date')
+            ->get();
+    }
+
+    public function getAppointmentSlotsByServiceId($serviceId, $date)
+    {
+        return Appointment::with('Slot')
+            ->withoutCanceled()
+            ->select(
+                'date', 'service_id', 'slot_id',
+                DB::raw('COUNT(*) as filled_slots')
+            )
+            ->where('service_id', $serviceId)
+            ->whereDate('date', $date)
+            ->groupBy(['date', 'service_id', 'slot_id'])
+            ->get();
     }
 }
