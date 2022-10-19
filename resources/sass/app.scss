@@ -1,8 +1,7 @@
-// Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+// Vue WYSIWYG
+@import "~vue-wysiwyg/dist/vueWysiwyg.css";
 
-// Variables
-@import 'variables';
-
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+ol, ul {
+  padding: 0;
+  list-style-position: inside;
+}

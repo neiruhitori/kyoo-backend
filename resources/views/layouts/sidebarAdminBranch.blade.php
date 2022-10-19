@@ -157,6 +157,13 @@
                 Monitor Antrian (TV)
               </a>
             @endif
+
+            <a
+                class="collapse-item kyoo-sublink  {{ !request()->is('admin-branch/branch-configuration/terms-conditions') ?: 'active' }}"
+                href="{{ route('admin-branch.branch-configuration.terms-conditions.index') }}"
+              >
+                Syarat & Ketentuan
+              </a>
           </div>
         </div>
       </li>

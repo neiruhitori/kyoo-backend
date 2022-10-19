@@ -102,6 +102,10 @@ Route::namespace('AdminBranch')
             Route::put('queue-monitor/{branch}', 'TVDisplayConfigurationController@update')
                 ->name('queue-monitor.update')
                 ->middleware('access:Web Signage TV');
+            
+            Route::get('terms-conditions', 'TermsConditionsController@index')->name('terms-conditions.index');
+            Route::get('terms-conditions/get', 'TermsConditionsController@get')->name('terms-conditions.get');
+            Route::put('terms-conditions', 'TermsConditionsController@update')->name('terms-conditions.store');
         });
 
         // Service Quality
