@@ -8,7 +8,10 @@
           <button class="btn btn-outline-secondary mr-1" @click="exitEdit">
             Batal
           </button>
-          <button class="btn btn-warning" @click="saveTermsConditions">Simpan</button>
+          <button class="btn btn-warning" @click="saveTermsConditions">
+            <span class="fas fa-check"></span>
+            Simpan
+          </button>
         </div>
 
         <div v-else-if="isContentEmpty">
@@ -20,6 +23,14 @@
 
         <button v-else class="btn btn-secondary" @click="enterEdit">Edit</button>
       </div>
+    </div>
+
+    <div
+        class="alert alert-danger"
+        role="alert"
+        v-if="alert.isShow"
+    >
+        {{ alert.message }}
     </div>
 
     <div class="card">
@@ -76,6 +87,10 @@
       return {
         termsConditions: "",
         isEdit: false,
+        alert: {
+          isShow: false,
+          message: '',
+        },
       }
     },
 
@@ -92,13 +107,34 @@
       },
 
       async setTermsConditions() {
-        this.termsConditions = await this.fetchTermsConditions()
+        try {
+          this.termsConditions = await this.fetchTermsConditions()
+        } catch (error) {
+          this.showAlert(error.response.data?.message)
+        }
       },
 
       async saveTermsConditions() {
-        await this.updateTermsConditions()
+        try {
+          await this.updateTermsConditions()
+          this.exitEdit()
+        } catch (error) {
+          this.showAlert(error.response.data?.message)
+        }
+      },
 
-        this.exitEdit()
+      showAlert(message) {
+        this.alert.isShow = true
+        this.alert.message = message
+
+        setTimeout(() => {
+          this.closeAlert()
+        }, 3000)
+      },
+
+      closeAlert() {
+        this.alert.isShow = false,
+        this.alert.message = ''
       },
 
       async fetchTermsConditions() {
@@ -107,9 +143,7 @@
   
           return termsConditions.body
         } catch (error) {
-          console.error('Error while getting terms & conditions:', error.response.data)
-
-          return ''
+          throw error
         }
       },
 
@@ -119,7 +153,7 @@
             body: this.termsConditions
           })
         } catch (error) {
-          console.error('Error while storing terms & conditions:', error.response.data)
+          throw error
         }
       }
     }
