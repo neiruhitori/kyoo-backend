@@ -5,6 +5,7 @@ import { getBooking, cancelBooking } from '../../api/booking'
 import { fetchServiceById } from '../../api/services'
 import { createFeedback } from '../../api/feedback'
 import { fetchBranch } from '../../api/branch'
+import { getTermConditionByBranchId } from '../../api/termCondition'
 import { getAbrvDate, getDayName, formatBrowser } from '../../utils/date'
 
 import Header from '../../components/Header'
@@ -44,10 +45,12 @@ export default function BookingStatus() {
         enabled: bookingQuery.status === 'success'
     })
     const feedbackMutation = useMutation('feedback', (data) => createFeedback(queueType, bookingId, data))
+    const termConditionQuery = useQuery('termCondition', () => getTermConditionByBranchId(branchId))
 
     const booking = bookingQuery.data?.data
     const service = serviceQuery.data?.data
     const branch = branchQuery.data?.data
+    const termCondition = termConditionQuery.data
 
     const branchType = branch?.branch_type.is_premium
     const isAppointmentUnfinished = ['book', 'check in', 'waiting'].includes(booking?.status)
@@ -104,6 +107,10 @@ export default function BookingStatus() {
         cancelAppointment(id)
         bookingQuery.refetch()
         setIsShowDialog(false)
+    }
+
+    function createTermConditionMarkup() {  
+        return {__html: termCondition?.body}
     }
 
     return <>
@@ -420,6 +427,21 @@ export default function BookingStatus() {
                         : 'Antrian dapat dilihat di Email Anda. Cukup lihatkan Nomor Antrian sesuai dengan waktu yang kamu tentukan.'}
                 </p>
             </InfoAlert>
+
+            {termCondition?.body && <InfoAlert>
+                <h4 style={{
+                    fontSize: '1rem',
+                    marginBottom: '.375rem',
+                    textTransform: 'capitalize'
+                }}>Syarat & Ketentuan</h4>
+
+                <p
+                    style={{
+                        lineHeight: '1.5',
+                    }}
+                    dangerouslySetInnerHTML={createTermConditionMarkup()}
+                />
+            </InfoAlert>}
         </div>
 
         {isAppointmentUnfinished && <div style={{
@@ -452,8 +474,8 @@ export default function BookingStatus() {
                 justifyContent: 'center',
                 gap: '1rem'
             }}>
-                <Button color="secondary" onClick={() => setIsShowDialog(false)}>Tidak</Button>
                 <Button color="primary" onClick={() => handleConfirmCancel(booking?.id)}>Ya, Batalkan</Button>
+                <Button color="secondary" onClick={() => setIsShowDialog(false)}>Tidak</Button>
             </div>
         </Dialog>}
     </>

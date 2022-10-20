@@ -39,6 +39,10 @@
         text-decoration: none;
         color: #000000;
       }
+
+      ol, ul {
+        padding-left: 1rem;
+      }
     </style>
   </head>
 

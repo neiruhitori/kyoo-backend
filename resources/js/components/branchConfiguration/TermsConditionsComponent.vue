@@ -53,9 +53,13 @@
       "table": true,
       "removeFormat": true,
       "separator": true,
-    },
-    forcePlainTextOnPaste: true,
+    }
   })
+
+  document.addEventListener('paste', function (e) {
+    e.preventDefault();
+    document.execCommand("insertHTML", false, e.clipboardData.getData("text/plain"));
+  });
 
   export default {
     mounted() {

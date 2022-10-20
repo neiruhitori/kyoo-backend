@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Branch;
 use App\Appointment;
 use App\DirectQueue;
+use App\Models\TermCondition;
 use App\ScheduleTemplateDetail;
 use App\Schedule;
 
@@ -92,5 +93,12 @@ class BranchController extends Controller
         $schedules = Schedule::where('branch_id', $branch->id)->get();
 
         return response()->json($schedules);
+    }
+
+    public function getTermsConditions(Branch $branch)
+    {
+        $termCondition = TermCondition::where('branch_id', $branch->id)->first();
+
+        return response()->json($termCondition);
     }
 }
