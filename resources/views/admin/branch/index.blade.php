@@ -17,7 +17,7 @@
                 @include('layouts.alert')
                 <div class="row">
                     <div class="col-md-12 text-right">
-                        <a href="{{route('admin.branch.create')}}" class="btn btn-primary"">
+                        <a href="{{route('admin.branch.create')}}" class="btn btn-primary">
                                 {{ __('create.module', ['module' => __('Branch')]) }}
                             </a>
                         </div>

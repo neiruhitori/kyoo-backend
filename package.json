@@ -34,13 +34,16 @@
         "firebase": "^9.8.1",
         "html2canvas": "^1.4.1",
         "html5-qrcode": "^2.2.1",
+        "leaflet": "^1.9.2",
         "mapbox-gl": "^2.7.1",
         "react-day-picker": "^7.4.10",
         "react-query": "^3.34.17",
         "react-router-dom": "^6.2.2",
         "styled-components": "^5.3.3",
         "vue-loading-overlay": "^3.4.2",
-        "vue-toast-notification": "^0.6.0"
+        "vue-toast-notification": "^0.6.0",
+        "vue-wysiwyg": "^1.7.2",
+        "vue2-leaflet": "^2.7.1"
     },
     "resolutions": {
         "styled-components": "^5"

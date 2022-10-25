@@ -232,6 +232,11 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
 
     // Schedule Template
     Route::resource('scheduleTemplate', 'ScheduleTemplateController');
+
+    // Corporate
+    Route::get('corporate', 'CorporateController@index')->name('corporate.index');
+    Route::get('corporate/create', 'CorporateController@create')->name('corporate.create');
+    Route::get('corporate/waiting-approval', 'CorporateController@waitingApproval')->name('corporate.waitingApproval');
 });
 
 Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch', 'checkAdminBranchPassword')->name('adminBranch.')->group(function () {
