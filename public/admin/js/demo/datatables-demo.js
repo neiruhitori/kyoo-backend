@@ -1,5 +1,5 @@
 // Call the dataTables jQuery plugin
-$(document).ready(function() {
+$(function() {
   $('#dataTable').DataTable({
     "language": {
       "emptyTable": "Tidak ada data",
