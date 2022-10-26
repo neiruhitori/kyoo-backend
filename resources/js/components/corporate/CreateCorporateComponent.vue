@@ -1,89 +1,127 @@
 <template>
-  <div style="margin: 0 auto; max-width: 600px;" class="mb-4">
+  <div style="margin: 0 auto; max-width: 560px;" class="mb-4">
     <h3 class="mb-3">Tambah Corporate</h3>
 
-    <div class="card">
-      <div class="card-body">
-        <form action="">
-          <div class="form-group">
-            <label for="name">Nama Corporate</label>
-            <input type="text" v-model="name" class="form-control" autocomplete="off">
-          </div>
+    <div class="step-menu-container">
+      <div :class="`step-menu ${step >= 1 && 'step-menu-active'}`">
+        1. Informasi Corporate
+      </div>
 
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" v-model="email" class="form-control" autocomplete="off">
-          </div>
-
-          <div class="form-group">
-            <label for="mobile_phone">No. HP</label>
-            <input type="tel" v-model="phone" class="form-control" autocomplete="off">
-          </div>
-
-          <div class="form-group">
-            <label for="address">Alamat</label>
-            <textarea name="address" v-model="address" class="form-control" style="height: 85px"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="province_id">Provinsi</label>
-            <select name="province_id" class="form-control" v-model="provinceId" @change="handleProvinceChange(provinceId)">
-              <option
-                v-for="province in provinces"
-                :key="province.id"
-                :value="province.id"
-              >
-                {{ province.name }}
-              </option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="regency_id">Kota</label>
-            <select name="regency_id" class="form-control" v-model="regencyId">
-              <option
-                v-for="regency in regencies"
-                :key="regency.id"
-                :value="regency.id"
-              >
-                {{ regency.name }}
-              </option>
-            </select>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col">
-              <label for="province_id">Latitude</label>
-              <input type="text" v-model="lat" class="form-control" @change="handleLatLngChange">
-            </div>
-
-            <div class="col">
-              <label for="province_id">Longitude</label>
-              <input type="text" v-model="long" class="form-control" @change="handleLatLngChange">
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <map-component
-              :zoom="mapConfig.zoom"
-              :center="mapConfig.center"
-              :marker-lat-lng="mapConfig.markerLatLng"
-              @map-click="handleMapClick"
-              @marker-move="handleMarkerMove"
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="logo">Logo Corporate</label>
-            <input type="file" @change="handleFileChange" class="form-control">
-          </div>
-        </form>
+      <div :class="`step-menu ${step >= 2 && 'step-menu-active'}`">
+        2. Akun Corporate
       </div>
     </div>
 
-    <div class="text-right mt-3">
-      <button class="btn btn-primary">Selanjutnya</button>
-    </div>
+    <form method="POST" @submit.prevent="handleFormSubmit">
+      <div v-if="step === 1">
+        <div class="card">
+          <div class="card-body">
+            <div class="form-group">
+              <label for="name">Nama Corporate</label>
+              <input type="text" v-model="name" id="name" class="form-control" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" v-model="email" id="email" class="form-control" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="mobile_phone">No. HP</label>
+              <input type="tel" v-model="phone" id="mobile_phone" class="form-control" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="address">Alamat</label>
+              <textarea id="address" v-model="address" class="form-control" style="height: 85px"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="province_id">Provinsi</label>
+              <select id="province_id" class="form-control" v-model="provinceId" @change="handleProvinceChange(provinceId)">
+                <option
+                  v-for="province in provinces"
+                  :key="province.id"
+                  :value="province.id"
+                >
+                  {{ province.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="regency_id">Kota</label>
+              <select id="regency_id" class="form-control" v-model="regencyId">
+                <option
+                  v-for="regency in regencies"
+                  :key="regency.id"
+                  :value="regency.id"
+                >
+                  {{ regency.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col">
+                <label for="lat">Latitude</label>
+                <input type="text" v-model="lat" id="lat" class="form-control" @change="handleLatLngChange">
+              </div>
+
+              <div class="col">
+                <label for="long">Longitude</label>
+                <input type="text" v-model="long" id="long" class="form-control" @change="handleLatLngChange">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <map-component
+                :zoom="mapConfig.zoom"
+                :center="mapConfig.center"
+                :marker-lat-lng="mapConfig.markerLatLng"
+                @map-click="handleMapClick"
+                @marker-move="handleMarkerMove"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="logo">Logo Corporate</label>
+              <input type="file" @change="handleFileChange" class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <div class="text-right mt-3">
+          <button type="button" class="btn btn-primary" @click="stepForward">Selanjutnya</button>
+        </div>
+      </div>
+
+      <div v-if="step === 2">
+        <div class="card">
+          <div class="card-body">
+            <div class="form-group">
+              <label for="userName">Nama User</label>
+              <input type="text" v-model="user.name" id="userName" class="form-control" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="userEmail">Email</label>
+              <input type="email" v-model="user.email" id="userEmail" class="form-control" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="userPhone">No. HP</label>
+              <input type="tel" v-model="user.phone" id="userPhone" class="form-control" autocomplete="off">
+            </div>
+          </div>
+        </div>
+
+        <div class="text-right mt-3">
+          <button type="button" class="btn btn-outline-secondary mr-2" @click="stepBack">Kembali</button>
+          <button type="submit" class="btn btn-warning">Simpan</button>
+        </div>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -106,6 +144,14 @@ export default {
 
   data () {
     return {
+      mapConfig: {
+        zoom: 15,
+        center: [-6.2, 106.816666],
+        markerLatLng: [-6.2, 106.816666]
+      },
+      provinces: [],
+      regencies: [],
+      step: 1,
       name: '',
       email: '',
       phone: '',
@@ -114,13 +160,11 @@ export default {
       regencyId: null,
       lat: null,
       long: null,
-      provinces: [],
-      regencies: [],
       logo: null,
-      mapConfig: {
-        zoom: 15,
-        center: [-6.2, 106.816666],
-        markerLatLng: [-6.2, 106.816666]
+      user: {
+        name: '',
+        email: '',
+        phone: '',
       }
     }
   },
@@ -147,8 +191,48 @@ export default {
       this.mapConfig.markerLatLng = [this.lat, this.long]
     },
 
+    async handleFormSubmit() {
+      const {
+        name,
+        email,
+        phone,
+        regencyId,
+        address,
+        lat,
+        long,
+        logo,
+        user
+      } = this
+
+      const corporateData = {
+        name,
+        email,
+        mobile_phone: phone,
+        regency_id: regencyId,
+        address,
+        lat,
+        long,
+        logo,
+        users: user
+      }
+
+      try {
+        await this.storeCorporate(corporateData)
+      } catch (err) {
+        console.log(err.response.data)
+      }
+    },
+
     setMarkerLatLng(latLng) {
       this.mapConfig.markerLatLng = latLng
+    },
+
+    stepForward() {
+      this.step++
+    },
+
+    stepBack() {
+      this.step--
     },
 
     async setProvinces() {
@@ -167,7 +251,45 @@ export default {
     fetchRegenciesByProvince(provinceId) {
       return axios.get(`/api/regency/${provinceId}`)
         .then(res => res.data?.data)
+    },
+
+    storeCorporate(data) {
+      return axios.post(
+        "/admin/corporate", data,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      ).then(res => res.data)
+    },
+
+    storeUser(data) {
+      return axios.post("/admin/corporate/user", data)
+        .then(res => res.data)
     }
   }
 }
 </script>
+
+<style scoped>
+  .step-menu-container {
+    width: 100;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .step-menu {
+    flex: 1;
+    padding: .5rem 0;
+    font-weight: bold;
+    color: #AAAAAA;
+  }
+
+  .step-menu.step-menu-active {
+    color: var(--primary);
+    border-bottom: 4px solid var(--primary);
+  }
+</style>

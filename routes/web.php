@@ -237,6 +237,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::get('corporate', 'CorporateController@index')->name('corporate.index');
     Route::get('corporate/create', 'CorporateController@create')->name('corporate.create');
     Route::get('corporate/waiting-approval', 'CorporateController@waitingApproval')->name('corporate.waitingApproval');
+    Route::post('corporate', 'CorporateController@store')->name('corporate.store');
 });
 
 Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch', 'checkAdminBranchPassword')->name('adminBranch.')->group(function () {
