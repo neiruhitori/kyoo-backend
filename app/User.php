@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'email', 'email_verified_at', 'password', 'is_password_changed', 'role', 'token_external', 'platform', 'phone', 'branch_id', 'last_login', 'token_personal'
+        'name', 'username', 'email', 'email_verified_at', 'password', 'is_password_changed', 'role', 'token_external', 'platform', 'phone', 'branch_id', 'last_login', 'token_personal', 'corporate_id'
     ];
 
     /**
@@ -58,6 +58,11 @@ class User extends Authenticatable
     public function Customer()
     {
         return $this->hasOne('App\Customer');
+    }
+
+    public function Corporate()
+    {
+        return $this->belongsTo('App\Models\Corporate');
     }
 
     public function Notification()

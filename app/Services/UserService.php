@@ -32,7 +32,8 @@ class UserService
             'email' => $data['email'],
             'phone' => $data['phone'],
             'password' => $password,
-            'role' => 'admin_corporate'
+            'email_verified_at' => date('Y-m-d H:i:s'),
+            'role' => 'admin_corporate',
         ]);
 
         CorporateUserCreatedEvent::dispatch($user);

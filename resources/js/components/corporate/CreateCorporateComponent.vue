@@ -2,6 +2,10 @@
   <div style="margin: 0 auto; max-width: 560px;" class="mb-4">
     <h3 class="mb-3">Tambah Corporate</h3>
 
+    <div :class="`alert alert-${alert.type}`" role="alert" v-if="alert.show">
+      {{ alert.message }}
+    </div>
+
     <div class="step-menu-container">
       <div :class="`step-menu ${step >= 1 && 'step-menu-active'}`">
         1. Informasi Corporate
@@ -165,6 +169,20 @@ export default {
         name: '',
         email: '',
         phone: '',
+      },
+      fieldMap: {
+        'users.phone': 'No. HP user',
+        'users.email': 'Email user',
+        'users.name': 'Nama user',
+        name: 'Nama corporate',
+        'mobile phone': 'No. HP corporate',
+        email: 'Email corporate',
+        'regency id': 'Kota'
+      },
+      alert: {
+        message: '',
+        show: false,
+        type: 'success'
       }
     }
   },
@@ -218,8 +236,21 @@ export default {
 
       try {
         await this.storeCorporate(corporateData)
+
+        this.showAlert('Berhasil menambahkan corporate', 'success')
+        this.resetForm()
       } catch (err) {
-        console.log(err.response.data)
+        let message = 'Something went wrong'
+
+        if (err.response.data?.errors) {
+          const { errors } =  err.response.data
+
+          message = this.getErrorText(errors)
+        } else if (err.response.data?.message) {
+          message = err.response.data.message
+        }
+
+        this.showAlert(message, 'danger')
       }
     },
 
@@ -233,6 +264,55 @@ export default {
 
     stepBack() {
       this.step--
+    },
+
+    getErrorText(errors) {
+      const [field] = Object.keys(errors)
+      const [message] = errors[field]
+
+      const keyword = field.replace('_', ' ')
+
+      return this.fieldMap[keyword]
+       ? message.replace(keyword, this.fieldMap[keyword])
+       : message
+    },
+
+    showAlert(message, type) {
+      this.alert.type = type
+      this.alert.message = message
+      this.alert.show = true
+
+      setTimeout(() => {
+        this.hideAlert()
+      }, 3000)
+    },
+
+    hideAlert() {
+      this.alert = {
+        show: false,
+        type: 'success',
+        message: ''
+      }
+    },
+
+    resetForm() {
+      this.provinces = []
+      this.regencies = []
+      this.step = 1
+      this.name = ''
+      this.email = ''
+      this.phone = ''
+      this.address = ''
+      this.provinceId = null
+      this.regencyId = null
+      this.lat = null
+      this.long = null
+      this.logo = null
+      this.user = {
+        name: '',
+        email: '',
+        phone: ''
+      }
     },
 
     async setProvinces() {

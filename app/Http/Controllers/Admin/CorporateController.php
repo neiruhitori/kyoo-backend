@@ -56,7 +56,8 @@ class CorporateController extends Controller
             'regency_id' => $request->regency_id,
             'lat' => $request->lat,
             'long' => $request->long,
-            'logo' => $logoUrl
+            'logo' => $logoUrl,
+            'is_active' => true,
         ];
 
         $corporate = Corporate::create($data);
