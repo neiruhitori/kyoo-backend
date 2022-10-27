@@ -296,7 +296,6 @@ export default {
     },
 
     resetForm() {
-      this.provinces = []
       this.regencies = []
       this.step = 1
       this.name = ''

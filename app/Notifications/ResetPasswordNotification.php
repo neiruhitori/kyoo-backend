@@ -41,6 +41,7 @@ class ResetPasswordNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->from('noreply@kyoo.id', 'KYOO')
             ->subject(__('Reset Password Notification'))
             ->markdown('emails.resetPasswordUser', [
                 'url' => url(route('password.reset', [
