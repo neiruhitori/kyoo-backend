@@ -74,4 +74,32 @@ class CorporateController extends Controller
 
         return response()->noContent(Response::HTTP_CREATED);
     }
+
+    public function edit($id)
+    {
+        $corporate = Corporate::find($id);
+
+        return view('admin.corporate.edit', [
+            'corporate' => $corporate
+        ]);
+    }
+
+    public function show($id)
+    {
+        $corporate = Corporate::find($id);
+
+        return response()->json([
+            'id' => $corporate->id,
+            'name' => $corporate->name,
+            'mobile_phone' => $corporate->mobile_phone,
+            'email' => $corporate->email,
+            'address' => $corporate->address,
+            'country' => $corporate->country,
+            'province' => $corporate->Regency->province,
+            'regency' => $corporate->Regency,
+            'lat' => $corporate->lat,
+            'long' => $corporate->long,
+            'logo' => $corporate->logo
+        ], 200);
+    }
 }

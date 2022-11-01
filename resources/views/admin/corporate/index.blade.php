@@ -12,7 +12,7 @@
     <div class="card-body">
       <table class="table" id="dataTable">
         <thead>
-          <tr class="table-secondary">
+          <tr>
             <th class="text-center">Logo</th>
             <th>Corporate</th>
             <th>Email</th>
@@ -25,35 +25,37 @@
         <tbody>
           @foreach ($corporates as $corporate)
             <tr>
-              <td>
-                @isset($corporate->logo)
-                  <img src="{{asset('storage/'.$branch->logo)}}" style="width: 100px">
-                @endisset
+              <td class="text-center">
+                @if($corporate->logo)
+                  <img src="{{asset('storage/'.$corporate->logo)}}" style="width: 50px">
+                @endif
               </td>
               <td>{{ $corporate->name }}</td>
               <td>{{ $corporate->email }}</td>
               <td>{{ $corporate->mobile_phone }}</td>
               <td>{{ $corporate->Regency->name }}</td>
               <td>
-                <a
-                  href="#"
-                  class="btn btn-secondary"
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="Daftar Cabang"
-                >
-                  <span class="fas fa-list"></span>
-                </button>
+                <div class="text-center">
+                  <a
+                    href="#"
+                    class="btn btn-primary mr-1"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Daftar Cabang"
+                  >
+                    <span class="fas fa-list"></span>
+                  </button>
 
-                <a
-                  href="#"
-                  class="btn btn-secondary"
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="Edit Corporate"
-                >
-                  <span class="fas fa-edit"></span>
-                </a>
+                  <a
+                    href="{{ route('admin.corporate.edit', $corporate->id) }}"
+                    class="btn btn-warning"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Edit Corporate"
+                  >
+                    <span class="fas fa-edit"></span>
+                  </a>
+                </div>
               </td>
             </tr>
           @endforeach

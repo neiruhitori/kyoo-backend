@@ -53,49 +53,61 @@
               <div class="col-lg-6 img-welcome">
                 <img src="{{ asset('/img/welcome.svg') }}" alt="welcome img">
               </div>
+
               <div class="col-lg-6">
                 <div class="p-5">
-                  <div class="text-center">
-                    <img src="{{asset('img/logo-color.svg')}}" alt="" class="img-fluid mb-4">
-                  </div>
-                  @include('layouts.alert')
+                    <div class="text-center">
+                      <img src="{{asset('img/logo-color.svg')}}" alt="" class="img-fluid mb-4">
+                    </div>
+
+                    @include('layouts.alert')
+
                     @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
+                      <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                      </div>
                     @endif
+
                   <form method="POST" action="{{ route('password.update') }}" class="user">
                     @csrf
                     <input type="hidden" name="token" value="{{ $token }}">
+
                     <h4 class="text-center mb-3">{{ __('Reset Password') }}</h4>
-                      <small>
-                          {{ __('Rules') }}:
-                          <ul>
-                              <li>{{ __('must be at least 8 characters in length') }}</li>
-                              <li>{{ __('must contain at least one lowercase letter') }}</li>
-                              <li>{{ __('must contain at least one uppercase letter') }}</li>
-                              <li>{{ __('must contain at least one digit') }}</li>
-                          </ul>
-                      </small>
+
+                    <small>
+                      {{ __('Rules') }}:
+                      <ul>
+                        <li>{{ __('must be at least 8 characters in length') }}</li>
+                        <li>{{ __('must contain at least one lowercase letter') }}</li>
+                        <li>{{ __('must contain at least one uppercase letter') }}</li>
+                        <li>{{ __('must contain at least one digit') }}</li>
+                      </ul>
+                    </small>
+
                     <div class="form-group">
                       <input type="email" name="email" class="form-control form-control-user @error('email') is-invalid @enderror" value="{{ $email ?? old('email') }}" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="{{ __('Enter Email') }}" required>
-                        @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
+
+                      @error('email')
+                        <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                        </span>
+                      @enderror
                     </div>
+
                     <div class="form-group">
                       <input type="password" name="password" class="form-control form-control-user @error('password') is-invalid @enderror" placeholder="{{ __('Type your new password') }}" required>
-                        @error('password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
+
+                      @error('password')
+                        <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                        </span>
+                      @enderror
                     </div>
+
                     <div class="form-group">
                       <input type="password" name="password_confirmation" class="form-control form-control-user @error('password') is-invalid @enderror" placeholder="{{ __('Type your new password confirmation') }}" required>
                     </div>
+
                     <button type="submit" class="btn btn-primary btn-user btn-block">
                       Reset Password
                     </button>

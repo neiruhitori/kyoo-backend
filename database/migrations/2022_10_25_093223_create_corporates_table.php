@@ -20,7 +20,7 @@ class CreateCorporatesTable extends Migration
             $table->text('address')->nullable();
             $table->string('mobile_phone', 20)->unique();
             $table->string('country');
-            $table->string('regency_id', 10);
+            $table->char('regency_id', 10);
             $table->string('lat', 50)->nullable();
             $table->string('long', 50)->nullable();
             $table->string('logo')->nullable();

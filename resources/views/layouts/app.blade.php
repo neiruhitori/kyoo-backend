@@ -145,6 +145,8 @@
   <script src="{{asset('admin/vendor/chart.js/Chart.min.js')}}"></script>
 
   <script>
+    window._asset = '{{ asset('') }}'
+
     $(document).ready(function () {
       initAuth()
 
