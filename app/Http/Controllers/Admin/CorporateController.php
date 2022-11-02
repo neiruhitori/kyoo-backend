@@ -40,13 +40,6 @@ class CorporateController extends Controller
             'users.phone' => 'string|required|unique:users',
         ]);
 
-        // upload logo if exists
-        $logoUrl = '';
-        if ($request->logo) {
-            $logoUrl = Storage::disk('public')->put('corporate_logos', $request->logo);
-        }
-
-        // persists to database
         $data = [
             'name' => $request->name,
             'email' => $request->email,
@@ -56,10 +49,15 @@ class CorporateController extends Controller
             'regency_id' => $request->regency_id,
             'lat' => $request->lat,
             'long' => $request->long,
-            'logo' => $logoUrl,
             'is_active' => true,
         ];
 
+        // upload logo if exists
+        if ($request->logo) {
+            $data['logo'] = Storage::disk('public')->put('corporate_logos', $request->logo);
+        }
+
+        // persists to database
         $corporate = Corporate::create($data);
 
         $corporate->user = [
@@ -101,5 +99,39 @@ class CorporateController extends Controller
             'long' => $corporate->long,
             'logo' => $corporate->logo
         ], 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'string',
+            'email' => 'email',
+            'mobile_phone' => 'string',
+            'address' => 'string',
+            'regency_id' => 'integer',
+            'lat' => 'numeric',
+            'long' => 'numeric',
+            'logo' => 'image|max:2048'
+        ]);
+
+        $branch = Corporate::find($id);
+
+        $data = [
+            'name' => $request->name,
+            'mobile_phone' => $request->mobile_phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'regency_id' => $request->regency_id,
+            'lat' => $request->lat,
+            'long' => $request->long,
+        ];
+
+        if ($request->logo) {
+            Storage::disk('public')->delete($branch->logo);
+            $data['logo'] = Storage::disk('public')->put('corporate_logos', $request->logo);
+        }
+
+        Corporate::where('id', $id)->update($data);
+        return;
     }
 }

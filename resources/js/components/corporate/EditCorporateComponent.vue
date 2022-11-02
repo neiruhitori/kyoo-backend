@@ -1,10 +1,10 @@
 <template>
   <div style="margin: 0 auto; max-width: 560px;" class="mb-4">
-    <div class="mb-3 row align-items-center">
+    <div class="mb-4 row align-items-center">
       <h3 class="mb-0 col">Edit {{ corporate.name }}</h3>
 
       <div class="col text-right">
-        <img :src="logoUrl" alt="Company Logo" style="height: 38px" v-if="!!logoUrl">
+        <img :src="logoUrl" alt="Company Logo" style="height: 36px" v-if="!!logoUrl">
       </div>
     </div>
 
@@ -129,6 +129,7 @@ export default {
       },
       provinces: [],
       regencies: [],
+      id: null,
       name: '',
       email: '',
       phone: '',
@@ -177,6 +178,7 @@ export default {
 
     async handleFormSubmit() {
       const {
+        id,
         name,
         email,
         phone,
@@ -199,10 +201,10 @@ export default {
       }
 
       try {
-        await this.storeCorporate(corporateData)
+        await this.updateCorporate(id, corporateData)
 
-        this.showAlert('Berhasil menambahkan corporate', 'success')
-        this.resetForm()
+        this.showAlert('Berhasil memperbarui corporate', 'success')
+        this.setSelectedCorporate(id)
       } catch (err) {
         let message = 'Something went wrong'
 
@@ -225,6 +227,7 @@ export default {
     async setSelectedCorporate(id) {
       const corporate = await this.fetchCorporateById(id)
 
+      this.id = corporate.id
       this.name = corporate.name
       this.email = corporate.email
       this.phone = corporate.mobile_phone
@@ -277,19 +280,6 @@ export default {
       }
     },
 
-    resetForm() {
-      this.regencies = []
-      this.name = ''
-      this.email = ''
-      this.phone = ''
-      this.address = ''
-      this.provinceId = null
-      this.regencyId = null
-      this.lat = null
-      this.long = null
-      this.logo = null
-    },
-
     async setProvinces() {
       this.provinces = await this.fetchProvinces()
     },
@@ -313,9 +303,11 @@ export default {
         .then(res => res.data?.data)
     },
 
-    updateCorporate(data) {
+    updateCorporate(id, data) {
+      data._method = 'PATCH'
+
       return axios.post(
-        "/admin/corporate", data,
+        `/admin/corporate/${id}`, data,
         {
           headers: {
             'Content-Type': 'multipart/form-data'
