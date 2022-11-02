@@ -91,7 +91,7 @@
       </div>
 
       <div class="text-right mt-3">
-        <button class="btn btn-outline-secondary mr-2">Kembali</button>
+        <a href="/admin/corporate" class="btn btn-outline-secondary mr-2">Kembali</a>
         <button type="submit" class="btn btn-warning">Perbarui</button>
       </div>
     </form>
