@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 0 auto; max-width: 560px;" class="mb-4">
-    <div class="mb-4 row align-items-center">
+    <div class="mb-3 row align-items-center">
       <h3 class="mb-0 col">Edit {{ corporate.name }}</h3>
 
       <div class="col text-right">
