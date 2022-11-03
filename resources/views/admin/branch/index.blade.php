@@ -2,6 +2,14 @@
 
 @push('css')
 <link href="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+<style>
+    .img-size-constraint {
+        width: auto;
+        height: auto;
+        max-height: 40px;
+        max-width: 40px;
+    }
+</style>
 @endpush
 
 @section('content')
@@ -29,7 +37,7 @@
                                         <thead>
                                             <tr>
                                                 <th>{{ __('ID') }}</th>
-                                                <th>{{ __('Logo') }}</th>
+                                                <th class="text-center">{{ __('Logo') }}</th>
                                                 <th>{{ __('Category') }}</th>
                                                 <th>{{ __('Name') }}</th>
                                                 <th>{{ __('Address') }}</th>
@@ -42,10 +50,9 @@
                                             @foreach ($branches as $branch)
                                             <tr>
                                                 <td>{{$branch->id}}</td>
-                                                <td>
+                                                <td class="text-center">
                                                     @isset($branch->logo)
-                                                    <img src="{{asset('storage/'.$branch->logo)}}"
-                                                        style="height: 50px">
+                                                    <img src="{{asset('storage/'.$branch->logo)}}" class="img-size-constraint">
                                                     @endisset
                                                 </td>
                                                 <td>{{$branch->IndustryCategory->name}}</td>

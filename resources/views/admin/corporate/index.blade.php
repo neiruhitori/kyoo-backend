@@ -2,6 +2,14 @@
 
 @push('css')
 <link href="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+<style>
+  .img-size-constraint {
+    width: auto;
+    height: auto;
+    max-height: 40px;
+    max-width: 40px;
+  }
+</style>
 @endpush
 
 @section('content')
@@ -27,7 +35,7 @@
             <tr>
               <td class="text-center">
                 @if($corporate->logo)
-                  <img src="{{asset('storage/'.$corporate->logo)}}" style="width: 50px">
+                  <img src="{{asset('storage/'.$corporate->logo)}}" class="img-size-constraint">
                 @endif
               </td>
               <td>{{ $corporate->name }}</td>
