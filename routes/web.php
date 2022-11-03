@@ -244,6 +244,9 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
 
     // Corporate Branch
     Route::get('corporate/{corporateId}/branch', 'CorporateBranchController@index')->name('corporate.branch.index');
+    Route::get('corporate/{corporateId}/branch/create', 'CorporateBranchController@create')->name('corporate.branch.create');
+    Route::get('corporate/{corporateId}/branch/get', 'CorporateBranchController@findByName')->name('corporate.branch.get');
+    Route::post('corporate/{corporateId}/branch', 'CorporateBranchController@store')->name('corporate.branch.store');
 });
 
 Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch', 'checkAdminBranchPassword')->name('adminBranch.')->group(function () {

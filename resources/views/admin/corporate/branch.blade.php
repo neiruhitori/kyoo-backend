@@ -2,25 +2,33 @@
 
 @push('css')
 <link href="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+<style>
+  .img-size-constraint {
+    width: auto;
+    height: auto;
+    max-height: 40px;
+    max-width: 40px;
+  }
+</style>
 @endpush
 
 @section('content')
 <div style="margin: 0 auto; max-width: 1080px">
-  <h3 class="mb-3">
-    <a href="{{ route('admin.corporate.index') }}" class="mr-1" style="text-decoration: none">
-      <span class="fas fa-angle-left"></span>
-    </a>
-    Cabang {{ $corporate->name }}
-  </h3>
+  <div class="row mb-3">
+    <h3 class="col">
+      Cabang {{ $corporate->name }}
+    </h3>
+
+    <div class="col text-right">
+      <a href="{{ route('admin.corporate.branch.create', $corporate->id) }}" class="btn btn-primary">
+        <span class="fas fa-plus mr-1"></span>
+        Tambah Cabang
+      </a>
+    </div>
+  </div>
 
   <div class="card">
     <div class="card-body">
-      <div class="mb-3">
-        <a href="" class="btn btn-primary">
-          Tambah Cabang
-        </a>
-      </div>
-
       <table class="table" id="dataTable">
         <thead>
           <tr>
@@ -37,7 +45,7 @@
             <tr>
               <td class="text-center">
                 @if($branch->logo)
-                  <img src="{{asset('storage/'.$branch->logo)}}" style="width: 50px">
+                  <img src="{{asset('storage/'.$branch->logo)}}" class="img-size-constraint">
                 @endif
               </td>
               <td>{{ $branch->name }}</td>
