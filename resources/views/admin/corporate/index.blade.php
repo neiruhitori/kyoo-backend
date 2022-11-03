@@ -37,7 +37,7 @@
               <td>
                 <div class="text-center">
                   <a
-                    href="#"
+                    href="{{ route('admin.corporate.branch.index', $corporate->id ) }}"
                     class="btn btn-primary mr-1"
                     data-toggle="tooltip"
                     data-placement="bottom"
