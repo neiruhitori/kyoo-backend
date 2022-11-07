@@ -247,6 +247,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::get('corporate/{corporateId}/branch/create', 'CorporateBranchController@create')->name('corporate.branch.create');
     Route::get('corporate/{corporateId}/branch/get', 'CorporateBranchController@findByName')->name('corporate.branch.get');
     Route::post('corporate/{corporateId}/branch', 'CorporateBranchController@store')->name('corporate.branch.store');
+    Route::delete('corporate/{corporateId}/branch/{branchId}', 'CorporateBranchController@destroy')->name('corporate.branch.destroy');
 });
 
 Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch', 'checkAdminBranchPassword')->name('adminBranch.')->group(function () {

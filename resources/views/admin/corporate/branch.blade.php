@@ -27,6 +27,8 @@
     </div>
   </div>
 
+  @include('layouts.alert')
+
   <div class="card">
     <div class="card-body">
       <table class="table" id="dataTable">
@@ -37,6 +39,7 @@
             <th>Email</th>
             <th>No. HP</th>
             <th>Kota</th>
+            <th class="text-center">Aksi</th>
           </tr>
         </thead>
 
@@ -52,6 +55,22 @@
               <td>{{ $branch->email }}</td>
               <td>{{ $branch->mobile_phone }}</td>
               <td>{{ $branch->Regency->name }}</td>
+              <td class="text-center">
+                <form
+                  action="{{ route('admin.corporate.branch.destroy', [
+                  'corporateId' => $corporate->id,
+                  'branchId' => $branch->id
+                  ]) }}"
+                  method="POST"
+                >
+                  @csrf
+                  @method('DELETE')
+
+                  <button type="submit" class="btn btn-danger">
+                    <span class="fas fa-trash"></span>
+                  </button>
+                </form>
+              </td>
             </tr>
           @endforeach
         </tbody>

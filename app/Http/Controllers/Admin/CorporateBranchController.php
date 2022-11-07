@@ -88,4 +88,16 @@ class CorporateBranchController extends Controller
 
         return;
     }
+
+    public function destroy($corporateId, $branchId)
+    {
+        Branch::where([
+            'corporate_id' => $corporateId,
+            'id' => $branchId
+        ])->delete();
+
+        return redirect()
+            ->route('admin.corporate.branch.index', $corporateId)
+            ->with('success', 'Cabang corporate dihapus');
+    }
 }
