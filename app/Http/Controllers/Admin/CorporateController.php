@@ -13,9 +13,13 @@ class CorporateController extends Controller
 {
     public function index()
     {
-        $data = ['corporates' => Corporate::active()->get()];
+        $corporate = Corporate::active()
+            ->orderByDesc('created_at')
+            ->get();
 
-        return view('admin.corporate.index', $data);
+        return view('admin.corporate.index', [
+            'corporates' => $corporate
+        ]);
     }
 
     public function create()

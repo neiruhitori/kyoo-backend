@@ -13,7 +13,9 @@ class CorporateBranchController extends Controller
     public function index($corporateId)
     {
         $corporate = Corporate::find($corporateId);
-        $branches = Branch::where('corporate_id', $corporateId)->get();
+        $branches = Branch::where('corporate_id', $corporateId)
+            ->orderBy('name')
+            ->get();
 
         return view('admin.corporate.branch', [
             'corporate' => $corporate,
