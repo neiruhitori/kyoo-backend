@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Branch;
 use App\Models\Corporate;
+use App\User;
+use App\Events\CorporateBranchAddedEvent;
 use Illuminate\Support\Facades\DB;
 
 class CorporateBranchController extends Controller
@@ -82,9 +84,17 @@ class CorporateBranchController extends Controller
             ]);
         }
 
-        Branch::where('id', $request->branch_id)->update([
-            'corporate_id' => $request->corporate_id
-        ]);
+        $branch->corporate_id = $request->corporate_id;
+        $branch->save();
+
+        $user = User::where([
+            'branch_id' => $branch->id,
+            'role' => 'admin_branch',
+        ])->first();
+
+        $corporate = Corporate::find($request->corporate_id);
+
+        CorporateBranchAddedEvent::dispatch($branch, $user, $corporate);
 
         return;
     }
@@ -94,7 +104,9 @@ class CorporateBranchController extends Controller
         Branch::where([
             'corporate_id' => $corporateId,
             'id' => $branchId
-        ])->delete();
+        ])->update([
+            'corporate_id' => null,
+        ]);
 
         return redirect()
             ->route('admin.corporate.branch.index', $corporateId)
