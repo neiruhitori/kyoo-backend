@@ -37,6 +37,7 @@ class StoreBranch extends FormRequest
             'logo' => 'required|image|max:2048',
             'photo' => 'required|image|max:2048',
             'is_active' => 'required',
+            'corporate_id' => 'numeric',
 
             // branch location
             'regency_id' => 'required|exists:indoregion_regencies,id',

@@ -9,12 +9,13 @@ use App\IndustryCategory;
 use App\ScheduleTemplate;
 use App\User;
 use App\Log;
+use Countries;
+use App\Models\Province;
+use App\Models\Corporate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreBranch;
 use App\Http\Requests\Admin\UpdateBranch;
 use Illuminate\Http\Request;
-use Countries;
-use App\Models\Province;
 use App\Mail\RegisteredBranchMail;
 use App\Mail\Branch\Registration\Verified;
 use Illuminate\Support\Facades\Mail;
@@ -57,20 +58,27 @@ class BranchController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $countries = Countries::getList('en_US');
         $categories = IndustryCategory::all();
         $templates = ScheduleTemplate::all();
         $provinces = Province::all();
         $branchTypes = BranchType::all();
-        return view('admin.branch.create', [
+        
+        $data = [
             'countries' => $countries,
             'categories' => $categories,
             'templates' => $templates,
             'provinces' => $provinces,
             'branchTypes' => $branchTypes
-        ]);
+        ];
+
+        if ($request->corporate_id) {
+            $data['corporate'] = Corporate::find($request->corporate_id);
+        }
+
+        return view('admin.branch.create', $data);
     }
 
     /**
