@@ -16,7 +16,11 @@
   </div>
 
   <div class="d-flex">
-    <a href="" class="d-block text-secondary" style="text-decoration: none; flex: 1 1 0%">
+    <a
+      href="{{ route('admin.branch.create', ['corporate_id' => $corporate->id]) }}"
+      class="d-block text-secondary"
+      style="text-decoration: none; flex: 1 1 0%"
+    >
       <div class="card card-option" style="height: 160px">
         <div class="card-body d-flex flex-column justify-content-center">
           <div class="h1 text-center mb-3">
@@ -30,7 +34,11 @@
       </div>
     </a>
   
-    <a href="{{ route('admin.corporate.branch.create', $corporate->id) }}" class="d-block text-secondary ml-3" style="text-decoration: none; flex: 1 1 0%">
+    <a
+      href="{{ route('admin.corporate.branch.create', $corporate->id) }}"
+      class="d-block text-secondary ml-3"
+      style="text-decoration: none; flex: 1 1 0%"
+    >
       <div class="card card-option" style="height: 160px">
         <div class="card-body d-flex flex-column justify-content-center">
           <div class="h1 text-center mb-3">
