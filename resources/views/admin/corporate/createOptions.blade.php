@@ -10,7 +10,10 @@
 
 @section('content')
 <div style="margin: 0 auto; max-width: 560px;">
-  <h3 class="mb-3">Pilih Cara Pembuatan</h3>
+  <div class="mb-4">
+    <h3 class="text-dark mb-1">Tambah Cabang Corporate</h3>
+    <p>Bagaimana Anda menambahkan cabang {{ $corporate->name }}?</p>
+  </div>
 
   <div class="d-flex">
     <a href="" class="d-block text-secondary" style="text-decoration: none; flex: 1 1 0%">
