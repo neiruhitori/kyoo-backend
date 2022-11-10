@@ -12,7 +12,7 @@
 <div style="margin: 0 auto; max-width: 560px;">
   <div class="mb-4">
     <h3 class="text-dark mb-1">Tambah Cabang Corporate</h3>
-    <p>Pilih bagaimana Anda menambahkan cabang {{ $corporate->name }}</p>
+    <p>Pilih bagaimana Anda menambahkan cabang <strong>{{ $corporate->name }}</strong></p>
   </div>
 
   <div class="d-flex">
@@ -38,7 +38,7 @@
           </div>
   
           <p class="text-center text-dark mb-0">
-            Pilih dari branch yang sudah terdafar
+            Pilih dari branch yang sudah terdaftar
           </p>
         </div>
       </div>
