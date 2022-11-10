@@ -1,13 +1,13 @@
 <template>
   <div style="margin: 0 auto; max-width: 560px;" class="mb-4">
-    <div class="mb-2">
-      <a :href="`/admin/corporate/${corporate.id}/branch/options`" style="text-decoration: none;">
+    <div class="mb-4">
+      <a :href="`/admin/corporate/${corporate.id}/branch/options`" class="d-inline-block mb-1" style="text-decoration: none;">
         <span class="fas fa-angle-left mr-1"></span>
         Kembali
       </a>
-    </div>
 
-    <h3 class="mb-4">Pilih Cabang {{ corporate.name }}</h3>
+      <h3>Pilih Cabang {{ corporate.name }}</h3>
+    </div>
 
     <div :class="`alert alert-${alert.type}`" role="alert" v-if="alert.show">
       {{ alert.message }}
@@ -17,10 +17,14 @@
       <div class="form-group m-0">
         <input
           type="text"
-          class="form-control form-control-lg"
+          class="form-control"
           placeholder="Ketik nama cabang..."
           v-model="name"
         >
+
+        <div class="mt-2" v-if="noItem">
+          Cabang tidak ditemukan.
+        </div>
       </div>
     </form>
 
@@ -44,10 +48,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="mb-3" v-if="noItem">
-      Cabang tidak ditemukan.
     </div>
 
     <div class="mb-3" v-if="loading">

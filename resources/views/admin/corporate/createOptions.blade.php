@@ -11,8 +11,8 @@
 @section('content')
 <div style="margin: 0 auto; max-width: 560px;">
   <div class="mb-4">
-    <h3 class="mb-1">Tambah Cabang Corporate</h3>
-    <p>Pilih bagaimana Anda menambahkan cabang <strong>{{ $corporate->name }}</strong></p>
+    <h3 class="mb-0">Tambah Cabang Corporate</h3>
+    <p class="mb-0 mt-1">Pilih bagaimana Anda menambahkan cabang <strong>{{ $corporate->name }}</strong></p>
   </div>
 
   <div class="d-flex">
