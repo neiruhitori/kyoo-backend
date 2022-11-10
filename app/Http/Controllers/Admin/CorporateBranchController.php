@@ -25,6 +25,15 @@ class CorporateBranchController extends Controller
         ]);
     }
 
+    public function createOptions($corporateId)
+    {
+        $corporate = Corporate::find($corporateId);
+
+        return view('admin.corporate.createOptions', [
+            'corporate' => $corporate
+        ]);
+    }
+
     public function create(Request $request, $corporateId)
     {
         $corporate = Corporate::find($corporateId);

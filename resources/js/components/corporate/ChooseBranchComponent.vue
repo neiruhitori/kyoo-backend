@@ -1,7 +1,7 @@
 <template>
   <div style="margin: 0 auto; max-width: 560px;" class="mb-4">
     <div class="mb-2">
-      <a :href="`/admin/corporate/${corporate.id}/branch`" style="text-decoration: none;">
+      <a :href="`/admin/corporate/${corporate.id}/branch/options`" style="text-decoration: none;">
         <span class="fas fa-angle-left mr-1"></span>
         Kembali
       </a>

@@ -20,7 +20,7 @@
     </h3>
 
     <div class="col text-right">
-      <a href="{{ route('admin.corporate.branch.create', $corporate->id) }}" class="btn btn-primary">
+      <a href="{{ route('admin.corporate.branch.options', $corporate->id) }}" class="btn btn-primary">
         <span class="fas fa-plus mr-1"></span>
         Tambah Cabang
       </a>
