@@ -108,7 +108,7 @@
 
             <a
               class="collapse-item"
-              href="{{ route('admin.corporate.create') }}"
+              href="{{ route('admin.corporate.options') }}"
             >
               Tambah Corporate
             </a>

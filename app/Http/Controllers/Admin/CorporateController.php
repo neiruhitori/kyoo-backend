@@ -22,12 +22,17 @@ class CorporateController extends Controller
         ]);
     }
 
+    public function createOptions()
+    {
+        return view('admin.corporate.createOptions');
+    }
+
     public function create()
     {
         return view('admin.corporate.create');
     }
 
-    public function store (Request $request)
+    public function store(Request $request)
     {
         // validate request
         $request->validate([

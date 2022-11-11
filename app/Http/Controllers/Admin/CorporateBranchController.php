@@ -19,7 +19,7 @@ class CorporateBranchController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.corporate.branch', [
+        return view('admin.corporateBranch.index', [
             'corporate' => $corporate,
             'branches' => $branches,
         ]);
@@ -29,7 +29,7 @@ class CorporateBranchController extends Controller
     {
         $corporate = Corporate::find($corporateId);
 
-        return view('admin.corporate.createOptions', [
+        return view('admin.corporateBranch.createOptions', [
             'corporate' => $corporate
         ]);
     }
@@ -38,7 +38,7 @@ class CorporateBranchController extends Controller
     {
         $corporate = Corporate::find($corporateId);
 
-        return view('admin.corporate.chooseBranch', [
+        return view('admin.corporateBranch.chooseBranch', [
             'corporate' => $corporate
         ]);
     }

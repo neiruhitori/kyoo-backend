@@ -236,6 +236,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     // Corporate
     Route::get('corporate', 'CorporateController@index')->name('corporate.index');
     Route::get('corporate/create', 'CorporateController@create')->name('corporate.create');
+    Route::get('corporate/options', 'CorporateController@createOptions')->name('corporate.options');
     Route::get('corporate/edit/{id}', 'CorporateController@edit')->name('corporate.edit');
     Route::get('corporate/{id}', 'CorporateController@show')->name('corporate.show');
     Route::get('corporate/waiting-approval', 'CorporateController@waitingApproval')->name('corporate.waitingApproval');
