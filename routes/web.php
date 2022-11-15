@@ -243,7 +243,6 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::get('corporate/branch/{id}', 'CorporateController@findBranchById')->name('corporate.branch');
     Route::get('corporate/edit/{id}', 'CorporateController@edit')->name('corporate.edit');
     Route::get('corporate/{id}', 'CorporateController@show')->name('corporate.show');
-    Route::get('corporate/waiting-approval', 'CorporateController@waitingApproval')->name('corporate.waitingApproval');
     Route::post('corporate', 'CorporateController@store')->name('corporate.store');
     Route::patch('corporate/{id}', 'CorporateController@update')->name('corporate.update');
 

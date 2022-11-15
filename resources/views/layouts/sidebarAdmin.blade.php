@@ -101,13 +101,6 @@
 
             <a
               class="collapse-item"
-              href="{{ route('admin.corporate.waitingApproval') }}"
-            >
-              Menunggu Approval
-            </a>
-
-            <a
-              class="collapse-item"
               href="{{ route('admin.corporate.options') }}"
             >
               Tambah Corporate
