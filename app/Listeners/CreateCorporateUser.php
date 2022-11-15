@@ -30,10 +30,10 @@ class CreateCorporateUser
     public function handle(CorporateCreatedEvent $event)
     {
         $this->userService->createCorporate([
-            'corporate_id' => $event->corporate->user['corporate_id'],
-            'name' => $event->corporate->user['name'],
-            'email' => $event->corporate->user['email'],
-            'phone' => $event->corporate->user['phone'],
+            'corporate_id' => $event->corporate->id,
+            'name' => $event->user->name,
+            'email' => $event->user->email,
+            'phone' => $event->user->phone,
         ]);
     }
 }

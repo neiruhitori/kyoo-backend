@@ -156,7 +156,6 @@ export default {
         this.getQueues();
       })
       .listen('AppointmentCanceledEvent', () => {
-        console.log("kontol")
         this.getQueues();
       });
   },

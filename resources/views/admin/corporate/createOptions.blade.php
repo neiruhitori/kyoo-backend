@@ -27,7 +27,7 @@
             <span class="fas fa-plus"></span>
           </div>
   
-          <p class="text-center text-dark mb-0">
+          <p class="text-center mb-0">
             Buat cabang baru
           </p>
         </div>
@@ -35,7 +35,7 @@
     </a>
   
     <a
-      href="#"
+      href="{{ route('admin.corporate.copy') }}"
       class="d-block text-secondary ml-3"
       style="text-decoration: none; flex: 1 1 0%"
     >
@@ -45,7 +45,7 @@
             <span class="fas fa-copy"></span>
           </div>
   
-          <p class="text-center text-dark mb-0">
+          <p class="text-center mb-0">
             Copy dari cabang yang sudah terdaftar
           </p>
         </div>

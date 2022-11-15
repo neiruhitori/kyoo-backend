@@ -36,7 +36,7 @@
                     </p>
                     
                     <div class="mb-4">
-                        <h5 class="text-dark font-weight-bold mb-4">Konfigurasi Utama Antrian</h5>
+                        <h5 class="font-weight-bold mb-4">Konfigurasi Utama Antrian</h5>
 
                         <div class="number-list">
                             <span class="number-indicator bg-primary mr-3">1</span>
@@ -80,7 +80,7 @@
                     </div>
                     
                     <div>
-                        <h5 class="text-dark font-weight-bold mb-4">Konfigurasi Opsional</h5>
+                        <h5 class="font-weight-bold mb-4">Konfigurasi Opsional</h5>
 
                         <p>Anda juga dapat merubah:</p>
 

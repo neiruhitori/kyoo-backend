@@ -5,12 +5,25 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Corporate;
+use App\Branch;
+use App\Events\CorporateCreatedEvent;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
-use App\Events\CorporateCreatedEvent;
+use Illuminate\Support\Facades\DB;
+use App\Services\UserService;
+use App\Services\CorporateBranchService;
+use Illuminate\Support\Facades\Log;
 
 class CorporateController extends Controller
 {
+    protected $userService, $corporateBranchService;
+
+    public function __construct(UserService $userService, CorporateBranchService $corporateBranchService)
+    {
+        $this->userService = $userService;
+        $this->corporateBranchService = $corporateBranchService;
+    }
+
     public function index()
     {
         $corporate = Corporate::active()
@@ -69,7 +82,7 @@ class CorporateController extends Controller
         // persists to database
         $corporate = Corporate::create($data);
 
-        $corporate->user = [
+        $user = (object) [
             'corporate_id' => $corporate->id,
             'name' => $request->users['name'],
             'email' => $request->users['email'],
@@ -77,7 +90,7 @@ class CorporateController extends Controller
         ];
 
         // dispatch event
-        CorporateCreatedEvent::dispatch($corporate);
+        CorporateCreatedEvent::dispatch($corporate, $user);
 
         return response()->noContent(Response::HTTP_CREATED);
     }
@@ -142,5 +155,108 @@ class CorporateController extends Controller
 
         Corporate::where('id', $id)->update($data);
         return;
+    }
+
+    public function copyFromBranch()
+    {
+        return view('admin.corporate.copy');
+    }
+
+    public function findBranchByName(Request $request)
+    {
+        if (!$request->name) {
+            return response()->json([]);
+        }
+
+        $name = strtolower($request->name);
+        $branches = Branch::where(DB::raw('LOWER(name)'), 'like', "%{$name}%")
+            ->whereNull('corporate_id')
+            ->orderBy('name')
+            ->get();
+        
+        $data = $branches->map(function ($branch) {
+            $item = [
+                'id' => $branch->id,
+                'name' => $branch->name,
+                'email' => $branch->email,
+                'address' => $branch->address,
+                'mobile_phone' => $branch->mobile_phone,
+                'province' => $branch->Regency->province,
+                'regency' => $branch->Regency,
+                'lat' => $branch->lat,
+                'long' => $branch->long
+            ];
+
+            if ($branch->logo) {
+                $item['logo'] = asset("storage/{$branch->logo}");
+            }
+
+            return $item;
+        });
+
+        return response()->json($data);
+    }
+
+    public function storeCopiedBranch(Request $request)
+    {
+        $request->validate([
+            'corporates.name' => 'string|required',
+            'corporates.email' => 'email|required|unique:corporates',
+            'corporates.mobile_phone' => 'string|required|unique:corporates',
+            'corporates.address' => 'string',
+            'corporates.regency_id' => 'integer|required',
+            'corporates.lat' => 'numeric',
+            'corporates.long' => 'numeric',
+            'corporates.logo' => 'image|max:2048',
+            'users.name' => 'string|required',
+            'users.email' => 'email|required|unique:users',
+            'users.phone' => 'string|required|unique:users',
+            'branch_id' => 'numeric|required'
+        ]);
+
+        $branch = Branch::find($request->branch_id);
+
+        if ($branch->corporate_id) {
+            return response()->json([
+                'message' => 'Cabang sudah memiliki corporate'
+            ], 400);
+        }
+
+        $corporateData = $request->corporates;
+        $corporateData['country'] = 'Indonesia';
+
+        if (!isset($request->corporates['logo'])) {
+            $corporateData['logo'] = $branch->logo;
+        }
+
+        DB::beginTransaction();
+        
+        try {
+            $corporate = Corporate::create($corporateData);
+
+            $this->userService->createCorporate([
+                'corporate_id' => $corporate->id,
+                'name' => $request->users['name'],
+                'email' => $request->users['email'],
+                'phone' => $request->users['phone'],
+            ]);
+
+            $this->corporateBranchService->addFromBranch(
+                $branch->id,
+                $corporate->id
+            );
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error($e);
+
+            return response()->json([
+                'message' => 'Internal server error'
+            ], 500);
+        }
+
+        return response()->noContent(Response::HTTP_CREATED);
     }
 }

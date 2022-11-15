@@ -27,7 +27,7 @@
             <span class="fas fa-plus"></span>
           </div>
   
-          <p class="text-center text-dark mb-0">
+          <p class="text-center mb-0">
             Buat cabang baru
           </p>
         </div>
@@ -45,7 +45,7 @@
             <span class="fas fa-exchange-alt"></span>
           </div>
   
-          <p class="text-center text-dark mb-0">
+          <p class="text-center mb-0">
             Pilih dari branch yang sudah terdaftar
           </p>
         </div>

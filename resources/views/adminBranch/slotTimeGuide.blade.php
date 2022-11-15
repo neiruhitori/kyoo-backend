@@ -110,7 +110,7 @@
 
                     <div class="inline mb-4">
                         <div class="flex-1">
-                            <h5 class="text-dark mb-3 font-weight-bold">Pengaturan Jadwal</h5>
+                            <h5 class="mb-3 font-weight-bold">Pengaturan Jadwal</h5>
 
                             <table class="custom-table">
                                 <thead>
@@ -138,7 +138,7 @@
                         </div>
 
                         <div class="flex-1 ml-4">
-                            <h5 class="text-dark mb-3 font-weight-bold">Pengaturan Slot Waktu</h5>
+                            <h5 class="mb-3 font-weight-bold">Pengaturan Slot Waktu</h5>
 
                             <table class="custom-table">
                                 <thead>
