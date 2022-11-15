@@ -224,6 +224,7 @@ class CorporateController extends Controller
 
         $corporateData = $request->corporates;
         $corporateData['country'] = 'Indonesia';
+        $corporateData['is_active'] = true;
 
         if (!isset($request->corporates['logo'])) {
             $corporateData['logo'] = $branch->logo;
