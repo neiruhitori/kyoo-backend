@@ -11,6 +11,10 @@
 @section('content')
 <div style="margin: 0 auto; max-width: 560px;">
   <div class="mb-4">
+    <a href="{{ route('admin.corporate.branch.index', $corporate->id) }}" class="d-inline-block mb-1" style="text-decoration: none;">
+      <span class="fas fa-angle-left mr-1"></span>
+      Kembali
+    </a>
     <h3 class="mb-0">Tambah Cabang Corporate</h3>
     <p class="mb-0 mt-1">Pilih bagaimana Anda menambahkan cabang <strong>{{ $corporate->name }}</strong></p>
   </div>

@@ -79,18 +79,28 @@ class CorporateController extends Controller
             $data['logo'] = Storage::disk('public')->put('corporate_logos', $request->logo);
         }
 
-        // persists to database
-        $corporate = Corporate::create($data);
+        DB::beginTransaction();
+        try {
+            // persists to database
+            $corporate = Corporate::create($data);
+    
+            $this->userService->createCorporate([
+                'corporate_id' => $corporate->id,
+                'name' => $request->users['name'],
+                'email' => $request->users['email'],
+                'phone' => $request->users['phone'],
+            ]);
 
-        $user = (object) [
-            'corporate_id' => $corporate->id,
-            'name' => $request->users['name'],
-            'email' => $request->users['email'],
-            'phone' => $request->users['phone']
-        ];
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
 
-        // dispatch event
-        CorporateCreatedEvent::dispatch($corporate, $user);
+            Log::error($e);
+
+            return response()->json([
+                'message' => 'Internal server error'
+            ], 500);
+        }
 
         return response()->noContent(Response::HTTP_CREATED);
     }
