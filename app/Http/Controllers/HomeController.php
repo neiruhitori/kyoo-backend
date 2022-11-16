@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -33,6 +33,9 @@ class HomeController extends Controller
                 break;
             case 'cs':
                 return redirect(route('cs.home'));
+                break;
+            case 'admin_corporate':
+                return redirect(route('adminCorporate.home'));
                 break;
             default:
                 return redirect(route('unauthorized'));

@@ -86,6 +86,10 @@
         @case('cs')
             @include('layouts.sidebarCS')
             @break
+        
+        @case('admin_corporate')
+            @include('layouts.sidebarAdminCorporate')
+            @break
         @default
             
     @endswitch
