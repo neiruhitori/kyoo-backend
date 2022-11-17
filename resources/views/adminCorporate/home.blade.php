@@ -5,9 +5,9 @@
         <h3 class="mb-0">Informasi Geografis</h3>
     </div>
 
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card border-left-primary h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
@@ -25,7 +25,7 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card border-left-success shadow h-100 py-2">
+            <div class="card border-left-success h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
@@ -43,7 +43,7 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card border-left-danger h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
@@ -60,4 +60,18 @@
             </div>
         </div>
     </div>
+
+    <div class="card mb-4">
+        <div id="app">
+            <branch-monitoring-map-component />
+        </div>
+    </div>
 @endsection
+
+@push('css')
+<link rel="stylesheet" href="{{ mix('css/app.css') }}">
+@endpush
+
+@push('js')
+<script src="{{ mix('js/app.js') }}"></script>
+@endpush
