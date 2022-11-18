@@ -9,9 +9,9 @@ namespace Database\Seeders;
  *
  */
 
-use DB;
 use Illuminate\Database\Seeder;
 use AzisHapidin\IndoRegion\RawDataGetter;
+use Illuminate\Support\Facades\DB;
 
 class IndoRegionRegencySeeder extends Seeder
 {
