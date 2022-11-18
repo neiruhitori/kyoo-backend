@@ -202,16 +202,18 @@ class BranchController extends Controller
         }
         $branch->update($input);
 
-        $admin = $branch->Admin[0];
-        $admin->update([
-            'name' => $input['admin_name'],
-            'email' => $input['admin_email'],
-            'phone' => $input['admin_phone'],
-        ]);
-        Log::create([
-            'user_id' => Auth::id(),
-            'description' => 'Update Branch'
-        ]);
+        if (count($branch->Admin)) {
+            $admin = $branch->Admin[0];
+            $admin->update([
+                'name' => $input['admin_name'],
+                'email' => $input['admin_email'],
+                'phone' => $input['admin_phone'],
+            ]);
+            Log::create([
+                'user_id' => Auth::id(),
+                'description' => 'Update Branch'
+            ]);
+        }  
         $request->session()->flash('warning', __('module.updated', ['module' => __('Branch'), 'name' => $request->name]));
         return redirect(route('admin.branch.index'));
     }
