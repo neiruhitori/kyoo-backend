@@ -11,6 +11,7 @@ namespace App\Models;
 
 use AzisHapidin\IndoRegion\Traits\RegencyTrait;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\RegencyLocation;
 
 /**
  * Regency Model.
@@ -53,5 +54,10 @@ class Regency extends Model
     public function districts()
     {
         return $this->hasMany(District::class);
+    }
+
+    public function Coordinates()
+    {
+        return $this->hasOne(RegencyLocation::class);
     }
 }
