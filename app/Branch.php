@@ -20,6 +20,8 @@ class Branch extends Model
      */
     protected $casts = [
         'regency_id' => 'integer',
+        'lat' => 'double',
+        'long' => 'double'
     ];
 
     public function getQueueTypeAttribute()

@@ -63,7 +63,9 @@
 
     <div class="card mb-4">
         <div id="app">
-            <branch-monitoring-map-component />
+            <branch-monitoring-map-component
+                :branches="{{ $branches }}"
+            />
         </div>
     </div>
 @endsection
