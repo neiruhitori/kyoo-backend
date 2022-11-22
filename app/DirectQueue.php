@@ -54,4 +54,9 @@ class DirectQueue extends Model
     {
         return $this->belongsTo(Workstation::class);
     }
+
+    public function scopeWithoutCanceled($query)
+    {
+        $query->where('status', '!=', 'canceled');
+    }
 }

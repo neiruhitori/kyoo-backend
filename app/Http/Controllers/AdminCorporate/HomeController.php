@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\BranchScheduleTemplateDetail as Holiday;
 use App\Schedule;
+use App\DirectQueue;
 
 class HomeController extends Controller
 {
@@ -33,6 +34,9 @@ class HomeController extends Controller
         });
 
         return view('adminCorporate.home', [
+            'totalVisit' => $this->getTotalVisit($branches),
+            'totalServed' => $this->getTotalServed($branches),
+            'totalNoShow' => $this->getTotalNoShow($branches),
             'branches' => $branches
         ]);
     }
@@ -75,5 +79,48 @@ class HomeController extends Controller
         }
 
         return true;
+    }
+
+    protected function getTotalVisit($branches)
+    {
+        $branchIds = $branches->map(function ($branch) {
+            return $branch->id;
+        });
+
+        return DirectQueue::withoutCanceled()
+            ->whereHas('Service', function ($query) use ($branchIds) {
+                return $query->whereIn('branch_id', $branchIds);
+            })
+            ->whereDate('created_at', date('Y-m-d H:i:s'))
+            ->count();
+    }
+
+    protected function getTotalServed($branches)
+    {
+        $branchIds = $branches->map(function ($branch) {
+            return $branch->id;
+        });
+
+        return DirectQueue::whereDate('created_at', date('Y-m-d H:i:s'))
+            ->whereIn('status', ['served', 'end served'])
+            ->whereHas('Service', function ($query) use ($branchIds) {
+                return $query->whereIn('branch_id', $branchIds);
+            })
+            ->count();
+    }
+
+    protected function getTotalNoShow($branches)
+    {
+        $branchIds = $branches->map(function ($branch) {
+            return $branch->id;
+        });
+
+        return DirectQueue::withoutCanceled()
+            ->whereDate('created_at', date('Y-m-d H:i:s'))
+            ->where('status', 'no show')
+            ->whereHas('Service', function ($query) use ($branchIds) {
+                return $query->whereIn('branch_id', $branchIds);
+            })
+            ->count();
     }
 }
