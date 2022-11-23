@@ -17,8 +17,8 @@
         :options="mapConfig.markerOptions"
       >
         <l-icon
-          :icon-size="markerSize"
-          :icon-anchor="markerAnchor"
+          :icon-size="markerSize()"
+          :icon-anchor="markerAnchor()"
           :icon-url="`http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|${branch.open ? mapConfig.openHex : mapConfig.closedHex}&chf=a,s,ee00FFFF`"
         />
 

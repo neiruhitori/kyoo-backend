@@ -272,6 +272,7 @@ Route::namespace('AdminCorporate')
     ->name('adminCorporate.')
     ->group(function () {
         Route::get('/', 'HomeController@index')->name('home');
+        Route::get('/monitoring', 'MonitoringController@index')->name('monitoring');
     });
 
 Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {

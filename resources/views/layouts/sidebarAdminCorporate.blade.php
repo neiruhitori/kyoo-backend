@@ -23,8 +23,14 @@
 
   <li class="nav-item {{ !request()->is('admin-corporate') ?: 'active' }}">
     <a class="nav-link" href="{{ route('adminCorporate.home') }}">
-      <i class="fas fa-fw fa-tachometer-alt"></i>
+      <i class="fas fa-tachometer-alt"></i>
       <span>Dashboard</span></a>
+  </li>
+
+  <li class="nav-item {{ !request()->is('admin-corporate/monitoring') ?: 'active' }}">
+    <a class="nav-link" href="{{ route('adminCorporate.monitoring') }}">
+      <i class="fas fa-desktop"></i>
+      <span>Monitoring Terpusat</span></a>
   </li>
 
   <hr class="sidebar-divider">
