@@ -18,7 +18,7 @@ class HomeController extends Controller
     {
         $corporate = Auth::user()->Corporate;
 
-        $branches = Branch::where('corporate_id', $corporate->id)->get();
+        $branches = Branch::onsite()->where('corporate_id', $corporate->id)->get();
         $branches = $branches->map(function ($value) {
             return (object) [
                 'id' => $value->id,
