@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DirectQueue extends Model
 {
-    protected $fillable = ['queue_no', 'email', 'user_id', 'vct_id', 'workstation_service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count', 'rating', 'is_liked', 'service_id', 'workstation_id', 'booking_code', 'client_id', 'fcm_id', 'waiting_duration', 'serving_duration'];
+    protected $fillable = ['queue_no', 'email', 'user_id', 'vct_id', 'workstation_service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count', 'rating', 'is_liked', 'service_id', 'workstation_id', 'booking_code', 'client_id', 'fcm_id', 'waiting_duration', 'serving_duration', 'branch_id'];
+
+    protected $cast = [
+        'waiting_duration' => 'integer',
+        'serving_duration' => 'integer'
+    ];
 
     public function getCreatedAtAttribute($value)
     {
@@ -58,5 +63,30 @@ class DirectQueue extends Model
     public function scopeWithoutCanceled($query)
     {
         $query->where('status', '!=', 'canceled');
+    }
+
+    public function isWaiting()
+    {
+        return $this->status == 'waiting';
+    }
+
+    public function isServed()
+    {
+        return in_array($this->status, ['served', 'end served']);
+    }
+
+    public function isNoShow()
+    {
+        return $this->status == 'no show';
+    }
+
+    public function isBranch($branchId)
+    {
+        return $this->branch_id && $this->branch_id == $branchId;
+    }
+
+    public function isService($serviceId)
+    {
+        return $this->service_id && $this->service_id == $serviceId;
     }
 }

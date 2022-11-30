@@ -8,6 +8,11 @@ use App\Models\Corporate;
 use App\Events\CorporateBranchAddedEvent;
 
 class CorporateBranchService {
+    public function getCorporateBranches($corporateId)
+    {
+        return Branch::onsite()->where('corporate_id', $corporateId)->get();
+    }
+
     public function addFromBranch($branchId, $corporateId)
     {
         $branch = Branch::find($branchId);

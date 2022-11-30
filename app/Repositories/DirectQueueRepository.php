@@ -82,6 +82,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             throw new \Exception('Cabang sedang tutup hari ini');
         }
 
+        $data['branch_id'] = $branch->id;
         $data['queue_no'] = $this->generate_queue_number($service->branch_id, $data['service_id']);
         $data['booking_code'] = $this->generate_booking_code();
 

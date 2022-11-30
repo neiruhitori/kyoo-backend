@@ -24,6 +24,13 @@ class Branch extends Model
         'long' => 'double'
     ];
 
+    public function scopeOnsite($query)
+    {
+        $query->whereHas('BranchType', function ($q) {
+            $q->where('is_direct_queue', true);
+        });
+    }
+
     public function getQueueTypeAttribute()
     {
         if ($this->BranchType->is_direct_queue) {
@@ -39,6 +46,45 @@ class Branch extends Model
         }
 
         return 'onsite';
+    }
+
+    public function getIsPremiumAttribute()
+    {
+        if ($this->BranchType) {
+            return $this->BranchType->is_premium;
+        }
+
+        return false;
+    }
+
+    public function getIsTodayOpenAttribute()
+    {   
+        $holiday = $this->Holiday->filter(function ($h) {
+            return $h->date == date('Y-m-d');
+        })->first();
+        if ($holiday) {
+            return false;
+        }
+
+        $closedDay = $this->Schedule->filter(function ($s) {
+            return $s->day == strtolower(date('l')) &&
+                $s->status == 'closed';
+        })->first();
+        if ($closedDay) {
+            return false;
+        }
+
+        $afterHours = $this->Schedule->filter(function ($s) {
+            return $s->day == strtolower(date('l')) &&
+                $s->status == 'open' &&
+                $s->start_time > date('H:i:s') &&
+                $s->end_time < date('H:i:s');
+        })->first();
+        if ($afterHours) {
+            return false;
+        }
+
+        return true;
     }
 
     public function hasAccess($feature) {
@@ -62,15 +108,6 @@ class Branch extends Model
         return $this->FeatureSubscription->map(function ($fs) {
             return $fs->AdditionalFeature->name;
         });
-    }
-
-    public function getIsPremiumAttribute()
-    {
-        if ($this->BranchType) {
-            return $this->BranchType->is_premium;
-        }
-
-        return false;
     }
 
     public function IndustryCategory()
@@ -114,6 +151,11 @@ class Branch extends Model
     public function ScheduleTemplate()
     {
         return $this->belongsTo('App\ScheduleTemplate')->withTrashed();
+    }
+
+    public function Holiday()
+    {
+        return $this->hasMany('App\Models\BranchScheduleTemplateDetail', 'branch_id', 'id');
     }
 
     public function Service()

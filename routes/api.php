@@ -91,6 +91,9 @@ Route::middleware(['auth:api'])->group(function () {
 
     // notification routes
     Route::get('notification', 'API\NotificationController@index');
+
+    // corporate routes
+    Route::get('corporates/{id}/branches', 'API\CorporateController@getCorporateBranches');
 });
 
 // guest can be get the data
