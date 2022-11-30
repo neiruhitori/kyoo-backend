@@ -17,8 +17,6 @@
         :options="mapConfig.markerOptions"
       >
         <l-icon
-          :icon-size="markerSize()"
-          :icon-anchor="markerAnchor()"
           :icon-url="`http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|${branch.open ? mapConfig.openHex : mapConfig.closedHex}&chf=a,s,ee00FFFF`"
         />
 
@@ -85,8 +83,6 @@ export default {
           attributionControl: false,
           doubleClickZoom: false,
         },
-        iconSize: [32, 37],
-        iconAnchor: [16, 37],
         openHex: '1cc88a',
         closedHex: 'e74a3b',
         markerOptions: {
@@ -107,14 +103,6 @@ export default {
         return [v.regency.lat, v.regency.long]
       })
     },
-
-    markerSize() {
-      return [this.mapConfig.iconSize, this.mapConfig.iconSize * 1.15]
-    },
-
-    markerAnchor() {
-      return [this.mapConfig.iconAnchor / 2, this.mapConfig.iconAnchor * 1.15]
-    }
   },
 }
 </script>
