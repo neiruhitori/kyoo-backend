@@ -187,17 +187,6 @@
             name: 'API Gateway Token'
           }).then(res => res.data.accessToken)
 
-          const user = await axios.patch('/api/user/{{ Auth::id() }}/personal-access-token', {
-            token: accessToken
-          }, {
-            headers: {
-              Authorization: 'Bearer ' + accessToken,
-              Accept: 'application/json'
-            }
-          })
-
-          console.log(user.data, 'Resultnya')
-
           localStorage.setItem('accessToken', accessToken)
           return
       }
