@@ -272,9 +272,12 @@ Route::namespace('AdminCorporate')
     ->name('adminCorporate.')
     ->group(function () {
         Route::get('/', 'HomeController@index')->name('home');
+
         Route::get('/monitoring', 'MonitoringController@index')->name('monitoring');
         Route::get('/monitoring/branches', 'MonitoringController@monitorBranches')->name('monitoring.branches.index');
         Route::get('/monitoring/branches/{id}/services', 'MonitoringController@monitorServices')->name('monitoring.branches.services');
+        
+        Route::get('/report/customer-satisfaction', 'CustomerSatisfactionReportController@index')->name('report.customerSatisfaction.index');
     });
 
 Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {

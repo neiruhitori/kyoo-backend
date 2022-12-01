@@ -33,6 +33,24 @@
       <span>Monitoring Terpusat</span></a>
   </li>
 
+  <li class="nav-item {{ !request()->is('admin-corporate/report/*') ?: 'active' }}">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#report" aria-expanded="true" aria-controls="report">
+      <i class="fas fa-fw fa-file-alt"></i>
+      <span>Reporting Terpusat</span>
+    </a>
+
+    <div class="collapse {{ !request()->is('admin-corporate/report/*') ?: 'show' }}" id="report" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a
+          class="collapse-item kyoo-sublink {{ !request()->is('admin-corporate/report/customer-satisfaction') ?: 'active' }}"
+          href="{{ route('adminCorporate.report.customerSatisfaction.index') }}"
+        >
+          Laporan Kepuasan Pelanggan
+        </a>
+      </div>
+    </div>
+  </li>
+
   <hr class="sidebar-divider">
 
   <div class="text-center d-none d-md-inline">

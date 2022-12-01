@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 use App\Appointment;
 use App\DirectQueue;
 use App\WorkstationService;
-use Auth;
-use DB;
 use App\Interfaces\ExhibitionRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class ReportController extends Controller
 {
@@ -278,6 +279,7 @@ class ReportController extends Controller
             )
                 ->whereMonth('date', $month)
                 ->whereYear('date', $year)
+                ->where('branch_id', Auth::user()->branch_id)
                 ->groupBy('date')
                 ->orderBy('date')
                 ->get();
@@ -290,6 +292,7 @@ class ReportController extends Controller
             )
                 ->whereMonth('created_at', $month)
                 ->whereYear('created_at', $year)
+                ->where('branch_id', Auth::user()->branch_id)
                 ->groupBy('date')
                 ->orderBy('date')
                 ->get();
