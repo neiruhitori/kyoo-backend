@@ -102,7 +102,7 @@
               </tr>
 
               <tr v-if="!data.length">
-                <td colspan="10" class="text-center">Tidak ada data.</td>
+                <td colspan="10" class="text-center">Tidak ada data</td>
               </tr>
             </tbody>
           </table>
@@ -146,7 +146,7 @@
               </tr>
 
               <tr v-if="!data.length">
-                <td colspan="10" class="text-center">Tidak ada data.</td>
+                <td colspan="10" class="text-center">Tidak ada data</td>
               </tr>
             </tbody>
           </table>
