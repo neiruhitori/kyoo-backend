@@ -47,6 +47,13 @@
         >
           Laporan Kepuasan Pelanggan
         </a>
+
+        <a
+          class="collapse-item kyoo-sublink {{ !request()->is('admin-corporate/report/branch') ?: 'active' }}"
+          href="{{ route('adminCorporate.report.branch.index') }}"
+        >
+          Laporan Cabang
+        </a>
       </div>
     </div>
   </li>

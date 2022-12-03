@@ -278,6 +278,7 @@ Route::namespace('AdminCorporate')
         Route::get('/monitoring/branches/{id}/services', 'MonitoringController@monitorServices')->name('monitoring.branches.services');
         
         Route::get('/report/customer-satisfaction', 'CustomerSatisfactionReportController@index')->name('report.customerSatisfaction.index');
+        Route::get('/report/branch', 'BranchReportController@index')->name('report.branch.index');
     });
 
 Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {
