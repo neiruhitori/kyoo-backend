@@ -77,9 +77,9 @@ class Branch extends Model
         $afterHours = $this->Schedule->filter(function ($s) {
             return $s->day == strtolower(date('l')) &&
                 $s->status == 'open' &&
-                $s->start_time > date('H:i:s') &&
-                $s->end_time < date('H:i:s');
+                ($s->start_time > date('H:i:s') || $s->end_time < date('H:i:s'));
         })->first();
+
         if ($afterHours) {
             return false;
         }
