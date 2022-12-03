@@ -8,8 +8,6 @@ use App\Branch;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\BranchScheduleTemplateDetail as Holiday;
-use App\Schedule;
 use App\DirectQueue;
 
 class HomeController extends Controller
@@ -23,7 +21,7 @@ class HomeController extends Controller
             return (object) [
                 'id' => $value->id,
                 'name' => $value->name,
-                'open' => $this->getOpenStatus($value),
+                'open' => $value->is_today_open,
                 'regency' => [
                     'id' => $value->Regency->id,
                     'name' => $value->Regency->name,
@@ -39,46 +37,6 @@ class HomeController extends Controller
             'totalNoShow' => $this->getTotalNoShow($branches),
             'branches' => $branches
         ]);
-    }
-
-    protected function getOpenStatus($branch)
-    {
-        $date = date('Y-m-d');
-        $holiday = Holiday::where([
-            'branch_id' => $branch->id,
-            'date' => $date
-        ])->first();
-
-        if ($holiday) {
-            return false;
-        }
-
-        $day = strtolower(date('l'));
-
-        $closedSchedule = Schedule::where([
-            'branch_id' => $branch->id,
-            'day' => $day,
-            'status' => 'closed',
-        ])->first();
-
-        if ($closedSchedule) {
-            return false;
-        }
-
-        $afterHours = Schedule::where([
-            'branch_id' => $branch->id,
-            'day' => $day,
-            'status' => 'open',
-        ])
-            ->where('end_time', '<', date('H:i:s'))
-            ->orWhere('start_time', '>', date('H:i:s'))
-            ->first();
-
-        if ($afterHours) {
-            return false;
-        }
-
-        return true;
     }
 
     protected function getTotalVisit($branches)
