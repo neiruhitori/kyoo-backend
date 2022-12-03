@@ -48,7 +48,7 @@ class CustomerSatisfactionReportController extends Controller
     protected function getReports($branchIds, $year, $month)
     {
         if (count($branchIds) < 1) {
-            return [];
+            return collect([]);
         }
 
         $reports =  DirectQueue::select(

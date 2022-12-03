@@ -16,7 +16,7 @@ class MonitoringService {
 
         $branches = Branch::onsite()->where('corporate_id', $corporateId)->get();
         if (count($branches) < 1) {
-            return [];
+            return collect([]);
         }
 
         $branchIds = $branches->map(function ($value) {
@@ -73,7 +73,7 @@ class MonitoringService {
 
         $services = Service::where('branch_id', $branchId)->get();
         if (count($services) < 1) {
-            return [];
+            return collect([]);
         }
 
         $serviceIds = $services->map(function ($value) {
