@@ -279,6 +279,11 @@ Route::namespace('AdminCorporate')
         
         Route::get('/report/customer-satisfaction', 'CustomerSatisfactionReportController@index')->name('report.customerSatisfaction.index');
         Route::get('/report/branch', 'BranchReportController@index')->name('report.branch.index');
+        Route::get('/report/service', 'ServiceReportController@index')->name('report.service.index');
+        Route::get('/report/service/all', 'ServiceReportController@getReports')->name('report.service.all');
+        Route::get('/report/service/pdf', 'ServiceReportController@exportToPdf')->name('report.service.pdf');
+        Route::get('/report/service/excel', 'ServiceReportController@exportToExcel')->name('report.service.excel');
+        Route::get('/report/service/chart', 'ServiceChartReportController@index')->name('report.service.chart');
     });
 
 Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {

@@ -54,6 +54,13 @@
         >
           Laporan Cabang
         </a>
+
+        <a
+          class="collapse-item kyoo-sublink {{ !request()->is('admin-corporate/report/service') ?: 'active' }}"
+          href="{{ route('adminCorporate.report.service.index') }}"
+        >
+          Laporan Layanan
+        </a>
       </div>
     </div>
   </li>
