@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Branch;
 use App\Service;
+use App\Workstation;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -129,6 +130,101 @@ class ReportingService {
         return $reports;
     }
 
+    public function findWorkstationDailyReports($branchId, $date)
+    {
+        $month = date('n', strtotime($date));
+        $year = date('Y', strtotime($date));
+
+        if (!Schema::hasTable($this->getWorkstationTable($year, $month))) {
+            return collect([]);
+        }
+
+        $workstationMap = Workstation::with('WorkstationService.Service')
+            ->whereHas('Department', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);
+            })
+            ->get()
+            ->groupBy('id');
+
+        $reports = DB::table($this->getWorkstationTable($year, $month))
+            ->select(
+                'workstation_id',
+                DB::raw('SUM(total_queue) AS total_queue'),
+                DB::raw('SUM(total_served) AS total_served'),
+                DB::raw('SUM(total_no_show) AS total_no_show'),
+                DB::raw('AVG(shortest_wait_duration) AS shortest_wait_duration'),
+                DB::raw('AVG(average_wait_duration) AS average_wait_duration'),
+                DB::raw('MAX(longest_wait_duration) AS longest_wait_duration'),
+                DB::raw('AVG(shortest_serve_duration) AS shortest_serve_duration'),
+                DB::raw('AVG(average_serve_duration) AS average_serve_duration'),
+                DB::raw('MAX(longest_serve_duration) AS longest_serve_duration'),
+            )
+            ->where('branch_id', $branchId)
+            ->whereBetween('event_date', [
+                Carbon::parse($date)->startOfDay(),
+                Carbon::parse($date)->endOfDay()
+            ])
+            ->groupBy('workstation_id')
+            ->get();
+        
+        $reports = $reports->map(function ($r) use ($workstationMap) {
+            $r->workstation = $workstationMap[$r->workstation_id]->first();
+            $r->services = $workstationMap[$r->workstation_id]->first()->WorkstationService->map(function ($ws) {
+                return $ws->Service;
+            });
+            return $r;
+        });
+
+        return $reports;
+    }
+
+    public function findWorkstationMonthlyReports($branchId, $year, $month)
+    {
+        if (!Schema::hasTable($this->getWorkstationTable($year, $month))) {
+            return collect([]);
+        }
+
+        $date = "{$year}-{$month}-1";
+
+        $workstationMap = Workstation::with('WorkstationService.Service')
+            ->whereHas('Department', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);
+            })
+            ->get()
+            ->groupBy('id');
+
+        $reports = DB::table($this->getWorkstationTable($year, $month))
+            ->select(
+                'workstation_id',
+                DB::raw('SUM(total_queue) AS total_queue'),
+                DB::raw('SUM(total_served) AS total_served'),
+                DB::raw('SUM(total_no_show) AS total_no_show'),
+                DB::raw('AVG(shortest_wait_duration) AS shortest_wait_duration'),
+                DB::raw('AVG(average_wait_duration) AS average_wait_duration'),
+                DB::raw('MAX(longest_wait_duration) AS longest_wait_duration'),
+                DB::raw('AVG(shortest_serve_duration) AS shortest_serve_duration'),
+                DB::raw('AVG(average_serve_duration) AS average_serve_duration'),
+                DB::raw('MAX(longest_serve_duration) AS longest_serve_duration'),
+            )
+            ->where('branch_id', $branchId)
+            ->whereBetween('event_date', [
+                Carbon::parse($date)->startOfMonth(),
+                Carbon::parse($date)->endOfMonth()
+            ])
+            ->groupBy('workstation_id')
+            ->get();
+        
+        $reports = $reports->map(function ($r) use ($workstationMap) {
+            $r->workstation = $workstationMap[$r->workstation_id]->first();
+            $r->services = $workstationMap[$r->workstation_id]->first()->WorkstationService->map(function ($ws) {
+                return $ws->Service;
+            });
+            return $r;
+        });
+
+        return $reports;
+    }
+
     protected function getDepartmentTable($year, $month)
     {
         return "department_general_report_{$year}{$month}";
@@ -137,5 +233,10 @@ class ReportingService {
     protected function getServiceTable($year, $month)
     {
         return "service_general_report_{$year}{$month}";
+    }
+
+    protected function getWorkstationTable($year, $month)
+    {
+        return "workstation_general_report_{$year}{$month}";
     }
 }

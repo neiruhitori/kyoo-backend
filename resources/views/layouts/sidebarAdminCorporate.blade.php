@@ -61,6 +61,13 @@
         >
           Laporan Layanan
         </a>
+
+        <a
+          class="collapse-item kyoo-sublink {{ !request()->is('admin-corporate/report/workstation') ?: 'active' }}"
+          href="{{ route('adminCorporate.report.workstation.index') }}"
+        >
+          Laporan Meja
+        </a>
       </div>
     </div>
   </li>

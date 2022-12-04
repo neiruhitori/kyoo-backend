@@ -284,6 +284,10 @@ Route::namespace('AdminCorporate')
         Route::get('/report/service/pdf', 'ServiceReportController@exportToPdf')->name('report.service.pdf');
         Route::get('/report/service/excel', 'ServiceReportController@exportToExcel')->name('report.service.excel');
         Route::get('/report/service/chart', 'ServiceChartReportController@index')->name('report.service.chart');
+        Route::get('/report/workstation', 'WorkstationReportController@index')->name('report.workstation.index');
+        Route::get('/report/workstation/all', 'WorkstationReportController@getReports')->name('report.workstation.all');
+        Route::get('/report/workstation/pdf', 'WorkstationReportController@exportToPdf')->name('report.workstation.pdf');
+        Route::get('/report/workstation/excel', 'WorkstationReportController@exportToExcel')->name('report.workstation.excel');
     });
 
 Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {
