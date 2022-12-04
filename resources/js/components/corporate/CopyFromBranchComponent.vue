@@ -151,25 +151,23 @@ export default {
       const long = this.corporate.latLng.length
         ? this.corporate.latLng[1]
         : null
-
-      const corporateData = {
-        corporates: {
-          name: this.corporate.name,
-          email: this.corporate.email,
-          mobile_phone: this.corporate.phone,
-          address: this.corporate.address,
-          regency_id: this.corporate.regencyId,
-          lat,
-          long,
-          logo: this.corporate.logo
-        },
-        users: {
-          name: this.user.name,
-          email: this.user.email,
-          phone: this.user.phone
-        },
-        branch_id: this.branch.id
+      
+      const corporateData = new FormData()
+      
+      corporateData.append('corporates[name]', this.corporate.name)
+      corporateData.append('corporates[email]', this.corporate.email)
+      corporateData.append('corporates[mobile_phone]', this.corporate.phone)
+      corporateData.append('corporates[regency_id]', this.corporate.regencyId)
+      corporateData.append('corporates[address]', this.corporate.address)
+      if (lat && long) {
+        corporateData.append('corporates[lat]', lat)
+        corporateData.append('corporates[long]', long)
       }
+      if (this.corporate.logo) corporateData.append('corporates[logo]', this.corporate.logo)
+      corporateData.append('users[name]', this.user.name)
+      corporateData.append('users[email]', this.user.email)
+      corporateData.append('users[phone]', this.user.phone)
+      corporateData.append('branch_id', this.branch.id)
 
       try {
         await this.storeCorporate(corporateData)
