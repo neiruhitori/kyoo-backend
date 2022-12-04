@@ -147,8 +147,6 @@
     $(document).ready(function () {
         feedTable()
 
-        console.log($("#department_id").val())
-
         $("#filterForm").submit(function (e) {
             e.preventDefault()
 
