@@ -28,7 +28,7 @@
           </div>
   
           <p class="text-center mb-0">
-            Buat cabang baru
+            Buat corporate baru
           </p>
         </div>
       </div>
