@@ -308,7 +308,7 @@ export default {
     },
 
     updateCorporate(id, data) {
-      data._method = 'PATCH'
+      data.append('_method', 'PATCH')
 
       return axios.post(
         `/admin/corporate/${id}`, data,
