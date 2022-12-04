@@ -235,14 +235,15 @@ class CorporateController extends Controller
         $corporateData = $request->corporates;
         $corporateData['country'] = 'Indonesia';
         $corporateData['is_active'] = true;
-
-        if (!isset($request->corporates['logo'])) {
-            $corporateData['logo'] = $branch->logo;
-        }
+        $corporateData['logo'] = $branch->logo;
 
         DB::beginTransaction();
         
         try {
+            if (isset($request->corporates['logo'])) {
+                $corporateData['logo'] = Storage::disk('public')->put('corporate_logos', $request->corporates['logo']);
+            }
+
             $corporate = Corporate::create($corporateData);
 
             $this->userService->createCorporate([
