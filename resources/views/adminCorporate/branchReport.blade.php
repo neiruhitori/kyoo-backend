@@ -93,7 +93,7 @@
                             <td class="text-center">{{ $report->average_wait_duration }}</td>
                             <td class="text-center">{{ $report->longest_wait_duration }}</td>
                             <td class="text-center">{{ $report->average_serve_duration }}</td>
-                            <td class="text-center">{{ $report->longest_wait_duration }}</td>
+                            <td class="text-center">{{ $report->longest_serve_duration }}</td>
                         </tr>
                     @empty
                         <tr>
