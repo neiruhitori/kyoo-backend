@@ -240,7 +240,7 @@ export default {
       this.lat = corporate.lat
       this.long = corporate.long
 
-      if (corporate.log) this.logoUrl = this.getStoragePath(corporate.logo)
+      if (corporate.logo) this.logoUrl = this.getStoragePath(corporate.logo)
 
       if (this.lat && this.long) {
         const coords = [this.lat, this.long]
