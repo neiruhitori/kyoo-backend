@@ -222,17 +222,21 @@ export default {
         user
       } = this
 
-      const corporateData = {
-        name,
-        email,
-        mobile_phone: phone,
-        regency_id: regencyId,
-        address,
-        lat,
-        long,
-        logo,
-        users: user
+      const corporateData = new FormData()
+      
+      corporateData.append('name', name)
+      corporateData.append('email', email)
+      corporateData.append('mobile_phone', phone)
+      corporateData.append('regency_id', regencyId)
+      corporateData.append('address', address)
+      if (lat && long) {
+        corporateData.append('lat', lat)
+        corporateData.append('long', long)
       }
+      if (logo) corporateData.append('logo', logo)
+      corporateData.append('users[name]', user.name)
+      corporateData.append('users[email]', user.email)
+      corporateData.append('users[phone]', user.phone)
 
       try {
         await this.storeCorporate(corporateData)

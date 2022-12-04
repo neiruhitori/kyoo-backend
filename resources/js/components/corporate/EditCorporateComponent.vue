@@ -3,8 +3,8 @@
     <div class="mb-3 row align-items-center">
       <h3 class="mb-0 col">Edit {{ corporate.name }}</h3>
 
-      <div class="col text-right">
-        <img :src="logoUrl" alt="Company Logo" style="height: 36px" v-if="!!logoUrl">
+      <div class="col text-right" v-if="!!logoUrl">
+        <img :src="logoUrl" alt="Company Logo" style="height: 36px">
       </div>
     </div>
 
@@ -189,16 +189,18 @@ export default {
         logo
       } = this
 
-      const corporateData = {
-        name,
-        email,
-        mobile_phone: phone,
-        regency_id: regencyId,
-        address,
-        lat,
-        long,
-        logo
+      const corporateData = new FormData()
+      
+      corporateData.append('name', name)
+      corporateData.append('email', email)
+      corporateData.append('mobile_phone', phone)
+      corporateData.append('regency_id', regencyId)
+      corporateData.append('address', address)
+      if (lat && long) {
+        corporateData.append('lat', lat)
+        corporateData.append('long', long)
       }
+      if (logo) corporateData.append('logo', logo)
 
       try {
         await this.updateCorporate(id, corporateData)
@@ -238,11 +240,13 @@ export default {
       this.lat = corporate.lat
       this.long = corporate.long
 
-      this.logoUrl = this.getStoragePath(corporate.logo)
+      if (corporate.log) this.logoUrl = this.getStoragePath(corporate.logo)
 
-      const coords = [this.lat, this.long]
-      this.mapConfig.center = coords
-      this.mapConfig.markerLatLng = coords
+      if (this.lat && this.long) {
+        const coords = [this.lat, this.long]
+        this.mapConfig.center = coords
+        this.mapConfig.markerLatLng = coords
+      }
 
       this.setRegenciesByProvince(this.provinceId)
     },
