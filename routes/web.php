@@ -240,7 +240,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::get('corporate/copy', 'CorporateController@copyFromBranch')->name('corporate.copy');
     Route::post('corporate/copy', 'CorporateController@storeCopiedBranch');
     Route::get('corporate/branch', 'CorporateController@findBranchByName')->name('corporate.branch');
-    Route::get('corporate/branch/{id}', 'CorporateController@findBranchById')->name('corporate.branch');
+    Route::get('corporate/branch/{id}', 'CorporateController@findBranchById')->name('corporate.branch.show');
     Route::get('corporate/edit/{id}', 'CorporateController@edit')->name('corporate.edit');
     Route::get('corporate/{id}', 'CorporateController@show')->name('corporate.show');
     Route::post('corporate', 'CorporateController@store')->name('corporate.store');
