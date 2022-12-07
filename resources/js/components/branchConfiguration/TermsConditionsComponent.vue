@@ -110,7 +110,8 @@
         try {
           this.termsConditions = await this.fetchTermsConditions()
         } catch (error) {
-          this.showAlert(error.response.data?.message)
+          // this.showAlert(error.response.data?.message)
+          this.termsConditions = []
         }
       },
 
