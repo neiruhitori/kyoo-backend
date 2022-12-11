@@ -17,6 +17,7 @@ use App\Models\BranchScheduleTemplateDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Services\AppointmentService;
+use App\WorkstationService;
 
 class HomeController extends Controller
 {
@@ -75,7 +76,16 @@ class HomeController extends Controller
 
     public function createAppointment()
     {
-        $services = Service::where('branch_id', Auth::user()->branch_id)->get();
+        $workstationId = Auth::user()->WorkstationVct->workstation_id;
+
+        $serviceIds = WorkstationService::where('workstation_id', $workstationId)
+            ->get()
+            ->map(function ($ws) {
+                return $ws->service_id;
+            });
+
+        $services = Service::whereIn('id', $serviceIds)->get();
+
         return view('cs.createAppointment', [
             'services' => $services
         ]);
