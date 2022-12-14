@@ -18,15 +18,15 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>{{ __('Name') }}</th>
-                                <th>{{ __('Department') }}</th>
+                                <th>Nama</th>
+                                <th>Departemen</th>
                                 @if (
                                     Auth::user()->Branch->BranchType->is_appointment ||
                                     Auth::user()->Branch->BranchType->is_exhibition
                                 )
-                                    <th>{{ __('Total Slot Time Interval') }}</th>
+                                    <th>Total Slot Waktu</th>
                                 @endif
-                                <th>{{ __('Action') }}</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,7 +60,17 @@
                                                 data-placement="bottom"
                                                 title="{{ __('Slot Time Interval') }}"
                                             >
-                                                <i class="fas fa-fw fa-th-list"></i>
+                                                <i class="fas fa-clock"></i>
+                                            </a>
+
+                                            <a
+                                                href="{{ route('admin-branch.branch-configuration.service.sub-service.index', $service->id) }}"
+                                                class="btn btn-primary"
+                                                data-toggle="tooltip"
+                                                data-placement="bottom"
+                                                title="Sub Layanan"
+                                            >
+                                                <i class="fas fa-hand-holding"></i>
                                             </a>
                                         @endif
 

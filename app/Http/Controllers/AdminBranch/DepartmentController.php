@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreDepartment;
 use App\Http\Requests\AdminBranch\UpdateDepartment;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
 {

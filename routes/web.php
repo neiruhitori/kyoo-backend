@@ -75,6 +75,15 @@ Route::namespace('AdminBranch')
         // Branch Configuration
         Route::prefix('/branch-configuration')->name('branch-configuration.')->group(function () {
             Route::resource('department', 'DepartmentController');
+
+            Route::prefix('service/{id}/sub-service')->name('service.sub-service.')->middleware('checkAppointmentQueue')
+                ->group(function () {
+                    Route::get('/', 'SubServiceController@index')->name('index');
+                    Route::get('/create', 'SubServiceController@create')->name('create');
+                    Route::post('/', 'SubServiceController@store')->name('store');
+                    Route::delete('/{sub_service_id}', 'SubServiceController@destroy')->name('destroy');
+                });
+
             Route::resource('service', 'ServiceController');
             Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
             
