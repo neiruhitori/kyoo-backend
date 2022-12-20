@@ -54,16 +54,6 @@
                                             Auth::user()->Branch->BranchType->is_exhibition
                                         )
                                             <a
-                                                href="{{route('admin-branch.branch-configuration.service.slot.index', $service->id)}}"
-                                                class="btn btn-success"
-                                                data-toggle="tooltip"
-                                                data-placement="bottom"
-                                                title="{{ __('Slot Time Interval') }}"
-                                            >
-                                                <i class="fas fa-clock"></i>
-                                            </a>
-
-                                            <a
                                                 href="{{ route('admin-branch.branch-configuration.service.sub-service.index', $service->id) }}"
                                                 class="btn btn-primary"
                                                 data-toggle="tooltip"

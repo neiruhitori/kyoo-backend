@@ -95,6 +95,10 @@ Route::namespace('AdminBranch')
 
             Route::resource('schedule', 'ScheduleController')->except('show');
 
+            Route::get('/timeslots', 'TimeSlotController@index')->name('timeslots.index');
+            Route::get('/timeslots/create', 'TimeSlotController@create')->name('timeslots.create');
+            Route::post('/timeslots', 'TimeSlotController@store')->name('timeslots.store');
+
             Route::resource('workstation', 'WorkstationController');
             Route::resource('workstation.workstation-service', 'WorkstationServiceController');
 

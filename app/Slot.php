@@ -22,8 +22,13 @@ class Slot extends Model
         return date("H:i", strtotime($value));
     }
 
-    public function Service()
+    public function Department()
     {
-        return $this->belongsTo('App\Service');
+        return $this->belongsTo('App\Department');
+    }
+
+    public function SlotService()
+    {
+        return $this->hasMany('App\Models\SlotService');
     }
 }

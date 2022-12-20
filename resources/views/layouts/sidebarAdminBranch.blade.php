@@ -124,6 +124,13 @@
             </a>
 
             <a
+              class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/timeslots*') ?: 'active' }}"
+              href="{{ route('admin-branch.branch-configuration.timeslots.index') }}"
+            >
+              Slot Waktu
+            </a>
+
+            <a
               class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/workstation*') ?: 'active' }}"
               href="{{ route('admin-branch.branch-configuration.workstation.index') }}"
             >
