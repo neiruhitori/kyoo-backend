@@ -98,6 +98,11 @@ Route::namespace('AdminBranch')
             Route::get('/timeslots', 'TimeSlotController@index')->name('timeslots.index');
             Route::get('/timeslots/create', 'TimeSlotController@create')->name('timeslots.create');
             Route::post('/timeslots', 'TimeSlotController@store')->name('timeslots.store');
+            Route::delete('/timeslots/{id}', 'TimeSlotController@destroy')->name('timeslots.destroy');
+
+            Route::get('/timeslots/{slot_id}/services', 'SlotServiceController@index')->name('timeslots.services.index');
+            Route::post('/timeslots/{slot_id}/services', 'SlotServiceController@store')->name('timeslots.services.store');
+            Route::delete('/timeslots/{slot_id}/services/{id}', 'SlotServiceController@destroy')->name('timeslots.services.destroy');
 
             Route::resource('workstation', 'WorkstationController');
             Route::resource('workstation.workstation-service', 'WorkstationServiceController');

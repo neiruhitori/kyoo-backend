@@ -3,7 +3,7 @@
 namespace App\Supports;
 
 class DateFormat {
-    private static $DAYS = [
+    public static $DAYS = [
         'sunday' => 'minggu',
         'monday' => 'senin',
         'tuesday' => 'selasa',

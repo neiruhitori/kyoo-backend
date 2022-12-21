@@ -10,7 +10,7 @@ class Slot extends Model
 {
     use SoftDeletes, HasFactory;
     
-    protected $fillable = ['service_id', 'max_slots', 'day', 'start_time', 'end_time'];
+    protected $fillable = ['department_id', 'day', 'start_time', 'end_time'];
 
     public function getStartTimeAttribute($value)
     {
