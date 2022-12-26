@@ -10,7 +10,7 @@ class Slot extends Model
 {
     use SoftDeletes, HasFactory;
     
-    protected $fillable = ['department_id', 'day', 'start_time', 'end_time'];
+    protected $fillable = ['service_id', 'max_slots', 'day', 'start_time', 'end_time'];
 
     public function getStartTimeAttribute($value)
     {
@@ -22,13 +22,8 @@ class Slot extends Model
         return date("H:i", strtotime($value));
     }
 
-    public function Department()
+    public function Service()
     {
-        return $this->belongsTo('App\Department');
-    }
-
-    public function SlotService()
-    {
-        return $this->hasMany('App\Models\SlotService');
+        return $this->belongsTo('App\Service');
     }
 }

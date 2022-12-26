@@ -20,6 +20,12 @@
                             <tr>
                                 <th>Nama</th>
                                 <th>Departemen</th>
+                                @if (
+                                    Auth::user()->Branch->BranchType->is_appointment ||
+                                    Auth::user()->Branch->BranchType->is_exhibition
+                                )
+                                    <th>Total Slot Waktu</th>
+                                @endif
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -34,19 +40,27 @@
                                             -
                                         @endif
                                     </td>
+                                    @if (
+                                        Auth::user()->Branch->BranchType->is_appointment ||
+                                        Auth::user()->Branch->BranchType->is_exhibition
+                                    )
+                                        <td>
+                                            {{count($service->Slot)}}
+                                        </td>
+                                    @endif
                                     <td>
                                         @if (
                                             Auth::user()->Branch->BranchType->is_appointment ||
                                             Auth::user()->Branch->BranchType->is_exhibition
                                         )
                                             <a
-                                                href="{{ route('admin-branch.branch-configuration.service.sub-service.index', $service->id) }}"
-                                                class="btn btn-primary"
+                                                href="{{route('admin-branch.branch-configuration.service.slot.index', $service->id)}}"
+                                                class="btn btn-success"
                                                 data-toggle="tooltip"
                                                 data-placement="bottom"
-                                                title="Sub Layanan"
+                                                title="{{ __('Slot Time Interval') }}"
                                             >
-                                                <i class="fas fa-hand-holding"></i>
+                                                <i class="fas fa-clock"></i>
                                             </a>
                                         @endif
 

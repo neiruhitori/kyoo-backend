@@ -76,14 +76,6 @@ Route::namespace('AdminBranch')
         Route::prefix('/branch-configuration')->name('branch-configuration.')->group(function () {
             Route::resource('department', 'DepartmentController');
 
-            Route::prefix('service/{id}/sub-service')->name('service.sub-service.')->middleware('checkAppointmentQueue')
-                ->group(function () {
-                    Route::get('/', 'SubServiceController@index')->name('index');
-                    Route::get('/create', 'SubServiceController@create')->name('create');
-                    Route::post('/', 'SubServiceController@store')->name('store');
-                    Route::delete('/{sub_service_id}', 'SubServiceController@destroy')->name('destroy');
-                });
-
             Route::resource('service', 'ServiceController');
             Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
             
@@ -94,15 +86,6 @@ Route::namespace('AdminBranch')
             Route::delete('holiday/{holiday_id}', 'HolidayController@destroy')->name('holiday.destroy');
 
             Route::resource('schedule', 'ScheduleController')->except('show');
-
-            Route::get('/timeslots', 'TimeSlotController@index')->name('timeslots.index');
-            Route::get('/timeslots/create', 'TimeSlotController@create')->name('timeslots.create');
-            Route::post('/timeslots', 'TimeSlotController@store')->name('timeslots.store');
-            Route::delete('/timeslots/{id}', 'TimeSlotController@destroy')->name('timeslots.destroy');
-
-            Route::get('/timeslots/{slot_id}/services', 'SlotServiceController@index')->name('timeslots.services.index');
-            Route::post('/timeslots/{slot_id}/services', 'SlotServiceController@store')->name('timeslots.services.store');
-            Route::delete('/timeslots/{slot_id}/services/{id}', 'SlotServiceController@destroy')->name('timeslots.services.destroy');
 
             Route::resource('workstation', 'WorkstationController');
             Route::resource('workstation.workstation-service', 'WorkstationServiceController');
