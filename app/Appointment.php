@@ -17,6 +17,8 @@ class Appointment extends Model
         'workstation_id',
         'user_id',
         'date',
+        'start_time',
+        'end_time',
         'number',
         'booking_code',
         'name',

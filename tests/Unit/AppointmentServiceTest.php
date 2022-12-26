@@ -51,6 +51,7 @@ class AppointmentServiceTest extends TestCase
         try {
             $this->appointmentService->create([
                 'branch_id' => $this->branch->id,
+                'service_id' => $this->service->id,
                 'date' => date('Y-m-d'),
                 'slot_id' => $this->slot->id
             ]);
@@ -80,6 +81,7 @@ class AppointmentServiceTest extends TestCase
         try {
             $this->appointmentService->create([
                 'branch_id' => $this->branch->id,
+                'service_id' => $this->service->id,
                 'date' => date('Y-m-d'),
                 'email' => $email,
                 'phone' => $phone,      
@@ -131,6 +133,7 @@ class AppointmentServiceTest extends TestCase
         try {
             $this->appointmentService->create([
                 'branch_id' => $this->branch->id,
+                'service_id' => $this->service->id,
                 'date' => $holiday->date,
                 'slot_id' => $this->slot->id
             ]);
@@ -157,6 +160,7 @@ class AppointmentServiceTest extends TestCase
         try {
             $this->appointmentService->create([
                 'branch_id' => $this->branch->id,
+                'service_id' => $this->service->id,
                 'date' => $date,
                 'slot_id' => $this->slot->id
             ]);
@@ -174,6 +178,7 @@ class AppointmentServiceTest extends TestCase
         try {
             $this->appointmentService->create([
                 'branch_id' => $this->branch->id,
+                'service_id' => $this->service->id,
                 'date' => date('Y-m-d'),
                 'slot_id' => $this->slot->id
             ]);
@@ -196,6 +201,7 @@ class AppointmentServiceTest extends TestCase
 
         $this->appointmentService->create([
             'branch_id' => $this->branch->id,
+            'service_id' => $this->service->id,
             'date' => date('Y-m-d'),
             'slot_id' => $slot->id,
             'name' => 'Abdis',
