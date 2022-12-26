@@ -23,7 +23,7 @@ class SlotFactory extends Factory
 
         return [
             'service_id' => $this->faker->randomDigit(),
-            'max_slots' => $this->faker->randomDigit(),
+            'max_slots' => 3,
             'day' => $day,
             'start_time' => $startTime,
             'end_time' => $endTime

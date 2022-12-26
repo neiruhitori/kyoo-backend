@@ -22,7 +22,7 @@ class Service extends Model
                             WHEN Day = 'thursday' THEN 5
                             WHEN Day = 'friday' THEN 6
                             WHEN Day = 'saturday' THEN 7 END ASC"
-                      );
+                      )->orderBy('start_time');
     }
 
     public function Branch()

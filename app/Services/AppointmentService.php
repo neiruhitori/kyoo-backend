@@ -7,6 +7,8 @@ use App\Branch;
 use App\Appointment;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Schedule;
+use App\Service;
+use App\Workstation;
 
 use App\Events\AppointmentCanceledEvent;
 use App\Events\AppointmentCreated;
@@ -27,6 +29,7 @@ class AppointmentService
             $date = date('Y-m-d', strtotime($data['date']));
 
             $branch = Branch::find($data['branch_id']);
+            $service = Service::find($data['service_id']);
             $slot = Slot::find($data['slot_id']);
 
             // Limit free appointments
@@ -64,13 +67,12 @@ class AppointmentService
             }
 
             // Prevent appointment on empty slots
-            $todayAppointmentsBySlot = Appointment::withoutCanceled()->where([
-                    'slot_id' => $data['slot_id'],
-                    'date' => $date
-                ])
-                ->get();
+            $totalTodayAppointmentsBySlot = Appointment::withoutCanceled()->where([
+                'slot_id' => $data['slot_id'],
+                'date' => $date
+            ])->count();
             
-            if (count($todayAppointmentsBySlot) >= $slot->max_slots) {
+            if ($totalTodayAppointmentsBySlot >= $slot->max_slots) {
                 throw new \Exception('Sesi appointment tidak tersedia');
             }
 
@@ -103,6 +105,58 @@ class AppointmentService
             if ($appointmentEndDateTime < $currentDateTime) {
                 throw new \Exception('Sesi appointment sudah berakhir');
             }
+            
+            // Check overlap appointment
+            $workstationServices = Workstation::whereHas('WorkstationService', function ($query) use ($service) {
+                $query->where('service_id', $service->id);
+            })->get();
+
+            if (count($workstationServices) < 1) {
+                throw new \Exception('Tidak ada layanan');
+            }
+
+            $nextTimeslots = $this->getTimeSlot($slot, $date);
+
+            $slot->next_start_time = $nextTimeslots[0];
+            $slot->next_end_time = $nextTimeslots[1];
+            $data['start_time'] = $nextTimeslots[0];
+            $data['end_time'] = $nextTimeslots[1];
+
+            $isOverlap = true;
+            while ($isOverlap && date('H:i', strtotime($data['end_time'])) <= $slot->end_time) {
+                $overlapAppointments = Appointment::where([
+                    'date' => $date,
+                    'branch_id' => $branch->id,
+                ])
+                    ->whereHas('Service', function ($query) use ($service) {
+                        $query->where('department_id', $service->department_id);
+                    })
+                    ->whereIn('status', ['book', 'waiting', 'served'])
+                    ->where([
+                        ['start_time', '<', $data['end_time']],
+                        ['end_time', '>', $data['start_time']]
+                    ])
+                    ->orderByDesc('start_time')
+                    ->get();
+    
+                if (count($overlapAppointments) >= count($workstationServices)) {
+                    $slotDurationInSeconds = strtotime($slot->end_time) - strtotime($slot->start_time);
+                    $secondsPerSlot = floor($slotDurationInSeconds / $slot->max_slots);
+    
+                    $maxEndTime = $overlapAppointments->map(fn ($app) => strtotime($app->end_time))->max();
+    
+                    $data['start_time'] = date('H:i', $maxEndTime);
+                    $data['end_time'] = date('H:i', $maxEndTime + $secondsPerSlot);
+                } else {
+                    $isOverlap = false;
+                }
+            }
+
+            if (date('H:i', strtotime($data['end_time'])) > $slot->end_time) {
+                throw new \Exception('Sesi waktu telah dibooking oleh layanan lain');
+            }
+
+            $data['booking_code'] = BookingCode::generate();
 
             $lastAppointment = Appointment::withoutCanceled()->where([
                 'branch_id' => $data['branch_id'],
@@ -111,8 +165,7 @@ class AppointmentService
                 ->get()
                 ->sortByDesc('number')
                 ->first();
-
-            $data['booking_code'] = BookingCode::generate();
+            
             $data['number'] = $lastAppointment ? $lastAppointment->number + 1 : 1;
             
             // Store appointment to db
@@ -122,6 +175,47 @@ class AppointmentService
             AppointmentCreated::dispatch($appointment);
 
             return $appointment;
+        });
+    }
+
+    private function getTimeSlot($slot, $date) {
+        $currentAppointment = Appointment::where([
+            'date' => $date,
+            'slot_id' => $slot->id
+        ])
+            ->orderByDesc('start_time')
+            ->first();
+        
+        $slotDurationInSeconds = strtotime($slot->end_time) - strtotime($slot->start_time);
+        $secondsPerSlot = floor($slotDurationInSeconds / $slot->max_slots);
+
+        $nextStartTime = $slot->start_time;
+        $nextEndTime = date('H:i', strtotime($slot->start_time) + $secondsPerSlot);
+
+        if ($currentAppointment) {
+            $nextStartTime = $currentAppointment->start_time;
+            $nextEndTime = $currentAppointment->end_time;
+        }
+
+        return [$nextStartTime, $nextEndTime];
+    }
+
+    private function getOverlapSlotByDepartment($slot, $departmentId, $date)
+    {
+        $slots = Slot::whereHas('Service', function ($query) use ($departmentId) {
+            $query->where('department_id', $departmentId);
+        })->get();
+
+        foreach ($slots as $slot) {
+            $timeslots = $this->getTimeSlot($slot, $date);
+
+            $slot->next_start_time = $timeslots[0];
+            $slot->next_end_time = $timeslots[1];
+        }
+
+        return $slots->filter(function ($s) use ($slot) {
+            return $s->next_start_time < $slot->next_end_time &&
+                $s->next_end_time > $slot->next_start_time;
         });
     }
 
