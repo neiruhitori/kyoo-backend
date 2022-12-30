@@ -36,7 +36,7 @@
                                         <th>Customer</th>
                                         <th>Status</th>
                                         <th>Layanan</th>
-                                        <th class="text-center">Waktu</th>
+                                        <th class="text-center">Slot Waktu</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -52,7 +52,9 @@
                                     >
                                         <td>{{ appointment.number }}</td>
                                         <td>{{ appointment.booking_code }}</td>
-                                        <td>{{ appointment.name }}</td>
+                                        <td>
+                                            <a href="javascript:void(0)" @click="showCustomerDetail(appointment)">{{ appointment.name }}</a>
+                                        </td>
                                         <td>
                                             <span class="badge badge-primary" v-if="appointment.status === 'book'">
                                                 Dibooking
@@ -70,21 +72,21 @@
                                         <td class="text-center">{{ appointment.slot.start_time }} - {{ appointment.slot.end_time }}</td>
 
                                         <td class="d-flex justify-content-center">
-                                            <div v-if="appointment.status === 'book'">
-                                                <button
-                                                    class="btn btn-success mr-1"
-                                                    @click="onCheckIn(appointment.id)"
-                                                >
-                                                    Check In
-                                                </button>
+                                            <button
+                                                class="btn btn-success mr-1"
+                                                @click="onCheckIn(appointment.id)"
+                                                v-if="appointment.status === 'book'"
+                                            >
+                                                Check In
+                                            </button>
 
-                                                <button
-                                                    class="btn btn-secondary"
-                                                    @click="onNoShow(appointment.id)"
-                                                >
-                                                    Tidak Hadir
-                                                </button>
-                                            </div>
+                                            <button
+                                                class="btn btn-secondary"
+                                                @click="onNoShow(appointment.id)"
+                                                v-if="appointment.status === 'book'"
+                                            >
+                                                Tidak Hadir
+                                            </button>
 
                                             <button
                                                 v-else-if="appointment.status === 'check in'"
@@ -104,7 +106,7 @@
 
                                             <button
                                                 v-if="['check in', 'book'].includes(appointment.status)"
-                                                class="btn btn-danger ml-2"
+                                                class="btn btn-danger ml-1"
                                                 @click="onCancel(appointment.id)"
                                             >
                                                 Batal
@@ -134,7 +136,7 @@
                                         <th>Customer</th>
                                         <th class="text-center">Waktu Dilayani</th>
                                         <th>Layanan</th>
-                                        <th class="text-center">Waktu</th>
+                                        <th class="text-center">Slot Waktu</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -150,7 +152,9 @@
                                     >
                                         <td>{{ appointment.number }}</td>
                                         <td>{{ appointment.booking_code }}</td>
-                                        <td>{{ appointment.name }}</td>
+                                        <td>
+                                            <a href="javascript:void(0)" @click="showCustomerDetail(appointment)">{{ appointment.name }}</a>
+                                        </td>
                                         <td class="text-center">{{ appointment.served_time }}</td>
                                         <td>{{ appointment.service.name }}</td>
                                         <td class="text-center">
@@ -199,6 +203,45 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade show d-block" tabindex="-1" aria-modal="true" v-if="isShowCustomer">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detail Pelanggan</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="isShowCustomer = false">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row mb-2">
+                            <div class="col-md-4">Nama</div>
+                            <div class="text-dark">{{ customerDetail.name }}</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">Email</div>
+                            <div class="text-dark">{{ customerDetail.email }}</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">No. Telepon</div>
+                            <div class="text-dark">{{ customerDetail.phone }}</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">Catatan</div>
+                            <div class="text-dark">{{ customerDetail.notes }}</div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="isShowCustomer = false">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -229,6 +272,14 @@ export default {
             isShowModal: false,
             selectedAppointment: null,
 
+            isShowCustomer: false,
+            customerDetail: {
+                name: '',
+                email: '',
+                phone: '',
+                notes: ''
+            }, 
+
             isShowAlert: false,
             alert: {
                 type: 'success',
@@ -250,13 +301,8 @@ export default {
             this.finishAppointments = data.filter(v => {
                 return finishedAppointmentStatus.includes(v.status)
             }).sort((a, b) => {
-                if (a.number > b.number) {
-                    return -1
-                }
-
-                if (a.number < b.number) {
-                    return 1
-                }
+                if (a.number > b.number) return -1
+                if (a.number < b.number) return 1
 
                 return 0
             })
@@ -365,6 +411,15 @@ export default {
                 this.isShowAlert = false
                 this.alert = { type, message: '' }
             }, 3000)
+        },
+
+        showCustomerDetail({ name, email, phone, notes }) {
+            this.customerDetail.name = name
+            this.customerDetail.email = email
+            this.customerDetail.phone = phone
+            this.customerDetail.notes = notes
+
+            this.isShowCustomer = true
         },
 
         saveAudio(appointment)  {
