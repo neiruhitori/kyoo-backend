@@ -118,12 +118,12 @@ class AppointmentService
 
             $nextTimeslots = $this->getTimeSlot($slot, $date);
 
+            Log::info($nextTimeslots);
+
             $slot->next_start_time = $nextTimeslots[0];
             $slot->next_end_time = $nextTimeslots[1];
             $data['start_time'] = $nextTimeslots[0];
             $data['end_time'] = $nextTimeslots[1];
-
-            Log::info($data);
 
             $isOverlap = true;
             while ($isOverlap && date('H:i', strtotime($data['end_time'])) <= $slot->end_time) {
