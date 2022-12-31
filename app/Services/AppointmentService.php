@@ -20,6 +20,7 @@ use App\Supports\BookingCode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AppointmentService
 {
@@ -121,6 +122,8 @@ class AppointmentService
             $slot->next_end_time = $nextTimeslots[1];
             $data['start_time'] = $nextTimeslots[0];
             $data['end_time'] = $nextTimeslots[1];
+
+            Log::info($data);
 
             $isOverlap = true;
             while ($isOverlap && date('H:i', strtotime($data['end_time'])) <= $slot->end_time) {
