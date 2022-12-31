@@ -118,8 +118,6 @@ class AppointmentService
 
             $nextTimeslots = $this->getTimeSlot($slot, $date);
 
-            Log::info($nextTimeslots);
-
             $slot->next_start_time = $nextTimeslots[0];
             $slot->next_end_time = $nextTimeslots[1];
             $data['start_time'] = $nextTimeslots[0];
@@ -182,7 +180,7 @@ class AppointmentService
     }
 
     private function getTimeSlot($slot, $date) {
-        $currentAppointment = Appointment::where([
+        $currentAppointment = Appointment::withoutCanceled()->where([
             'date' => $date,
             'slot_id' => $slot->id
         ])
@@ -195,7 +193,7 @@ class AppointmentService
         $nextStartTime = $slot->start_time;
         $nextEndTime = date('H:i', strtotime($slot->start_time) + $secondsPerSlot);
 
-        if ($currentAppointment) {
+        if ($currentAppointment && $currentAppointment->start_time && $currentAppointment->end_time) {
             $nextStartTime = $currentAppointment->start_time;
             $nextEndTime = $currentAppointment->end_time;
         }
