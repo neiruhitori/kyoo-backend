@@ -1,28 +1,7 @@
 <template>
   <div style="max-width: 800px; margin: 0 auto;">
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="mb-3">
       <h3 class="mb-0">Syarat & Ketentuan</h3>
-
-      <div>
-        <div v-if="isEdit">
-          <button class="btn btn-outline-secondary mr-1" @click="exitEdit">
-            Batal
-          </button>
-          <button class="btn btn-warning" @click="saveTermsConditions">
-            <span class="fas fa-check"></span>
-            Simpan
-          </button>
-        </div>
-
-        <div v-else-if="isContentEmpty">
-          <button class="btn btn-warning" @click="enterEdit">
-            <span class="fas fa-plus mr-1"></span>
-            Tambah
-          </button>
-        </div>
-
-        <button v-else-if="!isLoading" class="btn btn-secondary" @click="enterEdit">Edit</button>
-      </div>
     </div>
 
     <div
@@ -40,9 +19,8 @@
     <div v-else class="card">
       <div class="card-body">
         <div v-if="isContentEmpty">
-          <p class="text-center mb-0" style="width: 500px; margin: 0 auto;">
-            Anda belum memiliki Syarat & Ketentuan. Tambahkan Syarat & Ketentuan
-            dengan menekan tombol <strong>Tambah</strong> diatas
+          <p class="text-center mb-0" style="margin: 0 auto;">
+            Anda belum memiliki Syarat & Ketentuan.
           </p>
         </div>
 
@@ -52,6 +30,26 @@
 
         <div v-else v-html="termsConditions"></div>
       </div>
+    </div>
+
+    <div class="mt-3">
+      <div v-if="isEdit">
+        <button class="btn btn-secondary mr-1" @click="exitEdit">
+          Batal
+        </button>
+        <button class="btn btn-warning" @click="saveTermsConditions">
+          <span class="fas fa-check"></span>
+          Simpan
+        </button>
+      </div>
+
+      <div v-else-if="isContentEmpty">
+        <button class="btn btn-warning" @click="enterEdit">
+          Tambah
+        </button>
+      </div>
+
+      <button v-else-if="!isLoading" class="btn btn-secondary" @click="enterEdit">Edit</button>
     </div>
   </div>
 </template>
@@ -113,11 +111,15 @@
           this.isLoading = true
 
           this.termsConditions = await this.fetchTermsConditions()
-
-          if (!this.termsConditions.length) this.isContentEmpty = true
         } catch (error) {
           // this.showAlert(error.response.data?.message)
           this.termsConditions = []
+        }
+
+        if (!this.termsConditions.length) {
+          this.isContentEmpty = true
+        } else {
+          this.isContentEmpty = false
         }
 
         this.isLoading = false
