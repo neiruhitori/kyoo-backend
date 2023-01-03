@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="max-width: 800px; margin: 0 auto;">
     <div class="d-flex align-items-center justify-content-between mb-3">
       <h3 class="mb-0">Syarat & Ketentuan</h3>
 
@@ -21,7 +21,7 @@
           </button>
         </div>
 
-        <button v-else class="btn btn-secondary" @click="enterEdit">Edit</button>
+        <button v-else-if="!isLoading" class="btn btn-secondary" @click="enterEdit">Edit</button>
       </div>
     </div>
 
@@ -33,15 +33,21 @@
         {{ alert.message }}
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        <wysiwyg v-if="isEdit" v-model="termsConditions" />
+    <div class="bg-white" v-if="isEdit">
+      <wysiwyg v-model="termsConditions" />
+    </div>
 
-        <div v-else-if="isContentEmpty">
+    <div v-else class="card">
+      <div class="card-body">
+        <div v-if="isContentEmpty">
           <p class="text-center mb-0" style="width: 500px; margin: 0 auto;">
             Anda belum memiliki Syarat & Ketentuan. Tambahkan Syarat & Ketentuan
             dengan menekan tombol <strong>Tambah</strong> diatas
           </p>
+        </div>
+
+        <div v-else-if="isLoading">
+          Loading...
         </div>
 
         <div v-else v-html="termsConditions"></div>
@@ -77,16 +83,12 @@
       this.setTermsConditions()
     },
 
-    computed: {
-      isContentEmpty() {
-        return !this.termsConditions.length
-      }
-    },
-
     data() {
       return {
         termsConditions: "",
         isEdit: false,
+        isContentEmpty: false,
+        isLoading: false,
         alert: {
           isShow: false,
           message: '',
@@ -108,11 +110,17 @@
 
       async setTermsConditions() {
         try {
+          this.isLoading = true
+
           this.termsConditions = await this.fetchTermsConditions()
+
+          if (!this.termsConditions.length) this.isContentEmpty = true
         } catch (error) {
           // this.showAlert(error.response.data?.message)
           this.termsConditions = []
         }
+
+        this.isLoading = false
       },
 
       async saveTermsConditions() {
