@@ -52,25 +52,25 @@
         }
     }
 
-    tr {
+    #myTable tr {
         height: 53px;
     }
 
-    tr:nth-child(odd) {
+    #myTable tr:nth-child(odd) {
         background-color: #FBFBFB;
     }
 
-    tr:nth-child(even) {
+    #myTable tr:nth-child(even) {
         background-color: #FDFEFF;
     }
 
-    tr>td:nth-child(6) {
+    #myTable tr>td:nth-child(6) {
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
-    tr>td:nth-child(1) {
+    #myTable tr>td:nth-child(1) {
         width: 200px;
     }
 </style>
@@ -88,6 +88,7 @@
                     Transaksi Rekaman
                 </h3>
             </div>
+
             <div class="basis-full">
                 <div class="mb-3">
                     <input type="date" pattern="dd-mm-yyyy" id="created-at" class="py-2 px-3 rounded border w-52 mr-1" autocomplete="off">
@@ -113,6 +114,7 @@
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 @push('js')
@@ -206,4 +208,10 @@
             }
         })
     </script>
+
+    <style>
+        .collapse {
+            visibility: visible;
+        }
+    </style>
 @endpush
