@@ -55,7 +55,7 @@ Route::get('vct/department/{department_id}', 'API\VctController@getByDepartmentI
 // slot routes
 Route::post('slot', 'API\SlotController@index');
 
-Route::post('appointment', 'API\AppointmentController@store');
+Route::post('appointment', 'API\AppointmentController@store')->middleware('throttle:appointment');
 Route::get('appointment/{appointment}', 'API\AppointmentController@show');
 Route::post('appointment/{appointment}/feedback', 'API\AppointmentController@feedback');
 Route::patch('appointment/{id}/cancel', 'API\AppointmentController@cancel');
