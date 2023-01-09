@@ -127,7 +127,7 @@ class AppointmentServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function test_finished_session_appointment()
+    public function test_appointment_on_finished_session()
     {
         $result = $this->appointmentService->isAppointmentSessionFinish($this->slot->id, date('Y-m-d'));
 
