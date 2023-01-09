@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CS\StoreDirectQueue;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use App\Interfaces\DirectQueueRepositoryInterface;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -114,8 +114,8 @@ class DirectQueueController extends Controller
 
             $direct_queue = $this->onsite_repository->store($data);
 
-            event(new VCTDirectQueueEvent($direct_queue));
-            event(new DirectQueueEvent($direct_queue));
+            event(new VCTDirectQueueEvent($direct_queue, Auth::user()->branch_id));
+            event(new DirectQueueEvent($direct_queue, Auth::user()->branch_id));
 
             if ($direct_queue->client_id) {
                 event(new OnsiteQueueUpdated($direct_queue));
@@ -263,7 +263,8 @@ class DirectQueueController extends Controller
 
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
-            'status' => 'served'
+            'status' => 'served',
+            'branch_id' => Auth::user()->branch_id
         ]));
 
         if ($directQueue->client_id) {
@@ -339,7 +340,8 @@ class DirectQueueController extends Controller
 
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
-            'status' => 'recall'
+            'status' => 'recall',
+            'branch_id' => Auth::user()->branch_id
         ]));
 
         if ($directQueue->client_id) {
@@ -421,7 +423,8 @@ class DirectQueueController extends Controller
 
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
-            'status' => 'requeue'
+            'status' => 'requeue',
+            'branch_id' => Auth::user()->branch_id
         ]));
 
         if ($directQueue->client_id) {
@@ -468,7 +471,8 @@ class DirectQueueController extends Controller
 
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
-            'status' => 'end served'
+            'status' => 'end served',
+            'branch_id' => Auth::user()->branch_id
         ]));
 
         if ($directQueue->client_id) {
@@ -514,7 +518,8 @@ class DirectQueueController extends Controller
 
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
-            'status' => 'no show'
+            'status' => 'no show',
+            'branch_id' => Auth::user()->branch_id
         ]));
 
         if ($directQueue->client_id) {
@@ -566,7 +571,8 @@ class DirectQueueController extends Controller
 
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
-            'status' => 'waiting'
+            'status' => 'waiting',
+            'branch_id' => Auth::user()->branch_id
         ]));
 
         if ($directQueue->client_id) {

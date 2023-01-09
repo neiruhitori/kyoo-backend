@@ -9,7 +9,6 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Auth;
 
 class QueueStatusUpdated implements ShouldBroadcast
 {
@@ -34,7 +33,7 @@ class QueueStatusUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('event_direct_queue_general.' . Auth::user()->branch_id);
+        return new Channel('event_direct_queue_general.' . $this->data['branch_id']);
     }
 
     public function broadcastWith()
