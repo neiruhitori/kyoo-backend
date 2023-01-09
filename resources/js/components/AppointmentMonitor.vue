@@ -364,8 +364,6 @@ export default {
                 await axios.patch(`/cs/appointments/${id}/end-served`)
 
                 this.showAlert('Appointment selesai')
-
-                audioRecorder.start()
             } catch (e) {
                 this.showAlert(
                     e.response.data?.message || 'Gagal mengakhiri appointment',
