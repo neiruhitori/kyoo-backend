@@ -4,19 +4,22 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use App\Appointment;
-use App\Services\AppointmentService;
 use App\Slot;
-use Throwable;
-use App\Models\BranchScheduleTemplateDetail;
 use App\Schedule;
+use App\WorkstationService;
+use App\Models\BranchScheduleTemplateDetail;
+use App\Services\AppointmentService;
+
+use Throwable;
 use Illuminate\Support\Carbon;
 
 class AppointmentServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $appointmentService;
+    private $appointmentService, $slot;
 
     public function setUp(): void
     {
@@ -36,6 +39,8 @@ class AppointmentServiceTest extends TestCase
 
     public function test_free_appointment_exceeded()
     {
+        $date = date('Y-m-d');
+
         Appointment::factory()
             ->count(5)
             ->state([
@@ -46,24 +51,14 @@ class AppointmentServiceTest extends TestCase
             ])
             ->create();
 
-        $message = 'Appointment gratis tersedia';
+        $result = $this->appointmentService->isFreeAppointmentExceeded($this->branch->id, $date);
 
-        try {
-            $this->appointmentService->create([
-                'branch_id' => $this->branch->id,
-                'service_id' => $this->service->id,
-                'date' => date('Y-m-d'),
-                'slot_id' => $this->slot->id
-            ]);
-        } catch (Throwable $e) {
-            $message = $e->getMessage();
-        }
-
-        $this->assertEquals($message, 'Batas appointment gratis hari ini terlampaui');
+        $this->assertTrue($result);
     }
 
     public function test_duplicate_appointments()
     {
+        $date = date('Y-m-d');
         $email = 'abdis@mail.com';
         $phone = '0851569776458';
 
@@ -72,54 +67,39 @@ class AppointmentServiceTest extends TestCase
             'phone' => $phone,
             'branch_id' => $this->branch->id,
             'service_id' => $this->service->id,
-            'date' => date('Y-m-d'),
+            'date' => $date,
             'slot_id' => $this->slot->id
         ]);
 
-        $message = 'Appointment belum terdaftar';
+        $result = $this->appointmentService->isAppoinmentDuplicate([
+            'branch_id' => $this->branch->id,
+            'service_id' => $this->service->id,
+            'date' => $date,
+            'email' => $email,
+            'phone' => $phone,      
+            'slot_id' => $this->slot->id
+        ]);
 
-        try {
-            $this->appointmentService->create([
-                'branch_id' => $this->branch->id,
-                'service_id' => $this->service->id,
-                'date' => date('Y-m-d'),
-                'email' => $email,
-                'phone' => $phone,      
-                'slot_id' => $this->slot->id
-            ]);
-        } catch(Throwable $e) {
-            $message = $e->getMessage();
-        }
-
-        $this->assertEquals($message, 'Appointment telah terdaftar');
+        $this->assertTrue($result);
     }
 
-    public function test_appointment_exceed_max_slot()
+    public function test_appointment_on_full_slot()
     {
+        $date = date('Y-m-d');
+
         Appointment::factory()
             ->count(2)
             ->state([
                 'branch_id' => $this->branch->id,
                 'service_id' => $this->service->id,
-                'date' => date('Y-m-d'),
+                'date' => $date,
                 'slot_id' => $this->slot->id
             ])
             ->create();
         
-        $message = 'Sesi appointment tersedia';
+        $result = $this->appointmentService->isAppointmentSlotFull($this->slot->id, $date);
 
-        try {
-            $this->appointmentService->create([
-                'branch_id' => $this->branch->id,
-                'service_id' => $this->service->id,
-                'date' => date('Y-m-d'),
-                'slot_id' => $this->slot->id
-            ]);
-        } catch (Throwable $e) {
-            $message = $e->getMessage();
-        }
-
-        $this->assertEquals($message, 'Sesi appointment tidak tersedia');
+        $this->assertTrue($result);
     }
 
     public function test_appointment_on_holiday()
@@ -128,20 +108,9 @@ class AppointmentServiceTest extends TestCase
             ->state(['branch_id' => $this->branch->id])
             ->create();
 
-        $message = 'Sesi appointment tersedia';
+        $result = $this->appointmentService->isHoliday($this->branch->id, $holiday->date);
 
-        try {
-            $this->appointmentService->create([
-                'branch_id' => $this->branch->id,
-                'service_id' => $this->service->id,
-                'date' => $holiday->date,
-                'slot_id' => $this->slot->id
-            ]);
-        } catch(Throwable $e) {
-            $message = $e->getMessage();
-        }
-
-        $this->assertEquals($message, 'Sesi appointment tidak tersedia');
+        $this->assertTrue($result);
     }
 
     public function test_appointment_on_closed_day()
@@ -154,48 +123,32 @@ class AppointmentServiceTest extends TestCase
             ->create();
 
         $date = date('Y-m-d', strtotime($closedSchedule->day . ' september 2022'));
+        $result = $this->appointmentService->isClosed($this->branch->id, $date);
 
-        $message = 'Sesi appointment tersedia';
-
-        try {
-            $this->appointmentService->create([
-                'branch_id' => $this->branch->id,
-                'service_id' => $this->service->id,
-                'date' => $date,
-                'slot_id' => $this->slot->id
-            ]);
-        } catch(Throwable $e) {
-            $message = $e->getMessage();
-        }
-
-        $this->assertEquals($message, 'Sesi appointment tidak tersedia');
+        $this->assertTrue($result);
     }
 
-    public function test_past_schedule_appointment()
+    public function test_finished_session_appointment()
     {
-        $message = 'Sesi appointment tersedia';
+        $result = $this->appointmentService->isAppointmentSessionFinish($this->slot->id, date('Y-m-d'));
 
-        try {
-            $this->appointmentService->create([
-                'branch_id' => $this->branch->id,
-                'service_id' => $this->service->id,
-                'date' => date('Y-m-d'),
-                'slot_id' => $this->slot->id
-            ]);
-        } catch(Throwable $e) {
-            $message = $e->getMessage();
-        }
-
-        $this->assertEquals($message, 'Sesi appointment sudah berakhir');
+        $this->assertTrue($result);
     }
 
-    public function test_store_appointment()
+    public function test_persist_appointment_to_database()
     {
         $slot = Slot::factory()
             ->state([
                 'service_id' => $this->service->id,
                 'start_time' => date('H:i'),
                 'end_time' =>  date('H:i', strtotime('+3 hours'))
+            ])
+            ->create();
+        
+        WorkstationService::factory()
+            ->state([
+                'service_id' => $this->service->id,
+                'workstation_id' => $this->workstation->id
             ])
             ->create();
 

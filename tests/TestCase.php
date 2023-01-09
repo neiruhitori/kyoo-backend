@@ -3,23 +3,26 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+
 use App\Branch;
 use App\BranchType;
 use App\IndustryCategory;
 use App\Department;
 use App\Service;
+use App\Workstation;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected $branch, $department, $service;
+    protected $branch, $department, $service, $workstation;
 
     public function setupOrganization($licenseType, $queueType)
     {
         $this->branch = $this->createBranch($licenseType, $queueType);
         $this->department = $this->createDepartment();
         $this->service = $this->createService();
+        $this->workstation = $this->createWorkstation();
     }
 
     protected function createBranch($licenseType, $queueType)
@@ -58,6 +61,15 @@ abstract class TestCase extends BaseTestCase
         return Service::factory()
             ->state([
                 'branch_id' => $this->branch->id,
+                'department_id' => $this->department->id
+            ])
+            ->create();
+    }
+
+    protected function createWorkstation()
+    {
+        return Workstation::factory()
+            ->state([
                 'department_id' => $this->department->id
             ])
             ->create();
