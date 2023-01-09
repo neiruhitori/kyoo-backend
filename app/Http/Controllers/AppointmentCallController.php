@@ -18,9 +18,11 @@ class AppointmentCallController extends Controller
 
         $audioFiles = ['audio/vo/nomor-antrian.wav'];
 
+        $appointmentNumber = strval($appointment->number);
+
         // Queue number audio
-        for ($i = 0; $i < strlen($appointment->number); $i++) {
-            $fileName = $appointment->number[$i] . '.wav';
+        for ($i = 0; $i < strlen($appointmentNumber); $i++) {
+            $fileName = $appointmentNumber[$i] . '.wav';
             $filePath = '/audio/vo/' . $fileName;
 
             if (file_exists(storage_path('app/') . $filePath)) {
