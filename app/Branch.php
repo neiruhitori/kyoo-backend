@@ -24,6 +24,8 @@ class Branch extends Model
         'long' => 'double'
     ];
 
+    protected $appends = ['is_today_open'];
+
     public function scopeOnsite($query)
     {
         $query->whereHas('BranchType', function ($q) {
