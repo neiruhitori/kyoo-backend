@@ -27,147 +27,61 @@ class AppointmentService
     public function create(array $data): Appointment
     {
         return Cache::lock('appointments', 10)->block(5, function () use ($data) {
-            $date = date('Y-m-d', strtotime($data['date']));
-
-            $branch = Branch::find($data['branch_id']);
             $service = Service::find($data['service_id']);
-            $slot = Slot::find($data['slot_id']);
 
             // Limit free appointments
-            $todayAppointments = Appointment::where([
-                'branch_id' => $data['branch_id'],
-                'date' => $date
-            ])
-                ->get();
-
-            if (
-                !$branch->BranchType->is_premium &&
-                count($todayAppointments) >= config('appointment.free_appointment_limit')
-            ) {
+            if ($this->isFreeAppointmentExceeded($data['branch_id'], $data['date'])) {
                 throw new \Exception('Batas appointment gratis hari ini terlampaui');
             }
 
             // Prevent double appointments
-            $email = $phone = '';
-
-            if (isset($data['email'])) $email = $data['email'];
-            if (isset($data['phone'])) $phone = $data['phone'];
-
-            $sameAppointment = Appointment::withoutCanceled()->where([
-                    'slot_id' => $data['slot_id'],
-                    'date' => $date
-                ])
-                ->where(function ($query) use ($email, $phone) {
-                    $query->where('email', $email)
-                        ->orWhere('phone', $phone);
-                })
-                ->first();
-
-            if ($sameAppointment) {
+            if ($this->isAppoinmentDuplicate($data)) {
                 throw new \Exception('Appointment telah terdaftar');
             }
 
-            // Prevent appointment on empty slots
-            $totalTodayAppointmentsBySlot = Appointment::withoutCanceled()->where([
-                'slot_id' => $data['slot_id'],
-                'date' => $date
-            ])->count();
-            
-            if ($totalTodayAppointmentsBySlot >= $slot->max_slots) {
+            // Prevent appointment on full slot
+            if ($this->isAppointmentSlotFull($data['slot_id'], $data['date'])) {
                 throw new \Exception('Sesi appointment tidak tersedia');
             }
 
             // Prevent appointment on holidays
-            $selectedHoliday = BranchScheduleTemplateDetail::where([
-                'branch_id' => $data['branch_id'],
-                'date' => $date
-            ])->first();
-
-            if ($selectedHoliday) {
+            if ($this->isHoliday($data['branch_id'], $data['date'])) {
                 throw new \Exception('Sesi appointment tidak tersedia');
             }
 
             // Prevent appointment on closed days
-            $day = strtolower(date('l', strtotime($data['date'])));
-
-            $selectedSchedule = Schedule::where([
-                'branch_id' => $data['branch_id'],
-                'day' => $day
-            ])->first();
-
-            if ($selectedSchedule && $selectedSchedule->status == 'closed') {
+            if ($this->isClosed($data['branch_id'], $data['date'])) {
                 throw new \Exception('Sesi appointment tidak tersedia');
             }
 
-            // Can't select past
-            $appointmentEndDateTime = date('Y-m-d H:i:s', strtotime($data['date'] . ' ' . $slot->end_time . ':00'));
-            $currentDateTime = date('Y-m-d H:i:s');
-
-            if ($appointmentEndDateTime < $currentDateTime) {
+            // Can't select finished session
+            if ($this->isAppointmentSessionFinish($data['slot_id'], $data['date'])) {
                 throw new \Exception('Sesi appointment sudah berakhir');
             }
             
-            // Check overlap appointment
-            $workstationServices = Workstation::whereHas('WorkstationService', function ($query) use ($service) {
-                $query->where('service_id', $service->id);
-            })->get();
-
-            if (count($workstationServices) < 1) {
+            // Prevent empty workstation service
+            if ($this->isWorkstationServiceEmpty($data['service_id'])) {
                 throw new \Exception('Tidak ada layanan');
             }
 
-            $nextTimeslots = $this->getTimeSlot($slot, $date);
+            $timeRange = $this->getFinalTimeSlot([
+                'date' => $data['date'],
+                'branch_id' => $data['branch_id'],
+                'department_id' => $service->department_id,
+                'service_id' => $data['service_id'],
+                'slot_id' => $data['slot_id']
+            ]);
 
-            $slot->next_start_time = $nextTimeslots[0];
-            $slot->next_end_time = $nextTimeslots[1];
-            $data['start_time'] = $nextTimeslots[0];
-            $data['end_time'] = $nextTimeslots[1];
+            $data['start_time'] = $timeRange[0];
+            $data['end_time'] = $timeRange[1];
 
-            $isOverlap = true;
-            while ($isOverlap && date('H:i', strtotime($data['end_time'])) <= $slot->end_time) {
-                $overlapAppointments = Appointment::where([
-                    'date' => $date,
-                    'branch_id' => $branch->id,
-                ])
-                    ->whereHas('Service', function ($query) use ($service) {
-                        $query->where('department_id', $service->department_id);
-                    })
-                    ->whereIn('status', ['book', 'waiting', 'served'])
-                    ->where([
-                        ['start_time', '<', $data['end_time']],
-                        ['end_time', '>', $data['start_time']]
-                    ])
-                    ->orderByDesc('start_time')
-                    ->get();
-    
-                if (count($overlapAppointments) >= count($workstationServices)) {
-                    $slotDurationInSeconds = strtotime($slot->end_time) - strtotime($slot->start_time);
-                    $secondsPerSlot = floor($slotDurationInSeconds / $slot->max_slots);
-    
-                    $maxEndTime = $overlapAppointments->map(fn ($app) => strtotime($app->end_time))->max();
-    
-                    $data['start_time'] = date('H:i', $maxEndTime);
-                    $data['end_time'] = date('H:i', $maxEndTime + $secondsPerSlot);
-                } else {
-                    $isOverlap = false;
-                }
-            }
-
-            if (date('H:i', strtotime($data['end_time'])) > $slot->end_time) {
+            // Check overlap appointment
+            if ($this->isAppointmentOverlap($data['slot_id'], $data['end_time'])) {
                 throw new \Exception('Sesi waktu telah dibooking oleh layanan lain');
             }
 
             $data['booking_code'] = BookingCode::generate();
-
-            $lastAppointment = Appointment::withoutCanceled()->where([
-                'branch_id' => $data['branch_id'],
-                'date' => $date
-            ])
-                ->get()
-                ->sortByDesc('number')
-                ->first();
-            
-            $data['number'] = $lastAppointment ? $lastAppointment->number + 1 : 1;
+            $data['number'] = $this->getCurrrentAppointmentNumber($data['branch_id'], $data['date']);
             
             // Store appointment to db
             $appointment = Appointment::create($data);
@@ -179,9 +93,161 @@ class AppointmentService
         });
     }
 
-    private function getTimeSlot($slot, $date) {
+    public function isFreeAppointmentExceeded($branchId, $date)
+    {
+        $formattedDate = date('Y-m-d', strtotime($date));
+        $branch = Branch::find($branchId);
+
+        $todayAppointments = Appointment::where([
+            'branch_id' => $branchId,
+            'date' => $formattedDate
+        ])
+            ->get();
+
+        return (!$branch->BranchType->is_premium &&
+            count($todayAppointments) >= config('appointment.free_appointment_limit'));
+    }
+
+    public function isAppoinmentDuplicate($data)
+    {
+        $formattedDate = date('Y-m-d', strtotime($data['date']));
+        $email = $phone = '';
+
+        if (isset($data['email'])) $email = $data['email'];
+        if (isset($data['phone'])) $phone = $data['phone'];
+
+        $sameAppointment = Appointment::withoutCanceled()->where([
+                'slot_id' => $data['slot_id'],
+                'date' => $formattedDate
+            ])
+            ->where(function ($query) use ($email, $phone) {
+                $query->where('email', $email)
+                    ->orWhere('phone', $phone);
+            })
+            ->first();
+
+        return !!$sameAppointment;
+    }
+
+    public function isAppointmentSlotFull($slotId, $date)
+    {
+        $slot = Slot::find($slotId);
+        $formattedDate = date('Y-m-d', strtotime($date));
+
+        $totalTodayAppointmentsBySlot = Appointment::withoutCanceled()->where([
+            'slot_id' => $slotId,
+            'date' => $formattedDate
+        ])->count();
+        
+        return $totalTodayAppointmentsBySlot >= $slot->max_slots;
+    }
+
+    public function isHoliday($branchId, $date)
+    {
+        $formattedDate = date('Y-m-d', strtotime($date));
+
+        $selectedHoliday = BranchScheduleTemplateDetail::where([
+            'branch_id' => $branchId,
+            'date' => $formattedDate
+        ])->first();
+
+        return !!$selectedHoliday;
+    }
+
+    public function isClosed($branchId, $date)
+    {
+        $day = strtolower(date('l', strtotime($date)));
+
+        $selectedSchedule = Schedule::where([
+            'branch_id' => $branchId,
+            'day' => $day
+        ])->first();
+
+        return $selectedSchedule && $selectedSchedule->status == 'closed';
+    }
+
+    public function isAppointmentSessionFinish($slotId, $date)
+    {
+        $slot = Slot::find($slotId);
+
+        $appointmentEndDateTime = date('Y-m-d H:i:s', strtotime($date . ' ' . $slot->end_time . ':00'));
+        $currentDateTime = date('Y-m-d H:i:s');
+
+        return $appointmentEndDateTime < $currentDateTime;
+    }
+
+    private function isWorkstationServiceEmpty($serviceId)
+    {
+        $workstationService = Workstation::whereHas('WorkstationService', function ($query) use ($serviceId) {
+            $query->where('service_id', $serviceId);
+        })->first();
+
+        return !$workstationService;
+    }
+
+    private function isAppointmentOverlap($slotId, $endTime)
+    {
+        $slot = Slot::find($slotId);
+
+        return date('H:i', strtotime($endTime)) > $slot->end_time;
+    }
+
+    private function getFinalTimeSlot($data) {
+        $date = date('Y-m-d', strtotime($data['date']));
+
+        $departmentId = $data['department_id'];
+        $serviceId = $data['service_id'];
+        $slot = Slot::find($data['slot_id']);
+        $workstationServices = Workstation::whereHas('WorkstationService', function ($query) use ($serviceId) {
+            $query->where('service_id', $serviceId);
+        })->get();
+
+        $nextTimeslots = $this->getInitTimeSlot($slot, $date);
+
+        $slot->next_start_time = $nextTimeslots[0];
+        $slot->next_end_time = $nextTimeslots[1];
+
+        $startTime = $nextTimeslots[0];
+        $endTime = $nextTimeslots[1];
+
+        $isOverlap = true;
+        while ($isOverlap && date('H:i', strtotime($endTime)) <= $slot->end_time) {
+            $overlapAppointments = Appointment::where([
+                'date' => $date,
+                'branch_id' => $data['branch_id'],
+            ])
+                ->whereHas('Service', function ($query) use ($departmentId) {
+                    $query->where('department_id', $departmentId);
+                })
+                ->whereIn('status', ['book', 'waiting', 'served'])
+                ->where([
+                    ['start_time', '<', $endTime],
+                    ['end_time', '>', $startTime]
+                ])
+                ->orderByDesc('start_time')
+                ->get();
+
+            if (count($overlapAppointments) >= count($workstationServices)) {
+                $slotDurationInSeconds = strtotime($slot->end_time) - strtotime($slot->start_time);
+                $secondsPerSlot = floor($slotDurationInSeconds / $slot->max_slots);
+
+                $maxEndTime = $overlapAppointments->map(fn ($app) => strtotime($app->end_time))->max();
+
+                $startTime = date('H:i', $maxEndTime);
+                $endTime = date('H:i', $maxEndTime + $secondsPerSlot);
+            } else {
+                $isOverlap = false;
+            }
+        }
+
+        return [$startTime, $endTime];
+    }
+
+    private function getInitTimeSlot($slot, $date) {
+        $formattedDate = date('Y-m-d', strtotime($date));
+
         $currentAppointment = Appointment::withoutCanceled()->where([
-            'date' => $date,
+            'date' => $formattedDate,
             'slot_id' => $slot->id
         ])
             ->orderByDesc('start_time')
@@ -201,23 +267,19 @@ class AppointmentService
         return [$nextStartTime, $nextEndTime];
     }
 
-    private function getOverlapSlotByDepartment($slot, $departmentId, $date)
+    private function getCurrrentAppointmentNumber($branchId, $date)
     {
-        $slots = Slot::whereHas('Service', function ($query) use ($departmentId) {
-            $query->where('department_id', $departmentId);
-        })->get();
+        $formattedDate = date('Y-m-d', strtotime($date));
 
-        foreach ($slots as $slot) {
-            $timeslots = $this->getTimeSlot($slot, $date);
-
-            $slot->next_start_time = $timeslots[0];
-            $slot->next_end_time = $timeslots[1];
-        }
-
-        return $slots->filter(function ($s) use ($slot) {
-            return $s->next_start_time < $slot->next_end_time &&
-                $s->next_end_time > $slot->next_start_time;
-        });
+        $lastAppointment = Appointment::withoutCanceled()->where([
+            'branch_id' => $branchId,
+            'date' => $formattedDate
+        ])
+            ->get()
+            ->sortByDesc('number')
+            ->first();
+        
+        return $lastAppointment ? $lastAppointment->number + 1 : 1;
     }
 
     public function checkIn(int $appointmentId)
