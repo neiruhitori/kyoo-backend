@@ -45,25 +45,6 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="license_type_id">Jenis Lisensi</label>
-
-                                <select
-                                    name="license_type_id"
-                                    id="license_type_id"
-                                    class="form-control"
-                                    required
-                                    disabled
-                                    autocomplete="off"
-                                >
-                                    @foreach ($licenseTypes as $licenseType)
-                                        <option value="{{ $licenseType->id }}">{{ $licenseType->name }}</option>
-                                    @endforeach
-                                </select>
-
-                                @include('layouts.inputError', ['errorName' => 'license_type_id'])
-                            </div>
-
-                            <div class="form-group">
                                 <label for="is_appointment">{{ __('Is Appointment Queue') }}?</label>
                                 <select
                                     name="is_appointment"
@@ -116,25 +97,3 @@
     </div>
 </div>
 @endsection
-
-@push('js')
-<script>
-    $(document).ready(function () {
-        const general_license = $('#license_type_id option').filter(function (e) {
-            return $(this).text() === 'Umum'
-        })
-
-        $('#is_premium').change(function (e) {
-            const isPremium = parseInt(e.target.value)
-
-            if (isPremium) {
-                $('#license_type_id').prop('disabled', false)
-                return
-            }
-
-            $('#license_type_id').prop('disabled', true)
-            $('#license_type_id').val(general_license.val()).change()
-        })
-    })
-</script>
-@endpush

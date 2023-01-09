@@ -67,30 +67,6 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="license_type_id">Jenis Lisensi</label>
-
-                                <select
-                                    name="license_type_id"
-                                    id="license_type_id"
-                                    class="form-control"
-                                    required
-                                    {{ !$branchType->is_premium ? 'disabled' : '' }}
-                                    autocomplete="off"
-                                >
-                                    @foreach ($licenseTypes as $licenseType)
-                                        <option
-                                            value="{{ $licenseType->id }}"
-                                            {{ $branchType->license_type_id == $licenseType->id ? 'selected' : '' }}
-                                        >{{ $licenseType->name }}</option>
-                                    @endforeach
-                                </select>
-
-                                <small class="form-text text-info">Membutuhkan lisensi premium</small>
-
-                                @include('layouts.inputError', ['errorName' => 'license_type_id'])
-                            </div>
-
-                            <div class="form-group">
                                 <label for="is_appointment">{{ __('Is Appointment Queue') }}?</label>
 
                                 <select
@@ -171,23 +147,6 @@
         if(is_direct_queueOldValue !== '') {
             $('#is_direct_queue').val(is_direct_queueOldValue);
         }
-
-        // Disabled license type handling
-        const generalLicense = $('#license_type_id option').filter(function (e) {
-            return $(this).text() === 'Umum'
-        })
-
-        $('#is_premium').change(function (e) {
-            const isPremium = parseInt(e.target.value)
-
-            if (isPremium) {
-                $('#license_type_id').prop('disabled', false)
-                return
-            }
-
-            $('#license_type_id').prop('disabled', true)
-            $('#license_type_id').val(generalLicense.val()).change()
-        })
     });
 </script>
 @endpush

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @push('css')
-    <link href="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+<link href="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -32,7 +32,6 @@
                                         <th>{{ __('Code') }}</th>
                                         <th>{{ __('Name') }}</th>
                                         <th>{{ __('Is Premium') }}</th>
-                                        <th>Jenis Lisensi</th>
                                         <th>{{ __('Is Appointment Queue') }}</th>
                                         <th>{{ __('Is Direct Queue') }}</th>
                                         <th>{{ __('Is Exhibition Queue') }}</th>
@@ -52,8 +51,6 @@
                                                     <span class="badge badge-danger">{{ __('No') }}</span>
                                                 @endif
                                             </td>
-
-                                            <td>{{ $branchType->LicenseType->name }}</td>
                                             
                                             <td>
                                                 @if ($branchType->is_appointment)

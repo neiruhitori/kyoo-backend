@@ -10,9 +10,4 @@ class BranchType extends Model
     use HasFactory;
 
     protected $fillable = ['code', 'name', 'is_premium', 'is_appointment', 'is_direct_queue', 'is_exhibition'];
-
-    public function LicenseType()
-    {
-        return $this->belongsTo('App\Models\LicenseType');
-    }
 }
