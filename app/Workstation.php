@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Workstation extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['department_id', 'name', 'label', 'display_id'];
 
     public function Department()
