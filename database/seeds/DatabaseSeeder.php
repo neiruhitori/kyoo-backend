@@ -22,8 +22,7 @@ class DatabaseSeeder extends Seeder
             FreeExhibitionLicenseSeeder::class,
             TVLayoutSeeder::class,
             AdditionalFeatureSeeder::class,
-            LicenseTypeSeeder::class,
-            CorporateLicenseSeeder::class,
+            RegencyLocationSeeder::class
         ]);
     }
 }
