@@ -4,9 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class WorkstationService extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['workstation_id', 'service_id', 'priority'];
 
     public function Service()
