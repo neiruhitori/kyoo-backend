@@ -88,8 +88,7 @@ class BranchController extends Controller
         $data = [
             'branch' => Branch::find(Auth::user()->branch_id),
             'categories' => IndustryCategory::all(),
-            'branchTypes' => BranchType::all(),
-            'countries' => Countries::getList('en_US')
+            'branchTypes' => BranchType::all()
         ];
 
         return view('adminBranch.branchInfo.profile', $data);

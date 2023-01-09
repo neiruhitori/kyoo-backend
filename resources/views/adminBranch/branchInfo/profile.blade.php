@@ -100,16 +100,6 @@
             </div>
 
             <div class="form-group">
-                <label for="country">{{ __('Country') }}</label>
-                <select name="country" id="country" class="form-control @error('country') is-invalid @enderror" disabled>
-                    @foreach ($countries as $country)
-                        <option value="{{$country}}">{{$country}}</option>
-                    @endforeach
-                </select>
-                @include('layouts.inputError', ['errorName' => 'country'])
-            </div>
-
-            <div class="form-group">
                 <label for="timezone">{{ __('Indonesia Timezone') }}</label>
                 <select name="timezone" id="timezone" class="form-control @error('timezone') is-invalid @enderror" disabled>
                     <option value="" selected disabled>{{ __('Select Timezone') }}</option>
@@ -135,8 +125,12 @@
             <div class="form-group">
                 <label for="logo">{{ __('Logo') }}</label>
                 <br>
-                <img src="{{asset('storage/'.$branch->logo)}}" alt="" style="max-height: 100px">
-                <br>
+
+                @if (isset($branch->logo))
+                    <img src="{{asset('storage/'.$branch->logo)}}" alt="" style="max-height: 100px">
+                    <br>
+                @endif
+
                 <input name="logo" type="file" class="form-control d-none @error('logo') is-invalid @enderror" disabled>
                 @include('layouts.inputError', ['errorName' => 'logo'])
             </div>
@@ -144,8 +138,12 @@
             <div class="form-group">
                 <label for="photo">{{ __('Image Background') }}</label>
                 <br>
-                <img src="{{asset('storage/'.$branch->photo)}}" alt="" style="max-height: 100px">
-                <br>
+
+                @if (isset($branch->photo))
+                    <img src="{{asset('storage/'.$branch->photo)}}" alt="" style="max-height: 100px">
+                    <br>
+                @endif
+
                 <input name="photo" type="file" class="form-control d-none @error('photo') is-invalid @enderror" disabled>
                 @include('layouts.inputError', ['errorName' => 'photo'])
             </div>
