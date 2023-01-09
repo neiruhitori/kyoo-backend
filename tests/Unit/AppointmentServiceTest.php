@@ -12,7 +12,6 @@ use App\WorkstationService;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Services\AppointmentService;
 
-use Throwable;
 use Illuminate\Support\Carbon;
 
 class AppointmentServiceTest extends TestCase
