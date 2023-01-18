@@ -107,6 +107,12 @@ Route::namespace('AdminBranch')
             Route::get('terms-conditions', 'TermsConditionsController@index')->name('terms-conditions.index');
             Route::get('terms-conditions/get', 'TermsConditionsController@get')->name('terms-conditions.get');
             Route::put('terms-conditions', 'TermsConditionsController@update')->name('terms-conditions.store');
+
+            Route::get('promotions', 'PromotionsController@index')->name('promotions.index');
+            Route::get('promotions/image/create', 'PromotionsController@createImage')->name('promotions.image.create');
+            Route::get('promotions/text/create', 'PromotionsController@createText')->name('promotions.text.create');
+            Route::post('promotions/image', 'PromotionsController@storeImage')->name('promotions.image.store');
+            Route::post('promotions/text', 'PromotionsController@storeText')->name('promotions.text.store');
         });
 
         // Service Quality

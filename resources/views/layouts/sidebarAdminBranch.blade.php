@@ -151,7 +151,7 @@
               Auth::user()->Branch->hasAccess('Web Signage TV')
             )
               <a
-                class="collapse-item kyoo-sublink  {{ !request()->is('admin-branch/branch-configuration/queue-monitor') ?: 'active' }}"
+                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/queue-monitor') ?: 'active' }}"
                 href="{{ route('admin-branch.branch-configuration.queue-monitor') }}"
               >
                 Monitor Antrian (TV)
@@ -159,11 +159,18 @@
             @endif
 
             <a
-                class="collapse-item kyoo-sublink  {{ !request()->is('admin-branch/branch-configuration/terms-conditions') ?: 'active' }}"
-                href="{{ route('admin-branch.branch-configuration.terms-conditions.index') }}"
-              >
-                Syarat & Ketentuan
-              </a>
+              class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/terms-conditions') ?: 'active' }}"
+              href="{{ route('admin-branch.branch-configuration.terms-conditions.index') }}"
+            >
+              Syarat & Ketentuan
+            </a>
+
+            <a
+              class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/promotions*') ?: 'active' }}"
+              href="{{ route('admin-branch.branch-configuration.promotions.index') }}"
+            >
+              Promosi
+            </a>
           </div>
         </div>
       </li>
@@ -180,7 +187,11 @@
             <span>Kualitas Pelayanan</span>
           </a>
 
-          <div class="collapse {{ !request()->is('admin-branch/service-quality/*') ?: 'show' }}" id="service-quality" data-parent="#accordionSidebar">
+          <div
+            class="collapse {{ !request()->is('admin-branch/service-quality/*') ?: 'show' }}"
+            id="service-quality"
+            data-parent="#accordionSidebar"
+          >
             <div class="bg-white py-2 collapse-inner rounded">
               @if (Auth::user()->Branch->hasAccess('Voice Recording'))
                 <a
