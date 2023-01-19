@@ -11,7 +11,7 @@ use App\Notifications\ResetPasswordNotification;
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes, HasApiTokens;
+    use Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.

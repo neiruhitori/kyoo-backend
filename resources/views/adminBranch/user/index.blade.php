@@ -71,7 +71,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (Auth::user()->Branch->CS as $user)
+                                        @foreach ($users as $user)
                                             <tr>
                                                 <td>{{ $user->id }}</td>
                                                 <td>

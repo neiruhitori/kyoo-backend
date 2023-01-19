@@ -26,7 +26,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('adminBranch.user.index');
+        $users = User::where([
+            'branch_id' => Auth::user()->branch_id,
+            'role' => 'cs'
+        ])->get();
+
+        return view('adminBranch.user.index', [
+            'users' => $users
+        ]);
     }
 
     /**
@@ -162,7 +169,7 @@ class UserController extends Controller
         if ($user->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
-        $user->delete();
+        User::destroy($user->id);
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Remove VCT User'
