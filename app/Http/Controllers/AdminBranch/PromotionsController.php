@@ -5,8 +5,7 @@ namespace App\Http\Controllers\AdminBranch;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\ImagePromotion;
-use App\Models\TextPromotion;
+use App\Models\Promotion;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -38,7 +37,7 @@ class PromotionsController extends Controller
 
         $imagePath = Storage::put('promotions', $request->file('promotion_img'));
 
-        ImagePromotion::create([
+        Promotion::create([
             'title' => $request->title,
             'branch_id' => Auth::user()->branch_id,
             'image_url' => $imagePath,
@@ -59,7 +58,7 @@ class PromotionsController extends Controller
             'font_size' => 'required|string'
         ]);
 
-        TextPromotion::create([
+        Promotion::create([
             'title' => $request->title,
             'branch_id' => Auth::user()->branch_id,
             'text' => $request->text,
