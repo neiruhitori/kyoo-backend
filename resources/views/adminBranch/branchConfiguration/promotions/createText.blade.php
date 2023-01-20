@@ -67,25 +67,44 @@
         '#8d6893', '#c79ecd', '#b8b226', '#f0b230',
         '#ae8775'
     ]
+    const DEFAULT_FONT = '1.125rem'
+    const SMALL_FONT = '.65rem'
+
+    $(document).ready(function () {
+        setColorInput(COLORS[0])
+        setFontSizeInput(DEFAULT_FONT)
+    })
 
     function handleColorClick(e) {
         i++
         if (i >= COLORS.length) i = 0
 
-        $("#promotionCard").css('background-color', COLORS[i])
-        $("input[name='color']").val(COLORS[i])
+        setPromotionCardColor(COLORS[i])
+        setColorInput(COLORS[i])
     }
 
     function handleTextInput(e) {
-        e.style.fontSize = '1.125rem'
+        e.style.fontSize = DEFAULT_FONT
         if (e.value.length > 105) {
-            e.style.fontSize = '.65rem'
+            e.style.fontSize = SMALL_FONT
         }
 
-        $("input[name='font_size']").val(e.style.fontSize)
+        setFontSizeInput(e.style.fontSize)
  
         e.style.height = `32px`
         e.style.height = `${e.scrollHeight}px`
+    }
+
+    function setColorInput(color) {
+        $("input[name='color']").val(color)
+    }
+
+    function setFontSizeInput(fontSize) {
+        $("input[name='font_size']").val(fontSize)
+    }
+
+    function setPromotionCardColor(color) {
+        $("#promotionCard").css('background-color', color)
     }
 </script>
 @endpush
