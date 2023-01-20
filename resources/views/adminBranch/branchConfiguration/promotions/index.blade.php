@@ -66,7 +66,7 @@
   .promotion-card {
     height: 360px;
     border-radius: 8px;
-    font-size: 10px;
+    font-size: 11px;
     display: flex;
     align-items: center;
     justify-content: center;
