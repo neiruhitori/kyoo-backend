@@ -44,7 +44,7 @@ class PromotionsController extends Controller
             'caption' => 'nullable|max:512'
         ]);
 
-        $imagePath = Storage::put('promotions', $request->file('promotion_img'));
+        $imagePath = Storage::disk('public')->put('promotions', $request->file('promotion_img'));
 
         Promotion::create([
             'type' => Promotion::IMAGE_TYPE,
