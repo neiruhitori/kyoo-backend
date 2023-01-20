@@ -26,14 +26,19 @@
       <div class="row">
         @forelse ($promotions as $promotion)
           @if ($promotion->type == $promotion_types['text'])
-          <div class="col-md-3">
-            <div class="promotion-card text-promotion-card" style="background-color: {{ $promotion->color }};">
-              <p class="text-promotion-content" style="font-size: {{ $promotion->font_size }}">
-                {!! $promotion->text !!}
-              </p>
+            <div class="col-md-3">
+              <div class="promotion-card text-promotion-card" style="background-color: {{ $promotion->color }};">
+                <p class="text-promotion-content" style="font-size: {{ $promotion->font_size }}">
+                  {!! $promotion->text !!}
+                </p>
+              </div>
             </div>
-          </div>
           @elseif ($promotion->type == $promotion_types['image'])
+            <div class="col-md-3">
+              <div class="promotion-card image-promotion-card">
+                <img src="{{ asset('storage/' . $promotion->image_url) }}" alt="{{ $promotion->title }}">
+              </div>
+            </div>
           @endif
         @empty
           <div class="col-md-12">
@@ -60,17 +65,18 @@
 <style>
   .promotion-card {
     height: 360px;
+    border-radius: 8px;
     font-size: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    overflow: hidden;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
   }
 
   .text-promotion-card {
-    border-radius: 8px;
     padding: .5rem;
-    overflow: hidden;
   }
 
   .text-promotion-content {
@@ -78,6 +84,17 @@
     text-align: center;
     color: #FFF;
     overflow-wrap: anywhere;
+  }
+
+  .image-promotion-card {
+    background-color: #0D1117;
+  }
+
+  .image-promotion-card img {
+    width: auto;
+    height: auto;
+    max-height: 360px;
+    max-width: 182px;
   }
 
   .circle {
