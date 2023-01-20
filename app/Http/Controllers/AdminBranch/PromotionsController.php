@@ -15,9 +15,14 @@ class PromotionsController extends Controller
     public function index()
     {
         $promotions = Promotion::limit(10)->get();
+        $promotionTypes = [
+            'image' => Promotion::IMAGE_TYPE,
+            'text' => Promotion::TEXT_TYPE
+        ];
 
         return view('adminBranch.branchConfiguration.promotions.index', [
-            'promotions' => $promotions
+            'promotions' => $promotions,
+            'promotion_types' => $promotionTypes
         ]);
     }
 

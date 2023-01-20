@@ -24,20 +24,33 @@
       <h6 class="font-weight-bold">Daftar Promosi</h6>
 
       <div class="row">
-        {{-- <div class="col-md-3" >
-          <div class="rounded" style="height: 360px; background-color: #DDD"></div>
-        </div> --}}
-
-        <div class="col-md-12 mt-4">
-          <div class="circle mb-3">
-            <span class="fas fa-box-open" style="color: #AAA"></span>
+        @forelse ($promotions as $promotion)
+          @if ($promotion->type == $promotion_types['text'])
+          <div class="col-md-3">
+            <div class="promotion-card text-promotion-card" style="background-color: {{ $promotion->color }};">
+              <p class="text-promotion-content" style="font-size: {{ $promotion->font_size }}">
+                {!! $promotion->text !!}
+              </p>
+            </div>
           </div>
-
-          <div style="max-width: 360px; margin: 0 auto;">
-            <h4 class="text-center">Tidak ada konten</h4>
-            <p class="text-center">Pilih tombol diatas untuk menambahkan promosi</p>
+          @elseif ($promotion->type == $promotion_types['image'])
+          @endif
+        @empty
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="circle mb-3">
+                  <span class="fas fa-box-open" style="color: #AAA"></span>
+                </div>
+      
+                <div style="max-width: 380px; margin: 0 auto;">
+                  <h4 class="text-center">Tidak ada konten</h4>
+                  <p class="text-center">Tambahkan promosi dengan memilih tombol diatas</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        @endforelse
       </div>
     </div>
   </div>
@@ -45,6 +58,27 @@
 
 @push('css')
 <style>
+  .promotion-card {
+    height: 360px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .text-promotion-card {
+    border-radius: 8px;
+    padding: .5rem;
+    overflow: hidden;
+  }
+
+  .text-promotion-content {
+    margin: 0;
+    text-align: center;
+    color: #FFF;
+  }
+
   .circle {
     border-radius: 100%;
     background-color: #DDD;

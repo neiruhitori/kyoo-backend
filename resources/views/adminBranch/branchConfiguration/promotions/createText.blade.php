@@ -67,8 +67,8 @@
         '#8d6893', '#c79ecd', '#b8b226', '#f0b230',
         '#ae8775'
     ]
-    const DEFAULT_FONT = '1.125rem'
-    const SMALL_FONT = '.65rem'
+    const DEFAULT_FONT = '1.125em'
+    const SMALL_FONT = '.65em'
 
     $(document).ready(function () {
         setColorInput(COLORS[0])
@@ -117,7 +117,7 @@
         width: 100%;
         background-color: #7a203b;
         position: relative;
-        padding: 1rem;
+        padding: 10px;
     }
 
     .promotion-card:hover .promotion-img-upload {
@@ -133,7 +133,7 @@
         max-height: 420px;
         width: 100%;;
         height: 32px;
-        font-size: 1.125rem;
+        font-size: 1.125em;
         overflow: hidden;
         resize: none;
         text-align: center;
