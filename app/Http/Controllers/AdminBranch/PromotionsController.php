@@ -14,7 +14,11 @@ class PromotionsController extends Controller
 {
     public function index()
     {
-        return view('adminBranch.branchConfiguration.promotions.index');
+        $promotions = Promotion::limit(10)->get();
+
+        return view('adminBranch.branchConfiguration.promotions.index', [
+            'promotions' => $promotions
+        ]);
     }
 
     public function createImage()
@@ -38,6 +42,7 @@ class PromotionsController extends Controller
         $imagePath = Storage::put('promotions', $request->file('promotion_img'));
 
         Promotion::create([
+            'type' => Promotion::IMAGE_TYPE,
             'title' => $request->title,
             'branch_id' => Auth::user()->branch_id,
             'image_url' => $imagePath,
@@ -59,6 +64,7 @@ class PromotionsController extends Controller
         ]);
 
         Promotion::create([
+            'type' => Promotion::TEXT_TYPE,
             'title' => $request->title,
             'branch_id' => Auth::user()->branch_id,
             'text' => $request->text,

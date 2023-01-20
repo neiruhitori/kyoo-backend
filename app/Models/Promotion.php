@@ -9,5 +9,8 @@ class Promotion extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'branch_id', 'text', 'color', 'font_size', 'image_url', 'caption'];
+    protected $fillable = ['type', 'title', 'branch_id', 'text', 'color', 'font_size', 'image_url', 'caption'];
+
+    const TEXT_TYPE = 'text';
+    const IMAGE_TYPE = 'image';
 }
