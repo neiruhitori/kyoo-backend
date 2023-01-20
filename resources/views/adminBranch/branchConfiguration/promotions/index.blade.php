@@ -77,6 +77,7 @@
     margin: 0;
     text-align: center;
     color: #FFF;
+    overflow-wrap: anywhere;
   }
 
   .circle {
