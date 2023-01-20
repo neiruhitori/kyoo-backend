@@ -46,6 +46,12 @@ class PromotionsController extends Controller
 
         $imagePath = Storage::disk('public')->put('promotions', $request->file('promotion_img'));
 
+        if (!$imagePath) {
+            return redirect()
+                ->route('admin-branch.branch-configuration.promotions.index')
+                ->with('error', 'Gambar gagal disimpan');
+        }
+
         Promotion::create([
             'type' => Promotion::IMAGE_TYPE,
             'title' => $request->title,
@@ -67,7 +73,7 @@ class PromotionsController extends Controller
             'color' => 'required|string',
             'font_size' => 'required|string'
         ]);
-
+        
         Promotion::create([
             'type' => Promotion::TEXT_TYPE,
             'title' => $request->title,
@@ -82,13 +88,25 @@ class PromotionsController extends Controller
             ->with('success', 'Promosi ditambahkan');
     }
 
-    public function update($id, Request $request)
+    public function destroyText($id)
     {
-        //
+        Promotion::destroy($id);
+
+        return redirect()
+            ->route('admin-branch.branch-configuration.promotions.index')
+            ->with('success', 'Promosi dihapus');
     }
 
-    public function destroy($id)
+    public function destroyImage($id)
     {
-        //
+        $promotion = Promotion::findOrFail($id);
+
+        if (Storage::disk('public')->delete($promotion->image_url)) {
+            $promotion->delete();
+        }
+
+        return redirect()
+            ->route('admin-branch.branch-configuration.promotions.index')
+            ->with('success', 'Promosi dihapus');
     }
 }

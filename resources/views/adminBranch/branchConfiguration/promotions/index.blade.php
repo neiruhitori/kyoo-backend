@@ -4,6 +4,8 @@
   <div style="max-width: 800px; margin: 0 auto;">
     <h3 class="mb-3">Konten Promosi</h3>
 
+    @include('layouts.alert')
+
     <div class="mb-5">
       <h6 class="font-weight-bold">Tambah Promosi</h6>
 
@@ -25,21 +27,49 @@
 
       <div class="row">
         @forelse ($promotions as $promotion)
-          @if ($promotion->type == $promotion_types['text'])
-            <div class="col-md-3">
+          <div class="col-md-3">
+              @if ($promotion->type == $promotion_types['text'])
               <div class="promotion-card text-promotion-card" style="background-color: {{ $promotion->color }};">
                 <p class="text-promotion-content" style="font-size: {{ $promotion->font_size }}">
                   {!! $promotion->text !!}
                 </p>
+
+                <div class="promotion-card-tool">
+                  <form
+                    action="{{ route('admin-branch.branch-configuration.promotions.text.destroy', $promotion->id) }}"
+                    method="POST"
+                    style="width: 100%;"
+                  >
+                    @csrf
+                    @method('DELETE')
+
+                    <button type="submit" class="btn btn-promotion-preview btn-text-danger">
+                      Hapus
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
-          @elseif ($promotion->type == $promotion_types['image'])
-            <div class="col-md-3">
+            @elseif ($promotion->type == $promotion_types['image'])
               <div class="promotion-card image-promotion-card">
                 <img src="{{ asset('storage/' . $promotion->image_url) }}" alt="{{ $promotion->title }}">
+
+                <div class="promotion-card-tool">
+                  <form
+                    action="{{ route('admin-branch.branch-configuration.promotions.image.destroy', $promotion->id) }}"
+                    method="POST"
+                    style="width: 100%;"
+                  >
+                    @csrf
+                    @method('DELETE')
+
+                    <button type="submit" class="btn btn-promotion-preview btn-text-danger">
+                      Hapus
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
-          @endif
+            @endif
+          </div>
         @empty
           <div class="col-md-12">
             <div class="card">
@@ -73,6 +103,37 @@
     position: relative;
     overflow: hidden;
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+  }
+
+  .promotion-card-tool {
+    display: none;
+    justify-content: center;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    background-color: rgba(0,0,0,.825);
+  }
+
+  .promotion-card:hover .promotion-card-tool {
+    display: flex;
+  }
+
+  .btn-promotion-preview {
+    display: block;
+    width: 100%;
+  }
+
+  .btn-text-danger {
+    color: #e74a3b;
+  }
+
+  .btn-text-danger:hover {
+    color: #000;
+    background-color: #e74a3b;
   }
 
   .text-promotion-card {

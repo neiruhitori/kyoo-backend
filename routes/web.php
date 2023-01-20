@@ -110,9 +110,11 @@ Route::namespace('AdminBranch')
 
             Route::get('promotions', 'PromotionsController@index')->name('promotions.index');
             Route::get('promotions/image/create', 'PromotionsController@createImage')->name('promotions.image.create');
-            Route::get('promotions/text/create', 'PromotionsController@createText')->name('promotions.text.create');
             Route::post('promotions/image', 'PromotionsController@storeImage')->name('promotions.image.store');
+            Route::delete('promotions/image/{id}', 'PromotionsController@destroyImage')->name('promotions.image.destroy');
+            Route::get('promotions/text/create', 'PromotionsController@createText')->name('promotions.text.create');
             Route::post('promotions/text', 'PromotionsController@storeText')->name('promotions.text.store');
+            Route::delete('promotions/text/{id}', 'PromotionsController@destroyText')->name('promotions.text.destroy');
         });
 
         // Service Quality
