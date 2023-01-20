@@ -76,7 +76,7 @@
   }
 
   .text-promotion-card {
-    padding: .5rem;
+    padding: 11px;
   }
 
   .text-promotion-content {
