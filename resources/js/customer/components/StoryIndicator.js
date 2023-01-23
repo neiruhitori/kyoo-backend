@@ -43,7 +43,7 @@ const RunningIndicator = styled.div(() => {
   }
 })
 
-export default function StoryIndicator({ length, active, pause, onTimeout }) {
+export default function StoryIndicator({ length, active, pause, onTimeout, onDone }) {
   function getIndicatorItems() {
     const indicators = []
     const [position, setPosition] = useState(-100)
@@ -51,6 +51,7 @@ export default function StoryIndicator({ length, active, pause, onTimeout }) {
     useEffect(() => {
       // stop running if story done
       if (position >= 0 && active === length -1) {
+        onDone()
         return
       }
 

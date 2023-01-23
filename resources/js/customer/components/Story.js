@@ -34,7 +34,7 @@ const StoryHead = styled.div(() => {
   }
 })
 
-export default function Story({ stories, timeoutDuration = TIMEOUT_PERSECONDS }) {
+export default function Story({ stories, timeoutDuration = TIMEOUT_PERSECONDS, onDone, style }) {
   if (!stories.length) throw new Error('Story item can\'t be empty')
 
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
@@ -51,13 +51,14 @@ export default function Story({ stories, timeoutDuration = TIMEOUT_PERSECONDS })
 
   const handleMouseUp = () => setIsPause(false)
 
-  return <StoryContainer>
+  return <StoryContainer style={style}>
     <StoryHead>
       <StoryIndicator
         length={stories.length}
         active={activeStoryIndex}
         pause={isPause}
         onTimeout={handleStoryTimeout}
+        onDone={onDone}
       />
     </StoryHead>
 
