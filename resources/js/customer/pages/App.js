@@ -18,6 +18,7 @@ import BranchDetail from './BranchDetail/BranchDetail'
 import OnsiteVisitorInformation from './OnsiteVisitorInformation/OnsiteVisitorInformation'
 import BookingDetail from './BookingDetail/BookingDetail'
 import AppointmentServices from './appointment/Services'
+import Promotions from './Promotions/Promotions'
 
 import InfoAlert from '../components/InfoAlert'
 
@@ -101,6 +102,7 @@ function App() {
             <Route path="/customer/:branchId/:queueType/booking-status/:bookingId" element={<BookingStatus />} />
             <Route path="/customer/:branchId/:queueType/booking-status/:bookingId/detail" element={<BookingDetail />} />
             <Route path="/customer/:branchId/:queueType/detail" element={<BranchDetail />} />
+            <Route path="/customer/:branchId/:queueType/promotions" element={<Promotions />} />
         </Routes>
     </AppContainer>
 }
