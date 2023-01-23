@@ -6,6 +6,8 @@ import { fetchServiceById } from '../../api/services'
 import { createFeedback } from '../../api/feedback'
 import { fetchBranch } from '../../api/branch'
 import { getTermConditionByBranchId } from '../../api/termCondition'
+import { cancelAppointment } from '../../api/appointment'
+import usePromotions from '../../hooks/usePromotions'
 import { getAbrvDate, getDayName, formatBrowser } from '../../utils/date'
 
 import Header from '../../components/Header'
@@ -21,10 +23,10 @@ import ChipDanger from '../../components/ChipDanger'
 import Rating from '../../components/Rating'
 import Button from '../../components/Button'
 import Dialog from '../../components/Dialog'
+import Story from '../../components/Story'
 
 import ClockIcon from '../../icons/ClockIcon'
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
-import { cancelAppointment } from '../../api/appointment'
 
 export default function BookingStatus() {
     const { bookingId, queueType, branchId } = useParams()
@@ -33,8 +35,12 @@ export default function BookingStatus() {
     const [rating, setRating] = useState(0)
     const [allowRate, setAllowRate] = useState(false)
     const [isShowDialog, setIsShowDialog] = useState(false)
+    const [isShowPromotion, setIsShowPromotion] = useState(true)
     
-    const bookingQuery = useQuery('booking', () => getBooking(queueType, bookingId))
+    const promotionsQuery = usePromotions(branchId)
+    const bookingQuery = useQuery('booking', () => getBooking(queueType, bookingId), {
+        enabled: promotionsQuery.isSuccess
+    })
     const serviceQuery = useQuery('service', () => fetchServiceById(booking?.service_id, {
         queueType,
         date: booking?.date
@@ -109,11 +115,31 @@ export default function BookingStatus() {
         setIsShowDialog(false)
     }
 
+    function handleStoryDone() {
+        setIsShowPromotion(false)
+    }
+
     function createTermConditionMarkup() {  
         return {__html: termCondition?.body}
     }
 
     return <>
+        {promotionsQuery.isSuccess &&
+        !!promotionsQuery.data.length &&
+        isShowPromotion &&
+        <Story
+            stories={promotionsQuery.data}
+            onDone={handleStoryDone}
+            style={{
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0',
+                zIndex: '99999'
+            }}
+        />}
+
         <Banner imageUrl={branch?.photo} style={{
             position: 'absolute'
         }} />

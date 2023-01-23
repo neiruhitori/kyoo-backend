@@ -7,6 +7,7 @@ import html2canvas from 'html2canvas'
 import { getBooking } from '../../api/booking'
 import { fetchBranch } from '../../api/branch'
 import { createFeedback } from '../../api/feedback'
+import usePromotions from '../../hooks/usePromotions'
 import { formatBrowser, getDayName, getMonthAbrvName } from '../../utils/date'
 import { getCookie } from '../../lib/helper'
 
@@ -21,6 +22,7 @@ import Card from '../../components/Card'
 import Rating from '../../components/Rating'
 import Dialog from '../../components/Dialog'
 import TicketRip from '../../components/TicketRip'
+import Story from '../../components/Story'
 
 import OnsiteQueueTicket from '../../templates/OnsiteQueueTicket'
 
@@ -163,6 +165,7 @@ function OnsiteBookingStatus(props) {
     const [rating, setRating] = useState(0)
     const [isDialogShown, setIsDialogShown] = useState(false)
     const [isConfirmationDialogShown, setIsConfirmationDialogShown] = useState(false)
+    const [isShowPromotion, setIsShowPromotion] = useState(true)
 
     let booking = null
     let branch = null
@@ -187,7 +190,9 @@ function OnsiteBookingStatus(props) {
         }
     }, [])
 
+    const promotionsQuery = usePromotions(branchId)
     const bookingQuery = useQuery(['booking', bookingId], () => getBooking('onsite', bookingId), {
+        enabled: promotionsQuery.isSuccess,
         refetchInterval: () => {
             return ['end served', 'no show'].includes(booking?.status)
                 ? false
@@ -250,7 +255,27 @@ function OnsiteBookingStatus(props) {
         })
     }
 
+    function handleStoryDone() {
+        setIsShowPromotion(false)
+    }
+
     return <>
+        {promotionsQuery.isSuccess &&
+        !!promotionsQuery.data.length &&
+        isShowPromotion &&
+        <Story
+            stories={promotionsQuery.data}
+            onDone={handleStoryDone}
+            style={{
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0',
+                zIndex: '99999'
+            }}
+        />}
+
         {!!booking && !!branch && <OnsiteQueueTicket
             ref={ticketRef}
             booking={booking}
