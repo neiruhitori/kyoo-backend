@@ -15,7 +15,7 @@
                     <span class="fas fa-angle-left"></span>
                 </a>
 
-                <input type="text" name="title" class="form-control" placeholder="Masukkan nama promosi" />
+                <input type="text" name="title" class="form-control" value="{{ old('title') }}" placeholder="Masukkan nama promosi" />
             </div>
 
             <div class="d-flex align-items-center">
@@ -48,7 +48,7 @@
                         name="text"
                         placeholder="Type a promotion"
                         autofocus
-                    ></textarea>
+                    >{{ old('text') }}</textarea>
                 </div>
             </div>
         </div>

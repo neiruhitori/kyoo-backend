@@ -15,7 +15,7 @@
                     <span class="fas fa-angle-left"></span>
                 </a>
 
-                <input type="text" name="title" class="form-control" placeholder="Masukkan nama promosi" />
+                <input type="text" name="title" class="form-control" value="{{ old('title') }}" placeholder="Masukkan nama promosi" />
             </div>
 
             <div class="d-flex align-items-center">
@@ -64,7 +64,7 @@
                     placeholder="Tambahkan caption..."
                     maxlength="1024"
                     spellcheck="false"
-                ></textarea>
+                >{{ old('caption') }}</textarea>
             </div>
         </div>
     </form>
@@ -110,6 +110,7 @@
         width: 100%;
         background-color: #0D1117;
         position: relative;
+        overflow: hidden;
     }
 
     .promotion-card:hover .promotion-img-upload {
@@ -117,8 +118,9 @@
     }
 
     .promotion-img-preview {
-        height: auto;
+        height: 100%;
         width: 100%;
+        object-fit: contain;
     }
 
     .promotion-img-upload {

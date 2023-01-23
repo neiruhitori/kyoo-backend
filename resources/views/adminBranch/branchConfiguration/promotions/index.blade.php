@@ -31,7 +31,7 @@
               @if ($promotion->type == $promotion_types['text'])
               <div class="promotion-card text-promotion-card" style="background-color: {{ $promotion->color }};">
                 <p class="text-promotion-content" style="font-size: {{ $promotion->font_size }}">
-                  {!! $promotion->text !!}
+                  {!! nl2br($promotion->text) !!}
                 </p>
 
                 <div class="promotion-card-tool">
@@ -143,7 +143,7 @@
   .text-promotion-content {
     margin: 0;
     text-align: center;
-    color: #FFF;
+    color: #FFF;  
     overflow-wrap: anywhere;
   }
 
@@ -152,10 +152,9 @@
   }
 
   .image-promotion-card img {
-    width: auto;
-    height: auto;
-    max-height: 360px;
-    max-width: 182px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 
   .circle {
