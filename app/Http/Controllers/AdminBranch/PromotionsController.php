@@ -14,7 +14,10 @@ class PromotionsController extends Controller
 {
     public function index()
     {
-        $promotions = Promotion::limit(10)->get();
+        $promotions = Promotion::limit(10)
+            ->where('branch_id', Auth::user()->branch_id)
+            ->orderBy('created_at')
+            ->get();
         $promotionTypes = [
             'image' => Promotion::IMAGE_TYPE,
             'text' => Promotion::TEXT_TYPE
