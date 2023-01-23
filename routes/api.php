@@ -34,11 +34,11 @@ Route::get('branch/city/{regency_id}', 'API\BranchController@getAllByCityId');
 Route::get('branch/keyword/{keyword}', 'API\BranchController@getAllByKeyword');
 Route::get('branch/industry-category/{industry_category_id}', 'API\BranchController@getAllByIndustryCategory');
 Route::get('branch/type/{branch}', 'API\BranchController@getBranchType');
+
 Route::get('branch/{branch}', 'API\BranchController@show');
 Route::get('branch/{branch}/schedules', 'API\BranchController@getSchedules');
 Route::get('branch/{branch}/term-condition', 'API\BranchController@getTermsConditions');
-
-// holidays
+Route::get('branch/{branch}/promotions', 'API\BranchController@getPromotions');
 Route::get('branch/{branch_id}/holiday', 'API\HolidayController@getHolidayByBranchId');
 
 // service routes

@@ -8,8 +8,8 @@ use App\Branch;
 use App\Appointment;
 use App\DirectQueue;
 use App\Models\TermCondition;
-use App\ScheduleTemplateDetail;
 use App\Schedule;
+use App\Models\Promotion;
 
 class BranchController extends Controller
 {
@@ -100,5 +100,15 @@ class BranchController extends Controller
         $termCondition = TermCondition::where('branch_id', $branch->id)->first();
 
         return response()->json($termCondition);
+    }
+
+    public function getPromotions(Branch $branch)
+    {
+        $promotions = Promotion::where('branch_id', $branch->id)
+            ->limit(3)
+            ->orderBy('created_at')
+            ->get();
+
+        return response()->json($promotions);
     }
 }
