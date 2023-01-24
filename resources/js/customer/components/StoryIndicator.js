@@ -43,46 +43,29 @@ const RunningIndicator = styled.div(() => {
   }
 })
 
-export default function StoryIndicator({ length, active, pause, onTimeout, onDone }) {
+export default function StoryIndicator({
+  length,
+  active,
+  currentProgress
+}) {
   function getIndicatorItems() {
     const indicators = []
-    const [position, setPosition] = useState(-100)
-
-    useEffect(() => {
-      // stop running if story done
-      if (position >= 0 && active === length -1) {
-        onDone()
-        return
-      }
-
-      // reset position on timeout
-      if (position >= 0) {
-        setPosition(-100)
-        onTimeout()
-      }
-
-      // prevent running on pause
-      let timeout = null
-      if (!pause) {
-        timeout = setTimeout(() => {
-          setPosition(position + 1);
-        }, 50);
-      }
-  
-      return () => {
-        clearTimeout(timeout);
-      };
-    }, [position, pause]);
 
     for (let i = 0; i < length; i++) {
       indicators.push(
         <StoryIndicatorItem key={i} status={getIndicatorStatus(i, active)}>
-          {i === active && <RunningIndicator style={{ transform: `translateX(${position}%)` }} />}
+          {i === active && <RunningIndicator
+            style={{ transform: `translateX(${progressToTranslateX(currentProgress)}%)` }}
+          />}
         </StoryIndicatorItem>
       )
     }
 
     return indicators
+  }
+
+  function progressToTranslateX(progress) {
+    return progress - 100
   }
 
   function getIndicatorStatus(currentIndicator, activeIndicator) {

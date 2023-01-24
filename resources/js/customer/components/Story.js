@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 
 import StoryIndicator from "./StoryIndicator"
@@ -15,7 +15,7 @@ const storyType = {
 const StoryContainer = styled.div(() => {
   return {
     position: 'relative',
-    backgroundColor: '#0D1117',
+    backgroundColor: '#000000',
     height: '100vh',
     fontSize: '22px',
     lineHeight: '1.5'
@@ -34,48 +34,109 @@ const StoryHead = styled.div(() => {
   }
 })
 
+const StoryTool = styled.div(() => {
+  return {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1rem 0'
+  }
+})
+
+const StoryButton = styled.button(() => {
+  return {
+    backgroundColor: 'rgba(0, 0, 0, .6)',
+    color: '#FFFFFF',
+    border: '1px solid #FFFFFF',
+    borderRadius: '6px',
+    padding: '.5rem 1rem'
+  }
+})
+
 export default function Story({ stories, timeoutDuration = TIMEOUT_PERSECONDS, onDone, style }) {
   if (!stories.length) throw new Error('Story item can\'t be empty')
 
-  const [activeStoryIndex, setActiveStoryIndex] = useState(0)
+  const [activeIndex, setActiveIndex] = useState(0)
   const [isPause, setIsPause] = useState(false)
+  const [progress, setProgress] = useState(0)
 
-  const activeStory = stories[activeStoryIndex]
+  const activeStory = stories[activeIndex]
 
-  const handleStoryTimeout = () => {
-    if (activeStoryIndex === stories.length - 1) return
-    setActiveStoryIndex(activeStoryIndex + 1)
+  useEffect(() => {
+    if (progress >= 100) {
+      handleTimeout()
+      return
+    }
+
+    if (!isPause) {
+      const progressIncTimeout = setTimeout(() => {
+        setProgress(progress + 1)
+      }, 50)
+  
+      return () => clearTimeout(progressIncTimeout)
+    }
+  }, [progress, isPause])
+
+  function handlePause() {
+    setIsPause(true)
   }
 
-  const handleMouseDown = () => setIsPause(true)
+  function handleResume() {
+    setIsPause(false)
+  }
 
-  const handleMouseUp = () => setIsPause(false)
+  function handleTimeout() {
+    if (activeIndex === stories.length - 1) return onDone()
+    setProgress(0)
+    setActiveIndex(activeIndex + 1)
+  }
+
+  function handleNext() {
+    if (activeIndex === stories.length - 1) return onDone()
+    setProgress(0)
+    setActiveIndex(activeIndex + 1)
+  }
+
+  function handlePrev() {
+    if (activeIndex === 0) return
+    setProgress(0)
+    setActiveIndex(activeIndex - 1)
+  }
 
   return <StoryContainer style={style}>
     <StoryHead>
       <StoryIndicator
         length={stories.length}
-        active={activeStoryIndex}
+        active={activeIndex}
         pause={isPause}
-        onTimeout={handleStoryTimeout}
-        onDone={onDone}
+        currentProgress={progress}
       />
+
+      <StoryTool>
+        <StoryButton onClick={handlePrev}>
+          Prev
+        </StoryButton>
+
+        <StoryButton onClick={handleNext}>
+          Next
+        </StoryButton>
+      </StoryTool>
     </StoryHead>
 
     {activeStory.type === storyType.TEXT && <TextStory
       text={activeStory.text}
       background={activeStory.color}
       fontSize={activeStory.font_size}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
+      onMouseDown={handlePause}
+      onMouseUp={handleResume}
     />}
 
     {activeStory.type === storyType.IMAGE && <ImageStory
       title={activeStory.title}
       src={`/storage/${activeStory.image_url}`}
       caption={activeStory.caption}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
+      onMouseDown={handlePause}
+      onMouseUp={handleResume}
     />}
   </StoryContainer>
 }
