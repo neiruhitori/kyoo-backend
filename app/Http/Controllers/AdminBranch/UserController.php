@@ -12,8 +12,8 @@ use App\Http\Requests\AdminBranch\StoreUser;
 use App\Http\Requests\AdminBranch\UpdateUser;
 use App\Mail\CS\ResetPassword;
 use Mail;
-use Auth;
-use Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Crypt;
 use Validator;
 
@@ -26,7 +26,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where([
+        $users = User::withTrashed()->where([
             'branch_id' => Auth::user()->branch_id,
             'role' => 'cs'
         ])->get();
@@ -169,7 +169,7 @@ class UserController extends Controller
         if ($user->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
-        User::destroy($user->id);
+        $user->delete();
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Remove VCT User'
