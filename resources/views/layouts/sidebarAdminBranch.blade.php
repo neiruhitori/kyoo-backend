@@ -164,13 +164,18 @@
             >
               Syarat & Ketentuan
             </a>
-
-            <a
-              class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/promotions*') ?: 'active' }}"
-              href="{{ route('admin-branch.branch-configuration.promotions.index') }}"
-            >
-              Promosi
-            </a>
+            
+            @if (
+              Auth::user()->Branch->BranchType->is_premium &&
+              Auth::user()->Branch->hasAccess('Promosi')
+            )
+              <a
+                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/promotions*') ?: 'active' }}"
+                href="{{ route('admin-branch.branch-configuration.promotions.index') }}"
+              >
+                Promosi
+              </a>
+            @endif
           </div>
         </div>
       </li>

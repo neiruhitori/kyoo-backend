@@ -263,6 +263,7 @@ function OnsiteBookingStatus(props) {
         {promotionsQuery.isSuccess &&
         !!promotionsQuery.data.length &&
         isShowPromotion &&
+        branch?.branch_configuration.promotion &&
         <Story
             stories={promotionsQuery.data}
             onDone={handleStoryDone}

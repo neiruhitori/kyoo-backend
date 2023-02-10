@@ -108,13 +108,18 @@ Route::namespace('AdminBranch')
             Route::get('terms-conditions/get', 'TermsConditionsController@get')->name('terms-conditions.get');
             Route::put('terms-conditions', 'TermsConditionsController@update')->name('terms-conditions.store');
 
-            Route::get('promotions', 'PromotionsController@index')->name('promotions.index');
-            Route::get('promotions/image/create', 'PromotionsController@createImage')->name('promotions.image.create');
-            Route::post('promotions/image', 'PromotionsController@storeImage')->name('promotions.image.store');
-            Route::delete('promotions/image/{id}', 'PromotionsController@destroyImage')->name('promotions.image.destroy');
-            Route::get('promotions/text/create', 'PromotionsController@createText')->name('promotions.text.create');
-            Route::post('promotions/text', 'PromotionsController@storeText')->name('promotions.text.store');
-            Route::delete('promotions/text/{id}', 'PromotionsController@destroyText')->name('promotions.text.destroy');
+            Route::prefix('/promotions')
+                ->name('promotions.')
+                ->middleware('access:Promosi')
+                ->group(function () {
+                Route::get('/', 'PromotionsController@index')->name('index');
+                Route::get('/image/create', 'PromotionsController@createImage')->name('image.create');
+                Route::post('/image', 'PromotionsController@storeImage')->name('image.store');
+                Route::delete('/image/{id}', 'PromotionsController@destroyImage')->name('image.destroy');
+                Route::get('/text/create', 'PromotionsController@createText')->name('text.create');
+                Route::post('/text', 'PromotionsController@storeText')->name('text.store');
+                Route::delete('/text/{id}', 'PromotionsController@destroyText')->name('text.destroy');
+            });
         });
 
         // Service Quality

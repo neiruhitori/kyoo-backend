@@ -21,7 +21,8 @@
                         Ini adalah konfigurasi fitur yang bisa anda sesuaikan dengan kebutuhan.
                     </li>
                     <li>
-                        Untuk API Antrian KYOO hanya akan tampil Ketika cabang sudah memiliki license API. API KYOO dapat di-integrasikan ke berbagai channel layanan anda seperti WA, Telegram dll.
+                        Untuk API Antrian KYOO hanya akan tampil Ketika cabang sudah memiliki license API.
+                        API KYOO dapat di-integrasikan ke berbagai channel layanan anda seperti WA, Telegram dll.
                     </li>
                 </ul>
             </p>
@@ -48,21 +49,52 @@
                             @csrf
                             @method('PUT')
 
-                            <div class="form-group">
-                                <label for="allow_transfer">Panggilan Suara Antrian</label>
-                                <div class="form-check">
-                                    <input
-                                        type="checkbox"
-                                        name="queue_voice"
-                                        class="form-check-input"
-                                        id="queue-voice-label"
-                                        {{ ($branch_config && $branch_config->queue_voice) || old('queue_voice') ? 'checked' : '' }}
-                                    >
+                            @if (Auth::user()->Branch->hasAccess('Panggilan Suara'))
+                                <label for="">Panggilan Suara</label>
 
-                                    <label for="queue-voice-label" class="form-check-label">Aktifkan</label>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            name="queue_voice"
+                                            class="form-check-input"
+                                            id="queue-voice-label"
+                                            {{
+                                                ($branch_config && $branch_config->queue_voice) || old('queue_voice')
+                                                ? 'checked'
+                                                : ''
+                                            }}
+                                        >
+
+                                        <label for="queue-voice-label" class="form-check-label">Aktifkan</label>
+                                    </div>
+                                    @include('layouts.inputError', ['errorName' => 'queue_voice'])
                                 </div>
-                                @include('layouts.inputError', ['errorName' => 'queue_voice'])
-                            </div>
+                            @endif
+                                
+                            @if (Auth::user()->Branch->hasAccess('Promosi'))
+                                <label for="">Promosi</label>
+
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            name="promotion"
+                                            class="form-check-input"
+                                            id="promotion-label"
+                                            {{
+                                                ($branch_config && $branch_config->promotion) || old('promotion')
+                                                ? 'checked'
+                                                : ''
+                                            }}
+                                        >
+
+                                        <label for="promotion-label" class="form-check-label">Aktifkan</label>
+                                    </div>
+
+                                    @include('layouts.inputError', ['errorName' => 'queue_voice'])
+                                </div>
+                            @endif
 
                             <button type="submit" class="btn btn-warning">{{ __('Update') }}</button>
                         </form>

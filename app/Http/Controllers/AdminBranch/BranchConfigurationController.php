@@ -18,8 +18,13 @@ class BranchConfigurationController extends Controller
     public function update(UpdateBranchConfiguration $request)
     {
         $data = $request->all();
+
         if (!isset($request->queue_voice)) {
             $data['queue_voice'] = 'off';
+        }
+
+        if (!isset($request->promotion)) {
+            $data['promotion'] = 'off';
         }
         
         $branchConfiguration = Auth::user()->Branch->BranchConfiguration;

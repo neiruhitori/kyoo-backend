@@ -54,8 +54,8 @@ export default function BookingStatus() {
     const termConditionQuery = useQuery('termCondition', () => getTermConditionByBranchId(branchId))
 
     const booking = bookingQuery.data?.data
-    const service = serviceQuery.data?.data
-    const branch = branchQuery.data?.data
+    const service = serviceQuery.data
+    const branch = branchQuery.data
     const termCondition = termConditionQuery.data
 
     const branchType = branch?.branch_type.is_premium
@@ -127,6 +127,7 @@ export default function BookingStatus() {
         {promotionsQuery.isSuccess &&
         !!promotionsQuery.data.length &&
         isShowPromotion &&
+        branch?.branch_configuration.promotion &&
         <Story
             stories={promotionsQuery.data}
             onDone={handleStoryDone}

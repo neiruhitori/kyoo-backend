@@ -13,9 +13,9 @@ use App\Models\Promotion;
 
 class BranchController extends Controller
 {
-    public function getAllByCityId($regency_id)
+    public function getAllByCityId($regencyId)
     {
-        $branches = Branch::with('IndustryCategory')->whereRegencyId($regency_id)->get();
+        $branches = Branch::with('IndustryCategory')->whereRegencyId($regencyId)->get();
         return response()->json([
             'success' => true,
             'message' => 'get all branches by city id',
@@ -33,9 +33,9 @@ class BranchController extends Controller
         ]);
     }
 
-    public function getAllByIndustryCategory($industry_category_id)
+    public function getAllByIndustryCategory($industryCategoryId)
     {
-        $branches = Branch::whereIndustryCategoryId($industry_category_id)->get();
+        $branches = Branch::whereIndustryCategoryId($industryCategoryId)->get();
         return response()->json([
             'success' => true,
             'message' => 'get all branches by industry category id',
@@ -48,16 +48,17 @@ class BranchController extends Controller
         $branch->Schedule;
         $branch->IndustryCategory;
         $branch->BranchType;
+        $branch->BranchConfiguration;
 
-        $branch->likes = Appointment::whereHas('Slot.Service', function($query) use ($branch){
+        $branch->likes = Appointment::whereHas('Slot.Service', function ($query) use ($branch) {
             $query->where('branch_id', $branch->id);
         })->where('is_liked', true)->count();
 
-        $appointmentLikes = Appointment::whereHas('Slot.Service', function($query) use ($branch){
+        $appointmentLikes = Appointment::whereHas('Slot.Service', function ($query) use ($branch) {
             $query->where('branch_id', $branch->id);
         })->where('is_liked', true)->count();
 
-        $directQueueLikes = DirectQueue::whereHas('Service', function($query) use ($branch){
+        $directQueueLikes = DirectQueue::whereHas('Service', function ($query) use ($branch) {
             $query->where('branch_id', $branch->id);
         })->where('is_liked', true)->count();
 
@@ -73,10 +74,10 @@ class BranchController extends Controller
     public function getWeek()
     {
         $day = date('w');
-        $week_start = date('Y-m-d', strtotime('-'.$day.' days'));
-        $week_end = date('Y-m-d', strtotime('+'.(6-$day).' days'));
+        $weekStart = date('Y-m-d', strtotime('-'.$day.' days'));
+        $weekEnd = date('Y-m-d', strtotime('+'.(6-$day).' days'));
 
-        return ['week_start' => $week_start, 'week_end' => $week_end];
+        return ['week_start' => $weekStart, 'week_end' => $weekEnd];
     }
 
     public function getBranchType(Branch $branch)
@@ -104,6 +105,13 @@ class BranchController extends Controller
 
     public function getPromotions(Branch $branch)
     {
+        if (
+            !$branch->BranchType->is_premium ||
+            !$branch->hasAccess('Promosi')
+        ) {
+            return response()->json([]);
+        }
+
         $promotions = Promotion::where('branch_id', $branch->id)
             ->limit(3)
             ->orderBy('created_at')

@@ -1,151 +1,176 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card mb-4 custom-info" data-open="open" role="alert">
-    <div class="card-body">
-        <div class="custom-info-head">
-            <h6 class="font-weight-bold my-0">
-                <span class="fas fa-info-circle text-primary mr-1"></span>
-                Informasi
-            </h6>
+    <div class="card mb-4 custom-info" data-open="open" role="alert">
+        <div class="card-body">
+            <div class="custom-info-head">
+                <h6 class="font-weight-bold my-0">
+                    <span class="fas fa-info-circle text-primary mr-1"></span>
+                    Informasi
+                </h6>
 
-            <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                Tampilkan
-            </button>
-        </div>
+                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
+                    Tampilkan
+                </button>
+            </div>
 
-        <div class="custom-info-body">
-            <p>
+            <div class="custom-info-body">
+                <p>
                 <ul style="padding-left: 2rem;">
                     <li style="margin-bottom: 0.25rem;">
                         Ini adalah konfigurasi fitur yang bisa anda sesuaikan dengan kebutuhan.
                     </li>
                     <li>
-                        Untuk API Antrian KYOO hanya akan tampil Ketika cabang sudah memiliki license API. API KYOO dapat di-integrasikan ke berbagai channel layanan anda seperti WA, Telegram dll.
+                        Untuk API Antrian KYOO hanya akan tampil Ketika cabang sudah memiliki license API.
+                        API KYOO dapat di-integrasikan ke berbagai channel layanan anda seperti WA, Telegram dll.
                     </li>
                 </ul>
-            </p>
-            <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                </p>
+                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-12">
-        @include('layouts.alert')
+    <div class="row">
+        <div class="col-md-12">
+            @include('layouts.alert')
 
-        @if (Auth::user()->Branch->BranchType->is_direct_queue)
+            @if (Auth::user()->Branch->BranchType->is_direct_queue)
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            {{ __('update.module', ['module' => __('Branch Configuration')]) }}
+                        </h6>
+                    </div>
+                    @csrf
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form action="{{ route('admin-branch.branch-configuration.feature.update') }}"
+                                    method="post">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <div class="form-group">
+                                        <label for="maximum_recall">{{ __('Max Recall') }}</label>
+                                        <input name="maximum_recall" type="number" min="0"
+                                            class="form-control @error('maximum_recall') is-invalid @enderror"
+                                            value="{{ $branch_config->maximum_recall ?? old('maximum_recall') }}"
+                                            required>
+                                        @include('layouts.inputError', ['errorName' => 'maximum_recall'])
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="maximum_requeue_count">{{ __('Max Requeue') }}</label>
+                                        <input name="maximum_requeue_count" type="number" min="0"
+                                            class="form-control @error('maximum_requeue_count') is-invalid @enderror"
+                                            value="{{
+                                                $branch_config->maximum_requeue_count ?? old('maximum_requeue_count')
+                                            }}"
+                                            required>
+                                        @include('layouts.inputError', [
+                                            'errorName' => 'maximum_requeue_count',
+                                        ])
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="allow_transfer">{{ __('Allow Transfer') }}</label>
+                                        <select name="allow_transfer" id="allow_transfer"
+                                            class="form-control @error('allow_transfer') is-invalid @enderror"
+                                            {{ Auth::user()->Branch->BranchType->is_premium ?: 'disabled' }}>
+                                            <option value="0"
+                                                {{ $branch_config && $branch_config->allow_transfer ?: 'selected' }}>
+                                                {{ __('No') }}</option>
+                                            <option value="1"
+                                                {{ !$branch_config || !$branch_config->allow_transfer ?: 'selected' }}>
+                                                {{ __('Yes') }}</option>
+                                        </select>
+                                        @include('layouts.inputError', ['errorName' => 'allow_transfer'])
+                                    </div>
+
+                                    @if (Auth::user()->Branch->hasAccess('Panggilan Suara'))
+                                        <label for="">Panggilan Suara</label>
+
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="queue_voice" class="form-check-input"
+                                                    id="queue-voice-label"
+                                                    {{
+                                                        ($branch_config && $branch_config->queue_voice) ||
+                                                        old('queue_voice')
+                                                        ? 'checked'
+                                                        : ''
+                                                    }}>
+
+                                                <label for="queue-voice-label" class="form-check-label">Aktifkan</label>
+                                            </div>
+                                            @include('layouts.inputError', ['errorName' => 'queue_voice'])
+                                        </div>
+                                    @endif
+
+                                    @if (Auth::user()->Branch->hasAccess('Promosi'))
+                                        <label for="">Promosi</label>
+
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="promotion" class="form-check-input"
+                                                    id="promotion-label"
+                                                    {{
+                                                        ($branch_config && $branch_config->promotion) ||
+                                                        old('promotion')
+                                                        ? 'checked'
+                                                        : ''
+                                                    }}>
+
+                                                <label for="promotion-label" class="form-check-label">Promosi</label>
+                                            </div>
+
+                                            @include('layouts.inputError', ['errorName' => 'queue_voice'])
+                                        </div>
+                                    @endif
+
+                                    <button type="submit" class="btn btn-warning">{{ __('Update') }}</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        {{ __('update.module', ['module' => __('Branch Configuration')]) }}
+                        {{ __('Kyoo Queue API') }}
                     </h6>
                 </div>
                 @csrf
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="{{route('admin-branch.branch-configuration.feature.update')}}" method="post">
-                                @csrf
-                                @method('PUT')
-
-                                <div class="form-group">
-                                    <label for="maximum_recall">{{ __('Max Recall') }}</label>
-                                    <input
-                                        name="maximum_recall"
-                                        type="number"
-                                        min="0"
-                                        class="form-control @error('maximum_recall') is-invalid @enderror"
-                                        value="{{ $branch_config->maximum_recall ?? old('maximum_recall') }}"
-                                        required
-                                    >
-                                    @include('layouts.inputError', ['errorName' => 'maximum_recall'])
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="maximum_requeue_count">{{ __('Max Requeue') }}</label>
-                                    <input
-                                        name="maximum_requeue_count"
-                                        type="number"
-                                        min="0"
-                                        class="form-control @error('maximum_requeue_count') is-invalid @enderror"
-                                        value="{{ $branch_config->maximum_requeue_count ?? old('maximum_requeue_count') }}"
-                                        required
-                                    >
-                                    @include('layouts.inputError', ['errorName' => 'maximum_requeue_count'])
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="allow_transfer">{{ __('Allow Transfer') }}</label>
-                                    <select
-                                        name="allow_transfer"
-                                        id="allow_transfer"
-                                        class="form-control @error('allow_transfer') is-invalid @enderror"
-                                        {{ Auth::user()->Branch->BranchType->is_premium ?: 'disabled' }}
-                                    >
-                                        <option value="0" {{ $branch_config && $branch_config->allow_transfer ?: 'selected' }}>{{ __('No') }}</option>
-                                        <option value="1" {{ !$branch_config || !$branch_config->allow_transfer ?: 'selected' }}>{{ __('Yes') }}</option>
-                                    </select>
-                                    @include('layouts.inputError', ['errorName' => 'allow_transfer'])
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="allow_transfer">Panggilan Suara Antrian</label>
-                                    <div class="form-check">
-                                        <input
-                                            type="checkbox"
-                                            name="queue_voice"
-                                            class="form-check-input"
-                                            id="queue-voice-label"
-                                            {{ ($branch_config && $branch_config->queue_voice) || old('queue_voice') ? 'checked' : '' }}
-                                            {{ !Auth::user()->Branch->hasAccess('Panggilan Suara') ? 'disabled' : '' }}
-                                        >
-
-                                        <label for="queue-voice-label" class="form-check-label">Aktifkan</label>
-                                    </div>
-                                    @include('layouts.inputError', ['errorName' => 'queue_voice'])
-                                </div>
-
-                                <button type="submit" class="btn btn-warning">{{ __('Update') }}</button>
-                            </form>
+                            <b class="my-4">
+                                {{ __('Branch Token API only available for premium license branch and registered for API. Please contact') }}
+                                <a href="mailto:support@kyoo.id"> support@kyoo.id</a>
+                            </b>
                         </div>
                     </div>
                 </div>
             </div>
-        @endif
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    {{ __('Kyoo Queue API') }}
-                </h6>
-            </div>
-            @csrf
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <b class="my-4">
-                            {{
-                                __('Branch Token API only available for premium license branch and registered for API. Please contact')
-                            }}
-                            <a href="mailto:support@kyoo.id"> support@kyoo.id</a>
-                        </b>
-                    </div>
-                </div>
-            </div>
+            @push('js')
+                <script>
+                    $(document).ready(function() {
+                        let allow_transferOldValue =
+                            `{{
+                                old('allow_transfer') ??
+                                (Auth::user()->Branch->BranchConfiguration->allow_transfer ?? '')
+                            }}`;
+
+                        if (allow_transferOldValue !== '') {
+                            $('#allow_transfer').val(allow_transferOldValue);
+                        }
+                    });
+                </script>
+            @endpush
         </div>
-
-        @push('js')
-            <script>
-                $(document).ready(function() {
-                    let allow_transferOldValue = '{{ old("allow_transfer") ?? Auth::user()->Branch->BranchConfiguration->allow_transfer ?? "" }}';
-
-                    if(allow_transferOldValue !== '') {
-                        $('#allow_transfer').val(allow_transferOldValue);
-                    }
-                });
-            </script>
-        @endpush
     </div>
-</div>
 @endsection

@@ -40,7 +40,7 @@ class PromotionsController extends Controller
     }
 
     public function storeImage(Request $request)
-    {   
+    {
         $request->validate([
             'title' => 'required|max:255',
             'promotion_img' => 'required|image|max:512',

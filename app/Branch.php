@@ -11,7 +11,28 @@ class Branch extends Model
 {
     use SoftDeletes, HasFactory;
 
-    protected $fillable = ['industry_category_id', 'schedule_template_id', 'name', 'email', 'address', 'description', 'fixed_phone', 'mobile_phone', 'lat', 'long', 'country', 'regency_id', 'logo', 'photo', 'likes', 'is_active', 'timezone', 'branch_type_id', 'max_counter', 'corporate_id'];
+    protected $fillable = [
+        'industry_category_id',
+        'schedule_template_id',
+        'name',
+        'email',
+        'address',
+        'description',
+        'fixed_phone',
+        'mobile_phone',
+        'lat',
+        'long',
+        'country',
+        'regency_id',
+        'logo',
+        'photo',
+        'likes',
+        'is_active',
+        'timezone',
+        'branch_type_id',
+        'max_counter',
+        'corporate_id'
+    ];
 
     /**
      * The attributes that should be cast.
@@ -46,8 +67,6 @@ class Branch extends Model
         if ($this->BranchType->is_exhibition) {
             return 'exhibition';
         }
-
-        return 'onsite';
     }
 
     public function getIsPremiumAttribute()
@@ -60,7 +79,7 @@ class Branch extends Model
     }
 
     public function getIsTodayOpenAttribute()
-    {   
+    {
         $holiday = $this->Holiday->filter(function ($h) {
             return $h->date == date('Y-m-d');
         })->first();
