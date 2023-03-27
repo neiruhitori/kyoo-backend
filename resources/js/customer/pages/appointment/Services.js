@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { format, eachMonthOfInterval, parseISO } from 'date-fns'
 import id from 'date-fns/locale/id'
 
@@ -23,6 +23,7 @@ import SliderIndicator from '../../components/SliderIndicator'
 import MainContent from '../../components/MainContent'
 import TextField from '../../components/TextField'
 import IconButton from '../../components/IconButton'
+import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import CalendarWrapper from '../../components/CalendarWrapper'
 import ServiceItemSkeleton from '../../components/ServiceItemSkeleton'
 import ServiceItem from '../../components/ServiceItem'
@@ -34,6 +35,8 @@ import BoxOpenIcon from '../../icons/BoxOpenIcon'
 
 function Services() {
     const { branchId } = useParams()
+    const [searchParams] = useSearchParams();
+    const isAllowback = searchParams.get("is_allow_back");
 
     const PAGE_TITLE = 'Antrian Appointment'
 
@@ -98,18 +101,28 @@ function Services() {
     return <>
         <Banner imageUrl={branch?.photo}>
             <Header>
-                <div style={{
-                    display: 'flex',
-                    height: '100%'
-                }}>
-                    <a href="#" style={{
-                        padding: '.5rem .85rem .5rem 1.375rem',
-                        display: 'flex',
-                        alignItems: 'center'
-                    }}>
-                        <img src={branch?.logo ? `/storage/${branch?.logo}` : `/img/logo-color.svg`} height="26" />
-                    </a>
-                </div>
+                {
+                    isAllowback ?
+                        <div style={{
+                            display: 'flex',
+                            height: '100%'
+                        }}>
+                            <div
+                                onClick={() => history.back()}
+                                style={{
+                                    justifyContent: 'center',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    padding: '.85rem 1.375rem',
+                                }}
+                            >
+                                <ArrowLeftIcon/>
+                            </div>
+                        </div>
+                    :
+                        ""
+                }
+                
 
                 <div style={{
                     borderLeft: '1px solid #EEEEEE',
@@ -117,6 +130,15 @@ function Services() {
                     padding: '0 1.375rem 0 .85rem',
                     flex: '1'
                 }}>{PAGE_TITLE}</div>
+
+                <div style={{margin:'0 10px'}}>
+                    <a href="#" style={{
+                        display: 'flex',
+                        alignItems: 'center'
+                    }}>
+                        <img src={branch?.logo ? `/storage/${branch?.logo}` : `/img/logo-color.svg`} height="26" />
+                    </a>
+                </div>
             </Header>
 
             <div style={{
