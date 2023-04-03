@@ -125,6 +125,8 @@ return [
 
     'kyoo_audio_url' => env('KYOO_AUDIO_URL'),
 
+    'kyoo_wa_url' => env('KYOO_WA_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
