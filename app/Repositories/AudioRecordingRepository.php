@@ -20,6 +20,7 @@ class AudioRecordingRepository implements AudioRecordingRepositoryInterface
             'Accept' => 'application/json'
         ])
             ->get($this->audioRecordingUrl . '/recordings', $params)
+            ->throw()
             ->collect();
 
         return $recordings;
@@ -31,6 +32,7 @@ class AudioRecordingRepository implements AudioRecordingRepositoryInterface
             'Accept' => 'application/json'
         ])
             ->get($this->audioRecordingUrl . '/recordings/recent', $params)
+            ->throw()
             ->collect();
         
         return $recentRecordings;
@@ -42,6 +44,7 @@ class AudioRecordingRepository implements AudioRecordingRepositoryInterface
             'Accept' => 'application/json'
         ])
             ->post($this->audioRecordingUrl . '/recordings', $audio)
+            ->throw()
             ->collect();
 
         return $recording;
