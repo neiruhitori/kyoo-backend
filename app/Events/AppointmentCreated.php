@@ -13,7 +13,7 @@ class AppointmentCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $appointment;
+    public Appointment $appointment;
 
     /**
      * Create a new event instance.

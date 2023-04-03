@@ -4,12 +4,12 @@ namespace App\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Events\AppointmentCreated;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\CS\StoreAppointment;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
-class SendNewAppointmentNotification implements ShouldQueue
+use App\Events\AppointmentCreated;
+use App\Notifications\AppointmentCreatedNotification;
+
+class SendAppointmentCreatedNotification implements ShouldQueue
 {
     public $queue = 'listeners';
 
@@ -31,8 +31,6 @@ class SendNewAppointmentNotification implements ShouldQueue
      */
     public function handle(AppointmentCreated $event)
     {
-        Mail::to($event->appointment->email)->queue(
-            (new StoreAppointment($event->appointment))->onQueue('mails')
-        );
+        Notification::send($event->appointment, new AppointmentCreatedNotification());
     }
 }

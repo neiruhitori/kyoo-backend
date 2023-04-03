@@ -4,10 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Appointment extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'vct_id',
@@ -30,7 +31,7 @@ class Appointment extends Model
         'served_time',
         'end_served_time',
         'rating',
-        'is_liked', 
+        'is_liked',
         'appointment_channel',
         'serving_duration',
         'waiting_duration',

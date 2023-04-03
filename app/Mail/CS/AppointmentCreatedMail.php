@@ -8,11 +8,11 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Appointment;
 
-class StoreAppointment extends Mailable
+class AppointmentCreatedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $appointment;
+    private Appointment $appointment;
 
     /**
      * Create a new message instance.
