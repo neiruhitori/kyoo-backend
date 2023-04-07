@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DirectQueue extends Model
 {
-    protected $fillable = ['queue_no', 'email', 'user_id', 'vct_id', 'workstation_service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count', 'rating', 'is_liked', 'service_id', 'workstation_id', 'booking_code', 'client_id', 'fcm_id', 'waiting_duration', 'serving_duration', 'branch_id'];
+    protected $fillable = ['queue_no', 'email', 'user_id', 'vct_id', 'workstation_service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count', 'rating', 'is_liked', 'service_id', 'workstation_id', 'booking_code', 'client_id', 'fcm_id', 'waiting_duration', 'serving_duration', 'branch_id', 'old_service_id'];
 
     protected $cast = [
         'waiting_duration' => 'integer',
@@ -43,6 +43,16 @@ class DirectQueue extends Model
     public function Service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    /**
+     * Get the Old Service that owns the DirectQueue
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function OldService(): BelongsTo
+    {
+        return $this->belongsTo(Service::class, 'old_service_id', 'id');
     }
 
     /**
