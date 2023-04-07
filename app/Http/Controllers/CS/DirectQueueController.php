@@ -4,6 +4,7 @@ namespace App\Http\Controllers\CS;
 
 use App\DirectQueue;
 use App\WorkstationService;
+use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -91,6 +92,28 @@ class DirectQueueController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get all workstation service',
+            'data' => $workstationServices
+        ]);
+    }
+
+    public function getAllWorkstationServiceByBranch() {
+        $userIDs = User::select('id')->where([
+            'branch_id' => Auth::user()->branch_id,
+            'role' => 'cs',
+        ])->get();
+
+        $vctIds = [];
+        foreach ($userIDs as $value) {
+            array_push($vctIds, $value->id);
+        }
+
+        $workstationServices = WorkstationService::whereHas('Workstation.WorkstationVct', function($query) use ($vctIds) {
+            return $query->whereIn('vct_id', $vctIds);
+        })->with('Service')->get();
+     
+        return response()->json([
+            'success' => true,
+            'message' => 'get all service on branch',
             'data' => $workstationServices
         ]);
     }
@@ -549,11 +572,11 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
-        $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
+        $oldDirectQueue = DirectQueue::where('queue_no' ,$request->queue_no)
             ->where('service_id', $request->service_id)
             ->whereDate('created_at', Date('Y-m-d'))
             ->first();
-        if (!$directQueue) {
+        if (!$oldDirectQueue) {
             return response()->json([
                 'success' => false,
                 'message' => 'Queue not found',
@@ -561,19 +584,36 @@ class DirectQueueController extends Controller
             ], 404);
         }
 
-        $lastDirectQueue = DirectQueue::whereWorkstationServiceId($request->workstation_service_id)->whereDate('created_at', Date('Y-m-d'))->count();
-        $workstationService = WorkstationService::find($request->workstation_service_id);
-        $queue_no = $workstationService->service_id . sprintf('%03s', $lastDirectQueue + 1);
-        $directQueue->queue_no = $queue_no;
-        $directQueue->workstation_service_id = $request->workstation_service_id;
-        $directQueue->status = 'waiting';
-        $directQueue->save();
+        $oldDirectQueue->status = 'end served';
+        $oldDirectQueue->done_at = Date('Y-m-d H:i:s');
+        $oldDirectQueue->serving_duration = $request->serving_duration;
+        $oldDirectQueue->save();
 
         event(new QueueStatusUpdated([
-            'queue_no' => $directQueue->queue_no,
-            'status' => 'waiting',
+            'queue_no' => $oldDirectQueue->queue_no,
+            'status' => 'end served',
             'branch_id' => Auth::user()->branch_id
         ]));
+
+        if ($oldDirectQueue->client_id) {
+            event(new OnsiteQueueUpdated($oldDirectQueue));
+        }
+
+        $workstation_service = WorkstationService::find($request->workstation_service_id);
+
+        $data = $request->all();
+        $data['name'] = $oldDirectQueue->name;
+        $data['phone'] = $oldDirectQueue->phone;
+        $data['workstation_id'] = $workstation_service->workstation_id;
+        $data['user_id'] = Auth::id();
+        $data['service_id'] = $workstation_service->service_id;
+        $data['old_service_id'] = $oldDirectQueue->service_id;
+        $data['direct_queue_channel'] = 'Web';
+
+        $directQueue = $this->onsite_repository->store($data);
+
+        event(new VCTDirectQueueEvent($directQueue, Auth::user()->branch_id));
+        event(new DirectQueueEvent($directQueue, Auth::user()->branch_id));
 
         if ($directQueue->client_id) {
             event(new OnsiteQueueUpdated($directQueue));

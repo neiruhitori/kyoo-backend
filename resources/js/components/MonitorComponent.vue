@@ -518,7 +518,7 @@ export default {
       this.isLoading = true;
 
       try {
-        if (this.mediaRecorder.state === 'recording') {
+        if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
           this.mediaRecorder.stop()
           this.mediaRecorder.addEventListener('stop', this.handleRecorderStop)
         }
@@ -542,7 +542,7 @@ export default {
     },
 
     async onRequeue() {
-      if (this.mediaRecorder.state === 'recording') {
+      if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop()
       }
       this.resetTimer()
@@ -574,7 +574,7 @@ export default {
     },
   
     async onNoShow() {
-      if (this.mediaRecorder.state === 'recording') {
+      if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop()
       }
       this.resetTimer()
@@ -605,7 +605,7 @@ export default {
       
       try {
         const workstationServices = await axios.get(
-          "/cs/directQueue/workstationServices"
+          "/cs/directQueue/allWorkstationServices"
         );
         this.workstationServices = workstationServices.data.data;
         this.isOnTransfer = true;
@@ -617,7 +617,7 @@ export default {
     },
   
     async onSubmitTransfer(e) {
-      if (this.mediaRecorder.state === 'recording') {
+      if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop()
       }
       this.resetTimer()
@@ -632,7 +632,8 @@ export default {
         const data = {
           queue_no: e.target.queue_no.value,
           workstation_service_id: e.target.workstation_service_id.value,
-          service_id: selected_queue[0].service_id
+          service_id: selected_queue[0].service_id,
+          serving_duration: Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000)
         };
         await axios.post("/cs/directQueue/onTransfer", data);
         this.isOnServed = false;

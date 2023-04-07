@@ -326,6 +326,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     // Direct Queue
     Route::get('directQueue/monitor', 'DirectQueueController@monitor')->name('directQueue.monitor')->middleware('checkDirectQueue');
     Route::get('directQueue/workstationServices', 'DirectQueueController@workstationServices')->middleware('checkDirectQueue');
+    Route::get('directQueue/allWorkstationServices', 'DirectQueueController@getAllWorkstationServiceByBranch')->middleware('checkDirectQueue');
     Route::resource('directQueue', 'DirectQueueController')->middleware('checkDirectQueue');
     Route::post('directQueue/onServed', 'DirectQueueController@onServed')->middleware('checkDirectQueue');
     Route::post('directQueue/onRecall', 'DirectQueueController@onRecall')->middleware('checkDirectQueue');
