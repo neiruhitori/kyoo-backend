@@ -88,6 +88,23 @@
                                         @include('layouts.inputError', ['errorName' => 'allow_transfer'])
                                     </div>
 
+                                    <div class="form-group">
+                                        <label for="queue_layout_configuration">{{ __('Queue Layout Configuration') }}</label>
+                                        <select name="queue_layout_configuration" id="queue_layout_configuration"
+                                            class="form-control @error('queue_layout_configuration') is-invalid @enderror"
+                                            {{ Auth::user()->Branch->BranchType->is_premium ?: 'disabled' }}>
+                                            <option value="standard-ui"
+                                                {{ !$branch_config || $branch_config->queue_layout_configuration == "standard-ui" ? 'selected' : '' }}>
+                                                {{ __('Standard UI') }}
+                                            </option>
+                                            <option value="modern-ui"
+                                                {{ $branch_config && $branch_config->queue_layout_configuration == "modern-ui" ? 'selected' : '' }}>
+                                                {{ __('Modern UI') }}
+                                            </option>
+                                        </select>
+                                        @include('layouts.inputError', ['errorName' => 'queue_layout_configuration'])
+                                    </div>
+
                                     @if (Auth::user()->Branch->hasAccess('Panggilan Suara'))
                                         <label for="">Panggilan Suara</label>
 
