@@ -125,14 +125,17 @@
                             <div class="card-header" role="tab" id="heading-1">
                                 <h6 class="mb-0">
                                     <a data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1" onclick="showImage('web-portal-asset')">
-                                        Ambil antrian melalui web portal
+                                        Ambil antrian melalui Web Portal
                                     </a>
                                 </h6>
                                 </div>
                                 <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion">
                                 <div class="card-body">
                                     Pelanggan dapat mengakses alamat web dibawah ini untuk mengambil antrian onsite/appointement/booking layanan Anda. Alamat web dibawah ini bisa tempatkan di website, Instagram, sosial media, dan channel informasi Institusi Anda lainnya.
-                                    <a href="{{ $short_url }}">{{ $short_url }}</a>
+                                    <div>
+                                        <a href="{{ $short_url }}" target="_blank" id="customer-url">{{ $short_url }}</a>
+                                        <button class="btn btn-secondary ml-2" onclick="copyToClipboard()">Copy URL</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -148,7 +151,7 @@
                             <div class="card-body">
                                 Pelanggan dapat melakukan scan QR-code Cabang, Anda dapat men-cetak dan menempatkan QR-code ini di pintu masuk Cabang.
                                 <div style="margin-top: 15px;">
-                                    <a href="https://appointment.kyoo.id/admin-branch/branch-qr-code" class="btn btn-sm btn-primary">Lihat QR Code</a>
+                                    <a href="{{ url('') }}/admin-branch/branch-qr-code" class="btn btn-sm btn-primary">Lihat QR Code</a>
                                 </div>
                             </div>
                             </div>
@@ -157,13 +160,18 @@
                             <div class="card-header" role="tab" id="heading-3">
                             <h6 class="mb-0">
                                 <a class="collapsed" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3" onclick="showImage('app-asset')">
-                                    Ambil antrian melalui Aplikasi Kyoo
+                                    Ambil antrian melalui Aplikasi KYOO
                                 </a>
                             </h6>
                             </div>
                             <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion">
                             <div class="card-body">
-                                Pelanggan dapat mendownload aplikasi KYOO untuk mengambil antrian.
+                                Pelanggan dapat mendownload Aplikasi KYOO untuk mengambil antrian.
+                                <div style="width: 145px;height: auto;">
+                                <a href="https://play.google.com/store/apps/details?id=com.kyoo.android" target="__blank">
+                                    <img src="/img/playstore.png" height="70px" />
+                                </a>
+                                </div>
                             </div>
                             </div>
                         </div>
@@ -212,6 +220,10 @@
                     element.classList.add('hide');
                 }
             });
+        }
+        function copyToClipboard() {
+            const urlEl = document.getElementById('customer-url')
+            navigator.clipboard.writeText(urlEl.href)
         }
     </script>
 @endpush
