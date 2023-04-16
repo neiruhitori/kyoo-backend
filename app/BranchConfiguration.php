@@ -12,6 +12,7 @@ class BranchConfiguration extends Model
         'maximum_requeue_count',
         'allow_transfer',
         'queue_voice',
-        'promotion'
+        'promotion',
+        'queue_layout_configuration'
     ];
 }
