@@ -18,7 +18,7 @@ class WhatsAppService
         Http::withHeaders([
             'Accept' => 'application/json'
         ])
-            ->post("{$this->waUrl}/message", [
+            ->post("{$this->waUrl}/messages", [
                 'phone_number' => $phoneNumber,
                 'message' => $message
             ])
