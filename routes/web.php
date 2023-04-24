@@ -267,6 +267,10 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::post('corporate/{corporateId}/branch', 'CorporateBranchController@store')->name('corporate.branch.store');
     Route::delete('corporate/{corporateId}/branch/{branchId}', 'CorporateBranchController@destroy')->name('corporate.branch.destroy');
     Route::get('corporate/{corporateId}/branch/options', 'CorporateBranchController@createOptions')->name('corporate.branch.options');
+
+    Route::get('waSession', 'WaSessionController@index')->name('waSession.index');
+    Route::get('waSession/qr', 'WaSessionController@getQr')->name('waSession.qr');
+    Route::get('waSession/me', 'WaSessionController@getProfile')->name('waSession.me');
 });
 
 Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch', 'checkAdminBranchPassword')->name('adminBranch.')->group(function () {

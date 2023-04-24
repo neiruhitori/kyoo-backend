@@ -13,6 +13,26 @@ class WhatsAppService
         $this->waUrl = config('app.kyoo_wa_url');
     }
 
+    public function authenticate()
+    {
+        return Http::withHeaders([
+            'Accept' => 'application/json'
+        ])
+            ->post("{$this->waUrl}/authentication")
+            ->throw()
+            ->collect();
+    }
+
+    public function me()
+    {
+        return Http::withHeaders([
+            'Accept' => 'application/json'
+        ])
+            ->get("{$this->waUrl}/me")
+            ->throw()
+            ->collect();
+    }
+
     public function sendTextMessage(string $phoneNumber, string $message)
     {
         Http::withHeaders([

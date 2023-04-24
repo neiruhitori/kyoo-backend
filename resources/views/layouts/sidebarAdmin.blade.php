@@ -109,6 +109,13 @@
         </div>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link" href="{{route('admin.waSession.index')}}">
+          <i class="fab fa-whatsapp"></i>
+          <span>WhatsApp Session</span>
+        </a>
+      </li>
+
       <!-- Divider -->
       <hr class="sidebar-divider">
 
