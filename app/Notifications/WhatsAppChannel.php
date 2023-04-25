@@ -16,9 +16,11 @@ class WhatsAppChannel
 
     public function send(object $notifiable, Notification $notification): void
     {
-        $this->whatsAppService->sendTextMessage(
-            $notifiable->phone,
-            $notification->toWhatsApp($notifiable)
-        );
+        if ($notifiable->phone && $notifiable->Branch->is_premium) {
+            $this->whatsAppService->sendTextMessage(
+                $notifiable->phone,
+                $notification->toWhatsApp($notifiable)
+            );
+        }
     }
 }
