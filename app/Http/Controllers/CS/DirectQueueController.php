@@ -217,7 +217,7 @@ class DirectQueueController extends Controller
     public function onServed(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'queue_no' => 'required|alpha_num|min:1|exists:direct_queues',
             'is_skip' => 'nullable|boolean',
             'service_id' => 'required|integer|exists:services,id'
         ];
@@ -320,7 +320,7 @@ class DirectQueueController extends Controller
     public function onRecall(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'queue_no' => 'required|alpha_num|min:1|exists:direct_queues',
             'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -397,7 +397,7 @@ class DirectQueueController extends Controller
     public function onRequeue(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues,queue_no',
+            'queue_no' => 'required|alpha_num|min:1|exists:direct_queues,queue_no',
             'service_id' => 'required|integer|exists:services,id'
         ];
         
@@ -464,7 +464,7 @@ class DirectQueueController extends Controller
     public function onEndServed(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'queue_no' => 'required|alpha_num|min:1|exists:direct_queues',
             'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -512,7 +512,7 @@ class DirectQueueController extends Controller
     public function onNoShow(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'queue_no' => 'required|alpha_num|min:1|exists:direct_queues',
             'service_id' => 'required|integer|exists:services,id'
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -559,7 +559,7 @@ class DirectQueueController extends Controller
     public function onTransfer(Request $request)
     {
         $rules = [
-            'queue_no' => 'required|integer|min:1|exists:direct_queues',
+            'queue_no' => 'required|alpha_num|min:1|exists:direct_queues',
             'workstation_service_id' => 'required|integer|min:1|exists:workstation_services,id',
             'service_id' => 'required|integer|exists:services,id'
         ];
