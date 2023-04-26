@@ -328,6 +328,8 @@
     "You email profile succesfully updated. Please re-login on KYOO Apps": "Profil email Anda berhasil diperbarui. Silakan login kembali di Aplikasi KYOO",
     "Appointment maximum limit already reached, please find other timeslot schedule": "Batas maksimum antrian appointment telah terlampaui, tolong gunakan jadwal slot waktu lain",
     "Queue maximum limit already reached, please find other timeslot schedule": "Batas maksimum antrian telah terlampaui, tolong gunakan jadwal waktu lain",
-    "This service open at :day": "Layanan ini buka pada hari :day"
+    "This service open at :day": "Layanan ini buka pada hari :day",
     
+    "Select Prefix": "Pilih Awalan Nomor Antrian",
+    "Custom Prefix Number Queue": "Kustom Nomor Antrean"
 }
