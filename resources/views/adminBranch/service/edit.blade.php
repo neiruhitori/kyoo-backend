@@ -36,7 +36,7 @@
                                     <div class="form-group">
                                         <label for="prefix_queue">{{ __('Custom Prefix Number Queue') }}</label>
                                         <select name="prefix_queue" id="prefix_queue" class="form-control @error('prefix_queue') is-invalid @enderror">
-                                            <option value="">{{ __('- Select Prefix -') }}</option>
+                                            <option value=""> - {{ __('Select Prefix') }} - </option>
                                             @foreach ($prefixQueueList as $prefix)
                                                 <option value="{{$prefix}}">{{$prefix}} xxx</option>
                                             @endforeach
