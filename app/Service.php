@@ -10,7 +10,7 @@ class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['branch_id', 'name', 'department_id'];
+    protected $fillable = ['branch_id', 'name', 'department_id', 'prefix_queue'];
 
     public function Slot()
     {
