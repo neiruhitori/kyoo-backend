@@ -119,9 +119,14 @@ class ServiceController extends Controller
         if ($service->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
-        
-        $prefixQueues = Service::where('branch_id', $service->branch_id)->pluck('prefix_queue')->toArray();
-        if (in_array($request->prefix_queue, $prefixQueues) && $request->prefix_queue !== trim($service->prefix_queue)) {
+
+        $prefixQueues = Service::where('branch_id', '=', $service->branch_id)
+            ->where('id', '!=', $service->id)
+            ->pluck('prefix_queue')
+            ->toArray();
+
+        $prefixQueues = array_map('trim', $prefixQueues);
+        if (in_array($request->prefix_queue, $prefixQueues)) {
             return back()->with('error', 'Edit Layanan gagal. Kustom nomer antrian sudah di pakai pada layanan lain');
         }
 
