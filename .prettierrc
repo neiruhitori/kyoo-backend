@@ -1,0 +1,6 @@
+{
+  "tabWidth": 4,
+  "useTabs": false,
+  "sortHtmlAttributes": "code-guide",
+  "wrapAttributes": "force-expand-multiline"
+}
