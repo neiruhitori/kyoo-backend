@@ -32,6 +32,18 @@
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'department_id'])
                                 </div>
+                                @if ($isAllowConfigPrefix)
+                                    <div class="form-group">
+                                        <label for="prefix_queue">{{ __('Custom Prefix Number Queue') }}</label>
+                                        <select name="prefix_queue" id="prefix_queue" class="form-control @error('prefix_queue') is-invalid @enderror">
+                                            <option value=""> {{ __('Select Prefix') }} </option>
+                                            @foreach ($prefixQueueList as $prefix)
+                                                <option value="{{$prefix}}">{{$prefix}} xxx</option>
+                                            @endforeach
+                                        </select>
+                                        @include('layouts.inputError', ['errorName' => 'prefix_queue'])
+                                    </div>
+                                @endif
                                 <button class="btn btn-warning">{{ __('Update') }}</button>
                             </form>
                         </div>
@@ -44,6 +56,11 @@
 @push('js')
     <script>
         $(document).ready(function() {
+            const prefix_queueOldValue = '{{ old('prefix_queue') ?: $service->prefix_queue }}';
+            if(prefix_queueOldValue !== '') {
+                $('#prefix_queue').val(prefix_queueOldValue.trim());
+            }
+
             const department_idOldValue = '{{ old('department_id') ?: $service->department_id }}';
             
             if(department_idOldValue !== '') {

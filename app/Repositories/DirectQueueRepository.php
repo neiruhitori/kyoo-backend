@@ -86,7 +86,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             }
 
             $data['branch_id'] = $branch->id;
-            $data['queue_no'] = $this->generate_queue_number($service->branch_id, $data['service_id']);
+            $data['queue_no'] = $this->generate_queue_number($service->branch_id, $data['service_id'], trim($service->prefix_queue));
             $data['booking_code'] = $this->generate_booking_code();
 
             $directQueue = DirectQueue::create($data);
@@ -99,7 +99,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
         });
     }
 
-    private function generate_queue_number($branch_id, $service_id) {
+    private function generate_queue_number($branch_id, $service_id, $prefix) {
         $last_onsite_queue = DirectQueue::where('service_id', $service_id)
             ->whereDate('created_at', date('Y-m-d'))
             ->orderBy('queue_no', 'desc')
@@ -110,7 +110,17 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             ->count();
 
         if ($last_onsite_queue) {
+            $existingPrefix = substr($last_onsite_queue->queue_no, 0, strlen($prefix));
+            if ($prefix && $existingPrefix == $prefix) {
+                $lastOnsiteQueueNumber = substr($last_onsite_queue->queue_no, strlen($prefix));
+                return $prefix . sprintf('%03s', (int) $lastOnsiteQueueNumber + 1);
+            }
+
             return (int) $last_onsite_queue->queue_no + 1;
+        }
+
+        if ($prefix) {
+            return $prefix . sprintf('%03s', 1);
         }
         
         return $service_order_no . sprintf('%03s', 1);
