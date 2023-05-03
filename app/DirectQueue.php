@@ -25,6 +25,11 @@ class DirectQueue extends Model
         return date('Y-m-d H:i:s', \strtotime($value));
     }
 
+    public function Branch()
+    {
+        return $this->belongsTo('App\Branch');
+    }
+
     public function WorkstationService()
     {
         return $this->belongsTo('App\WorkstationService');
