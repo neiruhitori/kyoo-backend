@@ -34,15 +34,15 @@
 
                 <div class="d-flex justify-content-between" style="max-width: 160px; gap: 8px;">
                   <div class="text-center">
-                    <h4 class="h3 font-weight-bold mb-0 text-dark">{{ clock.hours || '00' }}</h4>
+                    <h4 class="h3 font-weight-bold mb-0 text-dark" ref="coundownHours">{{ clock.hours || '00' }}</h4>
                     <span>Jam</span>
                   </div>
                   <div class="text-center">
-                    <h4 class="h3 font-weight-bold mb-0 text-dark">{{ clock.minutes || '00' }}</h4>
+                    <h4 class="h3 font-weight-bold mb-0 text-dark" ref="coundownMinutes">{{ clock.minutes || '00' }}</h4>
                     <span>Menit</span>
                   </div>
                   <div class="text-center">
-                    <h4 class="h3 font-weight-bold mb-0 text-dark">{{ clock.seconds || '00' }}</h4>
+                    <h4 class="h3 font-weight-bold mb-0 text-dark" ref="coundownSeconds">{{ clock.seconds || '00' }}</h4>
                     <span>Detik</span>
                   </div>
                 </div>
@@ -348,7 +348,7 @@ export default {
     if (selected_queue) {
       this.selectQueue(selected_queue.queue_no);
       this.timer = Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000)
-      this.startTimer()
+      this.startTimer(selected_queue)
     }
   },
 
@@ -381,13 +381,29 @@ export default {
       this.mediaRecorder.addEventListener('dataavailable', this.handleDataAvailable)
     },
 
-    startTimer() {
+    startTimer(selected_queue) {
+      const slaDuration = selected_queue?.service?.sla_duration * 60;
+
       this.timerInterval = setInterval(() => {
         this.timer++
 
         const seconds = Math.floor(this.timer % 3600 % 60)
         const minutes = Math.floor(this.timer % 3600 / 60)
         const hours = Math.floor(this.timer / 3600)
+  
+        if (!!slaDuration && this.timer >= slaDuration) {
+          const coundownHours = this.$refs.coundownHours;
+          coundownHours.classList.add('text-danger');
+          coundownHours.classList.remove('text-dark');
+
+          const coundownMinutes = this.$refs.coundownMinutes;
+          coundownMinutes.classList.add('text-danger');
+          coundownMinutes.classList.remove('text-dark');
+
+          const coundownSeconds = this.$refs.coundownSeconds;
+          coundownSeconds.classList.add('text-danger');
+          coundownSeconds.classList.remove('text-dark');
+        }
 
         this.clock.seconds = seconds < 10 ? '0' + seconds : seconds
         this.clock.minutes = minutes < 10 ? '0' + minutes : minutes
@@ -401,6 +417,18 @@ export default {
       this.clock.hours = 0
       this.clock.minutes = 0
       this.clock.seconds = 0
+
+      const coundownHours = this.$refs.coundownHours;
+      coundownHours.classList.add('text-dark');
+      coundownHours.classList.remove('text-danger');
+
+      const coundownMinutes = this.$refs.coundownMinutes;
+      coundownMinutes.classList.add('text-dark');
+      coundownMinutes.classList.remove('text-danger');
+
+      const coundownSeconds = this.$refs.coundownSeconds;
+      coundownSeconds.classList.add('text-dark');
+      coundownSeconds.classList.remove('text-danger');
     },
 
     async getQueues() {
@@ -465,16 +493,16 @@ export default {
         if (
           this.auth.branch.branch_type.is_premium &&
           this.accessible_features.includes('Voice Recording') &&
-          this.mediaRecorder.state === 'inactive'
+          this.mediaRecorder?.state === 'inactive'
         ) {
           this.audioChunks = []
           this.mediaRecorder.start()
         }
 
-        this.startTimer()
+        this.startTimer(selected_queue)
       } catch (error) {
         this.getQueues();
-        alert(error.response.data.message);
+        console.error(error);
       }
       this.isLoading = false;
     },

@@ -27,7 +27,8 @@ class UpdateService extends FormRequest
         return [
             'name' => 'required|string',
             'department_id' => 'required|exists:departments,id',
-            'prefix_queue' => 'required|alpha_num'
+            'prefix_queue' => 'required|alpha_num',
+            'sla_duration' => 'numeric|min:0'
         ];
     }
 }

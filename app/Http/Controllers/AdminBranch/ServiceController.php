@@ -96,6 +96,7 @@ class ServiceController extends Controller
         }
 
         $isAllowConfigPrefix = Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->hasAccess('Panggilan Suara');
+        $isDirectQueueAndPemiumUser = Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->BranchType->is_premium;
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         
         return view('adminBranch.service.edit', [
@@ -103,6 +104,7 @@ class ServiceController extends Controller
             'departments' => $departments,
             'prefixQueueList' => $this->PREFIX_QUEUE_LIST,
             'isAllowConfigPrefix' => $isAllowConfigPrefix,
+            'isDirectQueueAndPemiumUser' => $isDirectQueueAndPemiumUser,
         ]);
     }
 
