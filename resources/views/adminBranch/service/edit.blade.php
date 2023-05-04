@@ -44,6 +44,14 @@
                                         @include('layouts.inputError', ['errorName' => 'prefix_queue'])
                                     </div>
                                 @endif
+                                @if ($isDirectQueueAndPemiumUser)
+                                    <div class="form-group">
+                                        <label for="prefix_queue">{{ __('SLA Duration Service') }}</label>
+                                        <input name="sla_duration" type="number" class="form-control @error('sla_duration') is-invalid @enderror" value="{{old('sla_duration') ?: $service->sla_duration}}" min="0" required>
+                                        <label style="font-size: 12px;">Satuan durasi dalam menit, untuk menonaktifkan isi angka 0</label>
+                                        @include('layouts.inputError', ['errorName' => 'prefix_queue'])
+                                    </div>
+                                @endif
                                 <button class="btn btn-warning">{{ __('Update') }}</button>
                             </form>
                         </div>
