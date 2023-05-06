@@ -9,7 +9,7 @@
                         {{ __('update.module', ['module' => __('Branch Configuration')]) }}
                     </h6>
                 </div>
-                @csrf
+
                 <div class="card-body">
                     @include('layouts.alert')
                     <div class="row">
@@ -17,6 +17,7 @@
                             <form action="{{route('adminBranch.branchConfiguration.update')}}" method="post">
                                 @csrf
                                 @method('PUT')
+
                                 <div class="form-group">
                                     <label for="maximum_recall">{{ __('Max Recall') }}</label>
                                     <input name="maximum_recall" type="number" min="0" class="form-control @error('maximum_recall') is-invalid @enderror" value="{{old('maximum_recall') ?: Auth::user()->Branch->BranchConfiguration->maximum_recall}}" required>
@@ -47,6 +48,7 @@
         </div>
     </div>
 @endsection
+
 @push('js')
     <script>
         $(document).ready(function() {
