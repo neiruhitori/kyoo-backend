@@ -13,6 +13,7 @@ class BranchConfiguration extends Model
         'allow_transfer',
         'queue_voice',
         'promotion',
-        'queue_layout_configuration'
+        'queue_layout_configuration',
+        'wa_notification',
     ];
 }

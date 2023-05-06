@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
 use App\Services\WhatsAppService;
+use Illuminate\Support\Facades\Log;
 
 class WhatsAppChannel
 {
@@ -16,7 +17,14 @@ class WhatsAppChannel
 
     public function send(object $notifiable, Notification $notification): void
     {
-        if ($notifiable->phone && $notifiable->Branch && $notifiable->Branch->is_premium) {
+        Log::info(['wa_notification' => $notifiable->Branch->BranchConfiguration->wa_notification]);
+
+        if (
+            $notifiable->phone &&
+            $notifiable->Branch &&
+            $notifiable->Branch->is_premium &&
+            $notifiable->Branch->BranchConfiguration->wa_notification != false
+        ) {
             $this->whatsAppService->sendTextMessage(
                 $notifiable->phone,
                 $notification->toWhatsApp($notifiable)

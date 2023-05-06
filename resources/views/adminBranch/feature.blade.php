@@ -35,22 +35,22 @@
         <div class="col-md-12">
             @include('layouts.alert')
 
-            @if (Auth::user()->Branch->BranchType->is_direct_queue)
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            {{ __('update.module', ['module' => __('Branch Configuration')]) }}
-                        </h6>
-                    </div>
-                    @csrf
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <form action="{{ route('admin-branch.branch-configuration.feature.update') }}"
-                                    method="post">
-                                    @csrf
-                                    @method('PUT')
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('update.module', ['module' => __('Branch Configuration')]) }}
+                    </h6>
+                </div>
 
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form action="{{ route('admin-branch.branch-configuration.feature.update') }}"
+                            method="post">
+                                @csrf
+                                @method('PUT')
+                            
+                                @if (Auth::user()->Branch->BranchType->is_direct_queue)
                                     <div class="form-group">
                                         <label for="maximum_recall">{{ __('Max Recall') }}</label>
                                         <input name="maximum_recall" type="number" min="0"
@@ -145,14 +145,33 @@
                                             @include('layouts.inputError', ['errorName' => 'queue_voice'])
                                         </div>
                                     @endif
+                                @endif
 
-                                    <button type="submit" class="btn btn-warning">{{ __('Update') }}</button>
-                                </form>
-                            </div>
+                                <label for="wa-notification">Notifikasi WA</label>
+
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="wa_notification" class="form-check-input"
+                                            id="wa-notification"
+                                            {{
+                                                ($branch_config && $branch_config->wa_notification) ||
+                                                old('wa_notification')
+                                                ? 'checked'
+                                                : ''
+                                            }}>
+
+                                        <label for="wa-notification" class="form-check-label">Aktifkan</label>
+                                    </div>
+
+                                    @include('layouts.inputError', ['errorName' => 'wa_notification'])
+                                </div>
+
+                                <button type="submit" class="btn btn-warning">{{ __('Update') }}</button>
+                            </form>
                         </div>
                     </div>
                 </div>
-            @endif
+            </div>
 
             <div class="card shadow mb-4">
                 <div class="card-header py-3">

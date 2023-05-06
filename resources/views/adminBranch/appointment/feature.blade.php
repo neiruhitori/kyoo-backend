@@ -41,7 +41,7 @@
                     {{ __('update.module', ['module' => __('Branch Configuration')]) }}
                 </h6>
             </div>
-            @csrf
+
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
@@ -95,6 +95,25 @@
                                     @include('layouts.inputError', ['errorName' => 'queue_voice'])
                                 </div>
                             @endif
+
+                            <label for="wa-notification">Notifikasi WA</label>
+
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input type="checkbox" name="wa_notification" class="form-check-input"
+                                        id="wa-notification"
+                                        {{
+                                            ($branch_config && $branch_config->wa_notification) ||
+                                            old('wa_notification')
+                                            ? 'checked'
+                                            : ''
+                                        }}>
+
+                                    <label for="wa-notification" class="form-check-label">Aktifkan</label>
+                                </div>
+
+                                @include('layouts.inputError', ['errorName' => 'wa_notification'])
+                            </div>
 
                             <button type="submit" class="btn btn-warning">{{ __('Update') }}</button>
                         </form>

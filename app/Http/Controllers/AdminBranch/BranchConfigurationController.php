@@ -26,6 +26,10 @@ class BranchConfigurationController extends Controller
         if (!isset($request->promotion)) {
             $data['promotion'] = 'off';
         }
+
+        if (!isset($request->wa_notification)) {
+            $data['wa_notification'] = 'off';
+        }
         
         $branchConfiguration = Auth::user()->Branch->BranchConfiguration;
 
