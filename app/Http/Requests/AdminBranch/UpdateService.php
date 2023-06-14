@@ -17,6 +17,16 @@ class UpdateService extends FormRequest
         return Auth::user()->role == 'admin_branch';
     }
 
+    protected function isRequiredPrefixQueue()
+    {
+        return Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->hasAccess('Panggilan Suara');
+    }
+
+    protected function isRequiredSLADuration()
+    {
+        return Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->BranchType->is_premium;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,11 +34,12 @@ class UpdateService extends FormRequest
      */
     public function rules()
     {
+
         return [
             'name' => 'required|string',
             'department_id' => 'required|exists:departments,id',
-            'prefix_queue' => 'required|alpha_num',
-            'sla_duration' => 'numeric|min:0'
+            'prefix_queue' => $this->isRequiredPrefixQueue() ? 'required|alpha_num' : 'nullable|alpha_num',
+            'sla_duration' => $this->isRequiredSLADuration() ? 'numeric|min:0' : 'numeric',
         ];
     }
 }

@@ -82,6 +82,11 @@ class ServiceController extends Controller
         //
     }
 
+    private function isAllowConfigPrefix()
+    {
+        return Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->hasAccess('Panggilan Suara');
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -95,7 +100,6 @@ class ServiceController extends Controller
             return redirect(route('unauthorized'));
         }
 
-        $isAllowConfigPrefix = Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->hasAccess('Panggilan Suara');
         $isDirectQueueAndPemiumUser = Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->BranchType->is_premium;
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         
@@ -103,7 +107,7 @@ class ServiceController extends Controller
             'service' => $service,
             'departments' => $departments,
             'prefixQueueList' => $this->PREFIX_QUEUE_LIST,
-            'isAllowConfigPrefix' => $isAllowConfigPrefix,
+            'isAllowConfigPrefix' => $this->isAllowConfigPrefix(),
             'isDirectQueueAndPemiumUser' => $isDirectQueueAndPemiumUser,
         ]);
     }
@@ -122,14 +126,16 @@ class ServiceController extends Controller
             return redirect(route('unauthorized'));
         }
 
-        $prefixQueues = Service::where('branch_id', '=', $service->branch_id)
+        if ($this->isAllowConfigPrefix()) {
+            $prefixQueues = Service::where('branch_id', '=', $service->branch_id)
             ->where('id', '!=', $service->id)
             ->pluck('prefix_queue')
             ->toArray();
 
-        $prefixQueues = array_map('trim', $prefixQueues);
-        if (in_array($request->prefix_queue, $prefixQueues)) {
-            return back()->with('error', 'Edit Layanan gagal. Kustom nomer antrian sudah di pakai pada layanan lain');
+            $prefixQueues = array_map('trim', $prefixQueues);
+            if (in_array($request->prefix_queue, $prefixQueues)) {
+                return back()->with('error', 'Edit Layanan gagal. Kustom nomer antrian sudah di pakai pada layanan lain');
+            }
         }
 
         $service->update($request->all());
