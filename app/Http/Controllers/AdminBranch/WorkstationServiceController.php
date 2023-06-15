@@ -145,16 +145,27 @@ class WorkstationServiceController extends Controller
      */
     public function destroy(Request $request, Workstation $workstation, WorkstationService $workstationService)
     {
-        // gate
-        if ($workstationService->Service->branch_id != Auth::user()->branch_id) {
-            return redirect(route('unauthorized'));
+        try {    
+            // gate
+            if ($workstationService->Service->branch_id != Auth::user()->branch_id) {
+                return redirect(route('unauthorized'));
+            }
+
+            $workstationService->delete();
+            Log::create([
+                'user_id' => Auth::id(),
+                'description' => 'Remove Workstation Service'
+            ]);
+
+            $request->session()->flash('error', __('Workstation Service has been removed'));
+            
+            return redirect(route('admin-branch.branch-configuration.workstation.workstation-service.index', $workstation->id));
+        } catch (\Throwable $e) {
+            if (str_contains($e->getMessage(), 'SQLSTATE[23503]')) {
+                return back()->with('error', 'Hapus layanan gagal. Data masih direferensikan dari tabel lain');
+            }
+
+            return back()->with('error', $e->getMessage());
         }
-        $workstationService->delete();
-        Log::create([
-            'user_id' => Auth::id(),
-            'description' => 'Remove Workstation Service'
-        ]);
-        $request->session()->flash('error', __('Workstation Service has been removed'));
-        return redirect(route('admin-branch.branch-configuration.workstation.workstation-service.index', $workstation->id));
     }
 }
