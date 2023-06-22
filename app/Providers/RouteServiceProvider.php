@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use App\User;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -36,6 +37,10 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         parent::boot();
+
+        // add alias for route model
+        Route::model('device_account', User::class);
+
     }
 
     /**

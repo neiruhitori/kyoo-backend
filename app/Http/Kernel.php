@@ -67,6 +67,7 @@ class Kernel extends HttpKernel
         'checkAdminBranch' => \App\Http\Middleware\CheckAdminBranch::class,
         'checkAdminBranchPassword' => \App\Http\Middleware\CheckAdminBranchPassword::class,
         'checkCS' => \App\Http\Middleware\CheckCS::class,
+        'checkDevice' => \App\Http\Middleware\CheckDevice::class,
         'checkDirectQueue' => \App\Http\Middleware\CheckDirectQueue::class,
         'checkAppointmentQueue' => \App\Http\Middleware\CheckAppointmentQueue::class,
         'exhibitionPermissionIsValid' => \App\Http\Middleware\ExhibitionPermissionIsValid::class,

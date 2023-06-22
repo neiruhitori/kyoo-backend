@@ -8,6 +8,7 @@ use App\Models\AdditionalFeature;
 use App\BranchType;
 use App\Branch;
 use App\Models\FeatureSubscription;
+use App\User;
 
 class BranchLicenseController extends Controller
 {
@@ -41,6 +42,12 @@ class BranchLicenseController extends Controller
                 'created_at' => date('Y-m-d H:i:s')
             ];
         })->toArray());
+
+        // 1 is WST and 6 is WKK
+        // disable all account for device if WST and WKK is disable
+        if (!in_array('1', $request->feature_name) && !in_array(6, $request->feature_name)) {
+            User::where([ 'branch_id' => $id, 'role' => 'device'])->delete();
+        }
 
         $request->session()->flash('success', 'Lisensi diperbarui');
 

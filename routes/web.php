@@ -94,6 +94,10 @@ Route::namespace('AdminBranch')
             Route::post('/user/reset-password/{user}', 'UserController@resetPassword')->name('user.reset-password');
             Route::resource('user', 'UserController');
 
+            Route::put('/device-account/restore', 'DeviceAccountController@restore')->name('device-account.restore');
+            Route::post('/device-account/reset-password/{user}', 'DeviceAccountController@resetPassword')->name('device-account.reset-password');
+            Route::resource('device-account', 'DeviceAccountController');
+
             Route::get('feature', 'FeatureController@index')->name('feature');
             Route::put('feature', 'BranchConfigurationController@update')->name('feature.update');
 
@@ -103,6 +107,13 @@ Route::namespace('AdminBranch')
             Route::put('queue-monitor/{branch}', 'TVDisplayConfigurationController@update')
                 ->name('queue-monitor.update')
                 ->middleware('access:Web Signage TV');
+
+            Route::get('webkiosk', 'WebkioskConfigurationController@index')
+                ->name('webkiosk')
+                ->middleware('access:Webkiosk');
+            Route::put('webkiosk/{branch}', 'WebkioskConfigurationController@update')
+                ->name('webkiosk.update')
+                ->middleware('access:Webkiosk');
             
             Route::get('terms-conditions', 'TermsConditionsController@index')->name('terms-conditions.index');
             Route::get('terms-conditions/get', 'TermsConditionsController@get')->name('terms-conditions.get');
@@ -208,6 +219,9 @@ Route::get('/register/verified', 'RegistrationBranchController@afterVerified')->
 
 Route::get('/vct/reset-password/{user_id}', 'AdminBranch\UserController@reset')->name('adminBranch.user.reset');
 Route::put('/vct/reset-password/{user_id}', 'AdminBranch\UserController@updatePassword')->name('adminBranch.user.password.update');
+
+Route::get('/device-account/reset-password/{user_id}', 'AdminBranch\DeviceAccountController@reset')->name('adminBranch.device-account.reset');
+Route::put('/device-account/reset-password/{user_id}', 'AdminBranch\DeviceAccountController@updatePassword')->name('adminBranch.device-account.password.update');
 
 Auth::routes();
 
@@ -355,6 +369,19 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 
     // Holidays
     Route::get('holidays', 'HolidayController@getHolidaysByDate')->name('holidays');
+});
+
+Route::namespace('Device')->prefix('device')->middleware('auth', 'checkDevice')->name('device.')->group(function () {
+    Route::get('/', 'HomeController@index')->name('home');
+    Route::get('web-kiosk-ui', 'HomeController@webKioskUI')->name('web-kiosk-ui');
+    Route::get('web-monitor', 'HomeController@webMonitor')->name('web-monitor');
+
+
+    Route::get('branch/{branch_id}/queue', 'HomeController@directQueueList')->name('branch.queue');
+
+    Route::get('directQueue/allWorkstationServices', 'HomeController@getAllWorkstationServiceByBranch');
+
+    Route::post('directQueue/store', 'HomeController@store');
 });
 
 Route::group([], __DIR__ . '/web/exhibition.php');

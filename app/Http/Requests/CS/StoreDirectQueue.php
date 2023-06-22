@@ -14,7 +14,8 @@ class StoreDirectQueue extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->role == 'cs';
+        $allowedAction = array('cs', 'device');
+        return in_array(Auth::user()->role, $allowedAction);
     }
 
     /**

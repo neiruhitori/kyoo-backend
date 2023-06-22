@@ -137,6 +137,18 @@
               {{ __('Virtual Counter') }}
             </a>
 
+            @if (
+              Auth::user()->Branch->BranchType->is_premium && 
+              ( Auth::user()->Branch->hasAccess('Web Signage TV') || Auth::user()->Branch->hasAccess('Webkiosk') )
+            )
+            <a
+              class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/device*') ?: 'active' }}"
+              href="{{ route('admin-branch.branch-configuration.device-account.index') }}"
+            >
+              {{ __('Device Account') }}
+            </a>
+            @endif
+
             @if (Auth::user()->Branch->BranchType->is_premium)
               <a
                 class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/feature') ?: 'active' }}"
@@ -155,6 +167,18 @@
                 href="{{ route('admin-branch.branch-configuration.queue-monitor') }}"
               >
                 Monitor Antrian (TV)
+              </a>
+            @endif
+
+            @if (
+              Auth::user()->Branch->BranchType->is_premium &&
+              Auth::user()->Branch->hasAccess('Webkiosk')
+            )
+              <a
+                class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/webkiosk') ?: 'active' }}"
+                href="{{ route('admin-branch.branch-configuration.webkiosk') }}"
+              >
+                Webkiosk
               </a>
             @endif
 
