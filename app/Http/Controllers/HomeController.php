@@ -37,6 +37,9 @@ class HomeController extends Controller
             case 'admin_corporate':
                 return redirect(route('adminCorporate.home'));
                 break;
+            case 'device':
+                return redirect(route('device.home'));
+                break;
             default:
                 return redirect(route('unauthorized'));
                 break;
