@@ -49,21 +49,21 @@ class WebkioskConfigurationController extends Controller
 
         if($webkiosConfiguration) {
             $webkiosConfigurationFormValue->layout = $webkiosConfiguration->layout_id;
-        }
 
-        if ($webkiosConfiguration->layoutConfiguration) {
-            $webkiosConfigurationFormValue = (object) array(
-                'layout' => $webkiosConfiguration->layout_id,
-                'primary_background_type' => $webkiosConfiguration->layoutConfiguration->primary_background_type,
-                'primary_background_image' => $webkiosConfiguration->layoutConfiguration->primary_background_image ? 'storage/' . $webkiosConfiguration->layoutConfiguration->primary_background_image : self::DEFAULT_IMAGE,
-                'primary_background_color' => $webkiosConfiguration->layoutConfiguration->primary_background_color,
-                'secondary_background_type' => $webkiosConfiguration->layoutConfiguration->secondary_background_type,
-                'secondary_background_image' => $webkiosConfiguration->layoutConfiguration->secondary_background_image ? 'storage/' . $webkiosConfiguration->layoutConfiguration->secondary_background_image : self::DEFAULT_IMAGE,
-                'secondary_background_color' => $webkiosConfiguration->layoutConfiguration->secondary_background_color,
-                'button_background_color' => $webkiosConfiguration->layoutConfiguration->button_background_color,
-                'botton_border_color' => $webkiosConfiguration->layoutConfiguration->botton_border_color,
-                'font_color' => $webkiosConfiguration->layoutConfiguration->font_color,
-            );
+            if ($webkiosConfiguration->layoutConfiguration) {
+                $webkiosConfigurationFormValue = (object) array(
+                    'layout' => $webkiosConfiguration->layout_id,
+                    'primary_background_type' => $webkiosConfiguration->layoutConfiguration->primary_background_type,
+                    'primary_background_image' => $webkiosConfiguration->layoutConfiguration->primary_background_image ? 'storage/' . $webkiosConfiguration->layoutConfiguration->primary_background_image : self::DEFAULT_IMAGE,
+                    'primary_background_color' => $webkiosConfiguration->layoutConfiguration->primary_background_color,
+                    'secondary_background_type' => $webkiosConfiguration->layoutConfiguration->secondary_background_type,
+                    'secondary_background_image' => $webkiosConfiguration->layoutConfiguration->secondary_background_image ? 'storage/' . $webkiosConfiguration->layoutConfiguration->secondary_background_image : self::DEFAULT_IMAGE,
+                    'secondary_background_color' => $webkiosConfiguration->layoutConfiguration->secondary_background_color,
+                    'button_background_color' => $webkiosConfiguration->layoutConfiguration->button_background_color,
+                    'botton_border_color' => $webkiosConfiguration->layoutConfiguration->botton_border_color,
+                    'font_color' => $webkiosConfiguration->layoutConfiguration->font_color,
+                );
+            }
         }
 
         return view('adminBranch.webkioskConfiguration', [
