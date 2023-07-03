@@ -31,7 +31,8 @@ class Branch extends Model
         'timezone',
         'branch_type_id',
         'max_counter',
-        'corporate_id'
+        'corporate_id',
+        'license_expiration_date'
     ];
 
     /**

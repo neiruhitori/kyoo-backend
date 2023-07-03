@@ -17,6 +17,7 @@ use App\BranchConfiguration;
 use App\BranchType;
 use App\Helpers\AutoPopulate;
 use App\Interfaces\BranchTypeRepositoryInterface;
+use Illuminate\Support\Carbon;
 
 class RegistrationBranchController extends Controller
 {
@@ -94,8 +95,13 @@ class RegistrationBranchController extends Controller
                 $input['branch_type_id'] = $this->branchTypeRepository->getFreeExhibitionLicense()->id;
                 break;
         }
+
+        $timeNow = Carbon::now();
+        $licenseExpirationDay = config('app.license_expiration_day');
+
         // duplicate to branches table
         $input['mobile_phone'] = $registrationBranch->phone;
+        $input['license_expiration_date'] = $timeNow->addDays($licenseExpirationDay);
         $branch = Branch::create($input);
         
         // create branch configuration

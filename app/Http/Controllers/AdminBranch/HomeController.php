@@ -17,6 +17,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\URL;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Carbon;
 
 class HomeController extends Controller
 {
@@ -84,6 +85,11 @@ class HomeController extends Controller
                 ->get(); // for pgsql
         }
 
+        $licenseExpirationDate = Auth::user()->Branch->license_expiration_date;
+        $parseLicenseExpirationDate = Carbon::parse($licenseExpirationDate);
+        $diffDayExpiredAccount = Carbon::now()->diffInDays($parseLicenseExpirationDate);
+        $isShowExpiredBanner = $licenseExpirationDate && $diffDayExpiredAccount <= config('app.license_expiration_day');
+
         return view('adminBranch.home', [
             'totalAppointment' => $isAppointment ? count($appointments) : 0,
             'totalServed' => $isAppointment ? count($appointments->where('status', 'served')) : 0,
@@ -93,7 +99,9 @@ class HomeController extends Controller
             'totalDirectQueueServed' => $isDirectQueue ? count($directQueues->where('status', 'end served')) : 0,
             'totalDirectQueueNoShow' => $isDirectQueue ? count($directQueues->where('status', 'no show')) : 0,
             'directQueueGraph' => $isDirectQueue ? $directQueueGraph : [],
-            'exhibition' => isset($exhibition) ? $exhibition : null
+            'exhibition' => isset($exhibition) ? $exhibition : null,
+            'isShowExpiredBanner' => $isShowExpiredBanner,
+            'licenseExpirationDay' => $diffDayExpiredAccount,
         ]);
     }
 

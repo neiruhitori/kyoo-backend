@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <div class="license-cfg-item">
+                <div class="license-cfg-item mb-2">
                     <label for="max_counter" class="font-weight-bold">Maks. Counter</label>
                     <div>
                         <input
@@ -46,6 +46,19 @@
                             class="form-control"
                             min="0"
                             value="{{ $branch->max_counter }}"
+                        >
+                    </div>
+                </div>
+                <div class="license-cfg-item">
+                    <label for="license_expiration_date" class="font-weight-bold">Tambah Masa Trial</label>
+                    <div>
+                        <input
+                            type="datetime-local"
+                            name="license_expiration_date"
+                            id="license_expiration_date"
+                            class="form-control"
+                            {{-- min="{{ $branch->license_expiration_date }}" --}}
+                            value="{{ $branch->license_expiration_date }}"
                         >
                     </div>
                 </div>
