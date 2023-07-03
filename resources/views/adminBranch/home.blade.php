@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+@if($isShowExpiredBanner)
+    <div class="alert alert-warning alert-block" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>Masa percobaan Anda akan berakhir dalam <strong>{{$licenseExpirationDay}}</strong> hari. Upgrade akun anda agar dapat kembali menikmati layanan <strong>KYOO</strong></span>
+        <a href="mailto:support@awandigital.id" class="btn btn-warning"><strong>UPGRADE</strong></a>
+    </div>
+@endif
+
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">{{ __('Dashboard') }} {{ Auth::user()->Branch->name }}</h1>
 </div>

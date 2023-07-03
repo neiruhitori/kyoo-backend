@@ -9,6 +9,7 @@ use App\BranchType;
 use App\Branch;
 use App\Models\FeatureSubscription;
 use App\User;
+use Illuminate\Support\Carbon;
 
 class BranchLicenseController extends Controller
 {
@@ -31,7 +32,8 @@ class BranchLicenseController extends Controller
     {
         Branch::where('id', $id)->update([
             'branch_type_id' => $request->branch_type_id,
-            'max_counter' => $request->max_counter
+            'max_counter' => $request->max_counter,
+            'license_expiration_date' => Carbon::parse($request->license_expiration_date)->format('Y-m-d H:i:s'),
         ]);
 
         FeatureSubscription::where('branch_id', $id)->delete();
@@ -45,7 +47,11 @@ class BranchLicenseController extends Controller
 
         // 1 is WST and 6 is WKK
         // disable all account for device if WST and WKK is disable
-        if (!in_array('1', $request->feature_name) && !in_array(6, $request->feature_name)) {
+        if (
+            !empty($request->feature_name)
+            && !in_array('1', $request->feature_name)
+            && !in_array(6, $request->feature_name)
+        ) {
             User::where([ 'branch_id' => $id, 'role' => 'device'])->delete();
         }
 

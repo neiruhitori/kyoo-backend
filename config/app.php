@@ -127,6 +127,7 @@ return [
 
     'kyoo_wa_url' => env('KYOO_WA_URL'),
     'api_rate_limiter' => env('API_RATE_LIMITER', 10),
+    'license_expiration_day' => env('LICENSE_EXPIRATION_DAY', 30),
 
     /*
     |--------------------------------------------------------------------------

@@ -11,6 +11,7 @@ use Auth;
 use App\User;
 use App\Models\CounterActivity;
 use Illuminate\Support\Carbon;
+use App\BranchType;
 
 class LoginController extends Controller
 {
@@ -59,31 +60,44 @@ class LoginController extends Controller
             $loginType => $request->email,
             'password' => $request->password
         ];
-    
+
         // do login
-        if (auth()->attempt($login)) {
-            Log::create([
-                'user_id' => Auth::id(),
-                'description' => 'Login Success'
-            ]);
-
-            if (Auth::user()->WorkstationVct) {
-                $this->updateVctActivity();
-            }
-
-            User::find(Auth::id())->update([
-                'last_login' => date('Y-m-d H:i:s')
-            ]);
-
-            if (Auth::user()->role == 'admin_branch') {
-                return redirect()->route('admin-branch.product-guide.queue-configuration');
-            }
-            
-            return redirect()->route('dashboard');
-
+        if (!auth()->attempt($login)) {
+            // on failed
+            return redirect()->route('login')->with(['error' => __('Authenticate Failed')]);
         }
-        // on failed
-        return redirect()->route('login')->with(['error' => __('Authenticate Failed')]);
+
+        $loggedUser = Auth::user();
+        if ($loggedUser->role !== 'admin_kyoo') {
+            $licenseExpirationDate = $loggedUser->Branch->license_expiration_date;
+            $isExpired = Carbon::parse($licenseExpirationDate);
+            $branchIsPremium = $loggedUser->Branch->BranchType->is_premium;
+            if ($licenseExpirationDate && $isExpired->isPast() && !$branchIsPremium) {
+                // on failed expired account for non admin kyoo
+                $this->guard()->logout();
+                return redirect()->route('login')->with(['error' => __('Trial Period Has Ended')]);
+            }
+        }
+
+        // on success
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Login Success'
+        ]);
+
+        if ($loggedUser->WorkstationVct) {
+            $this->updateVctActivity();
+        }
+
+        User::find(Auth::id())->update([
+            'last_login' => date('Y-m-d H:i:s')
+        ]);
+
+        if ($loggedUser->role == 'admin_branch') {
+            return redirect()->route('admin-branch.product-guide.queue-configuration');
+        }
+        
+        return redirect()->route('dashboard');
     }
 
     public function logout(Request $request)
