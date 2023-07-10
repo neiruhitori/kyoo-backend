@@ -405,7 +405,7 @@ export default function BookingStatus() {
                 </div>
             </Card>}
 
-            {branchType === 'premium' && queueType === 'appointment' && booking?.status === 'end served' && <Card style={{
+            {!!branchType && queueType === 'appointment' && booking?.status === 'end served' && <Card style={{
                 margin: '1.625rem 0',
                 padding: '1.625rem'
             }}>
