@@ -104,7 +104,11 @@
     "How to Configure Queue": "Cara Konfigurasi Antrian",
     "How to Use Sevice Time Slot": "Cara Menggunakan Slot Waktu Layanan",
     "Total Direct Queue": "Total Onsite",
-    
+    "Access": "Hak Akses",
+    "Monitoring Service": "Monitoring Layanan",
+    "Monitoring Department": "Monitoring Department",
+    "Configuration Table": "Konfigurasi Meja",
+
     "name.module": "Nama :Module",
     "Action": "Aksi",
     "Name": "Nama",
