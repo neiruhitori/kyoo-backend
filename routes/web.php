@@ -211,6 +211,10 @@ Route::namespace('AdminBranch')
             Route::get('/vct/chart', 'ChartVctController@index')->name('vct.chart');
             Route::get('/vct/chart/all', 'ChartVctController@getAll')->name('vct.chart.all');
         });
+
+        Route::prefix('/cs')->name('cs.')->group(function () {
+            Route::resource('access', 'CSAccessController');
+        });
     });
 
 Route::resource('registrationBranch', 'RegistrationBranchController')->only(['store', 'edit']);
@@ -387,6 +391,7 @@ Route::namespace('Device')->prefix('device')->middleware('auth', 'checkDevice')-
 Route::group([], __DIR__ . '/web/exhibition.php');
 Route::group([], __DIR__ . '/web/branch_qr_code.php');
 Route::group([], __DIR__ . '/web/customer.php');
+Route::group([], __DIR__ . '/web/cs_menus.php');
 
 Route::get('search', 'SearchQueueController@index')->name('search.index');
 Route::post('search', 'SearchQueueController@search')->name('search.search');

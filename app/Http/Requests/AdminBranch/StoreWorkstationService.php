@@ -14,7 +14,7 @@ class StoreWorkstationService extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->role == 'admin_branch';
+        return in_array(Auth::user()->role, ['admin_branch', 'cs']);
     }
 
     /**

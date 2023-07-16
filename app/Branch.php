@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\CsActiveMenus;
 
 class Branch extends Model
 {
@@ -218,5 +219,53 @@ class Branch extends Model
     public function Corporate()
     {
         return $this->belongsTo('App\Models\Corporate');
+    }
+
+    /**
+     * @param $workstationID
+     * @return array
+     */
+    public function getCsActiveMenus($workstationID): array
+    {
+        $csMenusFeature = CsActiveMenus::where('branch_id', $this->id)->with('feature')->get();
+        $groupedData = [];
+
+        foreach ($csMenusFeature as $item) {
+            if (empty($item->feature)) {
+                continue;
+            }
+
+            $groupLabel = $item->feature->group_label;
+            if ($groupLabel === '-') {
+                $groupedData[] = (object) [
+                    'name' => $item->feature->name,
+                    'code' => $item->feature->code,
+                    'name_label' => $item->feature->name_label,
+                    'route' => $this->generateRouteURL($workstationID, $item->feature->code, $item->feature->route),
+                ];
+                continue;
+            }
+
+            if (!isset($groupedData[$groupLabel])) {
+                $groupedData[$groupLabel] = [];
+            }
+
+            $groupedData[$groupLabel][] = (object) [
+                'name' => $item->feature->name,
+                'code' => $item->feature->code,
+                'name_label' => $item->feature->name_label,
+                'route' => $this->generateRouteURL($workstationID, $item->feature->code, $item->feature->route),
+            ];
+        }
+
+        return $groupedData;
+    }
+
+    private function generateRouteURL($workstationID, $code, $route) {
+        if ($code == 'CT') {
+            return str_replace('__branchID__', $workstationID, $route);
+        }
+
+        return $route;
     }
 }
