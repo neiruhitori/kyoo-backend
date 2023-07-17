@@ -11,7 +11,9 @@ class WebkioskConfiguration extends Model
 {
     protected $table = 'webkiosk_configuration';
 
-    protected $fillable = ['branch_id', 'layout_id'];
+    protected $fillable = ['branch_id', 'layout_id', 'active_menus'];
+
+    const MENU_OPTIONS  = ['wa', 'photo', 'print'];
 
     public function layout()
     {

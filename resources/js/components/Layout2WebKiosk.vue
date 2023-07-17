@@ -32,32 +32,17 @@
                 </button>
             </div>
 
-            <div class="wrapper-center" v-if="activeTab == 'type_queue'">
-                <button
-                    class="btn btn-lg btn-primary button-length"
-                    @click="onClickQueueType('wa')"
-                    v-bind:style="[button_style]"
-                >
-                    Kirim Nomor Antrian Ke WA
-                </button>
-
-                <button
-                    class="btn btn-lg btn-primary button-length"
-                    @click="onClickQueueType('foto')"
-                    v-bind:style="[button_style]"
-                >
-                    Foto Nomor Antrian
-                </button>
-            </div>
-
             <form
                 id="filterForm"
                 class="mb-4"
-                @submit.prevent="handleCreateOnsiteQueue"
+                @submit.prevent="onSubmitForm"
                 v-if="activeTab == 'form'"
             >
                 <div class="form-row align-items-start wrapper-form">
-                    <h5 class="label">Kirim Nomor Antrian ke WA</h5>
+                    <div>
+                        <h5 class="label">Kirim Nomor Antrian ke WA</h5>
+                        <p :style="isError ? {'font-size': '9px', 'color': 'red'} : {'font-size': '9px'}">Untuk Antrian WA wajib mengisi Nama dan No Whatsapp</p>
+                    </div>
                     <div class="col-12">
                         <label for="name">Nama</label>
                         <input
@@ -76,7 +61,6 @@
                             v-model="formData.phone"
                         />
                     </div>
-
                     <div class="col-12">
                         <button
                             type="submit"
@@ -89,7 +73,36 @@
                 </div>
             </form>
 
-            <div v-if="activeTab == 'result'">
+            <div class="wrapper-center" v-if="activeTab == 'type_queue'" id="action-section">
+                <button
+                    class="btn btn-lg btn-primary button-length"
+                    @click="onClickQueueType('wa')"
+                    v-bind:style="[button_style]"
+                    v-if="this.active_menus.includes('wa') && this.is_allow_wa"
+                >
+                    Kirim Nomor Antrian Ke WA
+                </button>
+
+                <button
+                    class="btn btn-lg btn-primary button-length"
+                    @click="onClickQueueType('foto')"
+                    v-bind:style="[button_style]"
+                    v-if="this.active_menus.includes('photo')"
+                >
+                    Foto Nomor Antrian
+                </button>
+
+                <button
+                    class="btn btn-lg btn-primary button-length"
+                    @click="onClickQueueType('print')"
+                    v-bind:style="[button_style]"
+                    v-if="this.active_menus.includes('print')"
+                >
+                    Cetak
+                </button>
+            </div>
+
+            <div v-if="activeTab == 'result'" id="result-section">
                 <h5 class="label" style="margin-bottom: 25px;">
                     Silahkan Foto Nomer Antrian
                 </h5>
@@ -149,6 +162,14 @@ export default {
         qr: {
             type: String,
             required: true
+        },
+        is_allow_wa: {
+            type: Number,
+            required: true
+        },
+        active_menus: {
+            type: Array,
+            required: true
         }
     },
 
@@ -205,6 +226,7 @@ export default {
                 vct_id: ""
             },
             responseQueue: {},
+            isError: ""
         };
     },
     methods: {
@@ -228,22 +250,29 @@ export default {
         },
         onClickWorkstation(id) {
             this.selectedWorkstation = id;
+            this.activeTab = "form";
+        },
+        onSubmitForm() {
             this.activeTab = "type_queue";
         },
         onClickQueueType(type) {
-            if (type == "wa") {
-                this.selectedTypeQueue = type;
+            if(type == "wa" && (this.formData.name =="" || this.formData.phone == "")) {
                 this.activeTab = "form";
-
+                this.isError = true;
                 return;
             }
 
-            this.handleCreateOnsiteQueue();
+            
+
+            if(type =="print") {
+                this.print();
+            }
         },
         onReset() {
             this.selectedWorkstation = null;
             this.selectedTypeQueue = null;
             this.activeTab = "menus";
+            this.isError = false;
             this.formData = {
                 name: "",
                 phone: "",
@@ -266,6 +295,39 @@ export default {
                     alert("Tolong kontak admin untuk tindakan lebih lanjut");
                     console.error(error);
                 });
+        },
+        print() {
+            console.log("print");
+            const printWindow = window.open('', '_blank');
+            printWindow.document.open();
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print</title>
+                    <style>
+                    @media print {
+                        @page {
+                            size: 80mm 80mm;
+                        }
+                        body {
+                            width: 80mm;
+                            height: 80mm;
+                            margin: 0;
+                        }
+                    }
+                    </style>
+                </head>
+                <body>
+                    <div>
+                        <h1>Print</h1>
+                        <p>Nomor Antrian</p>
+                        <h3>${this.responseQueue.queue_no}</h3>
+                    </div>
+                    
+                </body>
+                </html>
+            `);
+        printWindow.document.close();
         }
     }
 };

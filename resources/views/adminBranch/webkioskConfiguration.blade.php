@@ -313,6 +313,52 @@
     </div>
 </div>
 
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <h6 class="font-weight-bold text-primary mb-0">
+            Active Menu Webkiosk
+        </h6>
+    </div>
+
+    <div class="card-body">
+        @include('layouts.alert')
+
+        <div class="row">
+            <div class="col-md-12">
+                <form action="{{ route('admin-branch.branch-configuration.webkiosk.active-menus.update', Auth::user()->branch_id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="">{{ __('Select Option Menu for Webkios') }}</label>
+                            @foreach ($menuOptions as $menuOption)
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" name={{"input_active_menus[]"}} class="form-check-input" id={{"input_".$menuOption."_label"}} value={{$menuOption}}
+                                        {{
+                                            ($webkiosConfiguration && $webkiosConfiguration->active_menus && in_array($menuOption, $webkiosConfiguration->active_menus)) ||
+                                            old('queue_voice')
+                                            ? 'checked'
+                                            : ''
+                                        }}>
+                                        <label for={{"input_".$menuOption."_label"}} class="form-check-label">{{ucfirst($menuOption)}}</label>
+                                    </div>
+                                    @include('layouts.inputError', ['errorName' => 'input_'.$menuOption])
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 wrapper-form-footer">
+                            <button type="submit" id="submit_image" class="btn btn-warning hidden">Simpan</submit>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('js')
     <script>
         const layouts = @json($layouts);

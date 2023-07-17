@@ -52,6 +52,8 @@
             :auth="{{ Auth::user() }}"
             qr={{ $qr }}
             :layout_config="{{ $layoutConfig }}"
+            :is_allow_wa={{ $isAllowWA }}
+            :active_menus={{ $activeMenus }}
         />
         @endif
     </div>

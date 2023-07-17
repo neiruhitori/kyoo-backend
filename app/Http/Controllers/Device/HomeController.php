@@ -86,7 +86,9 @@ class HomeController extends Controller
                 'layoutConfig' => $configuration->layoutConfiguration,
                 'qr' => "data:image/svg+xml;base64,".base64_encode(QrCode::size(180)->generate(
                     url('customer/' . $branchID . '/' . Auth::user()->Branch->queue_type . '/services')
-                ))
+                )),
+                'isAllowWA' => Auth::user()->Branch->BranchConfiguration->wa_notification,
+                'activeMenus' => $configuration->active_menus
             ]
         );
     }
