@@ -298,6 +298,9 @@ export default {
         print() {
             const printWindow = window.open('', '_blank');
 
+            const serviceNumber = this.responseQueue.queue_no;
+            const serviceName = this.workstationServices.find((service) => service.id == this.responseQueue.workstation_service_id).service.name;
+
             printWindow.document.open();
             printWindow.document.write(`
                 <!DOCTYPE html>
@@ -322,8 +325,8 @@ export default {
                 </head>
                 <body>
                     <span style="font-size: 2em;">Nomor Antrian</span>
-                    <span style="font-size: 4em;font-weight: bold;">${this.responseQueue.queue_no}</span>
-                    <span style="font-size: 2em;">Service Name</span>
+                    <span style="font-size: 4em;font-weight: bold;">${serviceNumber}</span>
+                    <span style="font-size: 2em;">${serviceName}</span>
                 </body>
                 </html>
             `);
