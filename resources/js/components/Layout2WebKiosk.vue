@@ -262,11 +262,7 @@ export default {
                 return;
             }
 
-            
-
-            if(type =="print") {
-                this.print();
-            }
+            this.handleCreateOnsiteQueue(type);
         },
         onReset() {
             this.selectedWorkstation = null;
@@ -280,7 +276,7 @@ export default {
                 vct_id: ""
             }
         },
-        handleCreateOnsiteQueue() {
+        handleCreateOnsiteQueue(type) {
             this.formData["workstation_service_id"] = this.selectedWorkstation;
             this.formData["vct_id"] = this.auth.id;
 
@@ -290,6 +286,9 @@ export default {
                     this.responseQueue = response.data.data;
 
                     this.activeTab = "result";
+                    if(type =="print") {
+                        this.print();
+                    }
                 })
                 .catch(error => {
                     alert("Tolong kontak admin untuk tindakan lebih lanjut");
@@ -297,37 +296,45 @@ export default {
                 });
         },
         print() {
-            console.log("print");
             const printWindow = window.open('', '_blank');
+
             printWindow.document.open();
             printWindow.document.write(`
+                <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>Print</title>
-                    <style>
-                    @media print {
-                        @page {
+                <title>Print</title>
+                <style>
+                    @page {
                             size: 80mm 80mm;
-                        }
-                        body {
-                            width: 80mm;
-                            height: 80mm;
-                            margin: 0;
-                        }
+                    }
+                    body {
+                        width: 80mm;
+                        height: 80mm;
+                        margin: 0;
+                        display: inline-grid;
+                        justify-content: center;
+                        align-items: center;
+                        text-align: center;
+                        border: 5px solid;
                     }
                     </style>
                 </head>
                 <body>
-                    <div>
-                        <h1>Print</h1>
-                        <p>Nomor Antrian</p>
-                        <h3>${this.responseQueue.queue_no}</h3>
-                    </div>
-                    
+                    <span style="font-size: 2em;">Nomor Antrian</span>
+                    <span style="font-size: 4em;font-weight: bold;">${this.responseQueue.queue_no}</span>
+                    <span style="font-size: 2em;">Service Name</span>
                 </body>
                 </html>
             `);
-        printWindow.document.close();
+
+            // Wait for the content to load
+            printWindow.onload = function () {
+                printWindow.print();
+                printWindow.close();
+            };
+
+            printWindow.document.close();
         }
     }
 };
@@ -401,6 +408,7 @@ export default {
 .wrapper-service-card {
     display: flex;
     padding: 1.75rem;
+    justify-content: center;
 }
 .seprator {
     border-top: 2px dashed rgb(144, 183, 241);
