@@ -36,6 +36,7 @@
         "html5-qrcode": "^2.2.1",
         "leaflet": "^1.9.2",
         "mapbox-gl": "^2.7.1",
+        "moment": "^2.29.4",
         "react-day-picker": "^7.4.10",
         "react-is": "^18.2.0",
         "react-query": "^3.34.17",

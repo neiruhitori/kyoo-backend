@@ -300,6 +300,8 @@ export default {
 
             const serviceNumber = this.responseQueue.queue_no;
             const serviceName = this.workstationServices.find((service) => service.id == this.responseQueue.workstation_service_id).service.name;
+            const branchName = this.branch.name;
+            const createdAt = moment(this.responseQueue.created_at).format('DD/MM/YYYY HH:mm:ss')
 
             printWindow.document.open();
             printWindow.document.write(`
@@ -319,14 +321,16 @@ export default {
                         justify-content: center;
                         align-items: center;
                         text-align: center;
-                        border: 5px solid;
                     }
                     </style>
                 </head>
                 <body>
-                    <span style="font-size: 2em;">Nomor Antrian</span>
-                    <span style="font-size: 4em;font-weight: bold;">${serviceNumber}</span>
-                    <span style="font-size: 2em;">${serviceName}</span>
+                    <span style="font-size: 24px; font-style: normal; font-weight: 500; line-height: normal;">${branchName}</span>
+                    <span style="font-size: 64px; font-style: normal; font-weight: 800; line-height: normal;">${serviceNumber}</span>
+                    <div style="display: grid;gap: 10px;">
+                        <span style="font-size: 20px; font-style: normal; font-weight: 400; line-height: normal;">${serviceName}</span>
+                        <span style="font-size: 12px; font-style: normal; font-weight: 400; line-height: normal;">${createdAt}</span>
+                    </div>
                 </body>
                 </html>
             `);
