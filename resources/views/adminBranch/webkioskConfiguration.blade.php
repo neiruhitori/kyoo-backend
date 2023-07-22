@@ -316,7 +316,7 @@
 <div class="card shadow mb-4">
     <div class="card-header">
         <h6 class="font-weight-bold text-primary mb-0">
-            Active Menu Webkiosk
+        {{ __('Active Menu Kiosk Web') }}
         </h6>
     </div>
 

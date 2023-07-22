@@ -111,7 +111,7 @@ class HomeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get all service on branch',
-            'data' => $workstationServices
+            'data' => $workstationServices->unique('service_id'),
         ]);
     }
 

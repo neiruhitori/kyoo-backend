@@ -1,136 +1,140 @@
 <template>
-    <div class="row monitor-container">
-        <loading
-            :active.sync="isLoading"
-            color="#189DCD"
-            :is-full-page="true"
-            :width="64"
-            :height="64"
-        />
-        <div
-            class="col-md-6 wrapper-center"
-            v-bind:style="[primary_background]"
-        >
-            <h2 class="label">Scan Kode QR</h2>
-            <img v-bind:src="qr" class="qr-image" alt="qr-code" width="250" />
+    <div>
+        <div v-if="isError" class="alert-error">
+            <strong>Error:</strong> {{ errorMessage }}
         </div>
-        <div
-            class="col-md-6 wrapper-center"
-            v-bind:style="[secondary_background]"
-        >
-            <div class="wrapper-center" v-if="activeTab == 'menus'">
-                <h5 class="label">
-                    Silahkan Ambil Antrian
-                </h5>
-                <button
-                    class="btn btn-lg btn-primary button-length"
-                    v-for="workstation in this.workstationServices"
-                    @click="onClickWorkstation(workstation.id)"
-                    v-bind:style="[button_style]"
-                >
-                    {{ workstation.service.name }}
-                </button>
-            </div>
-
-            <form
-                id="filterForm"
-                class="mb-4"
-                @submit.prevent="onSubmitForm"
-                v-if="activeTab == 'form'"
+        <div class="row monitor-container">
+            <loading
+                :active.sync="isLoading"
+                color="#189DCD"
+                :is-full-page="true"
+                :width="64"
+                :height="64"
+            />
+            <div
+                class="col-md-6 wrapper-center"
+                v-bind:style="[primary_background]"
             >
-                <div class="form-row align-items-start wrapper-form">
-                    <div>
-                        <h5 class="label">Kirim Nomor Antrian ke WA</h5>
-                        <p :style="isError ? {'font-size': '9px', 'color': 'red'} : {'font-size': '9px'}">Untuk Antrian WA wajib mengisi Nama dan No Whatsapp</p>
+                <h2 class="label">Scan Kode QR</h2>
+                <img v-bind:src="qr" class="qr-image" alt="qr-code" width="250" />
+            </div>
+            <div
+                class="col-md-6 wrapper-center"
+                v-bind:style="[secondary_background]"
+            >
+                <div class="wrapper-center" v-if="activeTab == 'menus'">
+                    <h5 class="label">
+                        Silahkan Ambil Antrian
+                    </h5>
+                    <button
+                        class="btn btn-lg btn-primary button-length"
+                        v-for="workstation in this.workstationServices"
+                        @click="onClickWorkstation(workstation.id)"
+                        v-bind:style="[button_style]"
+                    >
+                        {{ workstation.service.name }}
+                    </button>
+                </div>
+
+                <form
+                    id="filterForm"
+                    class="mb-4"
+                    @submit.prevent="onSubmitForm"
+                    v-if="activeTab == 'form'"
+                >
+                    <div class="form-row align-items-start wrapper-form">
+                        <div>
+                            <h5 class="label">Kirim Nomor Antrian ke WA</h5>
+                            <p style="font-size: 9px">Untuk Antrian WA wajib mengisi Nama dan No Whatsapp</p>
+                        </div>
+                        <div class="col-12">
+                            <label for="name">Nama</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                style="width: 15rem;"
+                                v-model="formData.name"
+                            />
+                        </div>
+                        <div class="col-12">
+                            <label for="phone">No Whatsapp</label>
+                            <input
+                                type="tel"
+                                class="form-control"
+                                style="width: 15rem;"
+                                v-model="formData.phone"
+                            />
+                        </div>
+                        <div class="col-12">
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                                v-bind:style="[button_style]"
+                            >
+                                Ambil Antrian
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-12">
-                        <label for="name">Nama</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            style="width: 15rem;"
-                            v-model="formData.name"
-                        />
-                    </div>
-                    <div class="col-12">
-                        <label for="phone">No Whatsapp</label>
-                        <input
-                            type="tel"
-                            class="form-control"
-                            style="width: 15rem;"
-                            v-model="formData.phone"
-                        />
-                    </div>
-                    <div class="col-12">
-                        <button
-                            type="submit"
-                            class="btn btn-primary"
-                            v-bind:style="[button_style]"
-                        >
-                            Ambil Antrian
-                        </button>
+                </form>
+
+                <div class="wrapper-center" v-if="activeTab == 'type_queue'" id="action-section">
+                    <button
+                        class="btn btn-lg btn-primary button-length"
+                        @click="onClickQueueType('wa')"
+                        v-bind:style="[button_style]"
+                        v-if="this.active_menus.includes('wa') && this.is_allow_wa"
+                    >
+                        Kirim Nomor Antrian Ke WA
+                    </button>
+
+                    <button
+                        class="btn btn-lg btn-primary button-length"
+                        @click="onClickQueueType('foto')"
+                        v-bind:style="[button_style]"
+                        v-if="this.active_menus.includes('photo')"
+                    >
+                        Foto Nomor Antrian
+                    </button>
+
+                    <button
+                        class="btn btn-lg btn-primary button-length"
+                        @click="onClickQueueType('print')"
+                        v-bind:style="[button_style]"
+                        v-if="this.active_menus.includes('print')"
+                    >
+                        Cetak
+                    </button>
+                </div>
+
+                <div v-if="activeTab == 'result'" id="result-section">
+                    <h5 class="label" style="margin-bottom: 25px;">
+                        Silahkan Foto Nomer Antrian
+                    </h5>
+                    <div class="wrapper-success-card">
+                        <div class="wrapper-queue-number">
+                            <span style="font-size: 1rem;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Nomor Antrian</span>
+                            <h2 style="font-weight: 700;font-size: 3.625rem;color: rgb(16, 60, 124);text-align: center;">
+                                {{ responseQueue.queue_no ? responseQueue.queue_no : "0000"}}
+                            </h2>
+                        </div>
+                        <div class="seprator" />
+                        <div class="wrapper-service-card">
+                            <h4> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4>
+                        </div>
                     </div>
                 </div>
-            </form>
-
-            <div class="wrapper-center" v-if="activeTab == 'type_queue'" id="action-section">
-                <button
-                    class="btn btn-lg btn-primary button-length"
-                    @click="onClickQueueType('wa')"
-                    v-bind:style="[button_style]"
-                    v-if="this.active_menus.includes('wa') && this.is_allow_wa"
-                >
-                    Kirim Nomor Antrian Ke WA
-                </button>
-
-                <button
-                    class="btn btn-lg btn-primary button-length"
-                    @click="onClickQueueType('foto')"
-                    v-bind:style="[button_style]"
-                    v-if="this.active_menus.includes('photo')"
-                >
-                    Foto Nomor Antrian
-                </button>
-
-                <button
-                    class="btn btn-lg btn-primary button-length"
-                    @click="onClickQueueType('print')"
-                    v-bind:style="[button_style]"
-                    v-if="this.active_menus.includes('print')"
-                >
-                    Cetak
-                </button>
             </div>
-
-            <div v-if="activeTab == 'result'" id="result-section">
-                <h5 class="label" style="margin-bottom: 25px;">
-                    Silahkan Foto Nomer Antrian
-                </h5>
-                <div class="wrapper-success-card">
-                    <div class="wrapper-queue-number">
-                        <span style="font-size: 1rem;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Nomor Antrian</span>
-                        <h2 style="font-weight: 700;font-size: 3.625rem;color: rgb(16, 60, 124);text-align: center;">
-                            {{ responseQueue.queue_no ? responseQueue.queue_no : "0000"}}
-                        </h2>
-                    </div>
-                    <div class="seprator" />
-                    <div class="wrapper-service-card">
-                        <h4> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4>
-                    </div>
-                </div>
+            <div class="powered-by">
+                <span>Powered by</span>
+                <img src="/img/logo-color.svg" alt="logo-kyoo" height="22"/>
             </div>
-            
-        </div>
-        <div class="powered-by">
-            <span>Powered by</span>
-            <img src="/img/logo-color.svg" alt="logo-kyoo" height="22"/>
-        </div>
-        <div
-            class="reset-button"
-            v-bind:style="[button_style]"
-            @click="onReset()"
-        >
-            <i class="fas fa-undo"></i>
+            <div
+                class="reset-button"
+                v-bind:style="[button_style]"
+                @click="onReset()"
+            >
+                <i class="fas fa-undo"></i>
+            </div>
         </div>
     </div>
 </template>
@@ -226,7 +230,9 @@ export default {
                 vct_id: ""
             },
             responseQueue: {},
-            isError: ""
+            isError: false,
+            errorMessage: "",
+            errorTimeout: null,
         };
     },
     methods: {
@@ -258,7 +264,7 @@ export default {
         onClickQueueType(type) {
             if(type == "wa" && (this.formData.name =="" || this.formData.phone == "")) {
                 this.activeTab = "form";
-                this.isError = true;
+                this.setError("Untuk Antrian WA wajib mengisi Nama dan No Whatsapp");
                 return;
             }
 
@@ -269,6 +275,8 @@ export default {
             this.selectedTypeQueue = null;
             this.activeTab = "menus";
             this.isError = false;
+            this.errorMessage = "";
+            this.errorTimeout = null;
             this.formData = {
                 name: "",
                 phone: "",
@@ -277,6 +285,8 @@ export default {
             }
         },
         handleCreateOnsiteQueue(type) {
+            this.isLoading = true;
+
             this.formData["workstation_service_id"] = this.selectedWorkstation;
             this.formData["vct_id"] = this.auth.id;
 
@@ -291,9 +301,11 @@ export default {
                     }
                 })
                 .catch(error => {
-                    alert("Tolong kontak admin untuk tindakan lebih lanjut");
+                    this.setError("Mohon Maaf, Tidak Bisa Mengambil Antrian");
                     console.error(error);
                 });
+
+            this.isLoading = false;
         },
         print() {
             const printWindow = window.open('', '_blank');
@@ -342,6 +354,19 @@ export default {
             };
 
             printWindow.document.close();
+        },
+        setError(message) {
+            this.isError = true;
+            this.errorMessage = message;
+
+            if (this.errorTimeout) {
+                clearTimeout(this.errorTimeout);
+            }
+
+            this.errorTimeout = setTimeout(() => {
+                this.isError = false;
+                this.errorMessage = "";
+            }, 3000);
         }
     }
 };
@@ -428,5 +453,22 @@ export default {
     margin-top: auto;
     position: fixed;
     bottom: 10px;
+}
+
+.alert-error {
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 4px;
+  margin-top: 10px;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: 80%;
+  max-width: 500px; /* Adjust the width as needed */
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
 }
 </style>
