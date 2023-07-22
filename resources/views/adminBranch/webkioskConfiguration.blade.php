@@ -329,7 +329,7 @@
                     @csrf
                     @method('PUT')
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-12">
                             <label for="">{{ __('Select Option Menu for Webkios') }}</label>
                             @foreach ($menuOptions as $menuOption)
                                 <div class="form-group">
