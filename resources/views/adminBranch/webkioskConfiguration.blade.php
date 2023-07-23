@@ -334,16 +334,16 @@
                             @foreach ($menuOptions as $menuOption)
                                 <div class="form-group">
                                     <div class="form-check">
-                                        <input type="checkbox" name={{"input_active_menus[]"}} class="form-check-input" id={{"input_".$menuOption."_label"}} value={{$menuOption}}
+                                        <input type="checkbox" name={{"input_active_menus[]"}} class="form-check-input" id={{"input_".$menuOption['value']."_label"}} value={{$menuOption['value']}}
                                         {{
-                                            ($webkiosConfiguration && $webkiosConfiguration->active_menus && in_array($menuOption, $webkiosConfiguration->active_menus)) ||
+                                            ($webkiosConfiguration && $webkiosConfiguration->active_menus && in_array($menuOption['value'], $webkiosConfiguration->active_menus)) ||
                                             old('queue_voice')
                                             ? 'checked'
                                             : ''
                                         }}>
-                                        <label for={{"input_".$menuOption."_label"}} class="form-check-label">{{ucfirst($menuOption)}}</label>
+                                        <label for={{"input_".$menuOption['value']."_label"}} class="form-check-label">{{ucfirst($menuOption['label'])}}</label>
                                     </div>
-                                    @include('layouts.inputError', ['errorName' => 'input_'.$menuOption])
+                                    @include('layouts.inputError', ['errorName' => 'input_'.$menuOption['value']])
                                 </div>
                             @endforeach
                         </div>

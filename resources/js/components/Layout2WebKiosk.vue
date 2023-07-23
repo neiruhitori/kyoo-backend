@@ -44,7 +44,7 @@
                 >
                     <div class="form-row align-items-start wrapper-form">
                         <div>
-                            <h5 class="label">Kirim Nomor Antrian ke WA</h5>
+                            <h5 class="label">Masukkan Informasi Antrian</h5>
                             <p style="font-size: 9px">Untuk Antrian WA wajib mengisi Nama dan No Whatsapp</p>
                         </div>
                         <div class="col-12">
@@ -295,17 +295,17 @@ export default {
                 .then(response => {
                     this.responseQueue = response.data.data;
 
+                    this.isLoading = false;
                     this.activeTab = "result";
                     if(type =="print") {
                         this.print();
                     }
                 })
                 .catch(error => {
+                    this.isLoading = false;
                     this.setError("Mohon Maaf, Tidak Bisa Mengambil Antrian");
                     console.error(error);
                 });
-
-            this.isLoading = false;
         },
         print() {
             const printWindow = window.open('', '_blank');
