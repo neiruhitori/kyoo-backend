@@ -111,7 +111,7 @@ class HomeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get all service on branch',
-            'data' => $workstationServices->unique('service_id'),
+            'data' => HomeController::unique_key($workstationServices,'service_id'),
         ]);
     }
 
@@ -151,5 +151,15 @@ class HomeController extends Controller
                 'message' => $e->getMessage()
             ], 412);
         }
+    }
+
+    private function unique_key($array,$removeKey){
+        $new_array = array();
+        foreach($array as $key=>$value){
+          if(!isset($new_array[$value[$removeKey]])){
+            $new_array[$value[$removeKey]] = $value;
+          }
+        }
+        return array_values($new_array);
     }
 }
