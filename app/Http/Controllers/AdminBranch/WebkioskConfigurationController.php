@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Branch;
 use App\Interfaces\WebKioskConfigurationRepositoryInterface;
 use Auth;
+use App\Models\WebkioskConfiguration;
 
 class WebkioskConfigurationController extends Controller
 {
@@ -42,6 +43,7 @@ class WebkioskConfigurationController extends Controller
             'button_background_color' => self::DEFAULT_BUTTON_COLOR,
             'botton_border_color' => self::DEFAULT_BUTTON_BORDER,
             'font_color' => self::DEFAULT_FONT_COLOR,
+            'active_menus' => [],
         );
 
         $webkiosConfiguration = $this->webKioskConfigurationRepository->GetOneConfigurationByBranchID(Auth::user()->branch_id);
@@ -64,12 +66,17 @@ class WebkioskConfigurationController extends Controller
                     'font_color' => $webkiosConfiguration->layoutConfiguration->font_color,
                 );
             }
+
+            if ($webkiosConfiguration->active_menus) {
+                $webkiosConfigurationFormValue->active_menus = json_decode($webkiosConfiguration->active_menus);
+            }
         }
 
         return view('adminBranch.webkioskConfiguration', [
             'layouts' => $layouts,
             'webkiosConfiguration' => $webkiosConfigurationFormValue,
             'defaultImage' => self::DEFAULT_IMAGE,
+            'menuOptions'=> WebkioskConfiguration::MENU_OPTIONS,
         ]);
     }
 
@@ -94,5 +101,26 @@ class WebkioskConfigurationController extends Controller
         return redirect()
             ->route('admin-branch.branch-configuration.webkiosk')
             ->with('success', 'Konfigurasi webkiosk berhasil diperbarui.');
+    }
+
+    public function updateActiveMenus(Branch $branch, Request $request)
+    {
+        try {
+            $request->validate([
+                'input_active_menus.*' => 'in:wa,photo,print',
+            ]);
+    
+            $webkioskConfig = WebkioskConfiguration::where('branch_id', $branch->id)->firstOrFail();
+            $webkioskConfig->active_menus = json_encode($request->get('input_active_menus'));
+            $webkioskConfig->save();
+            
+            return redirect()
+                ->route('admin-branch.branch-configuration.webkiosk')
+                ->with('success', 'Konfigurasi aktif menu berhasil diperbarui.');
+        } catch (\Throwable $th) {
+            return redirect()
+                ->route('admin-branch.branch-configuration.webkiosk')
+                ->with('error', 'Error konfigurasi aktif menu');
+        }
     }
 }

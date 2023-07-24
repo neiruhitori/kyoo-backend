@@ -340,5 +340,7 @@
     "This service open at :day": "Layanan ini buka pada hari :day",
     
     "Select Prefix": "Pilih Awalan Nomor Antrian",
-    "Custom Prefix Number Queue": "Kustom Nomor Antrean"
+    "Custom Prefix Number Queue": "Kustom Nomor Antrean",
+    "Active Menu Kiosk Web": "Konfigurasi Pengambilan Antrian di Kiosk Web",
+    "Select Option Menu for Webkios": "Pilih jenis pengambilan antrian oleh pelanggan di Kiosk Web"
 }

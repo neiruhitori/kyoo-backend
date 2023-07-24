@@ -86,7 +86,9 @@ class HomeController extends Controller
                 'layoutConfig' => $configuration->layoutConfiguration,
                 'qr' => "data:image/svg+xml;base64,".base64_encode(QrCode::size(180)->generate(
                     url('customer/' . $branchID . '/' . Auth::user()->Branch->queue_type . '/services')
-                ))
+                )),
+                'isAllowWA' => Auth::user()->Branch->BranchConfiguration->wa_notification,
+                'activeMenus' => $configuration->active_menus
             ]
         );
     }
@@ -109,7 +111,7 @@ class HomeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get all service on branch',
-            'data' => $workstationServices
+            'data' => HomeController::unique_key($workstationServices,'service_id'),
         ]);
     }
 
@@ -149,5 +151,15 @@ class HomeController extends Controller
                 'message' => $e->getMessage()
             ], 412);
         }
+    }
+
+    private function unique_key($array,$removeKey){
+        $new_array = array();
+        foreach($array as $key=>$value){
+          if(!isset($new_array[$value[$removeKey]])){
+            $new_array[$value[$removeKey]] = $value;
+          }
+        }
+        return array_values($new_array);
     }
 }

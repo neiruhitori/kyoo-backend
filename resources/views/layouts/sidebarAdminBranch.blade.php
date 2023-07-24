@@ -184,7 +184,7 @@
                         class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/webkiosk') ?: 'active' }}"
                         href="{{ route('admin-branch.branch-configuration.webkiosk') }}"
                     >
-                        Webkiosk
+                        Kiosk Web
                     </a>
                 @endif
 

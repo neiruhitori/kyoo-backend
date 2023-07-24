@@ -114,6 +114,9 @@ Route::namespace('AdminBranch')
             Route::put('webkiosk/{branch}', 'WebkioskConfigurationController@update')
                 ->name('webkiosk.update')
                 ->middleware('access:Webkiosk');
+            Route::put('webkiosk/active_menus/{branch}', 'WebkioskConfigurationController@updateActiveMenus')
+                ->name('webkiosk.active-menus.update')
+                ->middleware('access:Webkiosk');
             
             Route::get('terms-conditions', 'TermsConditionsController@index')->name('terms-conditions.index');
             Route::get('terms-conditions/get', 'TermsConditionsController@get')->name('terms-conditions.get');
