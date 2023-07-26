@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @push('css')
-    <link href="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('admin/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.3/css/buttons.dataTables.min.css">
     <style>
         .buttons-excel {
@@ -9,12 +9,14 @@
             border: 0px !important;
             font-weight: 500px !important;
         }
+
         .buttons-pdf {
             background-color: #e53e3e !important;
             color: white !important;
             border: 0px !important;
             font-weight: 500px !important;
         }
+
         .buttons-print {
             background-color: #cbd5e0 !important;
             color: #333333 !important;
@@ -60,15 +62,22 @@
                         <div class="col-lg-4 col-md-12">
                             <form action="" method="get">
                                 <div class="form-group">
-                                    <label for="">{{ __('Select Date') }}</label>
-                                    <input type="date" name="date" class="form-control" value="{{ $date }}" />
+                                    <label for="">{{ __('Select Start Date') }}</label>
+                                    <input type="date" name="start_date" id="start_date" class="form-control"
+                                        value="{{ $start_date }}" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="">{{ __('Select End Date') }}</label>
+                                    <input type="date" name="end_date" class="form-control"
+                                        value="{{ $end_date }}" />
                                 </div>
                                 <div class="form-group">
                                     <label for="">{{ __('Select Service') }}</label>
                                     <select name="workstation_service_id" id="workstation_service_id" class="form-control">
                                         <option value="">{{ __('All') }}</option>
                                         @foreach ($workstationServices as $workstationService)
-                                            <option value="{{ $workstationService->id }}">{{ $workstationService->Service->name }}</option>
+                                            <option value="{{ $workstationService->id }}">
+                                                {{ $workstationService->Service->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -87,6 +96,7 @@
                                         <th>{{ __('Start Queue') }}</th>
                                         <th>{{ __('Served') }}</th>
                                         <th>{{ __('End Served') }}</th>
+                                        <th>{{ __('Service Time') }} ({{ __('Menit') }})</th>
                                         <th>{{ __('Workstation') }}</th>
                                         <th>{{ __('Service') }}</th>
                                         <th>{{ __('Old Service') }}</th>
@@ -111,7 +121,20 @@
                                                         -
                                                     @endif
                                                 </td>
-                                                <td>{{ $directQueue->WorkstationService ? $directQueue->WorkstationService->Workstation->name : '' }}</td>
+                                                <td>
+                                                    @if ($directQueue->done_at)
+                                                        @php
+                                                            $waktuMulai = \Carbon\Carbon::parse($directQueue->called_at);
+                                                            $waktuSelesai = \Carbon\Carbon::parse($directQueue->done_at) ?: '';
+                                                            $durasiLayanan = $waktuSelesai ? $waktuSelesai->diffInMinutes($waktuMulai) : 0;
+                                                        @endphp
+                                                        {{ $durasiLayanan }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
+                                                <td>{{ $directQueue->WorkstationService ? $directQueue->WorkstationService->Workstation->name : '' }}
+                                                </td>
                                                 <td>{{ $directQueue->Service->name }}</td>
                                                 <td>
                                                     @if ($directQueue->OldService)
@@ -124,7 +147,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="7" class="text-center">{{ __('No data') }}</td>
+                                                <td colspan="8" class="text-center">{{ __('No data') }}</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -138,8 +161,8 @@
     </div>
 @endsection
 @push('js')
-    <script src="{{asset('admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{ asset('admin/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('admin/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.3/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.3/js/buttons.flash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -150,25 +173,24 @@
     <script>
         $(document).ready(function() {
             const workstation_service_idOldValue = '{{ $workstation_service_id }}';
-                
+
             $('#workstation_service_id').val(workstation_service_idOldValue);
         });
         $('#dataTable').dataTable({
             "ordering": false,
             "dom": 'Bfrtip',
-            "buttons": [
-                {
+            "buttons": [{
                     extend: 'excelHtml5',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $date ? '('.$date.')' : '' }}"
+                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $date ? '('.$date.')' : '' }}"
+                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
                 },
                 {
                     extend: 'print',
                     text: 'Cetak',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $date ? '('.$date.')' : '' }}"
+                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
                 }
             ],
             "language": {

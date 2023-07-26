@@ -8,6 +8,7 @@ use App\Appointment;
 use App\DirectQueue;
 use App\WorkstationService;
 use App\Interfaces\ExhibitionRepositoryInterface;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -29,7 +30,7 @@ class ReportController extends Controller
         if (!Auth::user()->Branch->BranchType->is_premium) {
             $last_month = $newdate = date("Y-m-d", strtotime("-3 months"));
 
-            if($request->date && date('Y-m-d', strtotime($request->date)) < $last_month){
+            if ($request->date && date('Y-m-d', strtotime($request->date)) < $last_month) {
                 $request->session()->flash('error', __('Can not select report more then last 3 months'));
                 return view('adminBranch.report.daily', [
                     'appointments' => [],
@@ -40,7 +41,7 @@ class ReportController extends Controller
             }
         }
 
-        $appointments = Appointment::whereHas('Slot.Service', function($query) use ($request){
+        $appointments = Appointment::whereHas('Slot.Service', function ($query) use ($request) {
             $request->service_id ? $query->where('id', $request->service_id) : $query->where('branch_id', Auth::user()->branch_id);
         })->where('date', $date)->orderBy('number')->get();
         return view('adminBranch.report.daily', [
@@ -54,36 +55,57 @@ class ReportController extends Controller
     public function directQueueDaily(Request $request)
     {
         // only can see report within last two months
-        $date = $request->date ?: date('Y-m-d');
+        $start_date = $request->start_date ?: date('Y-m-d');
+        $end_date = $request->end_date ?: date('Y-m-d');
         if (!Auth::user()->Branch->BranchType->is_premium) {
             $last_month = $newdate = date("Y-m-d", strtotime("-3 months"));
-            if($request->date && date('Y-m-d', strtotime($request->date)) < $last_month){
+            if ($request->start_date && date('Y-m-d', strtotime($request->start_date)) < $last_month) {
                 $request->session()->flash('error', __('Can not select report more then last 3 months'));
                 return view('adminBranch.report.directQueue.daily', [
                     'appointments' => [],
-                    'date' => $date,
+                    'start_date' => $start_date,
+                    'end_date' => $end_date,
                     'service_id' => $request->service_id,
                     'success' => false
                 ]);
             }
         }
 
-        $directQueue = DirectQueue::query()->whereHas('Service', function($query){
-            $query->whereBranchId(Auth::user()->branch_id);
-        })->whereDate('created_at', $date)->orderBy('created_at');
+        // Reports can only be within 30 days
+        $startDateObj = Carbon::parse($start_date);
+        $endDateObj = Carbon::parse($end_date);
+        $dateDiff = $endDateObj->diffInDays($startDateObj);
 
-
-        $directQueue->when($request->workstation_service_id, function($query) use ($request) {
-            $query->whereWorkstationServiceId($request->workstation_service_id);
-        });
-
-        $workstationServices = WorkstationService::whereHas('Workstation.Department', function($query){
+        $workstationServices = WorkstationService::whereHas('Workstation.Department', function ($query) {
             $query->whereBranchId(Auth::user()->branch_id);
         })->get();
 
+        if ($dateDiff > 30) {
+            $request->session()->flash('error', __('The maximum report selection period is limited to 30 days'));
+            return view('adminBranch.report.directQueue.daily', [
+                'directQueues' => [],
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'workstation_service_id' => $request->workstation_service_id,
+                'workstationServices' => $workstationServices,
+                'success' => false
+            ]);
+        }
+
+        $directQueue = DirectQueue::query()->whereHas('Service', function ($query) {
+            $query->whereBranchId(Auth::user()->branch_id);
+        })->whereDate('created_at', '>=', $start_date)
+            ->whereDate('created_at', '<=', $end_date)
+            ->orderBy('created_at');
+
+        $directQueue->when($request->workstation_service_id, function ($query) use ($request) {
+            $query->whereWorkstationServiceId($request->workstation_service_id);
+        });
+
         return view('adminBranch.report.directQueue.daily', [
             'directQueues' => $directQueue->get(),
-            'date' => $date,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
             'workstation_service_id' => $request->workstation_service_id,
             'workstationServices' => $workstationServices,
             'success' => true
@@ -104,7 +126,7 @@ class ReportController extends Controller
                 'service_id' => $request->service_id,
                 'branch_id' => Auth::user()->branch_id
             ];
-            
+
             $viewData['data'] = $this->exhibitionRepository->getDailyReport($params);
         } catch (Throwable $e) {
             $viewData['error'] = $e->getMessage();
@@ -150,8 +172,8 @@ class ReportController extends Controller
                 'service_id' => $request->service_id,
                 'branch_id' => Auth::user()->branch_id
             ];
-            
-            $viewData['data'] = Appointment::whereHas('Slot.Service', function($query) use ($params) {
+
+            $viewData['data'] = Appointment::whereHas('Slot.Service', function ($query) use ($params) {
                 $params['service_id']
                     ? $query->where('id', $params['service_id'])
                     : $query->where('branch_id', $params['branch_id']);
@@ -194,7 +216,7 @@ class ReportController extends Controller
                 'year' => $request->year ?: date('Y'),
                 'workstation_service_id' => $request->workstation_service_id
             ];
-            
+
             $viewData['data'] = DirectQueue::whereHas('Service', function ($query) {
                 $query->whereBranchId(Auth::user()->branch_id);
             })
@@ -243,7 +265,7 @@ class ReportController extends Controller
                 'service_id' => $request->service_id,
                 'branch_id' => Auth::user()->branch_id
             ];
-            
+
             $viewData['data'] = $this->exhibitionRepository->getMonthlyReport($params);
         } catch (Throwable $e) {
             $viewData['error'] = $e->getMessage();
