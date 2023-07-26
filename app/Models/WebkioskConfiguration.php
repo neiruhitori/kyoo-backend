@@ -11,7 +11,13 @@ class WebkioskConfiguration extends Model
 {
     protected $table = 'webkiosk_configuration';
 
-    protected $fillable = ['branch_id', 'layout_id'];
+    protected $fillable = ['branch_id', 'layout_id', 'active_menus'];
+
+    const MENU_OPTIONS  = [
+        ['label' => 'WA (WhatsApp)', 'value' => 'wa'],
+        ['label' => 'Photo', 'value' => 'photo'],
+        ['label' => 'Print', 'value' => 'print'],
+    ];
 
     public function layout()
     {
