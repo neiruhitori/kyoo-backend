@@ -109,7 +109,7 @@ export default {
         this.getQueues();
       })
       .listen('QueueStatusUpdated', async (message) => {
-        await this.getQueues();
+        await this.getQueues(message.queue_no);
 
         if (
           this.servingQueue &&
@@ -207,7 +207,7 @@ export default {
       }, IMAGE_DURATION)
     },
 
-    async getQueues() {
+    async getQueues(queue_no) {
       this.isLoading = true;
       try {
         const data = await axios.get(
@@ -217,7 +217,11 @@ export default {
         const queues = data.data.data;
         
         this.waitingQueue = queues.filter(v => v.status === 'waiting');
-        this.servingQueue = queues.find(v => v.status === 'served');
+        if (queue_no) {
+          this.servingQueue = queues.find(v => v.queue_no === queue_no);
+        } else {
+          this.servingQueue = queues.find(v => v.status === 'served');
+        }
       } catch (error) {
         alert(error.response.data.message);
       }
