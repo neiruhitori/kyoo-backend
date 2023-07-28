@@ -200,9 +200,17 @@ class DirectQueueController extends Controller
         $query = $this->InitQuery();
 
         if ($directQueue->status == 'requeue' && !$isSkip) {
-            $queues = $query->whereIn('status', ['served', 'waiting'])->where('id', '!=', $directQueue->id)->exists();
+            $queues = $query
+                ->whereIn('status', ['served', 'waiting'])
+                ->where('id', '!=', $directQueue->id)
+                ->where('workstation_id', '=', $directQueue->workstation_id)
+                ->exists();
         }else if ($isSkip) {
-            $queues = $query->whereStatus('served')->where('id', '!=', $directQueue->id)->where('workstation_id', '=', $directQueue->workstation_id)->exists();
+            $queues = $query
+                ->whereStatus('served')
+                ->where('id', '!=', $directQueue->id)
+                ->where('workstation_id', '=', $directQueue->workstation_id)
+                ->exists();
         } else {
             $query->whereNotIn('status', ['end served', 'no show', 'requeue']);
             $queues = $query->get()->filter(function($item){
