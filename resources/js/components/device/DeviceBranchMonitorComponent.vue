@@ -109,6 +109,10 @@ export default {
         this.getQueues();
       })
       .listen('QueueStatusUpdated', async (message) => {
+        if(!message.queue_no || !['recall', 'served'].includes(message.status)) {
+          return await this.getQueues();
+        }
+
         console.log("call queue no", message.queue_no)
         await this.getQueues(message.queue_no);
 
