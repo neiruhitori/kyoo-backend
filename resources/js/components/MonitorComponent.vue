@@ -438,7 +438,10 @@ export default {
 
       this.isLoading = false;
 
-      const selected_queue = this.queues.find(v => v.status === 'served');
+      let selected_queue = this.queues.find(v => v.status === 'served');
+      if (!selected_queue && this.queues.length) {
+        selected_queue = this.queues[0];
+      }
       this.selectQueue(selected_queue?.queue_no || '');
     },
 
