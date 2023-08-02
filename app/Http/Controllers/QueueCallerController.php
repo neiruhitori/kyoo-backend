@@ -12,6 +12,7 @@ class QueueCallerController extends Controller
 {
     public function call(DirectQueue $directQueue)
     {
+        $timeRequest = time();
         $audio_files = ['audio/vo/nomor-antrian.wav'];
 
         // Queue number audio
@@ -30,14 +31,15 @@ class QueueCallerController extends Controller
             }
         }
 
+        $fileName = 'audio/vo/mixed_sound_'.$directQueue->branch_id.'_'.$directQueue->queue_no.'_'.$timeRequest.'.wav';
         FFMpeg::open($audio_files)
             ->export()
             ->inFormat(new FFMpeg\Format\Audio\Wav)
             ->concatWithTranscoding($hasVideo = false, $hasAudio = true)
-            ->save('audio/vo/mixed-sound.wav');
+            ->save($fileName);
         
-        $mixed_sound = base64_encode(Storage::get('audio/vo/mixed-sound.wav'));
-        Storage::delete('audio/vo/mixed-sound.wav');
+        $mixed_sound = base64_encode(Storage::get($fileName));
+        Storage::delete($fileName);
 
         return response()->json([
             'audio' => [
