@@ -12,6 +12,7 @@ use App\Workstation;
 
 use App\Events\AppointmentCanceledEvent;
 use App\Events\AppointmentCreated;
+use App\Events\OwnerAppointmentCreated;
 use App\Events\AppointmentServed;
 use App\Events\AppointmentEndServed;
 
@@ -57,7 +58,7 @@ class AppointmentService
             if ($this->isAppointmentSessionFinish($data['slot_id'], $data['date'])) {
                 throw new \Exception('Sesi appointment sudah berakhir');
             }
-            
+
             // Prevent empty workstation service
             if ($this->isWorkstationServiceEmpty($data['service_id'])) {
                 throw new \Exception('Tidak ada layanan');
@@ -81,12 +82,14 @@ class AppointmentService
 
             $data['booking_code'] = BookingCode::generate();
             $data['number'] = $this->getCurrrentAppointmentNumber($data['branch_id'], $data['date']);
-            
+
             // Store appointment to db
             $appointment = Appointment::create($data);
 
             // Dispatch created event
             AppointmentCreated::dispatch($appointment);
+
+            OwnerAppointmentCreated::dispatch($appointment);
 
             return $appointment;
         });
@@ -116,9 +119,9 @@ class AppointmentService
         if (isset($data['phone'])) $phone = $data['phone'];
 
         $sameAppointment = Appointment::withoutCanceled()->where([
-                'slot_id' => $data['slot_id'],
-                'date' => $formattedDate
-            ])
+            'slot_id' => $data['slot_id'],
+            'date' => $formattedDate
+        ])
             ->where(function ($query) use ($email, $phone) {
                 $query->where('email', $email)
                     ->orWhere('phone', $phone);
@@ -137,7 +140,7 @@ class AppointmentService
             'slot_id' => $slotId,
             'date' => $formattedDate
         ])->count();
-        
+
         return $totalTodayAppointmentsBySlot >= $slot->max_slots;
     }
 
@@ -191,7 +194,8 @@ class AppointmentService
         return date('H:i', strtotime($endTime)) > $slot->end_time;
     }
 
-    private function getFinalTimeSlot($data) {
+    private function getFinalTimeSlot($data)
+    {
         $date = date('Y-m-d', strtotime($data['date']));
 
         $departmentId = $data['department_id'];
@@ -242,7 +246,8 @@ class AppointmentService
         return [$startTime, $endTime];
     }
 
-    private function getInitTimeSlot($slot, $date) {
+    private function getInitTimeSlot($slot, $date)
+    {
         $formattedDate = date('Y-m-d', strtotime($date));
 
         $currentAppointment = Appointment::withoutCanceled()->where([
@@ -251,7 +256,7 @@ class AppointmentService
         ])
             ->orderByDesc('start_time')
             ->first();
-        
+
         $slotDurationInSeconds = strtotime($slot->end_time) - strtotime($slot->start_time);
         $secondsPerSlot = floor($slotDurationInSeconds / $slot->max_slots);
 
@@ -277,7 +282,7 @@ class AppointmentService
             ->get()
             ->sortByDesc('number')
             ->first();
-        
+
         return $lastAppointment ? $lastAppointment->number + 1 : 1;
     }
 
@@ -453,7 +458,8 @@ class AppointmentService
         return Appointment::with('Service.Slot')
             ->withoutCanceled()
             ->select(
-                'date', 'service_id',
+                'date',
+                'service_id',
                 DB::raw('COUNT(*) as filled_slots')
             )
             ->whereBetween('date', [$from, $to])
@@ -467,7 +473,9 @@ class AppointmentService
         return Appointment::with('Slot')
             ->withoutCanceled()
             ->select(
-                'date', 'service_id', 'slot_id',
+                'date',
+                'service_id',
+                'slot_id',
                 DB::raw('COUNT(*) as filled_slots')
             )
             ->where('service_id', $serviceId)
