@@ -61,8 +61,9 @@ class DirectQueueController extends Controller
             });
         });
 
-        $data = $directQueues->get()->filter(function($directQueue){
-            return $directQueue->vct_priority;
+        $requesterWorkstationId = Auth::user()->WorkstationVct->workstation_id;
+        $data = $directQueues->get()->filter(function($directQueue) use ($requesterWorkstationId) {
+            return $directQueue->vct_priority &&  ($directQueue->status !== 'served' || $directQueue->workstation_id === $requesterWorkstationId);
         });
 
         return response()->json([
