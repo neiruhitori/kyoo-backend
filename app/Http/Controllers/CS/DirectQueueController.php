@@ -61,9 +61,10 @@ class DirectQueueController extends Controller
             });
         });
 
-        $data = $directQueues->get()->filter(function($directQueue){
-            return $directQueue->vct_priority;
-        });
+        $requesterWorkstationId = Auth::user()->WorkstationVct->workstation_id;
+        $data = $directQueues->get()->filter(function($directQueue) use ($requesterWorkstationId) {
+            return $directQueue->vct_priority &&  ($directQueue->status !== 'served' || $directQueue->workstation_id === $requesterWorkstationId);
+        })->values();
 
         return response()->json([
             'success' => true,
@@ -114,7 +115,7 @@ class DirectQueueController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get all service on branch',
-            'data' => $workstationServices
+            'data' => DirectQueueController::unique_key($workstationServices, 'service_id')
         ]);
     }
 
@@ -200,9 +201,17 @@ class DirectQueueController extends Controller
         $query = $this->InitQuery();
 
         if ($directQueue->status == 'requeue' && !$isSkip) {
-            $queues = $query->whereIn('status', ['served', 'waiting'])->where('id', '!=', $directQueue->id)->exists();
+            $queues = $query
+                ->whereIn('status', ['served', 'waiting'])
+                ->where('id', '!=', $directQueue->id)
+                ->where('workstation_id', '=', $directQueue->workstation_id)
+                ->exists();
         }else if ($isSkip) {
-            $queues = $query->whereStatus('served')->where('id', '!=', $directQueue->id)->exists();
+            $queues = $query
+                ->whereStatus('served')
+                ->where('id', '!=', $directQueue->id)
+                ->where('workstation_id', '=', $directQueue->workstation_id)
+                ->exists();
         } else {
             $query->whereNotIn('status', ['end served', 'no show', 'requeue']);
             $queues = $query->get()->filter(function($item){
@@ -624,5 +633,15 @@ class DirectQueueController extends Controller
             'message' => 'Direct Queue on Transfer',
             'data' => $directQueue
         ]);
+    }
+
+    private function unique_key($array,$removeKey){
+        $new_array = array();
+        foreach($array as $key=>$value){
+          if(!isset($new_array[$value[$removeKey]])){
+            $new_array[$value[$removeKey]] = $value;
+          }
+        }
+        return array_values($new_array);
     }
 }

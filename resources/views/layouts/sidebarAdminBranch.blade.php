@@ -36,7 +36,7 @@
             <span>{{ __('Branch QR Code') }}</span></a>
     </li>
 
-    @if (
+    <!-- @if (
       Auth::user()->Branch->BranchType->is_premium &&
       Auth::user()->Branch->hasAccess('Web Signage TV')
     )
@@ -46,7 +46,7 @@
                 <span>Web Monitor Antrian</span>
             </a>
         </li>
-    @endif
+    @endif -->
 
     <li class="nav-item {{ !request()->is('admin-branch/product-guide/*') ?: 'active' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#instruction-of-use"

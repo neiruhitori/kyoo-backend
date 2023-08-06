@@ -438,7 +438,11 @@ export default {
 
       this.isLoading = false;
 
-      this.selectQueue(this.queues.length ? this.queues[0].queue_no : '');
+      let selected_queue = this.queues.find(v => v.status === 'served');
+      if (!selected_queue && this.queues.length) {
+        selected_queue = this.queues[0];
+      }
+      this.selectQueue(selected_queue?.queue_no || '');
     },
 
     debounceSearch(event) {
@@ -575,7 +579,7 @@ export default {
       }
       this.resetTimer()
 
-      const selected_queue = this.queues.filter(
+      const selected_queue = this.queues.find(
         (queue) => queue.queue_no === this.selected_queue
       );
       this.isLoading = true;
