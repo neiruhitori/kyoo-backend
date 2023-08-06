@@ -64,7 +64,7 @@ class DirectQueueController extends Controller
         $requesterWorkstationId = Auth::user()->WorkstationVct->workstation_id;
         $data = $directQueues->get()->filter(function($directQueue) use ($requesterWorkstationId) {
             return $directQueue->vct_priority &&  ($directQueue->status !== 'served' || $directQueue->workstation_id === $requesterWorkstationId);
-        });
+        })->values();
 
         return response()->json([
             'success' => true,
