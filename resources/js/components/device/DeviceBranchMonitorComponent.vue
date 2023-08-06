@@ -221,7 +221,7 @@ export default {
 
         const queues = data.data.data;
         
-        this.waitingQueue = queues.filter(v => v.status === 'waiting');
+        this.waitingQueue = queues.filter(v => v.status === 'waiting' || v.status === 'requeue');
         if (queue_no) {
           this.servingQueue = queues.find(v => v.queue_no === queue_no);
         } else {
