@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @push('css')
-    <link href="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('admin/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.3/css/buttons.dataTables.min.css">
     <style>
         .buttons-excel {
@@ -9,12 +9,14 @@
             border: 0px !important;
             font-weight: 500px !important;
         }
+
         .buttons-pdf {
             background-color: #e53e3e !important;
             color: white !important;
             border: 0px !important;
             font-weight: 500px !important;
         }
+
         .buttons-print {
             background-color: #cbd5e0 !important;
             color: #333333 !important;
@@ -97,7 +99,8 @@
                                                 <td>{{ $appointment->name }}</td>
                                                 <td>{{ $appointment->date }}</td>
                                                 <td>{{ $appointment->Slot->Service->name }}</td>
-                                                <td>{{ $appointment->Slot->start_time }} - {{ $appointment->Slot->end_time }}</td>
+                                                <td>{{ $appointment->Slot->start_time }} -
+                                                    {{ $appointment->Slot->end_time }}</td>
                                                 <td>{{ $appointment->appointment_channel }}</td>
                                             </tr>
                                         @empty
@@ -116,8 +119,8 @@
     </div>
 @endsection
 @push('js')
-    <script src="{{asset('admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{ asset('admin/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('admin/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.3/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.3/js/buttons.flash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -128,7 +131,7 @@
     <script>
         $(document).ready(function() {
             const service_idOldValue = '{{ $service_id }}';
-                
+
             $('#service_id').val(service_idOldValue);
         });
         $('#dataTable').dataTable({
@@ -156,20 +159,19 @@
                     "sortAscending": ": aktifkan untuk mengurutkan kolom menaik",
                     "sortDescending": ": aktifkan untuk mengurutkan kolom menurun"
                 }
-            },  
-            "buttons": [
-                {
+            },
+            "buttons": [{
                     extend: 'excelHtml5',
-                    title: "Antrian Appointment {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '('.$appointments[0]->date.')' : '' }}"
+                    title: "Antrian Appointment {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '(' . $appointments[0]->date . ')' : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Antrian Appointment {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '('.$appointments[0]->date.')' : '' }}"
+                    title: "Antrian Appointment {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '(' . $appointments[0]->date . ')' : '' }}"
                 },
                 {
                     extend: 'print',
                     text: 'Cetak',
-                    title: "Antrian Appointment {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '('.$appointments[0]->date.')' : '' }}"
+                    title: "Antrian Appointment {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '(' . $appointments[0]->date . ')' : '' }}"
                 }
             ]
         })

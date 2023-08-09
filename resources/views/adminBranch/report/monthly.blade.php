@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @push('css')
-    <link href="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('admin/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.3/css/buttons.dataTables.min.css">
     <style>
         .buttons-excel {
@@ -9,12 +9,14 @@
             border: 0px !important;
             font-weight: 500px !important;
         }
+
         .buttons-pdf {
             background-color: #e53e3e !important;
             color: white !important;
             border: 0px !important;
             font-weight: 500px !important;
         }
+
         .buttons-print {
             background-color: #cbd5e0 !important;
             color: #333333 !important;
@@ -50,7 +52,7 @@
         <div class="col-xl-12 col-lg-7">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Daily Report') }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Monthly Report') }}</h6>
                 </div>
                 <div class="card-body">
                     @if (session('error'))
@@ -65,7 +67,8 @@
                                         <label for="">{{ __('Select Month') }}</label>
                                         <select name="month" class="form-control">
                                             @foreach ($months as $k => $m)
-                                            <option value="{{ $k + 1 }}" {{ $month != ($k + 1) ?: 'selected' }}>{{ __($m) }}</option>
+                                                <option value="{{ $k + 1 }}" {{ $month != $k + 1 ?: 'selected' }}>
+                                                    {{ __($m) }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -74,7 +77,8 @@
                                         <label for="">{{ __('Select Year') }}</label>
                                         <select name="year" class="form-control">
                                             @for ($y = date('Y') - 20; $y <= date('Y'); $y++)
-                                            <option value="{{ $y }}" {{ $year != $y ?: 'selected' }}>{{ $y }}</option>
+                                                <option value="{{ $y }}" {{ $year != $y ?: 'selected' }}>
+                                                    {{ $y }}</option>
                                             @endfor
                                         </select>
                                     </div>
@@ -85,7 +89,9 @@
                                     <select name="service_id" id="service_id" class="form-control">
                                         <option value="">{{ __('All') }}</option>
                                         @foreach (Auth::user()->Branch->Service as $service)
-                                            <option value="{{ $service->id }}" {{ $service->id != $service_id ?: 'selected' }}>{{ $service->name }}</option>
+                                            <option value="{{ $service->id }}"
+                                                {{ $service->id != $service_id ?: 'selected' }}>{{ $service->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -103,6 +109,8 @@
                                     <thead>
                                         <th>{{ __('Queue Number') }}</th>
                                         <th>{{ __('Name') }}</th>
+                                        <th>{{ __('Email') }}</th>
+                                        <th>{{ __('Phone Number') }}</th>
                                         <th>{{ __('Appointment Date') }}</th>
                                         <th>{{ __('Service') }}</th>
                                         <th>{{ __('Slot') }}</th>
@@ -113,9 +121,12 @@
                                             <tr>
                                                 <td>{{ $appointment->number }}</td>
                                                 <td>{{ $appointment->name }}</td>
+                                                <td>{{ $appointment->email }}</td>
+                                                <td>{{ $appointment->phone }}</td>
                                                 <td>{{ $appointment->date }}</td>
                                                 <td>{{ $appointment->Slot->Service->name }}</td>
-                                                <td>{{ $appointment->Slot->start_time }} - {{ $appointment->Slot->end_time }}</td>
+                                                <td>{{ $appointment->Slot->start_time }} -
+                                                    {{ $appointment->Slot->end_time }}</td>
                                                 <td>{{ $appointment->appointment_channel }}</td>
                                             </tr>
                                         @empty
@@ -134,8 +145,8 @@
     </div>
 @endsection
 @push('js')
-    <script src="{{asset('admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{ asset('admin/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('admin/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.3/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.3/js/buttons.flash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -146,7 +157,7 @@
     <script>
         $(document).ready(function() {
             const service_idOldValue = '{{ $service_id }}';
-                
+
             $('#service_id').val(service_idOldValue);
         });
         $('#dataTable').dataTable({
@@ -174,9 +185,8 @@
                     "sortAscending": ": aktifkan untuk mengurutkan kolom menaik",
                     "sortDescending": ": aktifkan untuk mengurutkan kolom menurun"
                 }
-            },  
-            "buttons": [
-                {
+            },
+            "buttons": [{
                     extend: 'excelHtml5',
                     title: "Antrian Appointment {{ Auth::user()->Branch->name }} {{ __($months[$month - 1]) }} {{ $year }}"
                 },

@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class BranchConfiguration extends Model
 {
-    protected $fillable = [
-        'branch_id',
-        'maximum_recall',
-        'maximum_requeue_count',
-        'allow_transfer',
-        'queue_voice',
-        'promotion',
-        'queue_layout_configuration',
-        'wa_notification',
-    ];
+  protected $fillable = [
+    'branch_id',
+    'maximum_recall',
+    'maximum_requeue_count',
+    'allow_transfer',
+    'queue_voice',
+    'promotion',
+    'queue_layout_configuration',
+    'wa_notification',
+    'wa_notification_owner',
+    'phone_owner'
+  ];
 }
