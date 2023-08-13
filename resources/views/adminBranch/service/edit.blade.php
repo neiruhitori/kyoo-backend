@@ -52,6 +52,17 @@
                                         @include('layouts.inputError', ['errorName' => 'prefix_queue'])
                                     </div>
                                 @endif
+                                <div class="form-check form-group">
+                                    <input name="is_show" id="is_show" type="checkbox" value="1" class="form-check-input @error('is_show') is-invalid @enderror" 
+                                            {{
+                                                ($service && $service->is_show) || old('service')
+                                                ? 'checked'
+                                                : ''
+                                            }}
+                                        >
+                                    <label for="is_show">{{ __('Show service to client') }}</label>
+                                    @include('layouts.inputError', ['errorName' => 'is_show'])
+                                </div>
                                 <button class="btn btn-warning">{{ __('Update') }}</button>
                             </form>
                         </div>

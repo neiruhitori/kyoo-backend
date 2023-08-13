@@ -251,6 +251,8 @@ function Services() {
                     ? service.totalSlot - service.filledSlot
                     : 0
 
+                if (!service.is_show) return
+
                 return <Link to={`${service.id}?date=${format(selectedDate, 'yyyy-MM-dd')}`} key={service.id} style={{
                     marginBottom: '1.125rem'
                 }}>
