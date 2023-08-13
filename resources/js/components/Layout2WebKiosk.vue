@@ -26,14 +26,16 @@
                     <h5 class="label">
                         Silahkan Ambil Antrian
                     </h5>
-                    <button
-                        class="btn btn-lg btn-primary button-length"
-                        v-for="workstation in this.workstationServices"
-                        @click="onClickWorkstation(workstation.id)"
-                        v-bind:style="[button_style]"
-                    >
-                        {{ workstation.service.name }}
-                    </button>
+                    <template v-for="workstation in this.workstationServices">
+                        <button
+                            class="btn btn-lg btn-primary button-length"
+                            v-if="workstation.service.is_show"
+                            @click="onClickWorkstation(workstation.id)"
+                            v-bind:style="[button_style]"
+                        >
+                            {{ workstation.service.name }}
+                        </button>
+                    </template>
                 </div>
 
                 <form
