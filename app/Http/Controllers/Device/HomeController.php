@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Device;
 
 use Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\URL;
 
 use App\Branch;
 use App\DirectQueue;
 use App\User;
 use App\WorkstationService;
+use App\Workstation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CS\StoreDirectQueue;
 use App\Interfaces\WebKioskConfigurationRepositoryInterface;
@@ -42,12 +45,43 @@ class HomeController extends Controller
 
     public function webMonitor()
     {
-        $branch = Branch::with(['BranchConfiguration'])->findOrFail(Auth::user()->branch_id);
+        $branchID = Auth::user()->branch_id;
+        $branch = Branch::with(['BranchConfiguration', 'Departments'])->findOrFail($branchID);
+
+        if ($branch->BranchType->is_appointment) {
+            $encryptBranchId = Crypt::encrypt($branchID);
+            $url = URL::temporarySignedRoute(
+                'appointments.signage',
+                now()->addDays(1),
+                ['branch_id' => $encryptBranchId],
+            );
+    
+            return redirect($url);
+        }
+
         $features = FeatureSubscription::with('AdditionalFeature')
             ->where('branch_id', $branch->id)
             ->get();
 
-        return view('device.webMonitor', [
+        if (
+            $branch->BranchType->is_direct_queue
+            && $branch->BranchConfiguration->template_signage !== 'standard-ui'
+        ) {
+            $workstations = Workstation::whereIn(
+                'department_id',
+                $branch->Departments->pluck('id')->toArray(),
+            )
+            ->take(5)
+            ->get();
+
+            return view('device.signage.custom-1UI', [
+                'branch' => $branch,
+                'features' => $features,
+                'workstations' => $workstations,
+            ]);
+        }
+
+        return view('device.signage.standardUI', [
             'branch' => $branch,
             'features' => $features
         ]);

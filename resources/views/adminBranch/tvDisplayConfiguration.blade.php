@@ -103,6 +103,11 @@
             border-radius: 6px;
             background-color: #DDDDDD;
         }
+
+        .wrapper-submit {
+            display: flex;
+            justify-content: flex-end;
+        }
     </style>
 @endpush
 
@@ -208,45 +213,68 @@
             </div>
 
             <div class="col-md-7 col-sm-12">
-                <div class="mb-4">
-                    <h5 class="font-weight-bold">Layout Display</h5>
-                    <p class="text-caption">Pilih jenis layout yang sesuai dengan bisnis Anda</p>
-                </div>
-
-                <div>
-                    <div class="form-group" style="width: 200px;">
-                        <select class="form-control">
-                            <option value="Layout 1" selected>Layout 1</option>
-                        </select>
+                <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update-layout', Auth::user()->branch_id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Layout Display</h5>
+                        <p class="text-caption">Pilih jenis layout yang sesuai dengan bisnis Anda</p>
                     </div>
 
-                    <div class="layout-img-container mb-3">
-                        <img src="{{ asset('img/tv-display/layout-1.png') }}" alt="Layout 1">
+                    <div>
+                        <div class="form-group" style="width: 200px;">
+                            <select name="template_signage" class="form-control" onchange="changeLayout(this)">
+                                <option value="standard-ui" {{ $template_signage != 'standard-ui' ?: 'selected' }} >Standard UI</option>
+                                @if (!$is_appointment)
+                                    <option value="custom-layout-1" {{ $template_signage == 'custom-layout-1' ? 'selected' : '' }}>Custom Layout 1</option>
+                                @endif
+                            </select>
+                        </div>
+
+                        <div class="layout-img-container mb-3">
+                            <img src="{{ asset($default_image_layout) }}" alt="Display image layout" id="display-image-layout">
+                        </div>
+
+                        <div class="layout-labels">
+                            <div class="layout-label-item">
+                                <div class="layout-img" style="background-color: #EADAA4;"></div>
+                                <span>Space Iklan</span>
+                            </div>
+
+                            <div class="layout-label-item">
+                                <div class="layout-img" style="background-color: #F6A2FD;"></div>
+                                <span>Sedang Dilayani</span>
+                            </div>
+
+                            <div class="layout-label-item">
+                                <div class="layout-img" style="background-color: #93F097;"></div>
+                                <span>Antrian Menunggu</span>
+                            </div>
+                        </div>
+
+                        <div class="wrapper-submit mt-3">
+                            <button type="submit" class="btn btn-warning">Simpan</submit>
+                        </div>
                     </div>
-
-                    <div class="layout-labels">
-                        <div class="layout-label-item">
-                            <div class="layout-img" style="background-color: #EADAA4;"></div>
-                            <span>Space Iklan</span>
-                        </div>
-
-                        <div class="layout-label-item">
-                            <div class="layout-img" style="background-color: #F6A2FD;"></div>
-                            <span>Sedang Dilayani</span>
-                        </div>
-
-                        <div class="layout-label-item">
-                            <div class="layout-img" style="background-color: #93F097;"></div>
-                            <span>Antrian Menunggu</span>
-                        </div>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+
+    const imageLayouts = @json($image_layouts);
+
+    function changeLayout(input) {
+        const { value } = input;
+
+        const { image } = imageLayouts.find((obj) => obj.key == value);
+
+        const documentImage = document.getElementById("display-image-layout");
+        documentImage.src = `${window.location.origin}/${image}`
+    }
+
     function previewImage(input, imageNo)  {
         if (input.files && input.files[0]) {
             const reader = new FileReader();

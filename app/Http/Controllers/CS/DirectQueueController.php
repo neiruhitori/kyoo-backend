@@ -214,9 +214,11 @@ class DirectQueueController extends Controller
                 ->exists();
         } else {
             $query->whereNotIn('status', ['end served', 'no show', 'requeue']);
-            $queues = $query->get()->filter(function($item){
-                return $item->vct_priority;
-            });
+            $requesterWorkstationId = Auth::user()->WorkstationVct->workstation_id;
+            $queues = $query->get()->filter(function($item) use ($requesterWorkstationId){
+                return $item->vct_priority &&  ($item->status !== 'served' || $item->workstation_id === $requesterWorkstationId);
+            })->values();
+
             $queues = $queues[0] ? $queues[0]->queue_no != $directQueue->queue_no : false;
         }
         
@@ -271,6 +273,13 @@ class DirectQueueController extends Controller
             $directQueue->done_at = Date('Y-m-d H:i:s');
             $directQueue->save();
 
+            event(new QueueStatusUpdated([
+                'queue_no' => $directQueue->queue_no,
+                'status' => 'no show',
+                'branch_id' => Auth::user()->branch_id,
+                'workstation_id' => $directQueue->workstation_id
+            ]));
+
             return response()->json([
                 'success' => false,
                 'message' => 'Queue recall has on limited',
@@ -296,7 +305,8 @@ class DirectQueueController extends Controller
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
             'status' => 'served',
-            'branch_id' => Auth::user()->branch_id
+            'branch_id' => Auth::user()->branch_id,
+            'workstation_id' => $directQueue->workstation_id
         ]));
 
         if ($directQueue->client_id) {
@@ -358,6 +368,14 @@ class DirectQueueController extends Controller
             $directQueue->status = 'no show';
             $directQueue->done_at = Date('Y-m-d H:i:s');
             $directQueue->save();
+
+            event(new QueueStatusUpdated([
+                'queue_no' => $directQueue->queue_no,
+                'status' => 'no show',
+                'branch_id' => Auth::user()->branch_id,
+                'workstation_id' => $directQueue->workstation_id
+            ]));
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Queue recall has on limited',
@@ -373,7 +391,8 @@ class DirectQueueController extends Controller
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
             'status' => 'recall',
-            'branch_id' => Auth::user()->branch_id
+            'branch_id' => Auth::user()->branch_id,
+            'workstation_id' => $directQueue->workstation_id
         ]));
 
         if ($directQueue->client_id) {
@@ -456,7 +475,8 @@ class DirectQueueController extends Controller
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
             'status' => 'requeue',
-            'branch_id' => Auth::user()->branch_id
+            'branch_id' => Auth::user()->branch_id,
+            'workstation_id' => $directQueue->workstation_id
         ]));
 
         if ($directQueue->client_id) {
@@ -504,7 +524,8 @@ class DirectQueueController extends Controller
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
             'status' => 'end served',
-            'branch_id' => Auth::user()->branch_id
+            'branch_id' => Auth::user()->branch_id,
+            'workstation_id' => $directQueue->workstation_id
         ]));
 
         if ($directQueue->client_id) {
@@ -551,7 +572,8 @@ class DirectQueueController extends Controller
         event(new QueueStatusUpdated([
             'queue_no' => $directQueue->queue_no,
             'status' => 'no show',
-            'branch_id' => Auth::user()->branch_id
+            'branch_id' => Auth::user()->branch_id,
+            'workstation_id' => $directQueue->workstation_id
         ]));
 
         if ($directQueue->client_id) {
@@ -601,7 +623,8 @@ class DirectQueueController extends Controller
         event(new QueueStatusUpdated([
             'queue_no' => $oldDirectQueue->queue_no,
             'status' => 'end served',
-            'branch_id' => Auth::user()->branch_id
+            'branch_id' => Auth::user()->branch_id,
+            'workstation_id' => $oldDirectQueue->workstation_id
         ]));
 
         if ($oldDirectQueue->client_id) {
