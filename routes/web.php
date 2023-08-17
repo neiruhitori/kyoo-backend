@@ -107,6 +107,9 @@ Route::namespace('AdminBranch')
             Route::put('queue-monitor/{branch}', 'TVDisplayConfigurationController@update')
                 ->name('queue-monitor.update')
                 ->middleware('access:Web Signage TV');
+            Route::put('queue-monitor/update-layout/{branch}','TVDisplayConfigurationController@updateLayout')
+                ->name('queue-monitor.update-layout')
+                ->middleware('access:Web Signage TV');
 
             Route::get('webkiosk', 'WebkioskConfigurationController@index')
                 ->name('webkiosk')

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Branch;
 use App\Models\TVConfiguration;
 use App\Models\TVLayout;
+use APP\BranchConfiguration;
 use Storage;
 use Auth;
 
@@ -28,11 +29,30 @@ class TVDisplayConfigurationController extends Controller
             if ($tv_configuration->image_3) $image_3 = 'storage/' . $tv_configuration->image_3;
         }
 
+
+        $defaultImageLayout  = "img/tv-display/layout-1.png";
+        if (Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-1'){
+            $defaultImageLayout = "img/tv-display/custom-layout-1.jpg";
+        }
+
         return view('adminBranch.tvDisplayConfiguration', [
             'tv_configuration' => $tv_configuration,
             'image_1' => $image_1,
             'image_2' => $image_2,
-            'image_3' => $image_3
+            'image_3' => $image_3,
+            'template_signage' => Auth::user()->Branch->BranchConfiguration->template_signage,
+            'is_appointment' => Auth::user()->Branch->BranchType->is_appointment,
+            'image_layouts' => [
+                [
+                    'key' => 'custom-layout-1',
+                    'image' => 'img/tv-display/custom-layout-1.jpg'
+                ],
+                [
+                    'key' => 'standard-ui',
+                    'image' => 'img/tv-display/layout-1.png'
+                ],
+            ],
+            'default_image_layout' => $defaultImageLayout
         ]);
     }
 
@@ -75,5 +95,13 @@ class TVDisplayConfigurationController extends Controller
         return redirect()
             ->route('admin-branch.branch-configuration.queue-monitor')
             ->with('success', 'Konfigurasi display TV berhasil diperbarui.');
+    }
+
+    public function updateLayout(Branch $branch, Request $request) {
+        $branch->BranchConfiguration->template_signage = $request->template_signage;
+        $branch->BranchConfiguration->save();
+        return redirect()
+            ->route('admin-branch.branch-configuration.queue-monitor')
+            ->with('success', 'Manajemen display TV berhasil diperbarui.');
     }
 }

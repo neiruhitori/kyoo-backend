@@ -366,6 +366,12 @@ export default {
       }
     );
 
+    Echo
+      .channel(`event_direct_queue_general.${this.auth.branch_id}`)
+      .listen('QueueStatusUpdated', () => {
+        this.getQueues();
+      });
+
     this.initVoiceRecorder()
   },
 

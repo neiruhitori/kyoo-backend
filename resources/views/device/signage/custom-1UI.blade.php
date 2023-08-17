@@ -31,9 +31,10 @@
 
 <body>
     <div id="app">
-        <Device-Branch-Monitor-Component 
+        <Device-Signage-Custom-1-Component 
             :branch="{{$branch}}"
             :features="{{$features}}"
+            :workstations="{{$workstations}}"
         />
     </div>
     <script src="{{asset('js/app.js')}}"></script>
