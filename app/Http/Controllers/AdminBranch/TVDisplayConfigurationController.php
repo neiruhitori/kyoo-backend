@@ -58,13 +58,24 @@ class TVDisplayConfigurationController extends Controller
 
     public function update(Branch $branch, Request $request)
     {
-        $STORAGE_FOLDER = 'tv_images';
+        $STORAGE_FOLDER_IMAGES = 'tv_images';
+        $STORAGE_FOLDER_VIDEOS = 'tv_videos';
 
-        $request->validate([
-            'image_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-            'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-            'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
-        ]);
+        if ($request->file('image_1') && $request->file('image_1')->getClientOriginalExtension() === 'mp4') {
+            $request->validate([
+                'image_1' => 'nullable|mimetypes:video/mp4|max:10000',
+                'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
+            ], [], [
+                'image_1' => 'Video',
+            ]);
+        } else {
+            $request->validate([
+                'image_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,mp4|max:1000',
+                'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
+            ]);
+        }
 
         $tv_layout = TVLayout::first();
         $tv_configuration = TVConfiguration::where('branch_id', $branch->id)->first();
@@ -76,6 +87,8 @@ class TVDisplayConfigurationController extends Controller
 
         for ($i = 1; $i <= 3; $i++) {
             if ($request->file("image_$i")) {
+                $imageType = $request->file("image_$i")->getClientOriginalExtension();
+                $STORAGE_FOLDER = $imageType === 'mp4' ? $STORAGE_FOLDER_VIDEOS : $STORAGE_FOLDER_IMAGES;
                 $data["image_$i"] = Storage::disk('public')->put($STORAGE_FOLDER, $request->file("image_$i"));
             }
         }

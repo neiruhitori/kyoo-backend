@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="label">{{ __('Label') }}</label>
-                                    <input name="label" type="text" class="form-control @error('label') is-invalid @enderror" value="{{old('label') ?: $workstation->label}}" required readonly>
+                                    <input name="label" type="text" class="form-control @error('label') is-invalid @enderror" value="{{old('label') ?: $workstation->label}}" required>
                                     @include('layouts.inputError', ['errorName' => 'label'])
                                 </div>
                                 <div class="form-group">
@@ -55,7 +55,7 @@
     <script>
         $(document).ready(function() {
             const department_idOldValue = '{{ old('department_id') ?: $workstation->department_id }}';
-            
+
             if(department_idOldValue !== '') {
                 $('#department_id').val(department_idOldValue);
             }
