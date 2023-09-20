@@ -56,7 +56,7 @@
 
             <div class="monitor-main-content">
                 <video
-                    v-if="activeImage === 1 && isVideo(promotionImages[0])"
+                    v-if="promotionImages[0] && activeImage === 1 && isVideo(promotionImages[0])"
                     width="100%"
                     height="100%"
                     autoplay
@@ -529,6 +529,12 @@ export default {
 }
 
 .monitor-main-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: relative;
+}
+.monitor-main-content video {
     width: 100%;
     height: 100%;
     object-fit: cover;

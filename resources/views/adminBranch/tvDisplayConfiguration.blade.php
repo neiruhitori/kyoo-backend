@@ -228,6 +228,9 @@
                 </div>
 
                 <div class="col-md-7 col-sm-12">
+                <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update-layout', Auth::user()->branch_id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
                     <div class="mb-4">
                         <h5 class="font-weight-bold">Layout Display</h5>
                         <p class="text-caption">Pilih jenis layout yang sesuai dengan bisnis Anda</p>
