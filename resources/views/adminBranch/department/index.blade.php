@@ -95,8 +95,9 @@
                     </div>
                 </div>
             </div>
-
-            @include('adminBranch.serviceCategories.index', ['service_categories' => $service_categories])
+            @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_appointment)
+                @include('adminBranch.serviceCategories.index', ['service_categories' => $service_categories])
+            @endif
 
             @include('adminBranch.service.index', ['services' => $services])
         </div>
