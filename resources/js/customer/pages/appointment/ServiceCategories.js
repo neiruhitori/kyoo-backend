@@ -99,7 +99,6 @@ function ServiceCategories() {
                         ""
                 }
 
-
                 <div style={{
                     borderLeft: '1px solid #EEEEEE',
                     textTransform: 'capitalize',
@@ -198,6 +197,20 @@ function ServiceCategories() {
                     </Card>
                 </Link>
             })}
+
+            <Link to={`/customer/${branchId}/appointment/0/services`} style={{
+                    marginBottom: '1.125rem'
+                }}>
+                    <Card style={{
+                        display: 'flex',
+                        height: '85px',
+                        cursor: 'pointer',
+                    }}>
+                        <ServiceContent>
+                            <ServiceTitle>Lainnya</ServiceTitle>
+                        </ServiceContent>
+                    </Card>
+            </Link>
         </MainContent>
     </>
 }

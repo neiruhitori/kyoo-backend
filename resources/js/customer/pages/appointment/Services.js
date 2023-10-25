@@ -50,7 +50,7 @@ function Services() {
     const branchServicesQuery = useBranchServices(branchId, {
         queueType: 'appointment',
         date: format(selectedDate, 'yyyy-MM-dd'),
-        serviceCategoryId: serviceCategoryId
+        serviceCategoryId: serviceCategoryId == 0 ? null : serviceCategoryId
     })
 
     const branch = branchQuery?.data
@@ -331,6 +331,37 @@ function Services() {
                     Pilih tanggal lain untuk menemukan layanan yang tersedia
                 </p>
             </div>}
+
+            {services && services.length == 0 && isBranchOpen() && <div style={{
+                    flex: '1 1 0%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <div style={{
+                        display: 'inline-flex',
+                        borderRadius: '99999999px',
+                        backgroundColor: '#F5F5F5',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '7.5rem',
+                        width: '7.5rem',
+                        marginBottom: '1.5rem'
+                    }}>
+                        <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
+                    </div>
+                    <h4>Tidak Ada Layanan</h4>
+                    <p style={{
+                        textAlign: 'center',
+                        width: '280px',
+                        marginTop: '0.5rem',
+                        color: '#A5A5A5',
+                        fontSize: '.875rem'
+                    }}>
+                        Pilih kategori lain untuk menemukan layanan yang tersedia
+                    </p>
+                </div>}
         </MainContent>
     </>
 }

@@ -259,7 +259,7 @@ function ServicesTwoLayer() {
                     {branchServicesCategoryQuery.isLoading && <ServiceItemSkeleton />}
 
                     {isBranchOpen() && categories?.map(category => {
-                        return <Link style={{marginBottom: '1.125rem'}} key={category.id}>
+                        return <span style={{marginBottom: '1.125rem'}} key={category.id}>
                                     <Card style={{
                                         display: 'flex',
                                         height: '85px',
@@ -272,7 +272,7 @@ function ServicesTwoLayer() {
                                             <CheckIcon />
                                         </ServiceContent>
                                     </Card>
-                                </Link>
+                                </span>
                     })}
 
                     {isBranchOpen() && categories &&
