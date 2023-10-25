@@ -68,9 +68,9 @@ function Services() {
     const todaySchedule = schedules?.find(v => v.day === format(selectedDate, 'eeee').toLowerCase())
     const todayHoliday = holidays?.find(v => v.date === format(selectedDate, 'yyyy-MM-dd'))
 
-    // if(branch && branch.branch_configuration.layer === 1){
-    //     navigate(`/customer/${branchId}/appointment/services`);
-    // }
+    if(branch && branch.branch_configuration.layer === 1){
+        navigate(`/customer/${branchId}/appointment/services`);
+    }
 
     useEffect(() => {
         branchSchedulesQuery.refetch()
