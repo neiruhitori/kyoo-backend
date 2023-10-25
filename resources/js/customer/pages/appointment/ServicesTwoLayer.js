@@ -276,7 +276,7 @@ function ServicesTwoLayer() {
                     })}
 
                     {isBranchOpen() && categories &&
-                        <Link style={{marginBottom: '1.125rem'}}>
+                        <span style={{marginBottom: '1.125rem'}}>
                             <Card style={{
                                 display: 'flex',
                                 height: '85px',
@@ -289,7 +289,7 @@ function ServicesTwoLayer() {
                                     <CheckIcon />
                                 </ServiceContent>
                             </Card>
-                        </Link>
+                        </span>
                     }
 
                     {!isBranchOpen() && <div style={{
