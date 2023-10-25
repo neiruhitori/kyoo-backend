@@ -37,7 +37,7 @@ import styled from 'styled-components'
 import Card from '../../components/Card'
 import CheckIcon from '../../icons/CheckIcon'
 
-function Services() {
+function ServicesTwoLayer() {
     const { branchId } = useParams()
     const [searchParams] = useSearchParams();
     const isAllowback = searchParams.get("is_allow_back");
@@ -524,4 +524,4 @@ function Services() {
     </>
 }
 
-export default Services
+export default ServicesTwoLayer
