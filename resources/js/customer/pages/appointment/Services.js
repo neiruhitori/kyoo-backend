@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { format, eachMonthOfInterval, parseISO } from 'date-fns'
 import id from 'date-fns/locale/id'
 
 import useBranch from '../../hooks/useBranch'
 import useBranchSchedules from '../../hooks/useBranchSchedules'
 import useBranchHolidays from '../../hooks/useBranchHolidays'
-import useBranchServices from '../../hooks/useBranchServices' 
+import useBranchServices from '../../hooks/useBranchServices'
 
 import 'react-day-picker/lib/style.css'
 
@@ -34,9 +34,10 @@ import ClockIcon from '../../icons/ClockIcon'
 import BoxOpenIcon from '../../icons/BoxOpenIcon'
 
 function Services() {
-    const { branchId } = useParams()
-    const [searchParams] = useSearchParams();
-    const isAllowback = searchParams.get("is_allow_back");
+    const { branchId, serviceCategoryId } = useParams()
+    const [searchParams] = useSearchParams()
+    const isAllowback = searchParams.get("is_allow_back")
+    const navigate = useNavigate()
 
     const PAGE_TITLE = 'Antrian Appointment'
 
@@ -48,7 +49,8 @@ function Services() {
     const branchHolidaysQuery = useBranchHolidays(branchId)
     const branchServicesQuery = useBranchServices(branchId, {
         queueType: 'appointment',
-        date: format(selectedDate, 'yyyy-MM-dd')
+        date: format(selectedDate, 'yyyy-MM-dd'),
+        serviceCategoryId: serviceCategoryId
     })
 
     const branch = branchQuery?.data
@@ -58,6 +60,10 @@ function Services() {
 
     const todaySchedule = schedules?.find(v => v.day === format(selectedDate, 'eeee').toLowerCase())
     const todayHoliday = holidays?.find(v => v.date === format(selectedDate, 'yyyy-MM-dd'))
+
+    if(branch && branch.branch_configuration.layer === 2) {
+        navigate(`/customer/${branchId}/appointment/services/two-layer`);
+    }
 
     useEffect(() => {
         branchSchedulesQuery.refetch()
@@ -122,7 +128,15 @@ function Services() {
                     :
                         ""
                 }
-                
+
+                <Link to={-1} style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '.85rem 1.375rem'
+                }}>
+                    <ArrowLeftIcon />
+                </Link>
 
                 <div style={{
                     borderLeft: '1px solid #EEEEEE',
@@ -253,7 +267,7 @@ function Services() {
 
                 if (!service.is_show) return
 
-                return <Link to={`${service.id}?date=${format(selectedDate, 'yyyy-MM-dd')}`} key={service.id} style={{
+                return <Link to={`/customer/${branchId}/appointment/services/${service.id}?date=${format(selectedDate, 'yyyy-MM-dd')}`} key={service.id} style={{
                     marginBottom: '1.125rem'
                 }}>
                     <ServiceItem
@@ -322,3 +336,4 @@ function Services() {
 }
 
 export default Services
+

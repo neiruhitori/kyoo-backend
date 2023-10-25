@@ -32,6 +32,18 @@
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'department_id'])
                                 </div>
+                                @if(auth()->user()->Branch->BranchType->is_appointment)
+                                    <div class="form-group">
+                                        <label for="service_category_id">{{ __('Service Category') }}</label>
+                                        <select name="service_category_id" id="service_category_id" class="form-control @error('service_category_id') is-invalid @enderror">
+                                            <option value="">- {{ __('Select Service Category') }} -</option>
+                                            @foreach ($service_categories as $service_category)
+                                                <option value="{{$service_category->id}}" {{ $service->service_category_id == $service_category->id ? 'selected' : '' }}>{{$service_category->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        @include('layouts.inputError', ['errorName' => 'service_category_id'])
+                                    </div>
+                                @endif
                                 @if ($isAllowConfigPrefix)
                                     <div class="form-group">
                                         <label for="prefix_queue">{{ __('Custom Prefix Number Queue') }}</label>
@@ -53,7 +65,7 @@
                                     </div>
                                 @endif
                                 <div class="form-check form-group">
-                                    <input name="is_show" id="is_show" type="checkbox" value="1" class="form-check-input @error('is_show') is-invalid @enderror" 
+                                    <input name="is_show" id="is_show" type="checkbox" value="1" class="form-check-input @error('is_show') is-invalid @enderror"
                                             {{
                                                 ($service && $service->is_show) || old('service')
                                                 ? 'checked'
@@ -81,7 +93,7 @@
             }
 
             const department_idOldValue = '{{ old('department_id') ?: $service->department_id }}';
-            
+
             if(department_idOldValue !== '') {
                 $('#department_id').val(department_idOldValue);
             }

@@ -10,7 +10,7 @@ class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['branch_id', 'name', 'department_id', 'prefix_queue', 'sla_duration', 'is_show'];
+    protected $fillable = ['branch_id', 'name', 'department_id', 'prefix_queue', 'sla_duration', 'is_show', 'service_category_id'];
 
     public function Slot()
     {
@@ -33,6 +33,13 @@ class Service extends Model
     public function Department()
     {
         return $this->belongsTo('App\Department');
+    }
+
+    public function ScopeServiceCategory($query, $queue_type, $service_category_id)
+    {
+        return $query->when($queue_type == 'appointment', function($query) use ($service_category_id){
+            $query->where('service_category_id', $service_category_id);
+        });
     }
 
     /**

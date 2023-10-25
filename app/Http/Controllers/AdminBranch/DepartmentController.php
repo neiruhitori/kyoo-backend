@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreDepartment;
 use App\Http\Requests\AdminBranch\UpdateDepartment;
+use App\Models\ServiceCategory;
 use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
@@ -21,10 +22,12 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
+        $service_categories = ServiceCategory::whereBranchId(Auth::user()->branch_id)->get();
         $services = Service::whereBranchId(Auth::user()->branch_id)->get();
 
         return view('adminBranch.department.index', [
             'departments' => $departments,
+            'service_categories' => $service_categories,
             'services' => $services
         ]);
     }
@@ -126,7 +129,7 @@ class DepartmentController extends Controller
     {
         // in MVP, can not destroy
         return redirect(route('admin-branch.branch-configuration.department.index'));
-        
+
         // gate
         if ($department->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));

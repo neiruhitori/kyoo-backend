@@ -19,7 +19,8 @@ export function fetchServiceByBranchId(branchId, params) {
     return http.get(`service/branch/${branchId}`, {
         params: {
             queue_type: params.queueType,
-            date: params.date
+            date: params.date,
+            service_category_id: params.serviceCategoryId
         }
     })
         .then(res => (res.data?.data))

@@ -1,6 +1,7 @@
 {
     "Login": "Login",
     "Registration": "Registrasi",
+    "Service Category": "Kategori Layanan",
     "Service": "Layanan",
     "Old Service": "Layanan Sebelumnya",
     "Branch": "Cabang",
@@ -147,6 +148,7 @@
     "Slot Time Interval": "Daftar Slot Waktu",
     "Maximum Slot": "Maks. Pelayanan",
     "Select Department": "Pilih Departemen",
+    "Select Service Category": "Pilih Kategori Layanan",
     "Priority": "Prioritas",
     "Role": "Grup User",
     "Select Workstation": "Pilih Meja",
@@ -230,6 +232,7 @@
     "Slot has been updated": "Slot Waktu diperbarui",
     "Workstation Service has been updated": "Layanan Meja diperbarui",
     "Branch Configuration has been updated": "Konfigurasi Cabang diperbarui",
+    "Portal Menu has been updated": "Portal Menu diperbarui",
     "Schedule Template has been updated": "Template Jadwal diperbarui",
     "Schedule has been inserted": "Jadwal ditambahkan",
     "Workstation Service has been inserted": "Layanan Meja ditambahkan",

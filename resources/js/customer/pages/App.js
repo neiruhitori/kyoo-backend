@@ -17,13 +17,16 @@ import OnsiteBookingStatus from './OnsiteBookingStatus/OnsiteBookingStatus'
 import BranchDetail from './BranchDetail/BranchDetail'
 import OnsiteVisitorInformation from './OnsiteVisitorInformation/OnsiteVisitorInformation'
 import BookingDetail from './BookingDetail/BookingDetail'
+import AppointmentServicesCategories from './appointment/ServiceCategories'
 import AppointmentServices from './appointment/Services'
+import AppointmentServicesTwoLayer from './appointment/ServicesTwoLayer'
 import Promotions from './Promotions/Promotions'
 
 import InfoAlert from '../components/InfoAlert'
 
 const AppContainer = styled.div`
-    max-width: 420px;
+    width: 420px;
+    min-width: fit-content;
     margin: 0 auto;
     background-color: #FFFFFF;
     position: relative;
@@ -36,7 +39,7 @@ function App() {
     const CLIENT_ID = getCookie('client_id')
 
     const [infoMessasge, setInfoMessage] = useState('')
-    
+
     // const messaging = useMessaging()
     // useToken(messaging, process.env.MIX_FIREBASE_VAPID_KEY)
 
@@ -49,7 +52,7 @@ function App() {
             .listen('OnsiteQueueCalled', ({ message }) => {
                 handleShowNotification(message)
             })
-        
+
         return () => {
             window.Echo.leave(`onsite_queues.${CLIENT_ID}`)
         }
@@ -57,7 +60,7 @@ function App() {
 
     function handleShowNotification(message) {
         setInfoMessage(message)
-    
+
         setTimeout(function () {
             setInfoMessage('')
         }, 5000)
@@ -75,18 +78,20 @@ function App() {
         }}>
             <InfoAlert style={{
                 width: 'max-content',
-                maxWidth: '382px', 
+                maxWidth: '382px',
                 margin: '0 auto',
                 marginTop: '2rem'
             }}>
                 {infoMessasge}
             </InfoAlert>
         </div>}
-        
+
         <Routes>
             <Route path="/scan" element={<QRReader />} />
 
-            <Route path="/customer/:branchId/appointment/services" element={<AppointmentServices />} />
+            <Route path="/customer/:branchId/appointment/services" element={<AppointmentServicesCategories />} />
+            <Route path="/customer/:branchId/appointment/:serviceCategoryId/services" element={<AppointmentServices />} />
+            <Route path="/customer/:branchId/appointment/services/two-layer" element={<AppointmentServicesTwoLayer />} />
             <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
             <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
             <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
