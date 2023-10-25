@@ -14,7 +14,7 @@ class AddServiceCategoryIdToServicesTable extends Migration
     public function up()
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->foreignId('service_category_id')->references('id')->on('service_categories')->nullable();
+            $table->foreignId('service_category_id')->nullable()->references('id')->on('service_categories');
         });
     }
 
