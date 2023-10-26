@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 
 import { onMessage } from 'firebase/messaging'
 import { useMessaging, useToken } from '../lib/firebase'
@@ -26,17 +26,29 @@ import InfoAlert from '../components/InfoAlert'
 
 const AppContainer = styled.div`
     width: 420px;
-    min-width: fit-content;
     margin: 0 auto;
     background-color: #FFFFFF;
     position: relative;
     min-height: ${window.innerHeight}px;
     display: flex;
     flex-direction: column;
+    min-width: ${(props) => (props.isTwoLayer ? "fit-content" : "auto")};
 `
 
 function App() {
     const CLIENT_ID = getCookie('client_id')
+    const [isTwoLayer, setIsTwoLayer] = useState(false)
+    const location = useLocation();
+
+    useEffect(() => {
+        const branchIdMatch = location.pathname.match(/\/customer\/(\d+)\/appointment\/services\/two-layer/);
+
+        if (branchIdMatch) {
+            setIsTwoLayer(true);
+        } else {
+            setIsTwoLayer(false);
+        }
+    }, [location]);
 
     const [infoMessasge, setInfoMessage] = useState('')
 
@@ -66,7 +78,7 @@ function App() {
         }, 5000)
     }
 
-    return <AppContainer>
+    return <AppContainer isTwoLayer={isTwoLayer}>
         {!!infoMessasge && <div style={{
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             position: 'fixed',

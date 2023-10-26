@@ -128,23 +128,6 @@ function ServicesTwoLayer() {
         fontSize: '1rem'
     }))
 
-    const ServiceLabelValue = styled.div`
-        span {
-            color: #D6D6D6;
-            font-size: 1rem;
-        }
-
-        span:first-child {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #FFFFFF;
-        }
-    `
-    const ServiceActionIcon = styled.div(() => ({
-        position: 'relative',
-        width: '1.125rem'
-    }))
-
     return <>
         <div style={{
             display: 'flex',

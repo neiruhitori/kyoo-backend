@@ -87,9 +87,9 @@ class AppointmentService
             $appointment = Appointment::create($data);
 
             // Dispatch created event
-            AppointmentCreated::dispatch($appointment);
+            // AppointmentCreated::dispatch($appointment);
 
-            OwnerAppointmentCreated::dispatch($appointment);
+            // OwnerAppointmentCreated::dispatch($appointment);
 
             return $appointment;
         });
