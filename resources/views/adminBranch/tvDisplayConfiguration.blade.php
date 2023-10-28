@@ -125,91 +125,106 @@
 
         <div class="row">
             <div class="col-md-5 col-sm-12 mb-5">
-                <div class="mb-4">
-                    <h5 class="font-weight-bold">Display Iklan</h5>
-                    <p class="text-caption">Tambahkan iklan untuk ditampilkan di monitor antrian</p>
-                </div>
-
-                <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update', Auth::user()->branch_id) }}" id="image_form" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
-
-                    <div class="monitor-images-wrapper mb-3">
-                        <div class="monitor-image-container">
-                            <label for="image_1">
-                                <div class="monitor-image-upload">
-                                    <img src="{{ asset($image_1) }}" id="preview_image_1">
-
-                                    <input type="file" accept="image/*" name="image_1" id="image_1" onchange="previewImage(this, 1)" hidden>
-
-                                    <span class="monitor-image-label">
-                                        <span class="fas fa-upload"></span>
-                                    </span>
-                                </div>
-                            </label>
-
-                            <div>
-                                <div class="mb-1">Gambar Iklan 1</div>
-                                <div>
-                                    <button type="button" class="delete-image-button hidden" id="delete_button_1" onclick="deleteImage(1)">
-                                        <span class="fas fa-times mr-1"></span>
-                                        Hapus
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monitor-image-container">
-                            <label for="image_2">
-                                <div class="monitor-image-upload">
-                                    <img src="{{ asset($image_2) }}" id="preview_image_2">
-
-                                    <input type="file" accept="image/*" name="image_2" id="image_2" onchange="previewImage(this, 2)" hidden>
-
-                                    <span class="monitor-image-label">
-                                        <span class="fas fa-upload"></span>
-                                    </span>
-                                </div>
-                            </label>
-
-                            <div>
-                                <div class="mb-1">Gambar Iklan 2</div>
-                                <div>
-                                    <button type="button" class="delete-image-button hidden" id="delete_button_2" onclick="deleteImage(2)">
-                                        <span class="fas fa-times mr-1"></span>
-                                        Hapus
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monitor-image-container">
-                            <label for="image_3">
-                                <div class="monitor-image-upload">
-                                    <img src="{{ asset($image_3) }}" id="preview_image_3">
-
-                                    <input type="file" accept="image/*" name="image_3" id="image_3" onchange="previewImage(this, 3)" hidden>
-
-                                    <span class="monitor-image-label">
-                                        <span class="fas fa-upload"></span>
-                                    </span>
-                                </div>
-                            </label>
-
-                            <div>
-                                <div class="mb-1">Gambar Iklan 3</div>
-                                <div>
-                                    <button type="button" class="delete-image-button hidden" id="delete_button_3" onclick="deleteImage(3)">
-                                        <span class="fas fa-times mr-1"></span>
-                                        Hapus
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                <div>
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Display Iklan</h5>
+                        <p class="text-caption">Tambahkan iklan untuk ditampilkan di monitor antrian</p>
                     </div>
 
-                    <button type="submit" id="submit_image" class="btn btn-warning hidden">Unggah Gambar</submit>
-                </form>
+                    <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update', Auth::user()->branch_id) }}" id="image_form" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="monitor-images-wrapper mb-3">
+                            <div class="monitor-image-container">
+                                <label for="image_1">
+                                    <div class="monitor-image-upload">
+                                        <img src="{{ asset($image_1) }}" id="preview_image_1">
+
+                                        <input type="file" accept="image/*" name="image_1" id="image_1" onchange="previewImage(this, 1)" hidden>
+
+                                        <span class="monitor-image-label">
+                                            <span class="fas fa-upload"></span>
+                                        </span>
+                                    </div>
+                                </label>
+
+                                <div>
+                                    <div class="mb-1">Gambar Iklan 1</div>
+                                    <div>
+                                        <button type="button" class="delete-image-button hidden" id="delete_button_1" onclick="deleteImage(1)">
+                                            <span class="fas fa-times mr-1"></span>
+                                            Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="monitor-image-container">
+                                <label for="image_2">
+                                    <div class="monitor-image-upload">
+                                        <img src="{{ asset($image_2) }}" id="preview_image_2">
+
+                                        <input type="file" accept="image/*" name="image_2" id="image_2" onchange="previewImage(this, 2)" hidden>
+
+                                        <span class="monitor-image-label">
+                                            <span class="fas fa-upload"></span>
+                                        </span>
+                                    </div>
+                                </label>
+
+                                <div>
+                                    <div class="mb-1">Gambar Iklan 2</div>
+                                    <div>
+                                        <button type="button" class="delete-image-button hidden" id="delete_button_2" onclick="deleteImage(2)">
+                                            <span class="fas fa-times mr-1"></span>
+                                            Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="monitor-image-container">
+                                <label for="image_3">
+                                    <div class="monitor-image-upload">
+                                        <img src="{{ asset($image_3) }}" id="preview_image_3">
+
+                                        <input type="file" accept="image/*" name="image_3" id="image_3" onchange="previewImage(this, 3)" hidden>
+
+                                        <span class="monitor-image-label">
+                                            <span class="fas fa-upload"></span>
+                                        </span>
+                                    </div>
+                                </label>
+
+                                <div>
+                                    <div class="mb-1">Gambar Iklan 3</div>
+                                    <div>
+                                        <button type="button" class="delete-image-button hidden" id="delete_button_3" onclick="deleteImage(3)">
+                                            <span class="fas fa-times mr-1"></span>
+                                            Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="submit_image" class="btn btn-warning hidden mb-4">Unggah Gambar</submit>
+                    </form>
+                </div>
+
+                <div class="mt-4">
+                    <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update-token', Auth::user()->branch_id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="mb-4">
+                            <h5 class="font-weight-bold">Perbarui Token</h5>
+                            <p class="text-caption">Perbarui Token Web Monitor TV</p>
+                        </div>
+
+                        <button type="submit" id="submit_image" class="btn btn-primary">Perbarui</submit>
+                    </form>
+                </div>
             </div>
 
             <div class="col-md-7 col-sm-12">
