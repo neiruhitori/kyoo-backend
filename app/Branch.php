@@ -158,6 +158,16 @@ class Branch extends Model
         return $this->hasMany('App\User')->withTrashed()->where('role', 'cs');
     }
 
+    public function TVConfiguration()
+    {
+        return $this->hasOne('App\Models\TVConfiguration');
+    }
+
+    public function WebkioskConfiguration()
+    {
+        return $this->hasOne('App\Models\WebkioskConfiguration');
+    }
+
     public function Schedule()
     {
         return $this->hasMany('App\Schedule')->orderByRaw(

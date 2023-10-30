@@ -115,6 +115,9 @@ Route::namespace('AdminBranch')
             Route::put('queue-monitor/update-layout/{branch}','TVDisplayConfigurationController@updateLayout')
                 ->name('queue-monitor.update-layout')
                 ->middleware('access:Web Signage TV');
+            Route::put('/queue-monitor/update-token/{branch}', 'TVDisplayConfigurationController@updateToken')
+                ->name('queue-monitor.update-token')
+                ->middleware('access:Web Signage TV');;
 
             Route::get('webkiosk', 'WebkioskConfigurationController@index')
                 ->name('webkiosk')
@@ -122,6 +125,9 @@ Route::namespace('AdminBranch')
             Route::put('webkiosk/{branch}', 'WebkioskConfigurationController@update')
                 ->name('webkiosk.update')
                 ->middleware('access:Webkiosk');
+            Route::put('/webkiosk/update-token/{branch}', 'WebkioskConfigurationController@updateToken')
+            ->name('webkiosk.update-token')
+            ->middleware('access:Webkiosk');;
             Route::put('webkiosk/active_menus/{branch}', 'WebkioskConfigurationController@updateActiveMenus')
                 ->name('webkiosk.active-menus.update')
                 ->middleware('access:Webkiosk');
@@ -388,15 +394,18 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 
 Route::namespace('Device')->prefix('device')->middleware('auth', 'checkDevice')->name('device.')->group(function () {
     Route::get('/', 'HomeController@index')->name('home');
-    Route::get('web-kiosk-ui', 'HomeController@webKioskUI')->name('web-kiosk-ui');
-    Route::get('web-monitor', 'HomeController@webMonitor')->name('web-monitor');
 
-
-    Route::get('branch/{branch_id}/queue', 'HomeController@directQueueList')->name('branch.queue');
 
     Route::get('directQueue/allWorkstationServices', 'HomeController@getAllWorkstationServiceByBranch');
 
     Route::post('directQueue/store', 'HomeController@store');
+});
+
+Route::namespace('Device')->prefix('device')->name('device.')->group(function () {
+    Route::get('web-kiosk-ui', 'HomeController@webKioskUI')->name('web-kiosk-ui');
+    Route::get('web-monitor', 'HomeController@webMonitor')->name('web-monitor');
+
+    Route::get('branch/{branch_id}/queue', 'HomeController@directQueueList')->name('branch.queue');
 });
 
 Route::group([], __DIR__ . '/web/exhibition.php');

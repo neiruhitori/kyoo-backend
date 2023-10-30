@@ -8,8 +8,10 @@ use App\Branch;
 use App\Models\TVConfiguration;
 use App\Models\TVLayout;
 use APP\BranchConfiguration;
+use App\Models\TVToken;
 use Storage;
 use Auth;
+use Illuminate\Support\Str;
 
 class TVDisplayConfigurationController extends Controller
 {
@@ -103,5 +105,25 @@ class TVDisplayConfigurationController extends Controller
         return redirect()
             ->route('admin-branch.branch-configuration.queue-monitor')
             ->with('success', 'Manajemen display TV berhasil diperbarui.');
+    }
+
+    public function updateToken(Branch $branch) {
+        $tv_configuration_id = $branch->TVConfiguration->id;
+        $tv_token = TVToken::where('tv_configuration_id', $tv_configuration_id)->first();
+
+        if($tv_token) {
+            $tv_token->update([
+                'token' => Str::random(12)
+            ]);
+        } else {
+            TVToken::create([
+                'tv_configuration_id' => $tv_configuration_id,
+                'token' => Str::random(12)
+            ]);
+        }
+
+        return redirect()
+            ->route('admin-branch.branch-configuration.queue-monitor')
+            ->with('success', 'Token Web Monitor TV berhasil diperbarui');
     }
 }

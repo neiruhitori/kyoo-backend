@@ -12,4 +12,9 @@ class TVConfiguration extends Model
     protected $guarded = ['id'];
 
     protected $table = 'tv_configurations';
+
+    public function TVToken()
+    {
+        return $this->hasOne('App\Models\TVToken', 'tv_configuration_id', 'id');
+    }
 }

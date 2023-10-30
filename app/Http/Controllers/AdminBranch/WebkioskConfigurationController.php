@@ -8,6 +8,8 @@ use App\Branch;
 use App\Interfaces\WebKioskConfigurationRepositoryInterface;
 use Auth;
 use App\Models\WebkioskConfiguration;
+use App\Models\WebkioskToken;
+use Illuminate\Support\Str;
 
 class WebkioskConfigurationController extends Controller
 {
@@ -18,7 +20,7 @@ class WebkioskConfigurationController extends Controller
     const DEFAULT_BUTTON_COLOR = '#0c30a8';
     const DEFAULT_BUTTON_BORDER = '#ffffff';
     const DEFAULT_FONT_COLOR = '#ffffff';
-    
+
     private WebKioskConfigurationRepositoryInterface $webKioskConfigurationRepository;
 
     public function __construct(
@@ -27,7 +29,7 @@ class WebkioskConfigurationController extends Controller
     {
         $this->webKioskConfigurationRepository = $webKioskConfigurationRepository;
     }
- 
+
     public function index()
     {
         $webkiosConfigurationFormValue = (object) array(
@@ -96,7 +98,7 @@ class WebkioskConfigurationController extends Controller
         ]);
 
         $configuration = $this->webKioskConfigurationRepository->Upsert($branch->id, $request);
-        
+
 
         return redirect()
             ->route('admin-branch.branch-configuration.webkiosk')
@@ -109,11 +111,11 @@ class WebkioskConfigurationController extends Controller
             $request->validate([
                 'input_active_menus.*' => 'in:wa,photo,print',
             ]);
-    
+
             $webkioskConfig = WebkioskConfiguration::where('branch_id', $branch->id)->firstOrFail();
             $webkioskConfig->active_menus = json_encode($request->get('input_active_menus'));
             $webkioskConfig->save();
-            
+
             return redirect()
                 ->route('admin-branch.branch-configuration.webkiosk')
                 ->with('success', 'Konfigurasi aktif menu berhasil diperbarui.');
@@ -122,5 +124,25 @@ class WebkioskConfigurationController extends Controller
                 ->route('admin-branch.branch-configuration.webkiosk')
                 ->with('error', 'Error konfigurasi aktif menu');
         }
+    }
+
+    public function updateToken(Branch $branch) {
+        $webkioskConfig = WebkioskConfiguration::where('branch_id', $branch->id)->first();
+        $webkioskToken = WebkioskToken::where('webkiosk_configuration_id', $webkioskConfig->id)->first();
+
+        if($webkioskToken) {
+            $webkioskToken->update([
+                'token' => Str::random(12)
+            ]);
+        } else {
+            WebkioskToken::create([
+                'webkiosk_configuration_id' => $webkioskConfig->id,
+                'token' => Str::random(12)
+            ]);
+        }
+
+        return redirect()
+            ->route('admin-branch.branch-configuration.webkiosk')
+            ->with('success', 'Token Web Kiosk berhasil diperbarui');
     }
 }
