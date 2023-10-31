@@ -24,8 +24,11 @@
                         <li style="margin-bottom: 0.25rem;">
                             Departement merupakan hierarki atau unit paling tinggi di antrian KYOO. Untuk versi gratis hanya akan tersedia 1 departmen saja. Dibawah Departemen akan terdapat beberapa jenis layanan.
                         </li>
+                        <li style="margin-bottom: 0.25rem;">
+                            Kategori Layanan adalah suatu pengelompokan yang digunakan untuk mengklasifikasikan layanan-layanan berdasarkan fungsi sebuah layanan.
+                        </li>
                         <li>
-                            Daftar layanan adalah jenis layanan yang Kantor Cabang anda berikan kepada pelanggan
+                            Daftar layanan adalah jenis layanan yang Kantor Cabang anda berikan kepada pelanggan.
                         </li>
                     </ul>
                 </p>
@@ -92,6 +95,9 @@
                     </div>
                 </div>
             </div>
+            @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_appointment)
+                @include('adminBranch.serviceCategories.index', ['service_categories' => $service_categories])
+            @endif
 
             @include('adminBranch.service.index', ['services' => $services])
         </div>

@@ -6,6 +6,7 @@ use Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 use App\Branch;
 use App\DirectQueue;
@@ -21,6 +22,8 @@ use App\Models\FeatureSubscription;
 use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 use App\Events\DirectQueue as DirectQueueEvent;
 use App\Events\OnsiteQueueUpdated;
+use App\Models\TVToken;
+use App\Models\WebkioskToken;
 
 class HomeController extends Controller
 {
@@ -35,7 +38,7 @@ class HomeController extends Controller
         $this->webKioskConfigurationRepository = $webKioskConfigurationRepository;
         $this->onsite_repository = $onsite_repository;
     }
- 
+
 
     public function index()
     {
@@ -45,17 +48,24 @@ class HomeController extends Controller
 
     public function webMonitor()
     {
-        $branchID = Auth::user()->branch_id;
+        $branchID = request()->branch_id;
         $branch = Branch::with(['BranchConfiguration', 'Departments'])->findOrFail($branchID);
+        $TVConfigurationID = $branch->TVConfiguration->id;
+        $TVToken = TVToken::where('tv_configuration_id', $TVConfigurationID)->first();
+
+        if(!$TVToken) {
+            $TVToken = TVToken::create([
+                'tv_configuration_id' => $TVConfigurationID,
+                'token' => request()->token
+            ]);
+        } elseif ($TVToken->token != request()->token) {
+            abort(403);
+        }
 
         if ($branch->BranchType->is_appointment) {
             $encryptBranchId = Crypt::encrypt($branchID);
-            $url = URL::temporarySignedRoute(
-                'appointments.signage',
-                now()->addDays(1),
-                ['branch_id' => $encryptBranchId],
-            );
-    
+            $url = route('appointments.signage', ['branch_id' => $encryptBranchId, 'token' => request()->token]);
+
             return redirect($url);
         }
 
@@ -104,24 +114,37 @@ class HomeController extends Controller
         ]);
     }
 
-    public function webKioskUI() 
+    public function webKioskUI()
     {
-        $branchID = Auth::user()->branch_id;
+        $branchID = request()->branch_id;
         $configuration = $this->webKioskConfigurationRepository->GetOneConfigurationByBranchID($branchID);
+        $branch = Branch::findOrFail($branchID);
+        $WebkioskConfigurationID = $branch->WebkioskConfiguration->id;
+        $WebKioskToken = WebkioskToken::where('webkiosk_configuration_id', $WebkioskConfigurationID)->first();
+
+        if(!$WebKioskToken) {
+            $WebKioskToken = WebkioskToken::create([
+                'webkiosk_configuration_id' => $WebkioskConfigurationID,
+                'token' => request()->token
+            ]);
+        } elseif ($WebKioskToken->token != request()->token) {
+            abort(403);
+        }
+
         return view(
             'device.webKioskUI',
             [
-                'branch' => Auth::user()->branch,
+                'branch' => $branch,
                 'address' => (object)[
-                    'regency' => Auth::user()->Branch->Regency->name,
-                    'province' => Auth::user()->Branch->Regency->province->name
+                    'regency' => $branch->Regency->name,
+                    'province' => $branch->Regency->province->name
                 ],
                 'layoutCode' => $configuration->layout->code ?? 'layout_1',
                 'layoutConfig' => $configuration->layoutConfiguration,
                 'qr' => "data:image/svg+xml;base64,".base64_encode(QrCode::size(180)->generate(
-                    url('customer/' . $branchID . '/' . Auth::user()->Branch->queue_type . '/services')
+                    url('customer/' . $branchID . '/' . $branch->queue_type . '/services')
                 )),
-                'isAllowWA' => Auth::user()->Branch->BranchConfiguration->wa_notification,
+                'isAllowWA' => $branch->BranchConfiguration->wa_notification,
                 'activeMenus' => $configuration->active_menus
             ]
         );
@@ -141,7 +164,7 @@ class HomeController extends Controller
         $workstationServices = WorkstationService::whereHas('Workstation.WorkstationVct', function($query) use ($vctIds) {
             return $query->whereIn('vct_id', $vctIds);
         })->with('Service')->get();
-     
+
         return response()->json([
             'success' => true,
             'message' => 'get all service on branch',

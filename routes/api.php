@@ -41,6 +41,9 @@ Route::get('branch/{branch}/term-condition', 'API\BranchController@getTermsCondi
 Route::get('branch/{branch}/promotions', 'API\BranchController@getPromotions');
 Route::get('branch/{branch_id}/holiday', 'API\HolidayController@getHolidayByBranchId');
 
+// service categories routes
+Route::get('service-category/branch/{branch_id}', 'API\ServiceCategoryController@getAllByBranchId');
+
 // service routes
 Route::get('service/branch/{branch_id}', 'API\ServiceController@getAllByBranchId');
 Route::get('service/{service_id}', 'API\ServiceController@getById');

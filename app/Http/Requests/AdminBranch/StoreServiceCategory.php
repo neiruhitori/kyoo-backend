@@ -3,9 +3,9 @@
 namespace App\Http\Requests\AdminBranch;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
-class StoreService extends FormRequest
+class StoreServiceCategory extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +25,8 @@ class StoreService extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'department_id' => 'required|exists:departments,id',
-            'service_category_id' => 'exists:service_categories,id'
+            'branch_id' => 'required|exists:branches,id',
+            'name' => 'required|string'
         ];
     }
 }

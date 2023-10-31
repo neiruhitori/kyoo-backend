@@ -27,6 +27,7 @@ import Story from '../../components/Story'
 
 import ClockIcon from '../../icons/ClockIcon'
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
+import styled from 'styled-components'
 
 export default function BookingStatus() {
     const { bookingId, queueType, branchId } = useParams()
@@ -36,7 +37,7 @@ export default function BookingStatus() {
     const [allowRate, setAllowRate] = useState(false)
     const [isShowDialog, setIsShowDialog] = useState(false)
     const [isShowPromotion, setIsShowPromotion] = useState(true)
-    
+
     const promotionsQuery = usePromotions(branchId)
     const bookingQuery = useQuery('booking', () => getBooking(queueType, bookingId), {
         enabled: promotionsQuery.isSuccess
@@ -119,9 +120,13 @@ export default function BookingStatus() {
         setIsShowPromotion(false)
     }
 
-    function createTermConditionMarkup() {  
+    function createTermConditionMarkup() {
         return {__html: termCondition?.body}
     }
+
+    const View = styled.div`
+        width: 420px;
+    `
 
     return <>
         {promotionsQuery.isSuccess &&
@@ -412,7 +417,7 @@ export default function BookingStatus() {
                 <p style={{
                     textAlign: 'center'
                 }}>Seberapa puas Anda terhadap layanan kami?</p>
-            
+
                 <div style={{
                     marginTop: '1.125rem'
                 }}>
@@ -421,7 +426,7 @@ export default function BookingStatus() {
                         onRateClick={rate => allowRate && setRating(rate)}
                     />
                 </div>
-            
+
                 {allowRate && <div style={{
                     textAlign: 'center',
                     marginTop: '1.125rem'

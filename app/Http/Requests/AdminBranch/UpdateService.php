@@ -38,6 +38,7 @@ class UpdateService extends FormRequest
         return [
             'name' => 'required|string',
             'department_id' => 'required|exists:departments,id',
+            'service_category_id' => 'exists:service_categories,id',
             'prefix_queue' => $this->isRequiredPrefixQueue() ? 'required|alpha_num' : 'nullable|alpha_num',
             'sla_duration' => $this->isRequiredSLADuration() ? 'numeric|min:0' : 'numeric',
             'is_show' => 'boolean',
