@@ -170,6 +170,7 @@
     "no show": "tidak hadir",
     "book": "dipesan",
     "served": "dilayani",
+    "Time Interval": "Interval Waktu",
 
     "create.module": "Tambah :Module",
     "edit.module": "Edit :Module",

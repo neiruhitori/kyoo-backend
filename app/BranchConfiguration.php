@@ -17,6 +17,8 @@ class BranchConfiguration extends Model
     'wa_notification',
     'wa_notification_owner',
     'phone_owner',
-    'layer'
+    'layer',
+    'time_interval',
+    'max_slots'
   ];
 }

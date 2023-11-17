@@ -27,6 +27,12 @@ class WebkioskLayoutSeeder extends Seeder
                 'image' => 'img/webkiosk/layout-2.png',
                 'created_at' => date('Y-m-d H:i:s')
             ],
+            [
+                'name' => 'Layout 3',
+                'code' => 'layout_3',
+                'image' => 'img/webkiosk/layout-3.png',
+                'created_at' => date('Y-m-d H:i:s')
+            ],
         ]);
     }
 }

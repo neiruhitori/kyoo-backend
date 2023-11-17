@@ -9,6 +9,8 @@ use App\Interfaces\ExhibitionRepositoryInterface;
 use App\Repositories\ExhibitionRepository;
 use App\Interfaces\DirectQueueRepositoryInterface;
 use App\Repositories\DirectQueueRepository;
+use App\Interfaces\AppointmentOnsiteRepositoryInterface;
+use App\Repositories\AppointmentOnsiteRepository;
 use App\Interfaces\AudioRecordingRepositoryInterface;
 use App\Repositories\AudioRecordingRepository;
 use App\Interfaces\ReportingDepartmentRepositoryInterface;
@@ -22,7 +24,7 @@ use App\Repositories\ReportingVctRepository;
 use App\Interfaces\ReportingServiceDistributionRepositoryInterface;
 use App\Repositories\ReportingServiceDistributionRepository;
 use App\Interfaces\WebKioskConfigurationRepositoryInterface;
-use App\Repositories\WebKioskConfigurationRepository; 
+use App\Repositories\WebKioskConfigurationRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -36,6 +38,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ExhibitionRepositoryInterface::class, ExhibitionRepository::class);
         $this->app->bind(BranchTypeRepositoryInterface::class, BranchTypeRepository::class);
         $this->app->bind(DirectQueueRepositoryInterface::class, DirectQueueRepository::class);
+        $this->app->bind(AppointmentOnsiteRepositoryInterface::class, AppointmentOnsiteRepository::class);
         $this->app->bind(AudioRecordingRepositoryInterface::class, AudioRecordingRepository::class);
         $this->app->bind(ReportingDepartmentRepositoryInterface::class, ReportingDepartmentRepository::class);
         $this->app->bind(AudioRecordingRepositoryInterface::class, AudioRecordingRepository::class);

@@ -399,6 +399,7 @@ Route::namespace('Device')->prefix('device')->middleware('auth', 'checkDevice')-
     Route::get('directQueue/allWorkstationServices', 'HomeController@getAllWorkstationServiceByBranch');
 
     Route::post('directQueue/store', 'HomeController@store');
+    Route::post('directQueueByBookingCode/store', 'HomeController@storeByBookingCode');
 });
 
 Route::namespace('Device')->prefix('device')->name('device.')->group(function () {

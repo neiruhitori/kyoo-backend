@@ -14,8 +14,11 @@ import VisitorInformation from './VisitorInformation/VisitorInformation'
 import BookingConfirmation from './BookingConfirmation/BookingConfirmation'
 import BookingStatus from './BookingStatus/BookingStatus'
 import OnsiteBookingStatus from './OnsiteBookingStatus/OnsiteBookingStatus'
+import AppointmentOnsiteBookingStatus from './AppointmentOnsiteBookingStatus/AppointmentOnsiteBookingStatus'
+import OnsiteServicesTwoLayer from './onsite/ServicesTwoLayer'
 import BranchDetail from './BranchDetail/BranchDetail'
 import OnsiteVisitorInformation from './OnsiteVisitorInformation/OnsiteVisitorInformation'
+import AppointmentOnsiteVisitorInformation from './AppointmentOnsiteVisitorInformation/AppointmentOnsiteVisitorInformation'
 import BookingDetail from './BookingDetail/BookingDetail'
 import AppointmentServicesCategories from './appointment/ServiceCategories'
 import AppointmentServices from './appointment/Services'
@@ -41,9 +44,9 @@ function App() {
     const location = useLocation();
 
     useEffect(() => {
-        const branchIdMatch = location.pathname.match(/\/customer\/(\d+)\/appointment\/services\/two-layer/);
+        const branchId = location.pathname.match(/\/customer\/(\d+)\/(appointment|onsite)\/services\/two-layer/);
 
-        if (branchIdMatch) {
+        if (branchId) {
             setIsTwoLayer(true);
         } else {
             setIsTwoLayer(false);
@@ -105,12 +108,18 @@ function App() {
             <Route path="/customer/:branchId/appointment/:serviceCategoryId/services" element={<AppointmentServices />} />
             <Route path="/customer/:branchId/appointment/services/two-layer" element={<AppointmentServicesTwoLayer />} />
             <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
+            <Route path="/customer/:branchId/onsite/services/two-layer" element={<OnsiteServicesTwoLayer />} />
             <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
             <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
+            <Route path="/customer/:branchId/appointment-onsite/services/:serviceId/visitor" element={<AppointmentOnsiteVisitorInformation />} />
             <Route path="/customer/:branchId/onsite/services/:serviceId/visitor" element={<OnsiteVisitorInformation />} />
             <Route
                 path="/customer/:branchId/:queueType/services/:serviceId/booking-confirmation"
                 element={<BookingConfirmation />}
+            />
+            <Route
+                path="/customer/:branchId/appointment-onsite/booking-status/:bookingId"
+                element={<AppointmentOnsiteBookingStatus />}
             />
             <Route
                 path="/customer/:branchId/onsite/booking-status/:bookingId"

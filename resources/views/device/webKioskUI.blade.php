@@ -56,6 +56,16 @@
             :active_menus={{ $activeMenus }}
         />
         @endif
+
+        @if($layoutCode == "layout_3")
+        <layout-3-web-kiosk
+            :branch="{{ $branch }}"
+            :auth="{{ Auth::user() }}"
+            :layout_config="{{ $layoutConfig }}"
+            :is_allow_wa={{ $isAllowWA }}
+            :active_menus={{ $activeMenus }}
+        />
+        @endif
     </div>
     <script src="{{asset('js/app.js')}}"></script>
 </body>

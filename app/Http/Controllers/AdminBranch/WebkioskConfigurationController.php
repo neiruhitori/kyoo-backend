@@ -53,19 +53,20 @@ class WebkioskConfigurationController extends Controller
 
         if($webkiosConfiguration) {
             $webkiosConfigurationFormValue->layout = $webkiosConfiguration->layout_id;
+            $layoutConfiguration = $webkiosConfiguration->layout_id == 2 ? $webkiosConfiguration->layoutConfiguration2 : $webkiosConfiguration->layoutConfiguration3;
 
-            if ($webkiosConfiguration->layoutConfiguration) {
+            if ($layoutConfiguration) {
                 $webkiosConfigurationFormValue = (object) array(
                     'layout' => $webkiosConfiguration->layout_id,
-                    'primary_background_type' => $webkiosConfiguration->layoutConfiguration->primary_background_type,
-                    'primary_background_image' => $webkiosConfiguration->layoutConfiguration->primary_background_image ? 'storage/' . $webkiosConfiguration->layoutConfiguration->primary_background_image : self::DEFAULT_IMAGE,
-                    'primary_background_color' => $webkiosConfiguration->layoutConfiguration->primary_background_color,
-                    'secondary_background_type' => $webkiosConfiguration->layoutConfiguration->secondary_background_type,
-                    'secondary_background_image' => $webkiosConfiguration->layoutConfiguration->secondary_background_image ? 'storage/' . $webkiosConfiguration->layoutConfiguration->secondary_background_image : self::DEFAULT_IMAGE,
-                    'secondary_background_color' => $webkiosConfiguration->layoutConfiguration->secondary_background_color,
-                    'button_background_color' => $webkiosConfiguration->layoutConfiguration->button_background_color,
-                    'botton_border_color' => $webkiosConfiguration->layoutConfiguration->botton_border_color,
-                    'font_color' => $webkiosConfiguration->layoutConfiguration->font_color,
+                    'primary_background_type' => $layoutConfiguration->primary_background_type,
+                    'primary_background_image' => $layoutConfiguration->primary_background_image ? 'storage/' . $layoutConfiguration->primary_background_image : self::DEFAULT_IMAGE,
+                    'primary_background_color' => $layoutConfiguration->primary_background_color,
+                    'secondary_background_type' => $layoutConfiguration->secondary_background_type,
+                    'secondary_background_image' => $layoutConfiguration->secondary_background_image ? 'storage/' . $layoutConfiguration->secondary_background_image : self::DEFAULT_IMAGE,
+                    'secondary_background_color' => $layoutConfiguration->secondary_background_color,
+                    'button_background_color' => $layoutConfiguration->button_background_color,
+                    'botton_border_color' => $layoutConfiguration->botton_border_color,
+                    'font_color' => $layoutConfiguration->font_color,
                 );
             }
 
