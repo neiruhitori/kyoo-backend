@@ -86,11 +86,19 @@ class HomeController extends Controller
             ->take(5)
             ->get();
 
-            return view('device.signage.custom-1UI', [
-                'branch' => $branch,
-                'features' => $features,
-                'workstations' => $workstations,
-            ]);
+            if($branch->BranchConfiguration->template_signage === 'custom-layout-1') {
+                return view('device.signage.custom-1UI', [
+                    'branch' => $branch,
+                    'features' => $features,
+                    'workstations' => $workstations,
+                ]);
+            } else {
+                return view('device.signage.custom-2UI', [
+                    'branch' => $branch,
+                    'features' => $features,
+                    'workstations' => $workstations,
+                ]);
+            }
         }
 
         return view('device.signage.standardUI', [

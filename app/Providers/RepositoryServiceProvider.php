@@ -25,6 +25,8 @@ use App\Interfaces\ReportingServiceDistributionRepositoryInterface;
 use App\Repositories\ReportingServiceDistributionRepository;
 use App\Interfaces\WebKioskConfigurationRepositoryInterface;
 use App\Repositories\WebKioskConfigurationRepository;
+use App\Interfaces\TVConfigurationRepositoryInterface;
+use App\Repositories\TVConfigurationRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -47,6 +49,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ReportingVctRepositoryInterface::class, ReportingVctRepository::class);
         $this->app->bind(ReportingServiceDistributionRepositoryInterface::class, ReportingServiceDistributionRepository::class);
         $this->app->bind(WebKioskConfigurationRepositoryInterface::class, WebKioskConfigurationRepository::class);
+        $this->app->bind(TVConfigurationRepositoryInterface::class, TVConfigurationRepository::class);
     }
 
     /**

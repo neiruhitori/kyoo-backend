@@ -17,4 +17,9 @@ class TVConfiguration extends Model
     {
         return $this->hasOne('App\Models\TVToken', 'tv_configuration_id', 'id');
     }
+
+    public function customLayoutConfiguration2()
+    {
+        return $this->hasOne(TVCustomLayout2Configuration::class, 'tv_configuration_id', 'id');
+    }
 }

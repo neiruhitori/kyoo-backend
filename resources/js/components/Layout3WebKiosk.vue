@@ -138,7 +138,7 @@
 
                 <div v-if="activeTab == 'result'" id="result-section">
                     <h5 class="label" style="margin-bottom: 25px;">
-                        Silahkan Foto Nomer Antrian
+                        Silahkan Foto atau Cetak Nomer Antrian
                     </h5>
                     <div class="wrapper-success-card">
                         <div class="wrapper-queue-number">
@@ -150,6 +150,13 @@
                         <div class="seprator" />
                         <div class="wrapper-service-card">
                             <h4> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4>
+                        </div>
+                        <div
+                            class="reset-button"
+                            v-bind:style="[button_style]"
+                            @click="onReset()"
+                        >
+                            <i class="fas fa-undo"></i>
                         </div>
                     </div>
                 </div>

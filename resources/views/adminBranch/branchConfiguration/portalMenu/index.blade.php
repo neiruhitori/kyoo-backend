@@ -132,7 +132,7 @@
         <div class="card-body d-flex justify-content-center">
             <div class="d-flex gap-4">
                 <div class="d-flex flex-column align-items-center cursor-pointer">
-                    <label for="one-layer" class="font-weight-bolder text-dark cursor-pointer">1 Layer</label>
+                    <label for="one-layer" class="font-weight-bolder text-dark cursor-pointer">Portal Standard 1 Layer</label>
                     <label for="one-layer" class="cursor-pointer">
                         <div class="bg-secondary mx-4 p-3">
                             <div class="bg-primary" style="width: 140px; height: 240px"></div>
@@ -142,7 +142,9 @@
                 </div>
 
                 <div class="d-flex flex-column align-items-center cursor-pointer">
-                    <label for="two-layer" class="ml-4 font-weight-bolder text-dark cursor-pointer">2 Layer</label>
+                    <label for="two-layer" class="ml-4 font-weight-bolder text-dark cursor-pointer">
+                        {{ Auth::user()->Branch->BranchType->is_direct_queue ? 'Portal Hybrid Onsite-Appointment 2 Layer' : '2 Layer' }}
+                    </label>
                     <label for="two-layer" class="cursor-pointer">
                         <div class="bg-secondary mx-4 p-3 d-flex">
                             <div class="bg-primary mx-2" style="width: 140px; height: 240px"></div>

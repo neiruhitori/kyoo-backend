@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Branch;
 use App\Models\TVConfiguration;
 use App\Models\TVLayout;
-use APP\BranchConfiguration;
+use App\BranchConfiguration;
+use App\Interfaces\TVConfigurationRepositoryInterface;
 use App\Models\TVToken;
 use Storage;
 use Auth;
@@ -15,6 +16,29 @@ use Illuminate\Support\Str;
 
 class TVDisplayConfigurationController extends Controller
 {
+    const DEFAULT_BACKGROUND_TYPE = 'color';
+    const DEFAULT_BACKGROUND_IMAGE_PREVIEW = 'img/img-placeholder.jpg';
+    const DEFAULT_BACKGROUND_COLOR = '#192db3';
+    const DEFAULT_DATETIME_COLOR = '#ffffff';
+    const DEFAULT_SIDEBAR_SUBTITLE_COLOR = '#ffffff';
+    const DEFAULT_WAITING_LIST_CARD_COLOR = '#ffffff';
+    const DEFAULT_WAITING_LIST_FONT_COLOR = '#000000';
+    const DEFAULT_CALLING_CARD_HEADER_COLOR = '#ffffff';
+    const DEFAULT_CALLING_CARD_BODY_COLOR = '#233c8c';
+    const DEFAULT_CALLING_CARD_FONT_HEADER_COLOR = '#233c8c';
+    const DEFAULT_FONT_QUEUE_FIRST_LETTER_COLOR = '#000000';
+    const DEFAULT_FONT_QUEUE_COLOR = '#ffffff';
+    const DEFAULT_RUNNING_TEXT_COLOR = '#ffffff';
+
+    private TVConfigurationRepositoryInterface $tvConfigurationRepository;
+
+    public function __construct(
+        TVConfigurationRepositoryInterface $tvConfigurationRepository
+    )
+    {
+        $this->tvConfigurationRepository = $tvConfigurationRepository;
+    }
+
     public function index()
     {
         $DEFAULT_IMAGE = 'img/img-placeholder.jpg';
@@ -23,7 +47,25 @@ class TVDisplayConfigurationController extends Controller
         $image_2 = $DEFAULT_IMAGE;
         $image_3 = $DEFAULT_IMAGE;
 
-        $tv_configuration = TVConfiguration::where('branch_id', Auth::user()->branch_id)->first() ?? null;
+        $tvConfigurationFormValue = (object) array(
+            'layout' => "custom-layout-2",
+            'background_type' => self::DEFAULT_BACKGROUND_TYPE,
+            'background_image' => self::DEFAULT_BACKGROUND_IMAGE_PREVIEW,
+            'background_color' => self::DEFAULT_BACKGROUND_COLOR,
+            'datetime_color' => self::DEFAULT_DATETIME_COLOR,
+            'sidebar_subtitle_color' => self::DEFAULT_SIDEBAR_SUBTITLE_COLOR,
+            'waiting_list_card_color' => self::DEFAULT_WAITING_LIST_CARD_COLOR,
+            'waiting_list_font_color' => self::DEFAULT_WAITING_LIST_FONT_COLOR,
+            'calling_card_header_color' => self::DEFAULT_CALLING_CARD_HEADER_COLOR,
+            'calling_card_body_color' => self::DEFAULT_CALLING_CARD_BODY_COLOR,
+            'calling_card_font_header_color' => self::DEFAULT_CALLING_CARD_FONT_HEADER_COLOR,
+            'font_queue_first_letter_color' => self::DEFAULT_FONT_QUEUE_FIRST_LETTER_COLOR,
+            'font_queue_color' => self::DEFAULT_FONT_QUEUE_COLOR,
+            'running_text_color' => self::DEFAULT_RUNNING_TEXT_COLOR
+        );
+
+        $tv_configuration = $this->tvConfigurationRepository->GetOneConfigurationByBranchID(Auth::user()->branch_id);
+        $branch_configuration = BranchConfiguration::where('branch_id', Auth::user()->branch_id)->first();
 
         if ($tv_configuration) {
             if ($tv_configuration->image_1) $image_1 = 'storage/' . $tv_configuration->image_1;
@@ -31,6 +73,28 @@ class TVDisplayConfigurationController extends Controller
             if ($tv_configuration->image_3) $image_3 = 'storage/' . $tv_configuration->image_3;
         }
 
+        if($branch_configuration) {
+            $customLayoutConfiguration = $tv_configuration->customLayoutConfiguration2;
+
+            if($customLayoutConfiguration) {
+                $tvConfigurationFormValue = (object) array(
+                    'layout' => $branch_configuration->template_signage,
+                    'background_type' => $customLayoutConfiguration->background_type,
+                    'background_image' => $customLayoutConfiguration->background_image ? 'storage/' . $customLayoutConfiguration->background_image : self::DEFAULT_BACKGROUND_IMAGE_PREVIEW,
+                    'background_color' => $customLayoutConfiguration->background_color,
+                    'datetime_color' => $customLayoutConfiguration->datetime_color,
+                    'sidebar_subtitle_color' => $customLayoutConfiguration->sidebar_subtitle_color,
+                    'waiting_list_card_color' => $customLayoutConfiguration->waiting_list_card_color,
+                    'waiting_list_font_color' => $customLayoutConfiguration->waiting_list_font_color,
+                    'calling_card_header_color' => $customLayoutConfiguration->calling_card_header_color,
+                    'calling_card_body_color' => $customLayoutConfiguration->calling_card_body_color,
+                    'calling_card_font_header_color' => $customLayoutConfiguration->calling_card_font_header_color,
+                    'font_queue_first_letter_color' => $customLayoutConfiguration->font_queue_first_letter_color,
+                    'font_queue_color' => $customLayoutConfiguration->font_queue_color,
+                    'running_text_color' => $customLayoutConfiguration->running_text_color
+                );
+            }
+        }
 
         $defaultImageLayout  = "img/tv-display/layout-1.png";
         if (Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-1'){
@@ -39,6 +103,7 @@ class TVDisplayConfigurationController extends Controller
 
         return view('adminBranch.tvDisplayConfiguration', [
             'tv_configuration' => $tv_configuration,
+            'layout_configuration' => $tvConfigurationFormValue,
             'image_1' => $image_1,
             'image_2' => $image_2,
             'image_3' => $image_3,
@@ -48,6 +113,10 @@ class TVDisplayConfigurationController extends Controller
                 [
                     'key' => 'custom-layout-1',
                     'image' => 'img/tv-display/custom-layout-1.jpg'
+                ],
+                [
+                    'key' => 'custom-layout-2',
+                    'image' => 'img/tv-display/layout-1.png'
                 ],
                 [
                     'key' => 'standard-ui',
