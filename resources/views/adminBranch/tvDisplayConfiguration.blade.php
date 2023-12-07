@@ -115,6 +115,17 @@
             padding: 10px;
             margin: 10px 0;
         }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+        -moz-appearance: textfield;
+        }
     </style>
 @endpush
 
@@ -285,10 +296,10 @@
     </div>
 </div>
 
-<div class="card-shadow"></div>
+<div id='layoutConfig' class="card shadow mb-4 {{ $template_signage == 'custom-layout-2' ?: 'd-none'}}">
     <div class="card-header">
         <h6 class="font-weight-bold text-primary mb-0">
-            Manajemen Display TV
+            Konfigurasi Display TV
         </h6>
     </div>
 
@@ -297,184 +308,230 @@
 
         <div class="row">
             <div class="col-md-12 col-sm-12">
-                <div id='layoutConfig' class="mt-4 {{ $template_signage == 'custom-layout-2' ?: 'd-none'}} col-md-12">
+                <div class="mt-4 col-md-12">
                     <div class="mb-4 d-flex flex-column align-items-center">
                         <h5 class="font-weight-bold">Konfigurasi Layout Display</h5>
                         <p class="text-caption">Atur tampilan yang akan di tampilkan pada monitor antrian</p>
                     </div>
 
-                    <div class="row justify-content-around">
-                        <div class="wrapper-group-action col-md-5">
-                            <b>{{ __('Background') }}</b>
-                            <hr>
-                            <div class="row">
-                                <div class="col-12 col-md-12">
-                                    <div class="form-group">
-                                        <label for="background_type">{{ __('Background Type') }}</label>
-                                        <select
-                                            name="background_type"
-                                            class="form-control @error('background_type') is-invalid @enderror"
-                                            onchange="changeBackgroundType(this)"
-                                            required
-                                        >
-                                            <option value="color" {{ $layout_configuration->background_type != 'color' ?: 'selected' }} >Color</option>
-                                            <option value="image" {{ $layout_configuration->background_type != 'image' ?: 'selected' }} >Image</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group {{ $layout_configuration->background_type != 'color' ?: 'd-none' }}" id="background_image_wrapper">
-                                        <label>{{ __('Background Image') }}</label>
-                                        <div class="monitor-image-container">
-                                            <label for="background_image">
-                                                <div class="monitor-image-upload">
-                                                    <img src="{{ asset($layout_configuration->background_image) }}" id="preview_background_image">
+                    <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update-custom-layout', Auth::user()->branch_id) }}" method="POST" enctype="multipart/form-data">
+                        <div class="row justify-content-around">
+                            @csrf
+                            @method('PUT')
+                            <div class="wrapper-group-action col-md-5">
+                                <b>{{ __('Background') }}</b>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="background_type">{{ __('Background Type') }}</label>
+                                            <select
+                                                name="background_type"
+                                                class="form-control @error('background_type') is-invalid @enderror"
+                                                onchange="changeBackgroundType(this)"
+                                                required
+                                            >
+                                                <option value="color" {{ $layout_configuration->background_type != 'color' ?: 'selected' }} >Color</option>
+                                                <option value="image" {{ $layout_configuration->background_type != 'image' ?: 'selected' }} >Image</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group {{ $layout_configuration->background_type != 'color' ?: 'd-none' }}" id="background_image_wrapper">
+                                            <label>{{ __('Background Image') }}</label>
+                                            <div class="monitor-image-container">
+                                                <label for="background_image">
+                                                    <div class="monitor-image-upload">
+                                                        <img src="{{ asset($layout_configuration->background_image) }}" id="preview_background_image">
 
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        name="background_image"
-                                                        id="background_image"
-                                                        onchange="previewImage(this)"
-                                                        hidden
-                                                    >
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            name="background_image"
+                                                            id="background_image"
+                                                            onchange="previewBackgroundImage(this)"
+                                                            hidden
+                                                        >
 
-                                                    <span class="monitor-image-label">
-                                                        <span class="fas fa-upload"></span>
-                                                    </span>
+                                                        <span class="monitor-image-label">
+                                                            <span class="fas fa-upload"></span>
+                                                        </span>
+                                                    </div>
+                                                </label>
+
+                                                <div>
+                                                    <button type="button" class="delete-image-button d-none" id="delete_button_background_image" onclick="deleteImage()">
+                                                        <span class="fas fa-times mr-1"></span>
+                                                        Hapus
+                                                    </button>
                                                 </div>
-                                            </label>
-
-                                            <div>
-                                                <button type="button" class="delete-image-button d-none" id="delete_button_background_image" onclick="deleteImage()">
-                                                    <span class="fas fa-times mr-1"></span>
-                                                    Hapus
-                                                </button>
                                             </div>
                                         </div>
+                                        <div class="form-group {{ $layout_configuration->background_type != 'image' ?: 'd-none' }}" id="background_color">
+                                            <label for="background_color">{{ __('Background Color') }}</label>
+                                            <input
+                                                name="background_color"
+                                                type="color"
+                                                class="form-control form-input-color @error('background_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->background_color ?? old('background_color')}}"
+                                                required>
+                                        </div>
                                     </div>
-                                    <div class="form-group {{ $layout_configuration->background_type != 'image' ?: 'd-none' }}" id="background_color">
-                                        <label for="background_color">{{ __('Background Color') }}</label>
-                                        <input
-                                            name="background_color"
-                                            type="color"
-                                            class="form-control form-input-color @error('background_color') is-invalid @enderror"
-                                            value="{{$layout_configuration->background_color ?? old('background_color')}}"
-                                            required>
+                                </div>
+                            </div>
+                            <div class="wrapper-group-action col-md-5">
+                                <b>{{ __('Font Color') }}</b>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="datetime_color">{{ __('Date Time') }}</label>
+                                            <input
+                                                name="datetime_color"
+                                                type="color"
+                                                class="form-control @error('datetime_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->datetime_color ?? old('datetime_color')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="sidebar_subtitle_color">{{ __('Waiting Label') }}</label>
+                                            <input
+                                                name="sidebar_subtitle_color"
+                                                type="color"
+                                                class="form-control @error('sidebar_subtitle_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->sidebar_subtitle_color ?? old('sidebar_subtitle_color')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="waiting_list_font_color">{{ __('Waiting List Font') }}</label>
+                                            <input
+                                                name="waiting_list_font_color"
+                                                type="color"
+                                                class="form-control @error('waiting_list_font_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->waiting_list_font_color ?? old('waiting_list_font_color')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="calling_card_font_header_color">{{ __('Calling Card Header Font') }}</label>
+                                            <input
+                                                name="calling_card_font_header_color"
+                                                type="color"
+                                                class="form-control @error('calling_card_font_header_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->calling_card_font_header_color ?? old('calling_card_font_header_color')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="font_queue_first_letter_color">{{ __('Firts Letter Queue Number') }}</label>
+                                            <input
+                                                name="font_queue_first_letter_color"
+                                                type="color"
+                                                class="form-control @error('font_queue_first_letter_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->font_queue_first_letter_color ?? old('font_queue_first_letter_color')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="font_queue_color">{{ __('Next Letter Queue Number') }}</label>
+                                            <input
+                                                name="font_queue_color"
+                                                type="color"
+                                                class="form-control @error('font_queue_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->font_queue_color ?? old('font_queue_color')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="running_text_color">{{ __('Running Text') }}</label>
+                                            <input
+                                                name="running_text_color"
+                                                type="color"
+                                                class="form-control @error('running_text_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->running_text_color ?? old('running_text_color')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wrapper-group-action col-md-5">
+                                <b>{{ __('Card') }}</b>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="waiting_list_card_color">{{ __('Waiting List Card') }}</label>
+                                            <input
+                                                name="waiting_list_card_color"
+                                                type="color"
+                                                class="form-control @error('waiting_list_card_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->waiting_list_card_color ?? old('waiting_list_card_color')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="calling_card_header_color">{{ __('Header Card') }}</label>
+                                            <input
+                                                name="calling_card_header_color"
+                                                type="color"
+                                                class="form-control @error('calling_card_header_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->calling_card_header_color ?? old('calling_card_header_color')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="calling_card_body_color">{{ __('Body Card') }}</label>
+                                            <input
+                                                name="calling_card_body_color"
+                                                type="color"
+                                                class="form-control @error('calling_card_body_color') is-invalid @enderror"
+                                                value="{{$layout_configuration->calling_card_body_color ?? old('calling_card_body_color')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wrapper-group-action col-md-5">
+                                <b>{{ __('Running Text') }}</b>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="running_text">{{ __('Running Text') }}</label>
+                                            <input
+                                                name="running_text"
+                                                type="text"
+                                                class="form-control @error('running_text') is-invalid @enderror"
+                                                value="{{$layout_configuration->running_text ?? old('running_text')}}"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="running_text_speed">{{ __('Speed') }}</label>
+                                            <input
+                                                name="running_text_speed"
+                                                type="number"
+                                                class="form-control @error('running_text_speed') is-invalid @enderror"
+                                                value="{{$layout_configuration->running_text_speed ?? old('running_text_speed')}}"
+                                                required>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="wrapper-group-action col-md-5">
-                            <b>{{ __('Font') }}</b>
-                            <hr>
-                            <div class="row">
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="datetime_color">{{ __('Date Time') }}</label>
-                                        <input
-                                            name="datetime_color"
-                                            type="color"
-                                            class="form-control @error('datetime_color') is-invalid @enderror"
-                                            value="{{$layout_configuration->datetime_color ?? old('datetime_color')}}"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="sidebar_subtitle_color">{{ __('Waiting Label') }}</label>
-                                        <input
-                                            name="sidebar_subtitle_color"
-                                            type="color"
-                                            class="form-control @error('sidebar_subtitle_color') is-invalid @enderror"
-                                            value="{{$layout_configuration->sidebar_subtitle_color ?? old('sidebar_subtitle_color')}}"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="waiting_list_font_color">{{ __('Waiting List Font') }}</label>
-                                        <input
-                                            name="waiting_list_font_color"
-                                            type="color"
-                                            class="form-control @error('waiting_list_font_color') is-invalid @enderror"
-                                            value="{{$layout_configuration->waiting_list_font_color ?? old('waiting_list_font_color')}}"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="font_queue_first_letter_color">{{ __('Firts Letter') }}</label>
-                                        <input
-                                            name="font_queue_first_letter_color"
-                                            type="color"
-                                            class="form-control @error('font_queue_first_letter_color') is-invalid @enderror"
-                                            value="{{$layout_configuration->font_queue_first_letter_color ?? old('font_queue_first_letter_color')}}"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="font_queue_color">{{ __('Next Letter') }}</label>
-                                        <input
-                                            name="font_queue_color"
-                                            type="color"
-                                            class="form-control @error('font_queue_color') is-invalid @enderror"
-                                            value="{{$layout_configuration->font_queue_color ?? old('font_queue_color')}}"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="running_text_color">{{ __('Running Text') }}</label>
-                                        <input
-                                            name="running_text_color"
-                                            type="color"
-                                            class="form-control @error('running_text_color') is-invalid @enderror"
-                                            value="{{$layout_configuration->running_text_color ?? old('running_text_color')}}"
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="wrapper-submit mt-3">
+                            <button type="submit" class="btn btn-warning">Simpan</submit>
                         </div>
-                        <div class="wrapper-group-action col-md-5">
-                            <b>{{ __('Card') }}</b>
-                            <hr>
-                            <div class="row">
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="waiting_list_card_color">{{ __('Waiting List Card') }}</label>
-                                        <input
-                                            name="waiting_list_card_color"
-                                            type="color"
-                                            class="form-control @error('waiting_list_card_color') is-invalid @enderror"
-                                            value="{{$layout_configuration->waiting_list_card_color ?? old('waiting_list_card_color')}}"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="calling_card_header_color">{{ __('Header Card') }}</label>
-                                        <input
-                                            name="calling_card_header_color"
-                                            type="color"
-                                            class="form-control @error('calling_card_header_color') is-invalid @enderror"
-                                            value="{{$layout_configuration->calling_card_header_color ?? old('calling_card_header_color')}}"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label for="calling_card_body_color">{{ __('Body Card') }}</label>
-                                        <input
-                                            name="calling_card_body_color"
-                                            type="color"
-                                            class="form-control @error('calling_card_body_color') is-invalid @enderror"
-                                            value="{{$layout_configuration->calling_card_body_color ?? old('calling_card_body_color')}}"
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -495,7 +552,6 @@
         } else {
             document.getElementById("layoutConfig").classList.add("d-none")
         }
-        console.log(value)
 
         const documentImage = document.getElementById("display-image-layout");
         documentImage.src = `${window.location.origin}/${image}`
@@ -522,6 +578,18 @@
                 $('#preview_image_' + imageNo).attr('src', e.target.result);
                 $('#delete_button_' + imageNo).removeClass('hidden');
                 $('#submit_image').removeClass('hidden');
+            }
+        }
+    }
+
+    function previewBackgroundImage(input)  {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.readAsDataURL(input.files[0]);
+
+            reader.onload = function (e) {
+                $(`#preview_background_image`).attr('src', e.target.result);
+                $(`#delete_button_background_image`).removeClass('d-none');
             }
         }
     }

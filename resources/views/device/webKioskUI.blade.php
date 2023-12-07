@@ -52,7 +52,7 @@
             :auth="{{ Auth::user() }}"
             qr={{ $qr }}
             :layout_config="{{ $layoutConfig }}"
-            :is_allow_wa={{ $isAllowWA }}
+            :is_allow_wa={{ json_encode($isAllowWA)  }}
             :active_menus={{ $activeMenus }}
         />
         @endif
@@ -62,7 +62,7 @@
             :branch="{{ $branch }}"
             :auth="{{ Auth::user() }}"
             :layout_config="{{ $layoutConfig }}"
-            :is_allow_wa={{ $isAllowWA }}
+            :is_allow_wa={{ json_encode($isAllowWA) }}
             :active_menus={{ $activeMenus }}
         />
         @endif

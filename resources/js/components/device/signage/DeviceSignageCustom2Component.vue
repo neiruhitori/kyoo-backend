@@ -1,6 +1,5 @@
 <template>
-    <div class="container" style="background-image: url('/storage/tv_backgrounds/background.png');
-        background-size: cover;">
+    <div class="container" v-bind:style="[background]">
         <div class="monitoring">
             <div class="monitor-content-header">
                         <div class="monitor-company-logo">
@@ -9,7 +8,7 @@
                                 :src="`/storage/${branch.logo}`"
                             />
                         </div>
-                        <div class="monitor-time-container">
+                        <div class="monitor-time-container" v-bind:style="[datetime]">
                             <div class="monitor-date">
                                 <span>{{ currentDay }}</span>
                                 <span>{{ currentFormattedDate }}</span>
@@ -20,25 +19,25 @@
                     </div>
             <div class="monitor-container">
                 <div class="monitor-sidebar">
-                    <span class="sidebar-subtitle">MENUNGGU</span>
+                    <span class="sidebar-subtitle" v-bind:style="[sidebarSubtitle]">MENUNGGU</span>
 
                     <div class="waiting-list" v-if="!waitingQueue.length">
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
-                        <div class="waiting-card waiting-card-empty"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
                     </div>
 
                     <div class="waiting-list" v-if="waitingQueue.length">
-                        <div class="waiting-card" v-for="q in waitingQueue" :key="q.queue_no">
+                        <div class="waiting-card" v-bind:style="[waitingCard]" v-for="q in waitingQueue" :key="q.queue_no">
                             <h4 class="queue-no">{{ q.queue_no }}</h4>
                         </div>
                     </div>
@@ -50,12 +49,11 @@
             </div>
             <div class="workstation-list">
                 <div class="calling-card" v-for="workstation in workstations" :key="workstation.queue_no">
-                    <div class="calling-card-header">{{ workstation.label }}</div>
+                    <div class="calling-card-header" v-bind:style="[callingCardHeader]">{{ workstation.label }}</div>
 
-                    <div class="calling-card-body">
+                    <div class="calling-card-body" v-bind:style="[callingCardBody]">
                         <h4 class="queue-no" v-if="servingQueue[workstation.id]">
-                            <!-- {{ servingQueue[workstation.id].queue_no.substring(0, 1) }} -->
-                            <span style="color: blue; ">{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span style="color: white; ">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
+                            <span v-bind:style="[firstLetter]">{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
                         </h4>
                     </div>
                 </div>
@@ -74,8 +72,8 @@
             </div>
         </div>
         <div class="running-text-container">
-            <div class="running-text">
-                PADMA BAHTERA MEDICAL CENTRE
+            <div class="running-text" v-bind:style="[runningText]">
+                {{ this.custom_layout_config.running_text ?? 'Powered By Kyoo' }}
             </div>
         </div>
     </div>
@@ -99,6 +97,10 @@ export default {
         },
         workstations: {
             type: Array,
+        },
+        custom_layout_config: {
+            type: Object,
+            required: true
         }
     },
 
@@ -115,6 +117,45 @@ export default {
             promotionImages: [],
             isAutoPlayBlocked: false,
             playQueue: [],
+            background:
+                this.custom_layout_config.background_type == "image"
+                    ? {
+                          "background-image": `url('/storage/${this.custom_layout_config.background_image}')`,
+                          "background-repeat": "no-repeat",
+                          "background-size": "cover"
+                      }
+                    : {
+                          "background-color": this.custom_layout_config
+                              .background_color || "#182db3"
+                      },
+            datetime: {
+                color: this.custom_layout_config.datetime_color || "#FFFFFF"
+            },
+            sidebarSubtitle: {
+                color: this.custom_layout_config.sidebar_subtitle_color || "#FFFFFF",
+                border: `1px solid ${this.custom_layout_config.sidebar_subtitle_color || "#FFFFFF"}`
+            },
+            waitingCard: {
+                "background-color": this.custom_layout_config.waiting_list_card_color || "#f9fafb",
+                color: this.custom_layout_config.waiting_list_font_color || "#118bfa"
+            },
+            callingCardHeader: {
+                "background-color": this.custom_layout_config.calling_card_header_color || "#e0f0ff",
+                color: this.custom_layout_config.calling_card_font_header_color || "#233c8c"
+            },
+            callingCardBody: {
+                "background-color": this.custom_layout_config.calling_card_body_color || "#233c8c",
+            },
+            firstLetter: {
+                color: this.custom_layout_config.font_queue_first_letter_color || "#118bfa"
+            },
+            nextLetter: {
+                color: this.custom_layout_config.font_queue_color || "#e0f0ff"
+            },
+            runningText: {
+                color: this.custom_layout_config.running_text_color || "#FFFFFF",
+                animation: `running-text-animate ${this.custom_layout_config.running_text_speed || 10}s linear infinite`
+            }
         };
     },
 
@@ -335,7 +376,6 @@ export default {
     }
 
     .calling-card-header {
-        background-color: #e0f0ff;
         color: #233c8c;
         height: 3rem;
         align-items: center;
@@ -343,8 +383,6 @@ export default {
         justify-content: center;
     }
     .calling-card-body {
-        background-color: #233c8c;
-        /* color: #118bfa; */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -357,7 +395,6 @@ export default {
         grid-template-columns: auto auto;
     }
     .waiting-card {
-        background-color: #ecf0f1;
         border: 1px solid #bdc3c7;
         display: flex;
         flex-direction: column;
@@ -365,10 +402,6 @@ export default {
         justify-content: center;
         border-radius: 8px;
         height: 4.0rem;
-        color: #2c3e50;
-    }
-    .waiting-card-empty {
-        background-color: #ecf0f1;
     }
     .calling-card-header {
         font-weight: 600;
@@ -383,8 +416,6 @@ export default {
         margin-bottom: 0.5rem;
         display: block;
         text-align: center;
-        border: 1px solid white;
-        color: white;
         padding: 12px 0;
         border-radius: 4px;
     }
@@ -407,16 +438,13 @@ export default {
     .monitor-date {
         text-align: right;
         display: grid;
-        color: white;
         font-size: 1.5rem;
     }
     .monitor-hour {
         padding: 0.4rem 0.5rem;
-        color: #000000;
         font-weight: 700;
         font-size: 3.5rem;
         border-left: 2px solid white;
-        color: white;
     }
     .monitor-main-content {
         width: 100%;
@@ -432,23 +460,13 @@ export default {
         position: relative;
     }
     .running-text-container {
-        border-top: 1px solid #fff;
+        border-top: 3px solid #dbf9ff;
         overflow: hidden;
     }
-    @keyframes running-text-animate {
-        0% {
-            transform: translateX(100%);
-        }
-        100% {
-            transform: translateX(0%);
-        }
-    }
     .running-text {
-        color: white;
         white-space: nowrap;
         overflow: hidden;
         font-size: 1.5rem;
-        animation: running-text-animate 10s linear infinite;
     }
     .permission-wrapper {
         position: fixed;
@@ -476,5 +494,16 @@ export default {
         display: inline-block;
         font-size: 1rem;
         margin-top: 1rem;
+    }
+</style>
+
+<style>
+    @keyframes running-text-animate {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(-30%);
+        }
     }
 </style>

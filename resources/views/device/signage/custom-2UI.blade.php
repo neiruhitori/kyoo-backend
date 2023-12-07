@@ -35,6 +35,7 @@
             :branch="{{$branch}}"
             :features="{{$features}}"
             :workstations="{{$workstations}}"
+            :custom_layout_config="{{$customLayoutConfig}}"
         />
     </div>
     <script src="{{asset('js/app.js')}}"></script>

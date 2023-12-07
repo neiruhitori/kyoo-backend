@@ -117,7 +117,10 @@ Route::namespace('AdminBranch')
                 ->middleware('access:Web Signage TV');
             Route::put('/queue-monitor/update-token/{branch}', 'TVDisplayConfigurationController@updateToken')
                 ->name('queue-monitor.update-token')
-                ->middleware('access:Web Signage TV');;
+                ->middleware('access:Web Signage TV');
+            Route::put('/queue-monitor/update-custom-layout/{branch}', 'TVDisplayConfigurationController@updateCustomLayout')
+                ->name('queue-monitor.update-custom-layout')
+                ->middleware('access:Web Signage TV');
 
             Route::get('webkiosk', 'WebkioskConfigurationController@index')
                 ->name('webkiosk')

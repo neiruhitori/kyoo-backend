@@ -31,6 +31,8 @@ class CreateTVCustomLayout2ConfigurationsTable extends Migration
             $table->string('font_queue_first_letter_color')->default('#0000');
             $table->string('font_queue_color')->default('#FFFF');
 
+            $table->string('running_text')->default('Powered By Kyoo');
+            $table->string('running_text_speed')->default('10');
             $table->string('running_text_color')->default('#FFFF');
 
             $table->timestamps();
@@ -46,6 +48,6 @@ class CreateTVCustomLayout2ConfigurationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('t_v_custom_layout2_configurations');
+        Schema::dropIfExists('tv_custom_layout_2_configuration');
     }
 }

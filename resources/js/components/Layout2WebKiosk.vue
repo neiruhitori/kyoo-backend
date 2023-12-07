@@ -170,7 +170,7 @@ export default {
             required: true
         },
         is_allow_wa: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         active_menus: {
@@ -181,6 +181,7 @@ export default {
 
     async mounted() {
         await this.getWorkStations();
+        console.log(this.is_allow_wa)
     },
 
     data() {

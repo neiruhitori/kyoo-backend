@@ -52,12 +52,13 @@ class HomeController extends Controller
     {
         $branchID = request()->branch_id;
         $branch = Branch::with(['BranchConfiguration', 'Departments'])->findOrFail($branchID);
-        $TVConfigurationID = $branch->TVConfiguration->id;
-        $TVToken = TVToken::where('tv_configuration_id', $TVConfigurationID)->first();
+        $TVConfiguration = $branch->TVConfiguration;
+        $TVToken = TVToken::where('tv_configuration_id', $TVConfiguration->id)->first();
+        $customLayoutConfig = $TVConfiguration->customLayoutConfiguration2;
 
         if(!$TVToken) {
             $TVToken = TVToken::create([
-                'tv_configuration_id' => $TVConfigurationID,
+                'tv_configuration_id' => $TVConfiguration->id,
                 'token' => request()->token
             ]);
         } elseif ($TVToken->token != request()->token) {
@@ -97,6 +98,7 @@ class HomeController extends Controller
                     'branch' => $branch,
                     'features' => $features,
                     'workstations' => $workstations,
+                    'customLayoutConfig' => $customLayoutConfig
                 ]);
             }
         }

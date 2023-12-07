@@ -27,7 +27,8 @@ class AddTimeIntervalAndMaxSlotsToBranchConfigurationsTable extends Migration
     public function down()
     {
         Schema::table('branch_configurations', function (Blueprint $table) {
-            //
+            $table->dropColumn('time_interval');
+            $table->dropColumn('max_slots');
         });
     }
 }

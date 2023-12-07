@@ -26,7 +26,7 @@ class AddPriorityToDirectQueuesTable extends Migration
     public function down()
     {
         Schema::table('direct_queues', function (Blueprint $table) {
-            //
+            $table->dropColumn('priority');
         });
     }
 }

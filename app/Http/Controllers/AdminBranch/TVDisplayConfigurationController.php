@@ -28,7 +28,9 @@ class TVDisplayConfigurationController extends Controller
     const DEFAULT_CALLING_CARD_FONT_HEADER_COLOR = '#233c8c';
     const DEFAULT_FONT_QUEUE_FIRST_LETTER_COLOR = '#000000';
     const DEFAULT_FONT_QUEUE_COLOR = '#ffffff';
+    const DEFAULT_RUNNING_TEXT = null;
     const DEFAULT_RUNNING_TEXT_COLOR = '#ffffff';
+    const DEFAULT_RUNNING_TEXT_SPEED = 10;
 
     private TVConfigurationRepositoryInterface $tvConfigurationRepository;
 
@@ -48,7 +50,6 @@ class TVDisplayConfigurationController extends Controller
         $image_3 = $DEFAULT_IMAGE;
 
         $tvConfigurationFormValue = (object) array(
-            'layout' => "custom-layout-2",
             'background_type' => self::DEFAULT_BACKGROUND_TYPE,
             'background_image' => self::DEFAULT_BACKGROUND_IMAGE_PREVIEW,
             'background_color' => self::DEFAULT_BACKGROUND_COLOR,
@@ -61,7 +62,9 @@ class TVDisplayConfigurationController extends Controller
             'calling_card_font_header_color' => self::DEFAULT_CALLING_CARD_FONT_HEADER_COLOR,
             'font_queue_first_letter_color' => self::DEFAULT_FONT_QUEUE_FIRST_LETTER_COLOR,
             'font_queue_color' => self::DEFAULT_FONT_QUEUE_COLOR,
-            'running_text_color' => self::DEFAULT_RUNNING_TEXT_COLOR
+            'running_text' => self::DEFAULT_RUNNING_TEXT,
+            'running_text_color' => self::DEFAULT_RUNNING_TEXT_COLOR,
+            'running_text_speed' => self::DEFAULT_RUNNING_TEXT_SPEED
         );
 
         $tv_configuration = $this->tvConfigurationRepository->GetOneConfigurationByBranchID(Auth::user()->branch_id);
@@ -78,7 +81,6 @@ class TVDisplayConfigurationController extends Controller
 
             if($customLayoutConfiguration) {
                 $tvConfigurationFormValue = (object) array(
-                    'layout' => $branch_configuration->template_signage,
                     'background_type' => $customLayoutConfiguration->background_type,
                     'background_image' => $customLayoutConfiguration->background_image ? 'storage/' . $customLayoutConfiguration->background_image : self::DEFAULT_BACKGROUND_IMAGE_PREVIEW,
                     'background_color' => $customLayoutConfiguration->background_color,
@@ -91,7 +93,9 @@ class TVDisplayConfigurationController extends Controller
                     'calling_card_font_header_color' => $customLayoutConfiguration->calling_card_font_header_color,
                     'font_queue_first_letter_color' => $customLayoutConfiguration->font_queue_first_letter_color,
                     'font_queue_color' => $customLayoutConfiguration->font_queue_color,
-                    'running_text_color' => $customLayoutConfiguration->running_text_color
+                    'running_text' => $customLayoutConfiguration->running_text,
+                    'running_text_color' => $customLayoutConfiguration->running_text_color,
+                    'running_text_speed' => $customLayoutConfiguration->running_text_speed
                 );
             }
         }
@@ -194,5 +198,31 @@ class TVDisplayConfigurationController extends Controller
         return redirect()
             ->route('admin-branch.branch-configuration.queue-monitor')
             ->with('success', 'Token Web Monitor TV berhasil diperbarui');
+    }
+
+    public function updateCustomLayout(Branch $branch, Request $request) {
+        $request->validate([
+            'background_type' => 'required|string|in:color,image',
+            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
+            'background_color' => 'required|string',
+            'datetime_color' => 'required|string',
+            'sidebar_subtitle_color' => 'required|string',
+            'waiting_list_card_color' => 'required|string',
+            'waiting_list_font_color' => 'required|string',
+            'calling_card_header_color' => 'required|string',
+            'calling_card_body_color' => 'required|string',
+            'calling_card_font_header_color' => 'required|string',
+            'font_queue_first_letter_color' => 'required|string',
+            'font_queue_color' => 'required|string',
+            'running_text' => 'required|string',
+            'running_text_color' => 'required|string',
+            'running_text_speed' => 'required|string',
+        ]);
+
+        $configuration = $this->tvConfigurationRepository->Upsert($branch->id, $request);
+
+        return redirect()
+            ->route('admin-branch.branch-configuration.queue-monitor')
+            ->with('success', 'Layout Display TV berhasil diperbarui');
     }
 }

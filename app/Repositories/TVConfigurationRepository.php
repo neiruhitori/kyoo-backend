@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Interfaces\TVConfigurationRepositoryInterface;
 use App\Models\TVConfiguration;
+use App\Models\TVCustomLayout2Configuration;
 use App\Models\WebkioskConfiguration;
 use App\Models\WebkioskLayout2Configuration;
 use App\Models\WebkioskLayout3Configuration;
@@ -22,52 +23,40 @@ class TVConfigurationRepository implements TVConfigurationRepositoryInterface
 
     public function Upsert($branchID, Request $request) {
         return DB::transaction(function () use ($branchID, $request){
-            $STORAGE_FOLDER = 'tv-backgrond-images';
+            $STORAGE_FOLDER = 'tv_background_images';
             $DEFAULT_IMAGE = 'img-placeholder.jpg';
 
-            $newWebkioskConfiguration = [
-                'branch_id' => $branchID,
-                'layout_id' => $request->layout,
+            $tvConfiguration = TVConfiguration::where('branch_id', $branchID)->first();
+
+            $newTVCustomLayoutConfiguration = [
+                'tv_configuration_id' => $tvConfiguration->id,
+                'background_type' => $request->background_type,
+                'background_color' => $request->background_color,
+                'datetime_color' => $request->datetime_color,
+                'sidebar_subtitle_color' => $request->sidebar_subtitle_color,
+                'waiting_list_card_color' => $request->waiting_list_card_color,
+                'waiting_list_font_color' => $request->waiting_list_font_color,
+                'calling_card_header_color' => $request->calling_card_header_color,
+                'calling_card_body_color' => $request->calling_card_body_color,
+                'calling_card_font_header_color' => $request->calling_card_font_header_color,
+                'font_queue_first_letter_color' => $request->font_queue_first_letter_color,
+                'font_queue_color' => $request->font_queue_color,
+                'running_text' => $request->running_text,
+                'running_text_color' => $request->running_text_color,
+                'running_text_speed' => $request->running_text_speed,
             ];
 
-            $webkiosConfiguration = WebkioskConfiguration::firstOrNew(['branch_id' => $branchID]);
-            $webkiosConfiguration->fill($newWebkioskConfiguration);
-            $webkiosConfiguration->save();
+            $tvCustomLayout2Configuration = TVCustomLayout2Configuration::firstOrNew(['tv_configuration_id' => $tvConfiguration->id]);
 
-            switch ($request->layout) {
-                case 'custom-layout-2':
-                        $newWebkioskLayout3Configuration = [
-                            'webkios_configuration_id' => $webkiosConfiguration->id,
-                            'primary_background_type' => $request->primary_background_type,
-                            'primary_background_color' => $request->primary_background_color,
-                            'secondary_background_type' => $request->secondary_background_type,
-                            'secondary_background_color' => $request->secondary_background_color,
-                            'button_background_color' => $request->button_background_color,
-                            'botton_border_color' => $request->botton_border_color,
-                            'font_color' => $request->font_color,
-                        ];
-
-                        $webkioskLayout3Configuration = WebkioskLayout3Configuration::firstOrNew(['webkios_configuration_id' => $webkiosConfiguration->id]);
-
-                        if($request->primary_background_type == 'image' && $request->primary_background_image) {
-                            $newWebkioskLayout2Configuration["primary_background_image"] = Storage::disk('public')->put($STORAGE_FOLDER, $request->primary_background_image);
-                            Storage::disk('public')->delete($webkioskLayout3Configuration->primary_background_image);
-                        }
-
-                        if($request->secondary_background_type == 'image' && $request->secondary_background_image) {
-                            $newWebkioskLayout2Configuration["secondary_background_image"] = Storage::disk('public')->put($STORAGE_FOLDER, $request->secondary_background_image);
-                            Storage::disk('public')->delete($webkioskLayout3Configuration->secondary_background_image);
-                        }
-
-                        $webkioskLayout3Configuration->fill($newWebkioskLayout3Configuration);
-                        $webkioskLayout3Configuration->save();
-
-                        return $webkiosConfiguration;
-                    break;
-                default:
-                    return $webkiosConfiguration;
-                    break;
+            if($request->background_type == 'image' && $request->background_image) {
+                $newTVCustomLayoutConfiguration["background_image"] = Storage::disk('public')->put($STORAGE_FOLDER, $request->background_image);
+                Storage::disk('public')->delete($tvCustomLayout2Configuration->background_image);
             }
+
+            $tvCustomLayout2Configuration->fill($newTVCustomLayoutConfiguration);
+            $tvCustomLayout2Configuration->save();
+
+            return $tvCustomLayout2Configuration;
         });
     }
 
