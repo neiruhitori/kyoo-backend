@@ -140,7 +140,7 @@
                     <h5 class="label" style="margin-bottom: 25px;">
                         Silahkan Foto atau Cetak Nomer Antrian
                     </h5>
-                    <div class="wrapper-success-card">
+                    <div class="wrapper-success-card" style="margin-bottom: 25px;">
                         <div class="wrapper-queue-number">
                             <span style="font-size: 1rem;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Nomor Antrian</span>
                             <h2 style="font-weight: 700;font-size: 3.625rem;color: rgb(16, 60, 124);text-align: center;">
@@ -151,14 +151,15 @@
                         <div class="wrapper-service-card">
                             <h4> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4>
                         </div>
-                        <div
-                            class="reset-button"
-                            v-bind:style="[button_style]"
-                            @click="onReset()"
-                        >
-                            <i class="fas fa-undo"></i>
-                        </div>
                     </div>
+
+                    <button
+                        class="btn btn-lg btn-primary button-length"
+                        @click="print()"
+                        v-bind:style="[button_style]"
+                    >
+                        Cetak
+                    </button>
                 </div>
             </div>
             <div class="powered-by">

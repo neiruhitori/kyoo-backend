@@ -91,9 +91,9 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
 
             $directQueue = DirectQueue::create($data);
 
-            // if ($data['phone'] && $branch->is_premium) {
-            //     OnsiteQueueCreated::dispatch($directQueue);
-            // }
+            if ($data['phone'] && $branch->is_premium) {
+                OnsiteQueueCreated::dispatch($directQueue);
+            }
 
             return $directQueue;
         });
