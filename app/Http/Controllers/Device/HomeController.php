@@ -179,6 +179,11 @@ class HomeController extends Controller
         })->with('Service')->get();
 
         return response()->json([
+            'success' => false,
+            'data' => $workstationServices
+        ]);
+
+        return response()->json([
             'success' => true,
             'message' => 'get all service on branch',
             'data' => HomeController::unique_key($workstationServices,'service_id'),

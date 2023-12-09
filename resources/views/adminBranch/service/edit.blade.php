@@ -75,6 +75,17 @@
                                     <label for="is_show">{{ __('Show service to client') }}</label>
                                     @include('layouts.inputError', ['errorName' => 'is_show'])
                                 </div>
+                                <div class="form-check form-group">
+                                    <input name="is_show_webkiosk" id="is_show_webkiosk" type="checkbox" value="1" class="form-check-input @error('is_show_webkiosk') is-invalid @enderror"
+                                            {{
+                                                ($service && $service->is_show_webkiosk) || old('service')
+                                                ? 'checked'
+                                                : ''
+                                            }}
+                                        >
+                                    <label for="is_show_webkiosk">{{ __('Show service on webkiosk') }}</label>
+                                    @include('layouts.inputError', ['errorName' => 'is_show_webkiosk'])
+                                </div>
                                 <button class="btn btn-warning">{{ __('Update') }}</button>
                             </form>
                         </div>

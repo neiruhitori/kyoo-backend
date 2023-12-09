@@ -144,6 +144,7 @@ class ServiceController extends Controller
         }
 
         $service->is_show = $request->has('is_show');
+        $service->is_show_webkiosk = $request->has('is_show_webkiosk');
         $service->update($request->all());
         Log::create([
             'user_id' => Auth::id(),

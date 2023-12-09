@@ -29,7 +29,7 @@
                     <template v-for="workstation in this.workstationServices">
                         <button
                             class="btn btn-lg btn-primary button-length"
-                            v-if="workstation.service.is_show"
+                            v-if="workstation.service.is_show_webkiosk"
                             @click="onClickWorkstation(workstation.id)"
                             v-bind:style="[button_style]"
                         >

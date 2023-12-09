@@ -352,5 +352,6 @@
     "Custom Prefix Number Queue": "Kustom Nomor Antrean",
     "Active Menu Kiosk Web": "Konfigurasi Pengambilan Antrian di Kiosk Web",
     "Select Option Menu for Webkios": "Pilih jenis pengambilan antrian oleh pelanggan di Kiosk Web",
-    "Show service to client": "Tampilkan Layanan ke pelanggan"
+    "Show service to client": "Tampilkan Layanan ke pelanggan",
+    "Show service on webkiosk": "Tampilkan Layanan di webkiosk"
 }
