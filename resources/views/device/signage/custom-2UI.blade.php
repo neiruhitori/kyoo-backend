@@ -30,15 +30,9 @@
 </head>
 
 <body>
-    <div id="app">
-        <Device-Signage-Custom-2-Component
-            :branch="{{$branch}}"
-            :features="{{$features}}"
-            :workstations="{{$workstations}}"
-            :custom_layout_config="{{$customLayoutConfig}}"
-        />
-    </div>
-    <script src="{{asset('js/app.js')}}"></script>
+    <h1>
+        device 2
+    </h1>
 </body>
 
 </html>
