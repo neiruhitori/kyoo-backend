@@ -20,11 +20,11 @@ class QueueCallerController extends Controller
             array_push($audio_files, 'audio/vo/' . $directQueue->queue_no[$i] . '.mp3');
         }
 
-        array_push($audio_files, 'audio/vo/mohon-ke-counter.wav');
+        array_push($audio_files, 'audio/vo/dicounter.mp3');
 
         // Counter number audio
         if ($directQueue->Workstation) {
-            $counter_id = substr($directQueue->Workstation->label, 8);
+            $counter_id = preg_replace('/\D/', '',$directQueue->Workstation->label);
 
             for ($i = 0; $i < strlen($counter_id); $i++) {
                 array_push($audio_files, 'audio/vo/' . $counter_id[$i] . '.mp3');
