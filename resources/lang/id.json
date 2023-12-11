@@ -109,6 +109,13 @@
     "Monitoring Service": "Monitoring Layanan",
     "Monitoring Department": "Monitoring Department",
     "Configuration Table": "Konfigurasi Meja",
+    "Date Time": "Tanggal Waktu",
+    "Waiting Label": "Label Menunggu",
+    "Calling Card Title": "Judul Kartu Panggilan",
+    "First Letter Call Number": "Huruf Pertama Nomor Panggilan",
+    "Next Letter Call Number": "Huruf Selanjutnya Nomor Panggilan",
+    "Running Text": "Text Berjalan",
+    "Speed": "Kecepatan",
 
     "name.module": "Nama :Module",
     "Action": "Aksi",

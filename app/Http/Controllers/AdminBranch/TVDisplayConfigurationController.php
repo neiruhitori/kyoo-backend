@@ -103,6 +103,8 @@ class TVDisplayConfigurationController extends Controller
         $defaultImageLayout  = "img/tv-display/layout-1.png";
         if (Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-1'){
             $defaultImageLayout = "img/tv-display/custom-layout-1.jpg";
+        } elseif(Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-2') {
+            $defaultImageLayout = "img/tv-display/custom-layout-2.jpg";
         }
 
         return view('adminBranch.tvDisplayConfiguration', [
@@ -120,7 +122,7 @@ class TVDisplayConfigurationController extends Controller
                 ],
                 [
                     'key' => 'custom-layout-2',
-                    'image' => 'img/tv-display/layout-1.png'
+                    'image' => 'img/tv-display/custom-layout-2.jpg'
                 ],
                 [
                     'key' => 'standard-ui',

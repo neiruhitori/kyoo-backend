@@ -142,7 +142,7 @@
         @include('layouts.alert')
 
         <div class="row">
-            <div class="col-md-5 col-sm-12 mb-5">
+            <div class="col-md-4 col-sm-12 mb-5">
                 <div>
                     <div class="mb-4">
                         <h5 class="font-weight-bold">Display Iklan</h5>
@@ -377,7 +377,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="wrapper-group-action col-md-5">
+                            <div class="wrapper-group-action col-md-6">
                                 <b>{{ __('Font Color') }}</b>
                                 <hr>
                                 <div class="row">
@@ -405,7 +405,7 @@
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <div class="form-group">
-                                            <label for="waiting_list_font_color">{{ __('Waiting List Font') }}</label>
+                                            <label for="waiting_list_font_color">{{ __('Queue Number') }}</label>
                                             <input
                                                 name="waiting_list_font_color"
                                                 type="color"
@@ -416,7 +416,7 @@
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <div class="form-group">
-                                            <label for="calling_card_font_header_color">{{ __('Calling Card Header Font') }}</label>
+                                            <label for="calling_card_font_header_color">{{ __('Calling Card Title') }}</label>
                                             <input
                                                 name="calling_card_font_header_color"
                                                 type="color"
@@ -427,7 +427,7 @@
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <div class="form-group">
-                                            <label for="font_queue_first_letter_color">{{ __('Firts Letter Queue Number') }}</label>
+                                            <label for="font_queue_first_letter_color">{{ __('First Letter Call Number') }}</label>
                                             <input
                                                 name="font_queue_first_letter_color"
                                                 type="color"
@@ -438,7 +438,7 @@
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <div class="form-group">
-                                            <label for="font_queue_color">{{ __('Next Letter Queue Number') }}</label>
+                                            <label for="font_queue_color">{{ __('Next Letter Call Number') }}</label>
                                             <input
                                                 name="font_queue_color"
                                                 type="color"
@@ -466,7 +466,7 @@
                                 <div class="row">
                                     <div class="col-12 col-md-4">
                                         <div class="form-group">
-                                            <label for="waiting_list_card_color">{{ __('Waiting List Card') }}</label>
+                                            <label for="waiting_list_card_color">{{ __('Waiting Card List') }}</label>
                                             <input
                                                 name="waiting_list_card_color"
                                                 type="color"
@@ -477,7 +477,7 @@
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <div class="form-group">
-                                            <label for="calling_card_header_color">{{ __('Header Card') }}</label>
+                                            <label for="calling_card_header_color">{{ __('Header Calling Card') }}</label>
                                             <input
                                                 name="calling_card_header_color"
                                                 type="color"
@@ -488,7 +488,7 @@
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <div class="form-group">
-                                            <label for="calling_card_body_color">{{ __('Body Card') }}</label>
+                                            <label for="calling_card_body_color">{{ __('Body Calling Card') }}</label>
                                             <input
                                                 name="calling_card_body_color"
                                                 type="color"
@@ -499,7 +499,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="wrapper-group-action col-md-5">
+                            <div class="wrapper-group-action col-md-6">
                                 <b>{{ __('Running Text') }}</b>
                                 <hr>
                                 <div class="row">
