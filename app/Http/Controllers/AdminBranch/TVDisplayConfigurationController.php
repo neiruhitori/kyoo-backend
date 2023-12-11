@@ -8,6 +8,7 @@ use App\Branch;
 use App\Models\TVConfiguration;
 use App\Models\TVLayout;
 use App\BranchConfiguration;
+use App\Http\Requests\AdminBranch\UpdateTVCustomLayout2Configuration;
 use App\Interfaces\TVConfigurationRepositoryInterface;
 use App\Models\TVToken;
 use Storage;
@@ -202,7 +203,7 @@ class TVDisplayConfigurationController extends Controller
             ->with('success', 'Token Web Monitor TV berhasil diperbarui');
     }
 
-    public function updateCustomLayout(Branch $branch, Request $request) {
+    public function updateCustomLayout(Branch $branch, UpdateTVCustomLayout2Configuration $request) {
         $request->validate([
             'background_type' => 'required|string|in:color,image',
             'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
