@@ -116,6 +116,17 @@ function ServicesTwoLayer() {
         setIsCalendarShow(false)
     }
 
+    const ContentWrapper = styled.div`
+        width: 420px;
+        overflow-y: scroll;
+        max-height: 100vh;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        `
+
     const ServiceContent = styled.div(() => ({
         display: 'flex',
         flex: '1 1 0%',
@@ -132,9 +143,7 @@ function ServicesTwoLayer() {
         <div style={{
             display: 'flex',
          }}>
-            <div style={{
-                width: '420px',
-             }}>
+            <ContentWrapper>
                 <Banner imageUrl={branch?.photo}>
                     <Header>
                         {isAllowback ?
@@ -306,13 +315,11 @@ function ServicesTwoLayer() {
                         </p>
                     </div>}
                 </MainContent>
-            </div>
+            </ContentWrapper>
 
             <div style={{ backgroundColor: '#E2E2E2', height: '100vh', width: '100px' }}></div>
 
-            <div style={{
-                width: '420px'
-             }}>
+            <ContentWrapper>
                 <Header>
                     {isAllowback ?
                             <div style={{
@@ -502,7 +509,7 @@ function ServicesTwoLayer() {
                         </p>
                     </div>}
                 </MainContent>
-            </div>
+            </ContentWrapper>
         </div>
     </>
 }

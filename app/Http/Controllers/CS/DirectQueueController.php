@@ -43,6 +43,7 @@ class DirectQueueController extends Controller
                     ->whereNotIn('status', ['end served', 'no show'])
                     ->orderBy('vct_priority', 'ASC')
                     ->orderBy('direct_queues.requeue_count', 'ASC')
+                    ->orderBy('direct_queues.priority', 'ASC')
                     ->orderBy('direct_queues.queue_no', 'ASC');
     }
 
@@ -89,7 +90,7 @@ class DirectQueueController extends Controller
         $workstationServices = WorkstationService::whereHas('Workstation.WorkstationVct', function($query){
             return $query->whereVctId(Auth::id());
         })->with('Service')->get();
-        
+
         return response()->json([
             'success' => true,
             'message' => 'get all workstation service',
@@ -111,7 +112,7 @@ class DirectQueueController extends Controller
         $workstationServices = WorkstationService::whereHas('Workstation.WorkstationVct', function($query) use ($vctIds) {
             return $query->whereIn('vct_id', $vctIds);
         })->with('Service')->get();
-     
+
         return response()->json([
             'success' => true,
             'message' => 'get all service on branch',
@@ -221,7 +222,7 @@ class DirectQueueController extends Controller
 
             $queues = $queues[0] ? $queues[0]->queue_no != $directQueue->queue_no : false;
         }
-        
+
         return $queues;
     }
 
@@ -323,7 +324,7 @@ class DirectQueueController extends Controller
                     'title' => 'KYOO',
                     'body' => "Antrian " . $directQueue->queue_no . " sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
                     'data' => [
-                        'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id 
+                        'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id
                     ]
                 ])
                 ->send();
@@ -375,7 +376,7 @@ class DirectQueueController extends Controller
                 'branch_id' => Auth::user()->branch_id,
                 'workstation_id' => $directQueue->workstation_id
             ]));
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Queue recall has on limited',
@@ -409,7 +410,7 @@ class DirectQueueController extends Controller
                     'title' => 'KYOO',
                     'body' => "Antrian " . $directQueue->queue_no . " sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
                     'data' => [
-                        'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id 
+                        'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id
                     ]
                 ])
                 ->send();
@@ -428,7 +429,7 @@ class DirectQueueController extends Controller
             'queue_no' => 'required|alpha_num|min:1|exists:direct_queues,queue_no',
             'service_id' => 'required|integer|exists:services,id'
         ];
-        
+
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
             return response()->json([
@@ -439,7 +440,7 @@ class DirectQueueController extends Controller
         }
 
         $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
-            ->where('service_id', $request->service_id)    
+            ->where('service_id', $request->service_id)
             ->whereDate('created_at', Date('Y-m-d'))
             ->first();
         if (!$directQueue) {
@@ -555,7 +556,7 @@ class DirectQueueController extends Controller
         }
 
         $directQueue = DirectQueue::where('queue_no' ,$request->queue_no)
-            ->where('service_id', $request->service_id)    
+            ->where('service_id', $request->service_id)
             ->whereDate('created_at', Date('Y-m-d'))
             ->first();
         if (!$directQueue) {

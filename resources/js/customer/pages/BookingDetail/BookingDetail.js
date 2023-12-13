@@ -15,9 +15,9 @@ import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 export default function BookingDetail() {
     const PAGE_TITLE = 'Detail Antrian'
 
-    const { bookingId, branchId } = useParams()
+    const { bookingId, branchId, queueType } = useParams()
 
-    const bookingQuery = useQuery(['booking', bookingId], () => getBooking('onsite', bookingId))
+    const bookingQuery = useQuery(['booking', bookingId], () => getBooking(queueType, bookingId))
     let booking = null
 
     if (bookingQuery.status === 'success') {
@@ -30,7 +30,7 @@ export default function BookingDetail() {
     if (branchQuery.status === 'success') {
         branch = branchQuery.data
     }
-    
+
     useEffect(() => {
         return () => {
             sessionStorage.setItem('dialog-shown', 'true')
@@ -150,24 +150,45 @@ export default function BookingDetail() {
                             </div>
                         </div>
 
-                        <div style={{
-                            display: 'flex',
-                            fontSize: '.875rem',
-                            marginBottom: '1.125rem'
-                        }}>
+                        {queueType !== 'appointment-onsite' ?
                             <div style={{
-                                flex: '1',
-                                color: '#A5A5A5'
-                            }}>Waktu</div>
-
-                            <div style={{
-                                flex: '1',
-                                color: '#103C7C',
-                                fontWeight: '600'
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
                             }}>
-                                {formatTime(formatBrowser(booking?.date))}
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>Waktu</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {formatTime(formatBrowser(booking?.date))}
+                                </div>
                             </div>
-                        </div>
+                            :
+                            <div style={{
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
+                            }}>
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>Tanggal</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.date}
+                                </div>
+                            </div>
+                        }
                     </div>
                 </Card>
 

@@ -10,14 +10,16 @@ class PortalMenuController extends Controller
 {
     public function edit()
     {
-        $layer = Auth::user()->Branch->BranchConfiguration->layer;
+        $branchConfiguration = Auth::user()->Branch->BranchConfiguration;
 
-        return view('adminBranch.branchConfiguration.portalMenu.index', compact('layer'));
+        return view('adminBranch.branchConfiguration.portalMenu.index', compact('branchConfiguration'));
     }
 
     public function update(Request $request)
     {
-        $data = ['layer' => $request->layer];
+        $data['layer'] = $request->layer;
+        $data['time_interval'] = $request->time_interval;
+        $data['max_slots'] = $request->max_slots;
 
         $branchConfiguration = Auth::user()->Branch->BranchConfiguration;
 

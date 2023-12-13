@@ -30,10 +30,10 @@
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'department_id'])
                                 </div>
-                                @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_appointment)
+                                @if(Auth::user()->Branch->BranchType->is_appointment)
                                     <div class="form-group">
                                         <label for="service_category_id">{{ __('Service Category') }}</label>
-                                        <select name="service_category_id" id="service_category_id" class="form-control @error('service_category_id') is-invalid @enderror" {{ Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_appointment ? '' : 'disabled' }}>
+                                        <select name="service_category_id" id="service_category_id" class="form-control @error('service_category_id') is-invalid @enderror" {{ Auth::user()->Branch->BranchType->is_appointment ? '' : 'disabled' }}>
                                             @foreach ($service_categories as $service_category)
                                                 <option value="{{$service_category->id}}">{{$service_category->name}}</option>
                                             @endforeach

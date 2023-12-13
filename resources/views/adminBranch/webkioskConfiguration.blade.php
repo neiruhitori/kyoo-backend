@@ -380,7 +380,7 @@
             const { value } = input;
 
             if (value != 1) {
-                document.getElementById("layoutConfig").classList.toggle("display-none")
+                document.getElementById("layoutConfig").classList.remove("display-none")
             } else {
                 document.getElementById("layoutConfig").classList.add("display-none")
             }

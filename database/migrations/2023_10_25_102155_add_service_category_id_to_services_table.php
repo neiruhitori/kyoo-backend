@@ -26,7 +26,7 @@ class AddServiceCategoryIdToServicesTable extends Migration
     public function down()
     {
         Schema::table('services', function (Blueprint $table) {
-            //
+            $table->dropColumn('service_category_id');
         });
     }
 }

@@ -1,6 +1,7 @@
 import { cancelAppointment, createAppointment, getAppointmentById } from './appointment'
 import { createExhibition, getExhibitionById } from './exhibition'
 import { createOnsite, getOnsiteById } from './onsite'
+import { getAppointmentOnsiteById } from './appointmentOnsite'
 import http from '../utils/http'
 
 export function getBooking(queueType, id) {
@@ -14,6 +15,10 @@ export function getBooking(queueType, id) {
 
     if (queueType === 'onsite') {
         return getOnsiteById(id)
+    }
+
+    if (queueType === 'appointment-onsite') {
+        return getAppointmentOnsiteById(id)
     }
 }
 

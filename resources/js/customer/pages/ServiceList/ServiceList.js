@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { getDayName, getFullDate } from '../../utils/date'
 import { fetchBranch } from '../../api/branch'
@@ -20,9 +20,10 @@ import AngleRightIcon from '../../icons/AngleRightIcon'
 function ServiceList() {
     const { branchId, queueType } = useParams()
     const PAGE_TITLE = `Antrian ${queueType}`
+    const navigate = useNavigate()
 
     const selectedDate = new Date()
-    
+
     const branchRes = useQuery('branch', () => fetchBranch(branchId))
     const servicesRes = useQuery('services',
         () => fetchServiceByBranchId(branchId, {
@@ -44,6 +45,10 @@ function ServiceList() {
 
     if (servicesRes.status === 'success') {
         services = servicesRes.data
+    }
+
+    if(branch && branch.branch_type.is_direct_queue && branch.branch_configuration.layer === 2){
+        navigate(`/customer/${branchId}/onsite/services/two-layer`);
     }
 
     return <>

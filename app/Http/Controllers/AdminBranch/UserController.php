@@ -223,7 +223,7 @@ class UserController extends Controller
                 'regex:/[0-9]/',      // must contain at least one digit
             ]
         ]);
-        
+
         if ($validator->fails()) {
             $request->session()->flash('error', __('Please check password rules'));
             return redirect(route('admin-branch.branch-configuration.user.reset', $user_id));

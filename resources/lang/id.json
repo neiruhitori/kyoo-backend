@@ -109,6 +109,13 @@
     "Monitoring Service": "Monitoring Layanan",
     "Monitoring Department": "Monitoring Department",
     "Configuration Table": "Konfigurasi Meja",
+    "Date Time": "Tanggal Waktu",
+    "Waiting Label": "Label Menunggu",
+    "Calling Card Title": "Judul Kartu Panggilan",
+    "First Letter Call Number": "Huruf Pertama Nomor Panggilan",
+    "Next Letter Call Number": "Huruf Selanjutnya Nomor Panggilan",
+    "Running Text": "Text Berjalan",
+    "Speed": "Kecepatan",
 
     "name.module": "Nama :Module",
     "Action": "Aksi",
@@ -170,6 +177,7 @@
     "no show": "tidak hadir",
     "book": "dipesan",
     "served": "dilayani",
+    "Time Interval": "Interval Waktu",
 
     "create.module": "Tambah :Module",
     "edit.module": "Edit :Module",
@@ -351,5 +359,6 @@
     "Custom Prefix Number Queue": "Kustom Nomor Antrean",
     "Active Menu Kiosk Web": "Konfigurasi Pengambilan Antrian di Kiosk Web",
     "Select Option Menu for Webkios": "Pilih jenis pengambilan antrian oleh pelanggan di Kiosk Web",
-    "Show service to client": "Tampilkan Layanan ke pelanggan"
+    "Show service to client": "Tampilkan Layanan ke pelanggan",
+    "Show service on webkiosk": "Tampilkan Layanan di webkiosk"
 }
