@@ -358,7 +358,7 @@
                                                 </label>
 
                                                 <div>
-                                                    <button type="button" class="delete-image-button d-none" id="delete_button_background_image" onclick="deleteImage()">
+                                                    <button type="button" class="delete-image-button d-none" id="delete_button_background_image" onclick="deleteImg()">
                                                         <span class="fas fa-times mr-1"></span>
                                                         Hapus
                                                     </button>
@@ -613,6 +613,15 @@
 
         $('#image_' + imageNo).val(null);
         $('#delete_button_' + imageNo).addClass('hidden');
+    }
+
+    function deleteImg(priority) {
+        const imageSrc = '{{ asset($defaultImage) }}'
+
+        $(`#preview_background_image`).attr('src', imageSrc);
+
+        $(`#background_image`).val(null);
+        $(`#delete_button_background_image`).addClass('display-none');
     }
 </script>
 

@@ -130,7 +130,8 @@ class TVDisplayConfigurationController extends Controller
                     'image' => 'img/tv-display/layout-1.png'
                 ],
             ],
-            'default_image_layout' => $defaultImageLayout
+            'default_image_layout' => $defaultImageLayout,
+            'defaultImage' => self::DEFAULT_BACKGROUND_IMAGE_PREVIEW
         ]);
     }
 
