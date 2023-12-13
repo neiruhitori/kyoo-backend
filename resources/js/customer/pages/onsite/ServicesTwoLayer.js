@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { format } from 'date-fns'
 import id from 'date-fns/locale/id'
 
@@ -41,6 +41,7 @@ import SkeletonItem from '../../components/SkeletonItem'
 function ServicesTwoLayer() {
     const { branchId } = useParams()
     const queueType = 'onsite'
+    const navigate = useNavigate()
 
     const today = new Date();
     const date = new Date(today);
@@ -96,6 +97,10 @@ function ServicesTwoLayer() {
 
     if (serviceSlotsRes.status === 'success') {
         serviceSlots = serviceSlotsRes.data
+    }
+
+    if(branch && branch.branch_configuration.layer === 1){
+        navigate(`/customer/${branchId}/onsite/services`);
     }
 
     useEffect(() => {

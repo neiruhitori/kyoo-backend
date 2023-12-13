@@ -415,7 +415,7 @@ export default {
         align-items: center;
         justify-content: center;
         border-radius: 8px;
-        height: 4.0rem;
+        height: 4rem;
     }
     .calling-card-header {
         font-weight: 700;

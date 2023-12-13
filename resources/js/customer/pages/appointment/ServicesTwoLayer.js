@@ -125,7 +125,7 @@ function ServicesTwoLayer() {
         &::-webkit-scrollbar {
             display: none;
         }
-        `;
+        `
 
     const ServiceContent = styled.div(() => ({
         display: 'flex',
