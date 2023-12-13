@@ -85,6 +85,7 @@ class HomeController extends Controller
                 $branch->Departments->pluck('id')->toArray(),
             )
             ->take(5)
+            ->orderBy('label')
             ->get();
 
             if($branch->BranchConfiguration->template_signage === 'custom-layout-1') {

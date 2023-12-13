@@ -8,13 +8,13 @@
                         :src="`/storage/${branch.logo}`"
                     />
                 </div>
-                <div class="monitor-time-container" v-bind:style="[datetime]">
+                <div class="monitor-time-container" v-bind:style="[dateTime]">
                     <div class="monitor-date">
                         <span>{{ currentDay }}</span>
                         <span>{{ currentFormattedDate }}</span>
                     </div>
 
-                    <span class="monitor-hour">{{ currentTimes }} WIB</span>
+                    <span class="monitor-hour" v-bind:style="[lineHour]">{{ currentTimes }} WIB</span>
                 </div>
             </div>
             <div class="monitor-container">
@@ -22,6 +22,14 @@
                     <span class="sidebar-subtitle" v-bind:style="[sidebarSubtitle]">MENUNGGU</span>
 
                     <div class="waiting-list" v-if="!waitingQueue.length">
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
+                        <div class="waiting-card" v-bind:style="[waitingCard]"/>
                         <div class="waiting-card" v-bind:style="[waitingCard]"/>
                         <div class="waiting-card" v-bind:style="[waitingCard]"/>
                         <div class="waiting-card" v-bind:style="[waitingCard]"/>
@@ -52,7 +60,7 @@
                     <div class="calling-card-header" v-bind:style="[callingCardHeader]">{{ workstation.label }}</div>
 
                     <div class="calling-card-body" v-bind:style="[callingCardBody]">
-                        <h4 class="queue-no" v-if="servingQueue[workstation.id] && servingQueue[workstation.id].queue_no !== undefined">
+                        <h4 class="calling-no" v-if="servingQueue[workstation.id] && servingQueue[workstation.id].queue_no !== undefined">
                             <span v-bind:style="[firstLetter]">{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
                         </h4>
                     </div>
@@ -71,7 +79,7 @@
                 </div>
             </div>
         </div>
-        <div class="running-text-container">
+        <div class="running-text-container" v-bind:style="[lineContainer]">
             <div class="running-text" v-bind:style="[runningText]">
                 {{ this.custom_layout_config.running_text || 'Powered By Kyoo' }}
             </div>
@@ -128,12 +136,15 @@ export default {
                           "background-color": this.custom_layout_config
                               .background_color || "#182db3"
                       },
-            datetime: {
+            dateTime: {
                 color: this.custom_layout_config.datetime_color || "#FFFFFF"
+            },
+            lineHour: {
+                "border-left": `2px solid ${this.custom_layout_config.datetime_color || "#FFFFFF"}`
             },
             sidebarSubtitle: {
                 color: this.custom_layout_config.sidebar_subtitle_color || "#FFFFFF",
-                border: `1px solid ${this.custom_layout_config.sidebar_subtitle_color || "#FFFFFF"}`
+                border: `2px solid ${this.custom_layout_config.sidebar_subtitle_color || "#FFFFFF"}`
             },
             waitingCard: {
                 "background-color": this.custom_layout_config.waiting_list_card_color || "#f9fafb",
@@ -155,6 +166,9 @@ export default {
             runningText: {
                 color: this.custom_layout_config.running_text_color || "#FFFFFF",
                 animation: `running-text-animate ${this.custom_layout_config.running_text_speed || 10}s linear infinite`
+            },
+            lineContainer: {
+                "border-top": `3px solid ${this.custom_layout_config.running_text_color || "#FFFFFF"}`
             }
         };
     },
@@ -377,7 +391,7 @@ export default {
 
     .calling-card-header {
         color: #233c8c;
-        height: 3rem;
+        height: 5rem;
         align-items: center;
         display: flex;
         justify-content: center;
@@ -387,7 +401,7 @@ export default {
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        height: 6.3rem;
+        height: 7rem;
     }
     .waiting-list {
         display: grid;
@@ -404,14 +418,14 @@ export default {
         height: 4.0rem;
     }
     .calling-card-header {
-        font-weight: 600;
+        font-weight: 700;
         text-align: center;
-        font-size: 1.5rem;
+        font-size: 2rem;
         letter-spacing: 0.06em;
     }
     .sidebar-subtitle {
-        font-weight: 500;
-        font-size: 1rem;
+        font-weight: 900;
+        font-size: 1.5rem;
         letter-spacing: 0.06em;
         margin-bottom: 0.5rem;
         display: block;
@@ -420,7 +434,10 @@ export default {
         border-radius: 4px;
     }
     .queue-no {
-        font-size: 2rem;
+        font-size: 2.25rem;
+    }
+    .calling-no{
+        font-size: 3.25rem;
     }
     .monitor-content {
         width: 100%;
@@ -444,7 +461,6 @@ export default {
         padding: 0.4rem 0.5rem;
         font-weight: 700;
         font-size: 3.5rem;
-        border-left: 2px solid white;
     }
     .monitor-main-content {
         width: 100%;
@@ -460,13 +476,14 @@ export default {
         position: relative;
     }
     .running-text-container {
-        border-top: 3px solid #dbf9ff;
         overflow: hidden;
     }
     .running-text {
         white-space: nowrap;
         overflow: hidden;
-        font-size: 1.5rem;
+        padding-top: 1.625rem;
+        padding-bottom: 1.625rem;
+        font-size: 1.625rem;
     }
     .permission-wrapper {
         position: fixed;
