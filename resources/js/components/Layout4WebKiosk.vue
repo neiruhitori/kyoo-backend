@@ -105,8 +105,7 @@
                                                 <span style="font-size: 12px;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Mohon tunggu sampai nomor <br> antrian Anda dipanggil</span>
                                             </div>
                                             <div class="wrapper-service-card">
-                                                <!-- <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center;"> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4> -->
-                                                <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center;">Test</h4>
+                                                <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center;"> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4>
                                                 <span style="font-size: 12px;color: #132D58;margin-bottom: 0.5rem;text-align: center; font-weight: 600;">{{ currentDay }}, {{ currentFormattedDate }}</span>
                                                 <span style="font-size: 12px;color: #132D58;margin-bottom: 0.5rem;text-align: center; font-weight: 600;">{{ currentTimes }} WIB</span>
                                             </div>
@@ -217,7 +216,7 @@ export default {
                 ? `/storage/${this.layout_config.logo}`
                 : `/img/logo-color.svg`,
             workstationServices: [],
-            activeTab: "result",
+            activeTab: "menus",
             selectedWorkstation: null,
             selectedTypeQueue: null,
             background:
