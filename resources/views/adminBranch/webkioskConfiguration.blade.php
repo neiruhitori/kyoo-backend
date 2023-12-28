@@ -165,6 +165,7 @@
                                                 <label for="primary_background_type">{{ __('Primary Type') }}</label>
                                                 <select
                                                     name="primary_background_type"
+                                                    id="primary_background_type"
                                                     class="form-control @error('primary_background_type') is-invalid @enderror"
                                                     onchange="changeBackgroundType(this, 'primary')"
                                                     required
@@ -178,7 +179,7 @@
                                                 <div class="monitor-image-container">
                                                     <label for="primary_background_image">
                                                         <div class="monitor-image-upload">
-                                                            <img src="{{ asset($webkiosConfiguration->primary_background_image) }}" id="preview_primary_background_image">
+                                                            <img src="{{ asset($webkiosConfiguration->primary_background_image ?? $webkiosConfiguration->primary_background_image_preview) }}" id="preview_primary_background_image">
 
                                                             <input
                                                                 type="file"
@@ -213,7 +214,18 @@
                                                     required>
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-6">
+                                        <div class="col-12 col-md-6 {{ $webkiosConfiguration->layout == 4 && $webkiosConfiguration->primary_background_type != 'color' ?: 'display-none' }}" id="ticketArch">
+                                            <div class="form-group" id="ticket_arch_color">
+                                                <label for="ticket_arch_color">{{ __('Ticket Arch Color') }}</label>
+                                                <input
+                                                    name="ticket_arch_color"
+                                                    type="color"
+                                                    class="form-control @error('ticket_arch_color') is-invalid @enderror"
+                                                    value="{{$webkiosConfiguration->ticket_arch_color ?? old('ticket_arch_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div id="secondaryBackground" class="col-12 col-md-6 {{ $webkiosConfiguration->layout != '4' ?: 'display-none'}}">
                                             <div class="form-group">
                                                 <label for="secondary_background_type">{{ __('Secondary Type') }}</label>
                                                 <select
@@ -263,6 +275,82 @@
                                                     type="color"
                                                     class="form-control form-input-color @error('secondary_background_color') is-invalid @enderror"
                                                     value="{{$webkiosConfiguration->secondary_background_color ?? old('secondary_background_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="logoWrapper" class="wrapper-group-action {{ $webkiosConfiguration->layout == '4' ?: 'display-none'}}">
+                                    <b>{{ __('Logo') }}</b>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="monitor-image-container">
+                                                <label for="logo">
+                                                    <div class="monitor-image-upload">
+                                                        <img src="{{ asset($webkiosConfiguration->logo) }}" id="preview_logo">
+
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            name="logo"
+                                                            id="logo"
+                                                            onchange="previewLogo(this)"
+                                                            hidden
+                                                        >
+
+                                                        <span class="monitor-image-label">
+                                                            <span class="fas fa-upload"></span>
+                                                        </span>
+                                                    </div>
+                                                </label>
+
+                                                <div>
+                                                    <button type="button" class="delete-image-button display-none" id="delete_button_logo" onclick="deleteLogo()">
+                                                        <span class="fas fa-times mr-1"></span>
+                                                        Hapus
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="buttonCheckin" class="wrapper-group-action {{ $webkiosConfiguration->layout == '4' ?: 'display-none'}}">
+                                    <b>{{ __('Button Check-In') }}</b>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-12 col-md-3">
+                                            <div class="form-group">
+                                                <label for="button_checkin_background_color">{{ __('Background') }}</label>
+                                                <input
+                                                    name="button_checkin_background_color"
+                                                    type="color"
+                                                    class="form-control @error('button_checkin_background_color') is-invalid @enderror"
+                                                    value="{{$webkiosConfiguration->button_checkin_background_color ?? old('button_checkin_background_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-3">
+                                            <div class="form-group">
+                                                <label for="button_checkin_border_color">{{ __('Border') }}</label>
+                                                <input
+                                                    name="button_checkin_border_color"
+                                                    type="color"
+                                                    class="form-control @error('button_checkin_border_color') is-invalid @enderror"
+                                                    value="{{$webkiosConfiguration->button_checkin_border_color ?? old('button_checkin_border_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-3">
+                                            <div class="form-group">
+                                                <label for="font_checkin_color">{{ __('Font') }}</label>
+                                                <input
+                                                    name="font_checkin_color"
+                                                    type="color"
+                                                    class="form-control @error('font_checkin_color') is-invalid @enderror"
+                                                    value="{{$webkiosConfiguration->font_checkin_color ?? old('font_checkin_color')}}"
                                                     required>
                                             </div>
                                         </div>
@@ -378,11 +466,28 @@
 
         function changeLayout(input) {
             const { value } = input;
+            const type = document.getElementById("primary_background_type").value;
+            console.log(type)
 
             if (value != 1) {
                 document.getElementById("layoutConfig").classList.remove("display-none")
             } else {
                 document.getElementById("layoutConfig").classList.add("display-none")
+            }
+
+            if(value == 4) {
+                document.getElementById("secondaryBackground").classList.add("display-none")
+                document.getElementById("buttonCheckin").classList.remove("display-none")
+                document.getElementById("logoWrapper").classList.remove("display-none")
+                if(type == "image") {
+                    document.getElementById("ticketArch").classList.remove("display-none")
+                }
+            } else {
+                document.getElementById("secondaryBackground").classList.remove("display-none")
+                document.getElementById("ticketArch").classList.add("display-none")
+                document.getElementById("secondary_background_image_wrapper").classList.add("display-none")
+                document.getElementById("buttonCheckin").classList.add("display-none")
+                document.getElementById("logoWrapper").classList.add("display-none")
             }
 
             const { image, name } = layouts.find((obj) => obj.id == value);
@@ -394,11 +499,15 @@
 
         function changeBackgroundType(input, priority) {
             const { value } = input;
+            const layout = document.getElementById('select-layout').value;
 
             if (value == 'image') {
                 if (priority == 'primary') {
                     document.getElementById("primary_background_color").classList.add("display-none")
                     document.getElementById("primary_background_image_wrapper").classList.toggle("display-none")
+                    if(layout == 4) {
+                        document.getElementById("ticketArch").classList.remove('display-none')
+                    }
                 } else {
                     document.getElementById("secondary_background_color").classList.add("display-none")
                     document.getElementById("secondary_background_image_wrapper").classList.toggle("display-none")
@@ -407,6 +516,9 @@
                 if (priority == 'primary') {
                     document.getElementById("primary_background_color").classList.toggle("display-none")
                     document.getElementById("primary_background_image_wrapper").classList.add("display-none")
+                    if(layout == 4) {
+                        document.getElementById("ticketArch").classList.add('display-none')
+                    }
                 } else {
                     document.getElementById("secondary_background_color").classList.toggle("display-none")
                     document.getElementById("secondary_background_image_wrapper").classList.add("display-none")
@@ -426,6 +538,18 @@
             }
         }
 
+        function previewLogo(input)  {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(input.files[0]);
+
+                reader.onload = function (e) {
+                    $(`#preview_logo`).attr('src', e.target.result);
+                    $(`#delete_button_logo`).removeClass('display-none');
+                }
+            }
+        }
+
         function deleteImage(priority) {
 
             const imageSrc = '{{ asset($defaultImage) }}'
@@ -434,6 +558,16 @@
 
             $(`#${priority}_background_image`).val(null);
             $(`#delete_button_${priority}_background_image`).addClass('display-none');
+        }
+
+        function deleteLogo() {
+
+            const imageSrc = '{{ asset($defaultImage) }}'
+
+            $(`#preview_logo`).attr('src', imageSrc);
+
+            $(`#logo`).val(null);
+            $(`#delete_button_logo`).addClass('display-none');
         }
 
         function submitUpdateToken() {

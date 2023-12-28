@@ -42,6 +42,6 @@ class CreateWebkioskLayout3ConfigurationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('webkiosk_layout3_configurations');
+        Schema::dropIfExists('webkiosk_layout_3_configurations');
     }
 }
