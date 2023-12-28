@@ -134,7 +134,15 @@ class HomeController extends Controller
         $branch = Branch::findOrFail($branchID);
         $WebkioskConfigurationID = $branch->WebkioskConfiguration->id;
         $WebKioskToken = WebkioskToken::where('webkiosk_configuration_id', $WebkioskConfigurationID)->first();
-        $layoutConfig = $configuration->layout->id == 2 ? $configuration->layoutConfiguration2 : $configuration->layoutConfiguration3;
+
+        $layoutConfigurationMapping = [
+            2 => 'layoutConfiguration2',
+            3 => 'layoutConfiguration3',
+            4 => 'layoutConfiguration4',
+        ];
+
+        // $layoutConfig = $configuration->layout->id == 2 ? $configuration->layoutConfiguration2 : $configuration->layoutConfiguration3;
+        $layoutConfig = $configuration->{$layoutConfigurationMapping[$configuration->layout->id]} ?? null;
 
         if(!$WebKioskToken) {
             $WebKioskToken = WebkioskToken::create([

@@ -45,6 +45,10 @@ class WebkioskConfigurationController extends Controller
             'button_background_color' => self::DEFAULT_BUTTON_COLOR,
             'botton_border_color' => self::DEFAULT_BUTTON_BORDER,
             'font_color' => self::DEFAULT_FONT_COLOR,
+            'button_checkin_background_color' => self::DEFAULT_BUTTON_COLOR,
+            'button_checkin_border_color' => self::DEFAULT_BUTTON_BORDER,
+            'font_checkin_color' => self::DEFAULT_FONT_COLOR,
+            'logo' => self::DEFAULT_IMAGE,
             'active_menus' => [],
         );
 
@@ -53,7 +57,14 @@ class WebkioskConfigurationController extends Controller
 
         if($webkiosConfiguration) {
             $webkiosConfigurationFormValue->layout = $webkiosConfiguration->layout_id;
-            $layoutConfiguration = $webkiosConfiguration->layout_id == 2 ? $webkiosConfiguration->layoutConfiguration2 : $webkiosConfiguration->layoutConfiguration3;
+            // $layoutConfiguration = $webkiosConfiguration->layout_id == 2 ? $webkiosConfiguration->layoutConfiguration2 : $webkiosConfiguration->layoutConfiguration3;
+            $layoutConfigurationMapping = [
+                2 => 'layoutConfiguration2',
+                3 => 'layoutConfiguration3',
+                4 => 'layoutConfiguration4',
+            ];
+
+            $layoutConfiguration = $webkiosConfiguration->{$layoutConfigurationMapping[$webkiosConfiguration->layout_id]} ?? null;
 
             if ($layoutConfiguration) {
                 $webkiosConfigurationFormValue = (object) array(
@@ -67,6 +78,10 @@ class WebkioskConfigurationController extends Controller
                     'button_background_color' => $layoutConfiguration->button_background_color,
                     'botton_border_color' => $layoutConfiguration->botton_border_color,
                     'font_color' => $layoutConfiguration->font_color,
+                    'button_checkin_background_color' => $layoutConfiguration->button_checkin_background_color,
+                    'button_checkin_border_color' => $layoutConfiguration->button_checkin_border_color,
+                    'font_checkin_color' => $layoutConfiguration->font_checkin_color,
+                    'logo' => $layoutConfiguration->logo ? 'storage/' . $layoutConfiguration->logo : self::DEFAULT_IMAGE,
                 );
             }
 

@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class WebkioskLayout3Configuration extends Model
 {
-    use HasFactory;
-
     protected $table = 'webkiosk_layout_3_configuration';
 
     protected $fillable = [

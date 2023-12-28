@@ -8,7 +8,6 @@ use App\Branch;
 use App\Models\TVConfiguration;
 use App\Models\TVLayout;
 use App\BranchConfiguration;
-use App\Http\Requests\AdminBranch\UpdateTVCustomLayout2Configuration;
 use App\Interfaces\TVConfigurationRepositoryInterface;
 use App\Models\TVToken;
 use Storage;
@@ -204,7 +203,7 @@ class TVDisplayConfigurationController extends Controller
             ->with('success', 'Token Web Monitor TV berhasil diperbarui');
     }
 
-    public function updateCustomLayout(Branch $branch, UpdateTVCustomLayout2Configuration $request) {
+    public function updateCustomLayout(Branch $branch, Request $request) {
         $request->validate([
             'background_type' => 'required|string|in:color,image',
             'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
@@ -218,7 +217,7 @@ class TVDisplayConfigurationController extends Controller
             'calling_card_font_header_color' => 'required|string',
             'font_queue_first_letter_color' => 'required|string',
             'font_queue_color' => 'required|string',
-            'running_text' => 'required|string',
+            'running_text' => 'required|string|max:100',
             'running_text_color' => 'required|string',
             'running_text_speed' => 'required|string',
         ]);

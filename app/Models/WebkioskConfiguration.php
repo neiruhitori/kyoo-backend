@@ -34,6 +34,11 @@ class WebkioskConfiguration extends Model
         return $this->hasOne(WebkioskLayout3Configuration::class, 'webkios_configuration_id', 'id');
     }
 
+    public function layoutConfiguration4()
+    {
+        return $this->hasOne(WebkioskLayout4Configuration::class, 'webkios_configuration_id', 'id');
+    }
+
     public function WebkioskToken()
     {
         return $this->hasOne('App\Models\WebkioskToken');
