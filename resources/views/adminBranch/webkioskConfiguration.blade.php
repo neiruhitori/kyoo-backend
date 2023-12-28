@@ -214,17 +214,6 @@
                                                     required>
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-6 {{ $webkiosConfiguration->layout == 4 && $webkiosConfiguration->primary_background_type != 'color' ?: 'display-none' }}" id="ticketArch">
-                                            <div class="form-group" id="ticket_arch_color">
-                                                <label for="ticket_arch_color">{{ __('Ticket Arch Color') }}</label>
-                                                <input
-                                                    name="ticket_arch_color"
-                                                    type="color"
-                                                    class="form-control @error('ticket_arch_color') is-invalid @enderror"
-                                                    value="{{$webkiosConfiguration->ticket_arch_color ?? old('ticket_arch_color')}}"
-                                                    required>
-                                            </div>
-                                        </div>
                                         <div id="secondaryBackground" class="col-12 col-md-6 {{ $webkiosConfiguration->layout != '4' ?: 'display-none'}}">
                                             <div class="form-group">
                                                 <label for="secondary_background_type">{{ __('Secondary Type') }}</label>
@@ -479,12 +468,8 @@
                 document.getElementById("secondaryBackground").classList.add("display-none")
                 document.getElementById("buttonCheckin").classList.remove("display-none")
                 document.getElementById("logoWrapper").classList.remove("display-none")
-                if(type == "image") {
-                    document.getElementById("ticketArch").classList.remove("display-none")
-                }
             } else {
                 document.getElementById("secondaryBackground").classList.remove("display-none")
-                document.getElementById("ticketArch").classList.add("display-none")
                 document.getElementById("secondary_background_image_wrapper").classList.add("display-none")
                 document.getElementById("buttonCheckin").classList.add("display-none")
                 document.getElementById("logoWrapper").classList.add("display-none")
@@ -505,9 +490,6 @@
                 if (priority == 'primary') {
                     document.getElementById("primary_background_color").classList.add("display-none")
                     document.getElementById("primary_background_image_wrapper").classList.toggle("display-none")
-                    if(layout == 4) {
-                        document.getElementById("ticketArch").classList.remove('display-none')
-                    }
                 } else {
                     document.getElementById("secondary_background_color").classList.add("display-none")
                     document.getElementById("secondary_background_image_wrapper").classList.toggle("display-none")
@@ -516,9 +498,6 @@
                 if (priority == 'primary') {
                     document.getElementById("primary_background_color").classList.toggle("display-none")
                     document.getElementById("primary_background_image_wrapper").classList.add("display-none")
-                    if(layout == 4) {
-                        document.getElementById("ticketArch").classList.add('display-none')
-                    }
                 } else {
                     document.getElementById("secondary_background_color").classList.toggle("display-none")
                     document.getElementById("secondary_background_image_wrapper").classList.add("display-none")

@@ -92,23 +92,33 @@
                                         <br>
                                         Nomer Antrian
                                     </h5>
-                                    <div class="wrapper-success-card" style="margin-bottom: 25px;">
-                                        <div style="padding-top: 20.38px;">
-                                            <img v-bind:src="branch_logo" alt="logo-kyoo" height="22"/>
+                                    <div style="margin-bottom: 25px; position: relative;">
+                                        <div class="d-flex flex-column align-items-center justify-content-center" style="position: absolute; width: 100%;">
+                                            <div style="padding-top: 20.38px;">
+                                                <img v-bind:src="branch_logo" alt="logo-kyoo" height="26"/>
+                                            </div>
+                                            <div class="wrapper-queue-number" style="padding-top: 20.25px;">
+                                                <span style="font-size: 20px; color: #132D58;margin-bottom: 0.5rem;text-align: center; font-weight: bolder;">Nomor Antrian Anda</span>
+                                                <h2 style="font-weight: bold;font-size: 64px;color: #21965E;text-align: center;">
+                                                    {{ responseQueue.queue_no ? responseQueue.queue_no : "0000"}}
+                                                </h2>
+                                                <span style="font-size: 12px;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Mohon tunggu sampai nomor <br> antrian Anda dipanggil</span>
+                                            </div>
+                                            <div class="wrapper-service-card">
+                                                <!-- <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center;"> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4> -->
+                                                <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center;">Test</h4>
+                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.5rem;text-align: center; font-weight: 600;">{{ currentDay }}, {{ currentFormattedDate }}</span>
+                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.5rem;text-align: center; font-weight: 600;">{{ currentTimes }} WIB</span>
+                                            </div>
                                         </div>
-                                        <div class="wrapper-queue-number">
-                                            <span style="font-size: 20px;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Nomor Antrian Anda</span>
-                                            <h2 style="font-weight: 700;font-size: 64px;color: rgb(16, 60, 124);text-align: center;">
-                                                {{ responseQueue.queue_no ? responseQueue.queue_no : "0000"}}
-                                            </h2>
-                                            <span style="font-size: 12px;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Mohon tunggu sampai nomor <br> antrian Anda dipanggil</span>
-                                        </div>
-                                        <div class="separator" v-bind:style="separatorStyle" />
-                                        <div class="wrapper-service-card">
-                                            <h4 style="font-weight: 700;font-size: 16px;color: rgb(16, 60, 124);text-align: center;""> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4>
-                                            <span style="font-size: 12px;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">{{ currentDay }}, {{ currentFormattedDate }}</span>
-                                            <span style="font-size: 12px;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">{{ currentTimes }} WIB</span>
-                                        </div>
+                                        <svg width="263" height="403" viewBox="0 0 263 403" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0 15C0 6.71573 6.71573 0 15 0H248C256.284 0 263 6.71573 263 15V244.493H0V15Z" fill="#F9FAFB"/>
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 281.013H11.4585V262.513V244.013H-1.90735e-06C7.01681 248.491 11.4585 255.118 11.4585 262.513C11.4585 269.908 7.01681 276.535 0 281.013Z" fill="#F9FAFB"/>
+                                        <rect width="240.083" height="37" transform="matrix(1 0 0 -1 11.4585 281.013)" fill="#F9FAFB"/>
+                                        <line y1="-1" x2="240.083" y2="-1" transform="matrix(1 0 0 -1 11.4585 262.513)" stroke="#999999" stroke-width="2" stroke-dasharray="8 8"/>
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M263 281.013H251.542V262.513V244.013H263C255.983 248.491 251.542 255.118 251.542 262.513C251.542 269.908 255.983 276.535 263 281.013Z" fill="#F9FAFB"/>
+                                        <path d="M0 387.293C0 395.577 6.71573 402.293 15 402.293H248C256.284 402.293 263 395.577 263 387.293V280.533H0V387.293Z" fill="#F9FAFB"/>
+                                        </svg>
                                     </div>
 
                                     <button
@@ -195,14 +205,6 @@ export default {
                 locale: id,
             });
         },
-
-        separatorStyle() {
-            return {
-                '--separator-background': this.layout_config.primary_background_type == 'color'
-                    ? this.layout_config.primary_background_color
-                    : this.layout_config.ticket_arch_color
-            };
-        }
     },
 
     data() {
@@ -215,7 +217,7 @@ export default {
                 ? `/storage/${this.layout_config.logo}`
                 : `/img/logo-color.svg`,
             workstationServices: [],
-            activeTab: "menus",
+            activeTab: "result",
             selectedWorkstation: null,
             selectedTypeQueue: null,
             background:
@@ -534,31 +536,6 @@ textarea::placeholder{
     flex-direction: column;
     padding: 1.75rem;
     justify-content: center;
-}
-
-.separator {
-    border-top: 2px dashed rgb(177,177,177);
-    width: 100%;
-}
-
-.separator:before, .separator:after {
-  content: '';
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  background: var(--separator-background);
-  border-radius: 100%;
-  border: none;
-  box-sizing: border-box;
-  margin-top: -12px;
-}
-
-.separator:before {
-  left: -13px;
-}
-
-.separator:after {
-  right: -13px;
 }
 
 .powered-by {

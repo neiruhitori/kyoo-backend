@@ -20,7 +20,6 @@ class WebkioskConfigurationController extends Controller
     const DEFAULT_BUTTON_COLOR = '#0c30a8';
     const DEFAULT_BUTTON_BORDER = '#ffffff';
     const DEFAULT_FONT_COLOR = '#ffffff';
-    const DEFAULT_TICKET_COLOR = '#b1b1b1';
 
     private WebKioskConfigurationRepositoryInterface $webKioskConfigurationRepository;
 
@@ -49,7 +48,6 @@ class WebkioskConfigurationController extends Controller
             'button_checkin_background_color' => self::DEFAULT_BUTTON_COLOR,
             'button_checkin_border_color' => self::DEFAULT_BUTTON_BORDER,
             'font_checkin_color' => self::DEFAULT_FONT_COLOR,
-            'ticket_arch_color' => self::DEFAULT_TICKET_COLOR,
             'logo' => self::DEFAULT_IMAGE,
             'active_menus' => [],
         );
@@ -83,7 +81,6 @@ class WebkioskConfigurationController extends Controller
                     'button_checkin_background_color' => $layoutConfiguration->button_checkin_background_color,
                     'button_checkin_border_color' => $layoutConfiguration->button_checkin_border_color,
                     'font_checkin_color' => $layoutConfiguration->font_checkin_color,
-                    'ticket_arch_color' => $layoutConfiguration->ticket_arch_color,
                     'logo' => $layoutConfiguration->logo ? 'storage/' . $layoutConfiguration->logo : self::DEFAULT_IMAGE,
                 );
             }

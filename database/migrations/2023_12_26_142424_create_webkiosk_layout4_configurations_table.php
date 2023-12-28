@@ -29,7 +29,6 @@ class CreateWebkioskLayout4ConfigurationsTable extends Migration
             $table->string('button_checkin_border_color')->default('#FFFF');
             $table->string('font_checkin_color')->default('#FFFF');
 
-            $table->string('ticket_arch_color')->default('#b1b1b1');
             $table->string('logo')->nullable();
 
             $table->timestamps();
