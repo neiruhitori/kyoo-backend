@@ -314,6 +314,9 @@ export default {
             const callingNo = document.getElementById('calling-no-' + workstationId);
             if (callingNo) {
                 callingNo.classList.add('calling-no-blink');
+                setTimeout(() => {
+                    callingNo.classList.remove('calling-no-blink');
+                }, 9000);
             }
         },
         async getQueueCallAudio(message) {
@@ -448,7 +451,7 @@ export default {
         100% { opacity: 1; }
     }
     .calling-no-blink {
-        animation: blink 2s ease-in-out infinite;
+        animation: blink 3s ease-in-out infinite;
     }
     .calling-no{
         font-size: 3.25rem;
