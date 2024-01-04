@@ -13,6 +13,7 @@ class QueueCallerController extends Controller
     public function call(DirectQueue $directQueue)
     {
         $timeRequest = time();
+        $audio_files = ['audio/vo/intro_bell.mp3'];
         $audio_files = ['audio/vo/nomor_antrian.mp3'];
 
         // Queue number audio

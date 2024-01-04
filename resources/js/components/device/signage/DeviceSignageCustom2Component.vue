@@ -60,7 +60,7 @@
                     <div class="calling-card-header" v-bind:style="[callingCardHeader]">{{ workstation.label }}</div>
 
                     <div class="calling-card-body" v-bind:style="[callingCardBody]">
-                        <h4 class="calling-no" v-if="servingQueue[workstation.id] && servingQueue[workstation.id].queue_no !== undefined">
+                        <h4 class="calling-no" :id="'calling-no-' + workstation.id" v-if="servingQueue[workstation.id] && servingQueue[workstation.id].queue_no !== undefined">
                             <span v-bind:style="[firstLetter]">{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
                         </h4>
                     </div>
@@ -186,7 +186,6 @@ export default {
                     return await this.getQueues();
                 }
 
-                console.log("call queue no", message.queue_no);
                 await this.getQueues(message.queue_no);
 
                 if (
@@ -196,6 +195,7 @@ export default {
                     message.status &&
                     ["recall", "served"].includes(message.status)
                 ) {
+                    this.isBlink(message.workstation_id);
                     this.getQueueCallAudio(message);
                 }
             });
@@ -309,6 +309,12 @@ export default {
                 alert(error.response.data.message);
             }
             this.isLoading = false;
+        },
+        isBlink(workstationId) {
+            const callingNo = document.getElementById('calling-no-' + workstationId);
+            if (callingNo) {
+                callingNo.classList.add('calling-no-blink');
+            }
         },
         async getQueueCallAudio(message) {
             const queueID = this.servingQueue[message.workstation_id].id
@@ -435,6 +441,14 @@ export default {
     }
     .queue-no {
         font-size: 2.25rem;
+    }
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+    .calling-no-blink {
+        animation: blink 2s ease-in-out infinite;
     }
     .calling-no{
         font-size: 3.25rem;

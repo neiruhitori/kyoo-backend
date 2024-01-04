@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Branch;
+use App\DirectQueue;
 use App\Http\Controllers\Controller;
 use App\Interfaces\AppointmentOnsiteRepositoryInterface;
 use App\Service;
@@ -20,6 +21,33 @@ class AppointmentOnsiteController extends Controller
         $this->appointmentOnsiteRepository = $appointmentOnsiteRepository;
     }
 
+    public function index(Branch $branch, Request $request)
+    {
+        $services = Service::where('branch_id', $branch->id)
+            ->get();
+        $branchConfiguration = $branch->BranchConfiguration;
+        $schedule = $branch->schedule->where('day', $request->day)->first();
+        $startTime = $schedule ? strtotime($schedule->start_time) : null;
+        $endTime = $schedule ? strtotime($schedule->end_time) : null;
+        $timeInterval = $branchConfiguration->time_interval * 60 * 60;
+
+        foreach ($services as $service) {
+            $service->available_slot = 0;
+
+            if($startTime && $endTime) {
+                for ($i = $startTime; $i < $endTime; $i += $timeInterval) {
+                    $service->available_slot++;
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'get direct queue services by branch id',
+            'data' => $services,
+        ]);
+    }
+
     public function show(AppointmentOnsite $appointmentOnsite)
     {
         return response()->json([
@@ -33,26 +61,28 @@ class AppointmentOnsiteController extends Controller
     {
         $branchConfiguration = $branch->BranchConfiguration;
         $schedule = $branch->schedule->where('day', $request->day)->first();
-        $startTime = strtotime($schedule->start_time);
-        $endTime = strtotime($schedule->end_time);
+        $startTime = $schedule ? strtotime($schedule->start_time) : null;
+        $endTime = $schedule ? strtotime($schedule->end_time) : null;
         $timeInterval = $branchConfiguration->time_interval * 60 * 60;
         $slots = [];
 
-        for ($i = $startTime; $i < $endTime; $i += $timeInterval) {
-            $slotStartTime = $i;
-            $slotEndTime = $slotStartTime + $timeInterval;
-            if ($slotEndTime > $endTime) {
-                $slotEndTime = $endTime;
+        if($startTime && $endTime) {
+            for ($i = $startTime; $i < $endTime; $i += $timeInterval) {
+                $slotStartTime = $i;
+                $slotEndTime = $slotStartTime + $timeInterval;
+                if ($slotEndTime > $endTime) {
+                    $slotEndTime = $endTime;
+                }
+
+                $filled_slot = AppointmentOnsite::where('service_id', $request->service_id)->where('date', $request->date)->where('start_time', date('H:i:s', $slotStartTime))->where('end_time', date('H:i:s', $slotEndTime))->count();
+
+                $slots[] = [
+                    'start_time' => date('H:i', $slotStartTime),
+                    'end_time' => date('H:i', $slotEndTime),
+                    'filled_slot' => $filled_slot,
+                    'max_slots' => $branchConfiguration->max_slots
+                ];
             }
-
-            $available_slots = AppointmentOnsite::where('service_id', $request->service_id)->where('date', $request->date)->where('start_time', date('H:i:s', $slotStartTime))->where('end_time', date('H:i:s', $slotEndTime))->count();
-
-            $slots[] = [
-                'start_time' => date('H:i', $slotStartTime),
-                'end_time' => date('H:i', $slotEndTime),
-                'available_slots' => $available_slots,
-                'max_slots' => $branchConfiguration->max_slots
-            ];
         }
 
         return response()->json([

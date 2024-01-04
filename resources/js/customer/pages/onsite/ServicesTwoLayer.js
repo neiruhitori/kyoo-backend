@@ -47,7 +47,7 @@ function ServicesTwoLayer() {
     const date = new Date(today);
     date.setDate(today.getDate() + 1);
 
-    const [showCalendar, setShowCalendar] = useState(false)
+    const [isCalendarShow, setIsCalendarShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(date)
     const [serviceId, setServiceId] = useState()
 
@@ -55,14 +55,9 @@ function ServicesTwoLayer() {
     const branchHolidaysQuery = useBranchHolidays(branchId)
     const servicesRes = useQuery('services',
         () => fetchServiceByBranchId(branchId, {
-            queueType
-        })
-    )
-    const serviceSlotsRes = useQuery('services-slots',
-        () => fetchAppointmentOnsiteSlots(branchId, {
+            queueType: 'appointment-onsite',
             date: getFullDate(selectedDate, 'en'),
             day: getDayName(selectedDate, 'en'),
-            serviceId: serviceId
         })
     )
 
@@ -70,8 +65,7 @@ function ServicesTwoLayer() {
         holidays = [],
         todayHoliday = null,
         schedule = null,
-        services = [],
-        serviceSlots = []
+        services = []
 
     function isBranchOpen() {
         return schedule?.status === 'open' && !todayHoliday
@@ -95,17 +89,12 @@ function ServicesTwoLayer() {
         services = servicesRes.data
     }
 
-    if (serviceSlotsRes.status === 'success') {
-        serviceSlots = serviceSlotsRes.data
-    }
-
     if(branch && branch.branch_configuration.layer === 1){
         navigate(`/customer/${branchId}/onsite/services`);
     }
 
     useEffect(() => {
         servicesRes.refetch()
-        serviceSlotsRes.refetch()
     }, [serviceId, selectedDate])
 
     useEffect(() => {
@@ -128,327 +117,180 @@ function ServicesTwoLayer() {
         }) : []
     }
 
-    const ContentWrapper = styled.div`
-        width: 420px;
-        overflow-y: scroll;
-        max-height: 100vh;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        &::-webkit-scrollbar {
-            display: none;
-        }
-        `;
-
-    const ServiceContent = styled.div(() => ({
-        display: 'flex',
-        flex: '1 1 0%',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    }))
-
-    const ServiceTitle = styled.div(() => ({
-        fontWeight: '700',
-        fontSize: '1rem'
-    }))
+    function handleCalendarClose() {
+        setIsCalendarShow(false)
+    }
 
     return <>
-        <div style={{
-            display: 'flex'
-         }}>
-            <ContentWrapper>
-                <Banner imageUrl={branch?.photo}>
-                    <Header>
-                        <div style={{
-                            borderLeft: '1px solid #EEEEEE',
-                            textTransform: 'capitalize',
-                            padding: '0 1.375rem 0 .85rem',
-                            flex: '1'
-                        }}>
-                            <a href="#" style={{
-                                display: 'flex',
-                                alignItems: 'center'
-                            }}>
-                                <img src={branch?.logo ? `/storage/${branch?.logo}` : `/img/logo-color.svg`} height="26" />
-                            </a>
-                        </div>
-                    </Header>
-
-                    <div style={{
-                        padding: '1.625rem 1.375rem'
-                    }}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            marginBottom: '1rem'
-                        }}>
-                            <Chip label={branch?.industry_category.name} />
-
-                            <Link to={`/customer/${branchId}/onsite/detail`}>
-                                <div style={{
-                                    color: '#FFFFFF',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    fontSize: '0.75rem',
-                                    textShadow: '0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px rgb(0 0 0 / 0.1)'
-                                }}>
-                                    <span style={{
-                                        padding: '0 0.75rem'
-                                    }}>Lihat Detail</span>
-
-                                    <AngleRightIcon color="#FFFFFF" />
-                                </div>
-                            </Link>
-                        </div>
-
-                        <div>
-                            <H2 style={{
-                                color: '#FFFFFF'
-                            }}>{branch?.name}</H2>
-                        </div>
-
-                        {isBranchOpen()
-                            ? <BranchStatusOpen
-                                startTime={schedule?.start_time.slice(0, -3)}
-                                endTime={schedule?.end_time.slice(0, -3)}
-                                style={{
-                                    marginTop: '1rem'
-                                }}
-                            />
-                            : <BranchStatusClosed
-                                style={{
-                                    marginTop: '1rem'
-                                }}
-                            />
-                        }
-
-                        <SliderIndicator active={0} total={3} style={{
-                            position: 'absolute',
-                            bottom: '1rem',
-                            left: '50%',
-                            transform: 'translateX(-50%)'
-                        }} />
-                    </div>
-                </Banner>
-
-                <MainContent>
-                    <h4 style={{
-                        fontSize: '1rem',
-                        marginBottom: '1.125rem'
-                    }}>Layanan</h4>
-
-                    {servicesRes.isLoading &&
-                        <Card style={{
-                            borderLeft: '12px solid #007EC6',
-                            height: '80px'
-                        }}>
-                            <SkeletonItem height="1rem" width="100px" />
-                            <SkeletonItem height=".75rem" style={{
-                                marginTop: '1rem'
-                            }} />
-                        </Card>
-                    }
-
-                    {isBranchOpen() && services?.map(service => {
-                        if (!service.is_show) return;
-
-                        return <span style={{marginBottom: '1.125rem'}} key={service.id}>
-                                    <Card style={{
-                                        display: 'flex',
-                                        height: '85px',
-                                        cursor: 'pointer',
-                                        backgroundColor: serviceId == service.id ? '#1f4b8b' : '',
-                                        color: serviceId == service.id ? 'white' : 'black',
-                                    }} onClick={() => setServiceId(service.id)}>
-                                        <ServiceContent>
-                                            <ServiceTitle>{ service.name }</ServiceTitle>
-                                            <CheckIcon />
-                                        </ServiceContent>
-                                    </Card>
-                                </span>
-                    })}
-
-                    {!servicesRes.isLoading && !isBranchOpen() && <div style={{
-                        flex: '1 1 0%',
+        {branchRes.status === 'success' && <Banner imageUrl={branch.photo}>
+            <Header>
+                <div style={{
+                    display: 'flex',
+                    height: '100%'
+                }}>
+                    <a href="#" style={{
+                        padding: '.5rem .85rem .5rem 1.375rem',
                         display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
                         alignItems: 'center'
                     }}>
+                        <img src={branch.logo ? `/storage/${branch.logo}` : `/img/logo-color.svg`} height="26" />
+                    </a>
+                </div>
+            </Header>
+
+            <div style={{
+                padding: '1.625rem 1.375rem'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '1rem'
+                }}>
+                    <Chip label={branch?.industry_category.name} />
+
+                    <Link to={`/customer/${branchId}/${queueType}/detail`}>
                         <div style={{
-                            display: 'inline-flex',
-                            borderRadius: '99999999px',
-                            backgroundColor: '#F5F5F5',
-                            justifyContent: 'center',
+                            color: '#FFFFFF',
+                            display: 'flex',
                             alignItems: 'center',
-                            height: '7.5rem',
-                            width: '7.5rem',
-                            marginBottom: '1.5rem'
+                            fontSize: '0.75rem',
+                            textShadow: '0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px rgb(0 0 0 / 0.1)'
                         }}>
-                            <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
+                            <span style={{
+                                padding: '0 0.75rem'
+                            }}>Lihat Detail</span>
+                            <AngleRightIcon color="#FFFFFF" />
                         </div>
-                        <h4>Tidak Ada Layanan</h4>
-                        <p style={{
-                            textAlign: 'center',
-                            width: '280px',
-                            marginTop: '0.5rem',
-                            color: '#A5A5A5',
-                            fontSize: '.875rem'
-                        }}>
-                            Pilih tanggal lain untuk menemukan layanan yang tersedia
-                        </p>
-                    </div>}
-                </MainContent>
-            </ContentWrapper>
+                    </Link>
+                </div>
 
-            <div style={{ backgroundColor: '#E2E2E2', height: '100vh', width: '100px' }}></div>
+                <div>
+                    <H2 style={{
+                        color: '#FFFFFF'
+                    }}>{branch?.name}</H2>
+                </div>
 
-            <ContentWrapper>
-                <MainContent>
-                    {showCalendar && <CalendarWrapper onClick={() => setShowCalendar(false)}>
-                        <DayPicker
-                            onDayClick={handleDayClick}
-                            months={getMonthNames()}
-                            modifiers={{
-                                selected: selectedDate,
-                                disabled: [
-                                    { daysOfWeek: getClosedDays() },
-                                    { before: new Date() }
-                                ]
-                            }}
-                            modifiersStyles={{
-                                selected: {
-                                    backgroundColor: '#0172CB',
-                                    color: '#FFFFFF'
-                                }
-                            }}
-                        />
-                    </CalendarWrapper>}
+                {schedule && isBranchOpen()
+                ? <BranchStatusOpen
+                    startTime={schedule.start_time.slice(0, -3)}
+                    endTime={schedule.end_time.slice(0, -3)}
+                    style={{
+                        marginTop: '1rem'
+                    }}
+                />
+                : <BranchStatusClosed
+                    style={{
+                        marginTop: '1rem'
+                    }}
+                />}
 
-                    <TextField
-                        label="Tanggal"
-                        style={{
-                            marginBottom: '1.5rem'
-                        }}
-                        value={format(selectedDate, 'd MMMM yyyy', { locale: id })}
-                        readOnly
-                        endAdornment={
-                            <IconButton
-                                onClick={() => setShowCalendar(true)}
-                            >
-                                <CalendarIcon height="24" width="24" />
-                            </IconButton>
+                <SliderIndicator active={0} total={3} style={{
+                    position: 'absolute',
+                    bottom: '1rem',
+                    left: '50%',
+                    transform: 'translateX(-50%)'
+                }} />
+            </div>
+        </Banner>}
+
+        <MainContent>
+            {isCalendarShow && <CalendarWrapper
+                onClick={handleCalendarClose}
+            >
+                <DayPicker
+                    onDayClick={handleDayClick}
+                    months={getMonthNames()}
+                    modifiers={{
+                        selected: selectedDate,
+                        disabled: [
+                            ...holidays.map(v => parseISO(v.date)),
+                            { daysOfWeek: getClosedDays() },
+                            { before: new Date() }
+                        ]
+                    }}
+                    modifiersStyles={{
+                        selected: {
+                            backgroundColor: '#0172CB',
+                            color: '#FFFFFF'
                         }
-                    />
+                    }}
+                />
+            </CalendarWrapper>}
 
-                    <div style={{
-                        padding: '1.5rem 1.375rem',
-                        backgroundColor: '#FFFFFF',
-                        margin: '0 -1.375rem',
-                        borderRadius: '16px 16px 0 0',
-                        boxShadow: '0px -4px 40px rgba(0, 0, 0, 0.13)',
-                        flex: '1 1 0%',
-                        display: 'flex',
-                        flexDirection: 'column'
-                    }}>
-                        <div style={{
-                            marginBottom: '1.125rem'
-                        }}>
-                            <h4 style={{
-                                fontSize: '1rem',
-                                marginBottom: '0.5rem'
-                            }}>Daftar Sesi Waktu</h4>
-                            <p style={{
-                                fontSize: '0.875rem',
-                                color: '#A5A5A5'
-                            }}>Berikut adalah sesi waktu yang tersedia</p>
-                        </div>
+            <TextField
+                label="Tanggal"
+                style={{
+                    marginBottom: '1.5rem'
+                }}
+                value={format(selectedDate, 'd MMMM yyyy', { locale: id })}
+                readOnly
+                endAdornment={
+                    <IconButton
+                        onClick={() => setIsCalendarShow(true)}
+                    >
+                        <CalendarIcon height="24" width="24" />
+                    </IconButton>
+                }
+            />
 
-                        {serviceSlotsRes.isLoading && <ServiceItemSkeleton />}
+            <h4 style={{
+                fontSize: '1rem',
+                marginBottom: '1.125rem'
+            }}>Layanan</h4>
 
-                        {!isSameDay() && isBranchOpen() && serviceSlotsRes.status === 'success' && serviceId && serviceSlots?.map(serviceSlot => {
-                            return <Link to={`/customer/${branchId}/appointment-onsite/services/${serviceId}/visitor?date=${format(selectedDate, 'yyyy-MM-dd')}&start_time=${serviceSlot.start_time}&end_time=${serviceSlot.end_time}`} key={serviceSlot.start_time} style={{
-                                marginBottom: '1.125rem'
-                            }}>
-                                <ServiceItem
-                                    title={`${serviceSlot.start_time} - ${serviceSlot.end_time}`}
-                                    action={{
-                                        label: "Total Slot Tersedia",
-                                        value: serviceSlot.available_slots,
-                                        total: serviceSlot.max_slots
-                                    }}
-                                    style={{
-                                        alignItems: 'center'
-                                    }}
-                                />
-                            </Link>
-                        })}
+            {servicesRes.status === 'loading' && <ServiceItemSkeleton />}
 
-                        {!serviceSlotsRes.isLoading && !isSameDay() && !isBranchOpen() && <div style={{
-                            flex: '1 1 0%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            <div style={{
-                                display: 'inline-flex',
-                                borderRadius: '99999999px',
-                                backgroundColor: '#F5F5F5',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                height: '7.5rem',
-                                width: '7.5rem',
-                                marginBottom: '1.5rem'
-                            }}>
-                                <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
-                            </div>
-                            <h4>Tidak Ada Layanan</h4>
-                            <p style={{
-                                textAlign: 'center',
-                                width: '280px',
-                                marginTop: '0.5rem',
-                                color: '#A5A5A5',
-                                fontSize: '.875rem'
-                            }}>
-                                Pilih tanggal lain untuk menemukan layanan yang tersedia
-                            </p>
-                        </div>}
+            {isBranchOpen() && !isSameDay() && servicesRes.status === 'success' && services.map(service => {
+                if (!service.is_show) return;
 
-                        {isSameDay() && <div style={{
-                            flex: '1 1 0%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            <div style={{
-                                display: 'inline-flex',
-                                borderRadius: '99999999px',
-                                backgroundColor: '#F5F5F5',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                height: '7.5rem',
-                                width: '7.5rem',
-                                marginBottom: '1.5rem'
-                            }}>
-                                <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
-                            </div>
-                            <h4>Tidak Ada Layanan</h4>
-                            <p style={{
-                                textAlign: 'center',
-                                width: '280px',
-                                marginTop: '0.5rem',
-                                color: '#A5A5A5',
-                                fontSize: '.875rem'
-                            }}>
-                                Anda harus melakukan pemesanan antrian setidaknya 1 hari sebelumnya.
-                            </p>
-                        </div>}
-                    </div>
-                </MainContent>
-            </ContentWrapper>
-        </div>
+                const serviceProps = {
+                    title: service.name,
+                    key: service.id,
+                    action: {
+                        label: 'Total Slot Tersedia',
+                        value: service.available_slot
+                    }
+                }
+
+                return <Link to={`/customer/${branchId}/onsite/services/${service.id}?date=${format(selectedDate, 'yyyy-MM-dd')}`} key={service.id} style={{
+                    marginBottom: '1.125rem'
+                }}>
+                    <ServiceItem {...serviceProps} />
+                </Link>
+            })}
+
+            {!servicesRes.isLoading && (isSameDay() || !isBranchOpen()) && <div style={{
+                flex: '1 1 0%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <div style={{
+                    display: 'inline-flex',
+                    borderRadius: '99999999px',
+                    backgroundColor: '#F5F5F5',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '7.5rem',
+                    width: '7.5rem',
+                    marginBottom: '1.5rem'
+                }}>
+                    <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
+                </div>
+                <h4>Tidak Ada Layanan</h4>
+                <p style={{
+                    textAlign: 'center',
+                    width: '280px',
+                    marginTop: '0.5rem',
+                    color: '#A5A5A5',
+                    fontSize: '.875rem'
+                }}>
+                    Pilih tanggal lain untuk menemukan layanan yang tersedia
+                </p>
+            </div>}
+        </MainContent>
     </>
 }
 

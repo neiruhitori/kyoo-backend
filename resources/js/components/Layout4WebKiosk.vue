@@ -26,25 +26,28 @@
                                 class="mt-4 col"
                                 @submit.prevent="onSubmitBookingCode"
                             >
-                                <div class="d-flex justify-content-between p-3 bg-light rounded w-full">
-                                    <div class="d-flex flex-column align-items-start mr-4">
-                                        <label class="text-success" style="font-size: 12px;">Masukkan Kode Booking</label>
-                                        <input
-                                            class="form-control p-0"
-                                            style="width: 15rem; font-size: 12px; border: 0; background: transparent;"
-                                            v-model="formData.booking_code"
-                                            placeholder="XYBJLL"
-                                        />
+                                <label for="booking_code">
+                                    <div class="d-flex justify-content-between p-3 bg-light rounded w-full">
+                                        <div class="d-flex flex-column align-items-start mr-4">
+                                            <label class="text-success" style="font-size: 12px;">Masukkan Kode Booking</label>
+                                            <input
+                                                class="form-control p-0"
+                                                style="width: 15rem; height: 30px; font-size: 18px; border: 0; background: transparent;"
+                                                v-model="formData.booking_code"
+                                                id="booking_code"
+                                                placeholder="XYBJLL"
+                                            />
+                                        </div>
+                                        <button
+                                            type="submit"
+                                            class="btn px-4"
+                                            v-bind:style="[button_checkin_style]"
+                                            style="font-family: 'Manrope', sans-serif;"
+                                        >
+                                            Check-in
+                                        </button>
                                     </div>
-                                    <button
-                                        type="submit"
-                                        class="btn px-4"
-                                        v-bind:style="[button_checkin_style]"
-                                        style="font-family: 'Manrope', sans-serif;"
-                                    >
-                                        Check-in
-                                    </button>
-                                </div>
+                                </label>
                             </form>
                             <div v-if="isErrorBooking" class="text-white d-flex justify-content-start ml-3 mt-2" style="font-size: 12px;">
                                 {{ errorMessage }}
