@@ -193,10 +193,6 @@ export default {
             type: Object,
             required: true
         },
-        auth: {
-            type: Object,
-            required: true
-        },
         layout_config: {
             type: Object,
             required: true
@@ -212,12 +208,14 @@ export default {
     },
 
     async mounted() {
+        this.getAuth();
         await this.getWorkStations();
     },
 
     data() {
         return {
             isLoading: true,
+            auth: null,
             branch_logo: this.branch
                 ? `/storage/${this.branch.logo}`
                 : `/img/logo-color.svg`,
@@ -262,7 +260,8 @@ export default {
                 phone: "",
                 workstation_service_id: "",
                 vct_id: "",
-                booking_code: ""
+                booking_code: "",
+                user_id: ""
             },
             responseQueue: {},
             isError: false,
@@ -271,12 +270,16 @@ export default {
         };
     },
     methods: {
+        getAuth() {
+            this.auth = JSON.parse(localStorage.getItem('auth'));
+            this.formData["user_id"] = this.auth.id;
+        },
         async getWorkStations() {
             this.isLoading = true;
 
             try {
                 const workstationServices = await axios.get(
-                    "/device/directQueue/allWorkstationServices"
+                    `/device/directQueue/allWorkstationServices/${this.branch.id}`
                 );
 
                 this.workstationServices =
@@ -325,7 +328,8 @@ export default {
                 phone: "",
                 workstation_service_id: "",
                 vct_id: "",
-                booking_code: ""
+                booking_code: "",
+                user_id: this.auth.id
             }
         },
         handleCreateOnsiteQueueByBookingCode() {

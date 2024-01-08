@@ -157,10 +157,6 @@ export default {
             type: Object,
             required: true
         },
-        auth: {
-            type: Object,
-            required: true
-        },
         layout_config: {
             type: Object,
             required: true
@@ -180,13 +176,14 @@ export default {
     },
 
     async mounted() {
+        this.getAuth();
         await this.getWorkStations();
-        console.log(this.is_allow_wa)
     },
 
     data() {
         return {
             isLoading: true,
+            auth: null,
             branch_logo: this.branch
                 ? `/storage/${this.branch.logo}`
                 : `/img/logo-color.svg`,
@@ -230,7 +227,8 @@ export default {
                 name: "",
                 phone: "",
                 workstation_service_id: "",
-                vct_id: ""
+                vct_id: "",
+                user_id: ""
             },
             responseQueue: {},
             isError: false,
@@ -239,12 +237,16 @@ export default {
         };
     },
     methods: {
+        getAuth() {
+            this.auth = JSON.parse(localStorage.getItem('auth'));
+            this.formData["user_id"] = this.auth.id;
+        },
         async getWorkStations() {
             this.isLoading = true;
 
             try {
                 const workstationServices = await axios.get(
-                    "/device/directQueue/allWorkstationServices"
+                    `/device/directQueue/allWorkstationServices/${this.branch.id}`
                 );
 
                 this.workstationServices =
@@ -284,7 +286,8 @@ export default {
                 name: "",
                 phone: "",
                 workstation_service_id: "",
-                vct_id: ""
+                vct_id: "",
+                user_id: this.auth.id
             }
         },
         handleCreateOnsiteQueue(type) {

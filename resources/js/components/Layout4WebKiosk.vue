@@ -48,10 +48,10 @@
                                         </button>
                                     </div>
                                 </label>
+                                <div v-if="isErrorBooking" class="text-white d-flex justify-content-center" style="font-size: 12px;" :style="{'margin': errorMessage === 'Kode booking wajib diisi' ? '0 280px 0 0' : '0 248px 0 0'}">
+                                    {{ errorMessage }}
+                                </div>
                             </form>
-                            <div v-if="isErrorBooking" class="text-white d-flex justify-content-start ml-3 mt-2" style="font-size: 12px;">
-                                {{ errorMessage }}
-                            </div>
                         </div>
                         <div class="powered-by mb-3">
                             <img v-bind:src="webkiosk_logo" alt="logo-kyoo" height="60"/>
@@ -100,7 +100,7 @@
                                             <div style="padding-top: 20.38px;">
                                                 <img v-bind:src="branch_logo" alt="logo-kyoo" height="26"/>
                                             </div>
-                                            <div class="wrapper-queue-number" style="padding-top: 20.25px;">
+                                            <div class="wrapper-queue-number">
                                                 <span style="font-size: 20px; color: #132D58;margin-bottom: 0.5rem;text-align: center; font-weight: bolder;">Nomor Antrian Anda</span>
                                                 <h2 style="font-weight: bold;font-size: 64px;color: #21965E;text-align: center;">
                                                     {{ responseQueue.queue_no ? responseQueue.queue_no : "0000"}}
@@ -166,10 +166,6 @@ export default {
             type: Object,
             required: true
         },
-        auth: {
-            type: Object,
-            required: true
-        },
         layout_config: {
             type: Object,
             required: true
@@ -185,6 +181,7 @@ export default {
     },
 
     async mounted() {
+        this.getAuth();
         await this.getWorkStations();
         this.updateCurrentDate();
     },
@@ -212,6 +209,7 @@ export default {
     data() {
         return {
             isLoading: true,
+            auth: null,
             branch_logo: this.branch
                 ? `/storage/${this.branch.logo}`
                 : `/img/logo-color.svg`,
@@ -256,7 +254,8 @@ export default {
                 phone: "",
                 workstation_service_id: "",
                 vct_id: "",
-                booking_code: ""
+                booking_code: "",
+                user_id: ""
             },
             responseQueue: {},
             isError: false,
@@ -267,12 +266,16 @@ export default {
         };
     },
     methods: {
+        getAuth() {
+            this.auth = JSON.parse(localStorage.getItem('auth'));
+            this.formData["user_id"] = this.auth.id;
+        },
         async getWorkStations() {
             this.isLoading = true;
 
             try {
                 const workstationServices = await axios.get(
-                    "/device/directQueue/allWorkstationServices"
+                    `/device/directQueue/allWorkstationServices/${this.branch.id}`
                 );
 
                 this.workstationServices =
@@ -309,7 +312,8 @@ export default {
                 phone: "",
                 workstation_service_id: "",
                 vct_id: "",
-                booking_code: ""
+                booking_code: "",
+                user_id: this.auth.id
             }
         },
         handleCreateOnsiteQueueByBookingCode() {
@@ -366,10 +370,13 @@ export default {
         print() {
             const printWindow = window.open('', '_blank');
 
+            const branchLogo = this.branch_logo;
             const serviceNumber = this.responseQueue.queue_no;
             const serviceName = this.workstationServices.find((service) => service.id == this.responseQueue.workstation_service_id).service.name;
             const branchName = this.branch.name;
-            const createdAt = moment(this.responseQueue.created_at).format('DD/MM/YYYY HH:mm:ss')
+            const currentDay = this.currentDay;
+            const currentFormattedDate = this.currentFormattedDate;
+            const currentTimes = this.currentTimes;
 
             printWindow.document.open();
             printWindow.document.write(`
@@ -379,11 +386,11 @@ export default {
                 <title>Print</title>
                 <style>
                     @page {
-                            size: 80mm 80mm;
+                            size: 80mm 100mm;
                     }
                     body {
                         width: 80mm;
-                        height: 80mm;
+                        height: 100mm;
                         margin: 0;
                         display: inline-grid;
                         justify-content: center;
@@ -393,11 +400,33 @@ export default {
                     </style>
                 </head>
                 <body>
-                    <span style="font-size: 24px; font-style: normal; font-weight: 500; line-height: normal;">${branchName}</span>
-                    <span style="font-size: 64px; font-style: normal; font-weight: 800; line-height: normal;">${serviceNumber}</span>
-                    <div style="display: grid;gap: 10px;">
-                        <span style="font-size: 20px; font-style: normal; font-weight: 400; line-height: normal;">${serviceName}</span>
-                        <span style="font-size: 12px; font-style: normal; font-weight: 400; line-height: normal;">${createdAt}</span>
+                    <div style="margin-bottom: 25px; position: relative;">
+                        <div class="d-flex flex-column align-items-center justify-content-center" style="position: absolute; width: 100%; top:0; bottom: 0; height: 100%;">
+                            <div style="padding-top: 20.38px;">
+                                <img src="${branchLogo}" alt="logo-kyoo" height="26"/>
+                            </div>
+                            <div class="wrapper-queue-number" style="margin: 20.25px 0 23.72px;">
+                                <span style="font-size: 20px; color: #132D58;text-align: center; font-weight: bolder;margin: 0 0 8px;">Nomor Antrian Anda</span>
+                                <h2 style="margin: 0 0 8px; font-weight: bold;font-size: 64px;color: #21965E;text-align: center;">
+                                    ${serviceNumber}
+                                </h2>
+                                <span style="margin: 0 0 8px;font-size: 12px;color: rgb(122, 122, 122);text-align: center;">Mohon tunggu sampai nomor <br> antrian Anda dipanggil</span>
+                            </div>
+                            <div class="wrapper-service-card" style="padding: 75px 28px;">
+                                <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center; margin: 0;"> ${serviceName} </h4>
+                                <span style="font-size: 12px;color: #132D58;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentDay}, ${currentFormattedDate}</span>
+                                <br>
+                                <span style="font-size: 12px;color: #132D58;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentTimes} WIB</span>
+                            </div>
+                        </div>
+                        <svg width="263" height="403" viewBox="0 0 263 403" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 15C0 6.71573 6.71573 0 15 0H248C256.284 0 263 6.71573 263 15V244.493H0V15Z" fill="#F9FAFB"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 281.013H11.4585V262.513V244.013H-1.90735e-06C7.01681 248.491 11.4585 255.118 11.4585 262.513C11.4585 269.908 7.01681 276.535 0 281.013Z" fill="#F9FAFB"/>
+                        <rect width="240.083" height="37" transform="matrix(1 0 0 -1 11.4585 281.013)" fill="#F9FAFB"/>
+                        <line y1="-1" x2="240.083" y2="-1" transform="matrix(1 0 0 -1 11.4585 262.513)" stroke="#999999" stroke-width="2" stroke-dasharray="8 8"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M263 281.013H251.542V262.513V244.013H263C255.983 248.491 251.542 255.118 251.542 262.513C251.542 269.908 255.983 276.535 263 281.013Z" fill="#F9FAFB"/>
+                        <path d="M0 387.293C0 395.577 6.71573 402.293 15 402.293H248C256.284 402.293 263 395.577 263 387.293V280.533H0V387.293Z" fill="#F9FAFB"/>
+                        </svg>
                     </div>
                 </body>
                 </html>
@@ -529,7 +558,7 @@ textarea::placeholder{
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding-top: 28.25px;
+    padding-top: 20.25px;
     padding-bottom: 23.72px;
 }
 .wrapper-service-card {

@@ -59,12 +59,13 @@ class WebkioskConfigurationController extends Controller
             $webkiosConfigurationFormValue->layout = $webkiosConfiguration->layout_id;
             // $layoutConfiguration = $webkiosConfiguration->layout_id == 2 ? $webkiosConfiguration->layoutConfiguration2 : $webkiosConfiguration->layoutConfiguration3;
             $layoutConfigurationMapping = [
+                1 => null,
                 2 => 'layoutConfiguration2',
                 3 => 'layoutConfiguration3',
                 4 => 'layoutConfiguration4',
             ];
 
-            $layoutConfiguration = $webkiosConfiguration->{$layoutConfigurationMapping[$webkiosConfiguration->layout_id]} ?? null;
+            $layoutConfiguration = $webkiosConfiguration->{$layoutConfigurationMapping[$webkiosConfiguration->layout_id]};
 
             if ($layoutConfiguration) {
                 $webkiosConfigurationFormValue = (object) array(

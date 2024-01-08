@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Device;
 
-use Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\URL;
@@ -14,7 +13,7 @@ use App\User;
 use App\WorkstationService;
 use App\Workstation;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CS\StoreDirectQueue;
+use App\Http\Requests\Device\StoreDirectQueue;
 use App\Interfaces\WebKioskConfigurationRepositoryInterface;
 use App\Interfaces\DirectQueueRepositoryInterface;
 use App\Models\FeatureSubscription;
@@ -136,12 +135,12 @@ class HomeController extends Controller
         $WebKioskToken = WebkioskToken::where('webkiosk_configuration_id', $WebkioskConfigurationID)->first();
 
         $layoutConfigurationMapping = [
+            1 => null,
             2 => 'layoutConfiguration2',
             3 => 'layoutConfiguration3',
             4 => 'layoutConfiguration4',
         ];
 
-        // $layoutConfig = $configuration->layout->id == 2 ? $configuration->layoutConfiguration2 : $configuration->layoutConfiguration3;
         $layoutConfig = $configuration->{$layoutConfigurationMapping[$configuration->layout->id]} ?? null;
 
         if(!$WebKioskToken) {
@@ -172,9 +171,9 @@ class HomeController extends Controller
         );
     }
 
-    public function getAllWorkstationServiceByBranch() {
+    public function getAllWorkstationServiceByBranch($branch_id) {
         $userIDs = User::select('id')->where([
-            'branch_id' => Auth::user()->branch_id,
+            'branch_id' => $branch_id,
             'role' => 'cs',
         ])->get();
 
@@ -203,18 +202,19 @@ class HomeController extends Controller
     public function store(StoreDirectQueue $request)
     {
         try {
+            $user = User::find($request->user_id);
             $workstation_service = WorkstationService::find($request->workstation_service_id);
 
             $data = $request->all();
             $data['workstation_id'] = $workstation_service->workstation_id;
-            $data['user_id'] = Auth::id();
+            $data['user_id'] = $user->id;
             $data['service_id'] = $workstation_service->service_id;
             $data['direct_queue_channel'] = 'Device';
 
             $direct_queue = $this->onsite_repository->store($data);
 
-            event(new VCTDirectQueueEvent($direct_queue, Auth::user()->branch_id));
-            event(new DirectQueueEvent($direct_queue, Auth::user()->branch_id));
+            event(new VCTDirectQueueEvent($direct_queue, $user->branch_id));
+            event(new DirectQueueEvent($direct_queue, $user->branch_id));
 
             if ($direct_queue->client_id) {
                 event(new OnsiteQueueUpdated($direct_queue));
@@ -235,6 +235,7 @@ class HomeController extends Controller
     public function storeByBookingCode(Request $request)
     {
         try {
+            $user = User::find($request->user_id);
             $appointment_onsite = AppointmentOnsite::where('booking_code', strtolower($request->booking_code))
             ->where('is_used', false)
             ->where('date', date('Y-m-d'))
@@ -245,15 +246,15 @@ class HomeController extends Controller
             $data = $appointment_onsite->toArray();
             $data['workstation_id'] = $workstation_service->workstation_id;
             $data['workstation_service_id'] = $workstation_service->id;
-            $data['user_id'] = Auth::id();
+            $data['user_id'] = $user->id;
             $data['vct_id'] = $request->vct_id;
             $data['direct_queue_channel'] = 'Device';
             $data['priority'] = 1;
 
             $direct_queue = $this->onsite_repository->store($data);
 
-            event(new VCTDirectQueueEvent($direct_queue, Auth::user()->branch_id));
-            event(new DirectQueueEvent($direct_queue, Auth::user()->branch_id));
+            event(new VCTDirectQueueEvent($direct_queue, $user->branch_id));
+            event(new DirectQueueEvent($direct_queue, $user->branch_id));
 
             if ($direct_queue->client_id) {
                 event(new OnsiteQueueUpdated($direct_queue));
