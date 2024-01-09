@@ -50,7 +50,6 @@
         @if ($layoutCode == "layout_2")
         <layout-2-web-kiosk
             :branch="{{ $branch }}"
-            :auth="{{ Auth::user() }}"
             qr={{ $qr }}
             :layout_config="{{ $layoutConfig }}"
             :is_allow_wa={{ json_encode($isAllowWA)  }}
@@ -61,7 +60,6 @@
         @if($layoutCode == "layout_3")
         <layout-3-web-kiosk
             :branch="{{ $branch }}"
-            :auth="{{ Auth::user() }}"
             :layout_config="{{ $layoutConfig }}"
             :is_allow_wa={{ json_encode($isAllowWA) }}
             :active_menus={{ $activeMenus }}
@@ -71,7 +69,6 @@
         @if($layoutCode == "layout_4")
         <layout-4-web-kiosk
             :branch="{{ $branch }}"
-            :auth="{{ Auth::user() }}"
             :layout_config="{{ $layoutConfig }}"
             :is_allow_wa={{ json_encode($isAllowWA) }}
             :active_menus={{ $activeMenus }}
@@ -79,6 +76,13 @@
         @endif
     </div>
     <script src="{{asset('js/app.js')}}"></script>
+    <script>
+        const auth = @json(Auth::user());
+        if(auth) {
+            localStorage.removeItem('auth');
+            localStorage.setItem('auth', JSON.stringify(auth));
+        }
+    </script>
 </body>
 
 </html>

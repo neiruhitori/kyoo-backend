@@ -397,15 +397,14 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 
 Route::namespace('Device')->prefix('device')->middleware('auth', 'checkDevice')->name('device.')->group(function () {
     Route::get('/', 'HomeController@index')->name('home');
-
-
-    Route::get('directQueue/allWorkstationServices', 'HomeController@getAllWorkstationServiceByBranch');
-
-    Route::post('directQueue/store', 'HomeController@store');
-    Route::post('directQueueByBookingCode/store', 'HomeController@storeByBookingCode');
 });
 
 Route::namespace('Device')->prefix('device')->name('device.')->group(function () {
+    Route::get('directQueue/allWorkstationServices/{branch_id}', 'HomeController@getAllWorkstationServiceByBranch');
+
+    Route::post('directQueue/store', 'HomeController@store');
+    Route::post('directQueueByBookingCode/store', 'HomeController@storeByBookingCode');
+
     Route::get('web-kiosk-ui', 'HomeController@webKioskUI')->name('web-kiosk-ui');
     Route::get('web-monitor', 'HomeController@webMonitor')->name('web-monitor');
 

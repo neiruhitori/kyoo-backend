@@ -10,6 +10,7 @@ import QRReader from './QRReader/QRReader'
 
 import ServiceList from './ServiceList/ServiceList'
 import TimeSlotList from './TimeSlotList/TimeSlotList'
+import OnsiteTimeSlotList from './onsite/TimeSlotList'
 import VisitorInformation from './VisitorInformation/VisitorInformation'
 import BookingConfirmation from './BookingConfirmation/BookingConfirmation'
 import BookingStatus from './BookingStatus/BookingStatus'
@@ -28,30 +29,17 @@ import Promotions from './Promotions/Promotions'
 import InfoAlert from '../components/InfoAlert'
 
 const AppContainer = styled.div`
-    width: 420px;
+    max-width: 420px;
     margin: 0 auto;
     background-color: #FFFFFF;
     position: relative;
     min-height: ${window.innerHeight}px;
     display: flex;
     flex-direction: column;
-    min-width: ${(props) => (props.isTwoLayer ? "fit-content" : "auto")};
 `
 
 function App() {
     const CLIENT_ID = getCookie('client_id')
-    const [isTwoLayer, setIsTwoLayer] = useState(false)
-    const location = useLocation();
-
-    useEffect(() => {
-        const branchId = location.pathname.match(/\/customer\/(\d+)\/(appointment|onsite)\/services\/two-layer/);
-
-        if (branchId) {
-            setIsTwoLayer(true);
-        } else {
-            setIsTwoLayer(false);
-        }
-    }, [location]);
 
     const [infoMessasge, setInfoMessage] = useState('')
 
@@ -81,7 +69,7 @@ function App() {
         }, 5000)
     }
 
-    return <AppContainer isTwoLayer={isTwoLayer}>
+    return <AppContainer>
         {!!infoMessasge && <div style={{
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             position: 'fixed',
@@ -109,6 +97,7 @@ function App() {
             <Route path="/customer/:branchId/appointment/services/two-layer" element={<AppointmentServicesTwoLayer />} />
             <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
             <Route path="/customer/:branchId/onsite/services/two-layer" element={<OnsiteServicesTwoLayer />} />
+            <Route path="/customer/:branchId/onsite/services/:serviceId" element={<OnsiteTimeSlotList />} />
             <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
             <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
             <Route path="/customer/:branchId/appointment-onsite/services/:serviceId/visitor" element={<AppointmentOnsiteVisitorInformation />} />

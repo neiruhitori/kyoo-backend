@@ -139,7 +139,7 @@ function ServiceList() {
 
             {servicesRes.status === 'loading' && <ServiceItemSkeleton />}
 
-            {isBranchOpen && servicesRes.status === 'success' && services.map(service => {
+            {schedule && isBranchOpen && servicesRes.status === 'success' && services.map(service => {
                 if (!service.is_show) return;
 
                 const serviceProps = {

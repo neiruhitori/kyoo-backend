@@ -60,7 +60,7 @@
                     <div class="calling-card-header" v-bind:style="[callingCardHeader]">{{ workstation.label }}</div>
 
                     <div class="calling-card-body" v-bind:style="[callingCardBody]">
-                        <h4 class="calling-no" v-if="servingQueue[workstation.id] && servingQueue[workstation.id].queue_no !== undefined">
+                        <h4 class="calling-no" :id="'calling-no-' + workstation.id" v-if="servingQueue[workstation.id] && servingQueue[workstation.id].queue_no !== undefined">
                             <span v-bind:style="[firstLetter]">{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
                         </h4>
                     </div>
@@ -168,7 +168,7 @@ export default {
                 animation: `running-text-animate ${this.custom_layout_config.running_text_speed || 10}s linear infinite`
             },
             lineContainer: {
-                "border-top": `3px solid ${this.custom_layout_config.running_text_color || "#FFFFFF"}`
+                "border-top": `2px solid ${this.custom_layout_config.running_text_color || "#FFFFFF"}`
             }
         };
     },
@@ -186,7 +186,6 @@ export default {
                     return await this.getQueues();
                 }
 
-                console.log("call queue no", message.queue_no);
                 await this.getQueues(message.queue_no);
 
                 if (
@@ -196,6 +195,7 @@ export default {
                     message.status &&
                     ["recall", "served"].includes(message.status)
                 ) {
+                    this.isBlink(message.workstation_id);
                     this.getQueueCallAudio(message);
                 }
             });
@@ -310,6 +310,15 @@ export default {
             }
             this.isLoading = false;
         },
+        isBlink(workstationId) {
+            const callingNo = document.getElementById('calling-no-' + workstationId);
+            if (callingNo) {
+                callingNo.classList.add('calling-no-blink');
+                setTimeout(() => {
+                    callingNo.classList.remove('calling-no-blink');
+                }, 9000);
+            }
+        },
         async getQueueCallAudio(message) {
             const queueID = this.servingQueue[message.workstation_id].id
             const {
@@ -380,7 +389,7 @@ export default {
     }
     .monitor-sidebar {
         width: 100%;
-        max-width: 35rem;
+        max-width: 40rem;
         overflow: hidden;
     }
     .calling-card {
@@ -388,7 +397,6 @@ export default {
         overflow: hidden;
         width: 100%;
     }
-
     .calling-card-header {
         color: #233c8c;
         height: 5rem;
@@ -431,10 +439,18 @@ export default {
         display: block;
         text-align: center;
         padding: 12px 0;
-        border-radius: 4px;
+        border-radius: 8px;
     }
     .queue-no {
         font-size: 2.25rem;
+    }
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+    .calling-no-blink {
+        animation: blink 3s ease-in-out infinite;
     }
     .calling-no{
         font-size: 3.25rem;
@@ -481,8 +497,8 @@ export default {
     .running-text {
         white-space: nowrap;
         overflow: hidden;
-        padding-top: 1.625rem;
-        padding-bottom: 1.625rem;
+        padding-top: 0.9rem;
+        padding-bottom: 0.9rem;
         font-size: 1.625rem;
     }
     .permission-wrapper {
@@ -511,6 +527,52 @@ export default {
         display: inline-block;
         font-size: 1rem;
         margin-top: 1rem;
+    }
+
+    @media only screen and (max-width: 1400px) {
+        .monitor-company-logo img {
+            height: 2.3rem;
+        }
+        .monitor-date{
+            font-size: 16px;
+        }
+        .monitor-hour {
+            font-size: 1.5rem;
+        }
+        .sidebar-subtitle {
+            font-size: 1rem;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.5rem;
+            display: block;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 8px;
+        }
+        .waiting-card {
+            border-radius: 8px;
+            height: 3.25rem;
+        }
+        .queue-no {
+            font-size: 2rem;
+        }
+        .monitor-sidebar {
+            max-width: 30rem;
+        }
+        .calling-card-header {
+            height: 2.2rem;
+            font-size: 1.1rem;
+        }
+        .calling-card-body {
+            height: 5rem;
+        }
+        .calling-no{
+            font-size: 2.50rem;
+        }
+        .running-text {
+            padding-top: 0.8rem;
+            padding-bottom: 0.8rem;
+            font-size: 1rem;
+        }
     }
 </style>
 
