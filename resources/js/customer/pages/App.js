@@ -92,9 +92,9 @@ function App() {
         <Routes>
             <Route path="/scan" element={<QRReader />} />
 
-            <Route path="/customer/:branchId/appointment/services" element={<AppointmentServicesCategories />} />
+            <Route path="/customer/:branchId/appointment/services" element={<AppointmentServices />} />
             <Route path="/customer/:branchId/appointment/:serviceCategoryId/services" element={<AppointmentServices />} />
-            <Route path="/customer/:branchId/appointment/services/two-layer" element={<AppointmentServicesTwoLayer />} />
+            <Route path="/customer/:branchId/appointment/services/two-layer" element={<AppointmentServicesCategories />} />
             <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
             <Route path="/customer/:branchId/onsite/services/two-layer" element={<OnsiteServicesTwoLayer />} />
             <Route path="/customer/:branchId/onsite/services/:serviceId" element={<OnsiteTimeSlotList />} />

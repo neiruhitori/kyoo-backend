@@ -50,7 +50,7 @@ function Services() {
     const branchServicesQuery = useBranchServices(branchId, {
         queueType: 'appointment',
         date: format(selectedDate, 'yyyy-MM-dd'),
-        serviceCategoryId: serviceCategoryId == 0 ? null : serviceCategoryId
+        serviceCategoryId: serviceCategoryId
     })
 
     const branch = branchQuery?.data
@@ -61,8 +61,10 @@ function Services() {
     const todaySchedule = schedules?.find(v => v.day === format(selectedDate, 'eeee').toLowerCase())
     const todayHoliday = holidays?.find(v => v.date === format(selectedDate, 'yyyy-MM-dd'))
 
-    if(branch && branch.branch_configuration.layer === 2) {
+    if(branch && branch.branch_configuration.layer === 2 && !serviceCategoryId) {
         navigate(`/customer/${branchId}/appointment/services/two-layer`);
+    } else if(branch && branch.branch_configuration.layer === 1 && serviceCategoryId) {
+        navigate(`/customer/${branchId}/appointment/services`);
     }
 
     useEffect(() => {

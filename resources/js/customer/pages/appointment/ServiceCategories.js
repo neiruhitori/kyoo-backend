@@ -54,8 +54,8 @@ function ServiceCategories() {
     const todaySchedule = schedules?.find(v => v.day === format(selectedDate, 'eeee').toLowerCase())
     const todayHoliday = holidays?.find(v => v.date === format(selectedDate, 'yyyy-MM-dd'))
 
-    if(branch && branch.branch_configuration.layer === 2) {
-        navigate(`/customer/${branchId}/appointment/services/two-layer`);
+    if(branch && branch.branch_configuration.layer === 1) {
+        navigate(`/customer/${branchId}/appointment/services`);
     }
 
     function isBranchOpen() {
@@ -197,20 +197,6 @@ function ServiceCategories() {
                     </Card>
                 </Link>
             })}
-
-            <Link to={`/customer/${branchId}/appointment/0/services`} style={{
-                    marginBottom: '1.125rem'
-                }}>
-                    <Card style={{
-                        display: 'flex',
-                        height: '85px',
-                        cursor: 'pointer',
-                    }}>
-                        <ServiceContent>
-                            <ServiceTitle>Lainnya</ServiceTitle>
-                        </ServiceContent>
-                    </Card>
-            </Link>
         </MainContent>
     </>
 }

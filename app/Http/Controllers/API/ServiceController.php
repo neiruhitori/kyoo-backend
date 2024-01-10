@@ -15,7 +15,11 @@ class ServiceController extends Controller
     {
         $dateNow = $request->date ?? date('Y-m-d');
         $dayNow =  strtolower(date("l", strtotime($dateNow)));
-        $services = Service::where('branch_id', $branch_id)->serviceCategory($request->queue_type, $request->service_category_id)->get();
+        $services = Service::where('branch_id', $branch_id)
+                            ->when($request->service_category_id !== null, function ($query) use ($request) {
+                                return $query->serviceCategory($request->queue_type, $request->service_category_id);
+                            })
+                            ->get();
 
         foreach ($services as $service) {
             // get filled slot
