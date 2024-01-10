@@ -18,8 +18,14 @@ class PortalMenuController extends Controller
     public function update(Request $request)
     {
         $data['layer'] = $request->layer;
-        $data['time_interval'] = $request->time_interval;
-        $data['max_slots'] = $request->max_slots;
+
+        if($request->time_interval) {
+            $data['time_interval'] = $request->time_interval;
+        }
+
+        if($request->max_slots) {
+            $data['max_slots'] = $request->max_slots;
+        }
 
         $branchConfiguration = Auth::user()->Branch->BranchConfiguration;
 
