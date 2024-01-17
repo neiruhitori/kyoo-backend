@@ -61,6 +61,9 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             if (!$branch->BranchType->is_premium && $total_current_booking >= 100) {
                 throw new \Exception('Batas maksimal harian untuk cabang berlisensi gratis telah terlampaui');
             }
+            if ($branch->BranchType->is_premium && $total_current_booking >= $branch->max_queue) {
+                throw new \Exception('Batas maksimal harian untuk cabang telah terlampaui');
+            }
 
             // cant create direct queue on closed day by schedule template
             $holiday = BranchScheduleTemplateDetail::where([

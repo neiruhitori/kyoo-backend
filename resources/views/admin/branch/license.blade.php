@@ -49,6 +49,19 @@
                         >
                     </div>
                 </div>
+                <div class="license-cfg-item mb-2">
+                    <label for="max_queue" class="font-weight-bold">{{ __('Max. Queue') }}</label>
+                    <div>
+                        <input
+                            type="number"
+                            name="max_queue"
+                            id="max_queue"
+                            class="form-control"
+                            min="0"
+                            value="{{ $branch->max_queue }}"
+                        >
+                    </div>
+                </div>
                 <div class="license-cfg-item">
                     <label for="license_expiration_date" class="font-weight-bold">Tambah Masa Trial</label>
                     <div>
@@ -94,7 +107,7 @@
                 @endforeach
             </div>
         </div>
-        
+
         <button type="submit" class="btn btn-warning">Simpan</button>
     </form>
 @endsection

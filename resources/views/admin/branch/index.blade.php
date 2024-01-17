@@ -42,6 +42,7 @@
                                                 <th>{{ __('Name') }}</th>
                                                 <th>{{ __('Address') }}</th>
                                                 <th>{{ __('Branch License') }}</th>
+                                                <th>{{ __('Max. Queue') }}</th>
                                                 <th>{{ __('Show in Mobile') }}</th>
                                                 <th>{{ __('Action') }}</th>
                                             </tr>
@@ -63,6 +64,7 @@
                                                     {{$branch->BranchType->code}} - {{$branch->BranchType->name}}
                                                     @endif
                                                 </td>
+                                                <td>{{ $branch->max_queue }}</td>
                                                 <td>
                                                     @if ($branch->is_active)
                                                     <span class="badge badge-primary">{{ __('Active') }}</span>

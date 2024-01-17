@@ -33,7 +33,8 @@ class Branch extends Model
         'branch_type_id',
         'max_counter',
         'corporate_id',
-        'license_expiration_date'
+        'license_expiration_date',
+        'max_queue'
     ];
 
     /**
