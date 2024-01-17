@@ -76,7 +76,7 @@ class TVDisplayConfigurationController extends Controller
             if ($tv_configuration->image_3) $image_3 = 'storage/' . $tv_configuration->image_3;
         }
 
-        if($branch_configuration) {
+        if($branch_configuration && $tv_configuration && $tv_configuration->customLayoutConfiguration2) {
             $customLayoutConfiguration = $tv_configuration->customLayoutConfiguration2;
 
             if($customLayoutConfiguration) {
