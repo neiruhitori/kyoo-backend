@@ -22,7 +22,7 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
             $total_same_user_queue = 0;
             if (isset($data['email'])) {
                 $total_queue = AppointmentOnsite::where('email', $data['email'])
-                    ->whereDate('created_at', date('Y-m-d'))
+                    ->whereDate('date', date('Y-m-d', strtotime($data['date'])))
                     ->count();
 
                 if ($total_queue > $total_same_user_queue) {
@@ -31,7 +31,7 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
             }
             if (isset($data['phone'])) {
                 $total_queue = AppointmentOnsite::where('phone', $data['phone'])
-                    ->whereDate('created_at', date('Y-m-d'))
+                    ->whereDate('date', date('Y-m-d', strtotime($data['date'])))
                     ->count();
 
                 if ($total_queue > $total_same_user_queue) {
@@ -40,7 +40,7 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
             }
             if (isset($data['client_id'])) {
                 $total_queue = AppointmentOnsite::where('client_id', $data['client_id'])
-                    ->whereDate('created_at', date('Y-m-d'))
+                    ->whereDate('date', date('Y-m-d', strtotime($data['date'])))
                 ->count();
 
                 if ($total_queue > $total_same_user_queue) {
@@ -53,16 +53,19 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             // free license branch cannot create more than 100 queue
             $total_current_booking = AppointmentOnsite::where('service_id', $data['service_id'])
-                ->whereDate('created_at', date('Y-m-d'))
+                ->whereDate('date', date('Y-m-d', strtotime($data['date'])))
                 ->count();
-            if (!$branch->BranchType->is_premium && $total_current_booking >= 100) {
+            if (!$branch->BranchType->is_premium && $total_current_booking >= $branch->max_queue) {
                 throw new \Exception('Batas maksimal harian untuk cabang berlisensi gratis telah terlampaui');
+            }
+            if ($branch->BranchType->is_premium && $total_current_booking >= $branch->max_queue) {
+                throw new \Exception('Batas maksimal harian untuk cabang telah terlampaui');
             }
 
             // cant create direct queue on closed day by schedule template
             $holiday = BranchScheduleTemplateDetail::where([
                 'branch_id' => $branch->id,
-                'date' => date('Y-m-d')
+                'date' => date('Y-m-d', strtotime($data['date']))
             ])->first();
 
             if ($holiday) {
@@ -71,7 +74,7 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             // cant create direct queue on closed day
             $schedule = Schedule::where('branch_id', $service->branch_id)
-                ->where('day', strtolower(date('l')))
+                ->where('day', strtolower(date('l', strtotime($data['date']))))
                 ->first();
             if ($schedule && $schedule->status == 'closed') {
                 throw new \Exception('Cabang sedang tutup hari ini');
