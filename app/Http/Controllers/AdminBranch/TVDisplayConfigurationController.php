@@ -44,6 +44,7 @@ class TVDisplayConfigurationController extends Controller
     public function index()
     {
         $DEFAULT_IMAGE = 'img/img-placeholder.jpg';
+        $is_appointment = Auth::user()->Branch->BranchType->is_appointment;
 
         $image_1 = $DEFAULT_IMAGE;
         $image_2 = $DEFAULT_IMAGE;
@@ -101,9 +102,9 @@ class TVDisplayConfigurationController extends Controller
         }
 
         $defaultImageLayout  = "img/tv-display/layout-1.png";
-        if (Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-1'){
+        if (!$is_appointment && Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-1'){
             $defaultImageLayout = "img/tv-display/custom-layout-1.jpg";
-        } elseif(Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-2') {
+        } elseif(!$is_appointment && Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-2') {
             $defaultImageLayout = "img/tv-display/custom-layout-2.jpg";
         }
 
@@ -114,7 +115,7 @@ class TVDisplayConfigurationController extends Controller
             'image_2' => $image_2,
             'image_3' => $image_3,
             'template_signage' => Auth::user()->Branch->BranchConfiguration->template_signage,
-            'is_appointment' => Auth::user()->Branch->BranchType->is_appointment,
+            'is_appointment' => $is_appointment,
             'image_layouts' => [
                 [
                     'key' => 'custom-layout-1',

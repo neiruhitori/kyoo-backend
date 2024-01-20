@@ -33,6 +33,7 @@ class BranchLicenseController extends Controller
         Branch::where('id', $id)->update([
             'branch_type_id' => $request->branch_type_id,
             'max_counter' => $request->max_counter,
+            'max_queue' => $request->max_queue,
             'license_expiration_date' => Carbon::parse($request->license_expiration_date)->format('Y-m-d H:i:s'),
         ]);
 
