@@ -6,10 +6,9 @@ use App\Mail\CS\AppointmentOnsiteCreatedMail;
 use App\Models\AppointmentOnsite;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AppointmentOnsiteCreatedNotification extends Notification
+class AppointmentOnsiteCreatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
