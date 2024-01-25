@@ -89,9 +89,7 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             $directQueue = AppointmentOnsite::create($data);
 
-            if ($data['email'] && $branch->is_premium) {
-                AppointmentOnsiteCreated::dispatch($directQueue);
-            }
+            AppointmentOnsiteCreated::dispatch($directQueue);
 
             return $directQueue;
         });

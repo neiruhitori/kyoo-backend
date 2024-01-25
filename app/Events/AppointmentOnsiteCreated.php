@@ -5,13 +5,11 @@ namespace App\Events;
 use App\Models\AppointmentOnsite;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AppointmentOnsiteCreated
+class AppointmentOnsiteCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -25,5 +23,10 @@ class AppointmentOnsiteCreated
     public function __construct(AppointmentOnsite $appointmentOnsite)
     {
         $this->appointmentOnsite = $appointmentOnsite;
+    }
+
+    public function broadcastOn()
+    {
+        return new Channel('branches.' . $this->appointmentOnsite->branch_id . '.appointment-onsite');
     }
 }
