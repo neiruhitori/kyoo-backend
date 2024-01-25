@@ -3,9 +3,10 @@
 namespace App\Interfaces;
 use Illuminate\Http\Request;
 
-interface DirectQueueRepositoryInterface 
+interface DirectQueueRepositoryInterface
 {
     public function store($data);
+    public function transfer($data);
     public function getHourlyQueueByDepartment($id, Request $request);
     public function getHourlyQueueByService($id, Request $request);
     public function getHourlyQueueByWorkstation($id, Request $request);
