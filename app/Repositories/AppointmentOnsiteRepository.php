@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Events\AppointmentOnsiteCreated;
 use App\Interfaces\AppointmentOnsiteRepositoryInterface;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Service;
 use App\Schedule;
-use App\Events\OnsiteQueueCreated;
 use App\Models\AppointmentOnsite;
 use Illuminate\Support\Facades\Cache;
 
@@ -89,9 +89,7 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             $directQueue = AppointmentOnsite::create($data);
 
-            // if ($data['phone'] && $branch->is_premium) {
-            //     OnsiteQueueCreated::dispatch($directQueue);
-            // }
+            AppointmentOnsiteCreated::dispatch($directQueue);
 
             return $directQueue;
         });
