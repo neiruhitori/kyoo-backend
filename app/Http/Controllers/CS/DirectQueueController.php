@@ -616,21 +616,10 @@ class DirectQueueController extends Controller
             ], 404);
         }
 
-        if ($oldDirectQueue->client_id) {
-            event(new OnsiteQueueUpdated($oldDirectQueue));
-        }
-
-        $workstation_service = WorkstationService::find($request->workstation_service_id);
-
-        $data['queue_no'] = $request->queue_no;
-        $data['phone'] = $request->phone;
-        $data['user_id'] = Auth::id();
-        $data['status'] = 'waiting';
-        $data['service_id'] = $workstation_service->service_id;
-        $data['old_service_id'] = $oldDirectQueue->service_id;
-        $data['direct_queue_channel'] = 'Web';
-
-        $directQueue = $this->onsite_repository->transfer($data);
+        $oldDirectQueue->status = 'end served';
+        $oldDirectQueue->done_at = Date('Y-m-d H:i:s');
+        $oldDirectQueue->serving_duration = $request->serving_duration;
+        $oldDirectQueue->save();
 
         event(new QueueStatusUpdated([
             'queue_no' => $oldDirectQueue->queue_no,
@@ -638,6 +627,26 @@ class DirectQueueController extends Controller
             'branch_id' => Auth::user()->branch_id,
             'workstation_id' => $oldDirectQueue->workstation_id
         ]));
+
+        if ($oldDirectQueue->client_id) {
+            event(new OnsiteQueueUpdated($oldDirectQueue));
+        }
+
+        $workstation_service = WorkstationService::find($request->workstation_service_id);
+
+        $data = $request->all();
+        $data['name'] = $oldDirectQueue->name;
+        $data['phone'] = $oldDirectQueue->phone;
+        $data['workstation_id'] = $workstation_service->workstation_id;
+        $data['user_id'] = Auth::id();
+        $data['service_id'] = $workstation_service->service_id;
+        $data['old_service_id'] = $oldDirectQueue->service_id;
+        $data['direct_queue_channel'] = 'Web';
+
+        return response()->json(['data' => $data], 400);
+
+        $directQueue = $this->onsite_repository->transfer($data);
+
         event(new VCTDirectQueueEvent($directQueue, Auth::user()->branch_id));
         event(new DirectQueueEvent($directQueue, Auth::user()->branch_id));
 
