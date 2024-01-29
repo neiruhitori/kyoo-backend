@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Events\AppointmentOnsiteCreated;
 use App\Interfaces\AppointmentOnsiteRepositoryInterface;
+use App\Listeners\SendAppointmentOnsiteCreatedNotification;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Service;
 use App\Schedule;
@@ -88,6 +89,8 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
             $data['booking_code'] = $this->generate_booking_code();
 
             $appointmentOnsite = AppointmentOnsite::create($data);
+
+            $appointmentOnsite->sendAppointmentOnsiteCreatedNotification($appointmentOnsite);
 
             AppointmentOnsiteCreated::dispatch($appointmentOnsite);
 
