@@ -191,6 +191,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
     private function generate_queue_number($branch_id, $service_id, $prefix) {
         $last_onsite_queue = DirectQueue::where('service_id', $service_id)
             ->whereDate('created_at', date('Y-m-d'))
+            ->where('queue_no', 'LIKE', $prefix . '%')
             ->orderBy('queue_no', 'desc')
             ->first();
 
