@@ -175,17 +175,10 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                 throw new \Exception('Cabang sedang tutup hari ini');
             }
 
-            $directQueue = DirectQueue::where('queue_no', $data['queue_no'])
-            ->where('service_id', $data['old_service_id'])
-            ->whereDate('created_at', Date('Y-m-d'))
-            ->first();
+            $data['branch_id'] = $branch->id;
+            $data['booking_code'] = $this->generate_booking_code();
 
-            $data['recall_count'] = 0;
-            $data['requeue_count'] = 0;
-            $data['called_at'] = null;
-            $data['waiting_duration'] = null;
-
-            $directQueue->update($data);
+            $directQueue = DirectQueue::create($data);
 
             if ($data['phone'] && $branch->is_premium) {
                 OnsiteQueueCreated::dispatch($directQueue);
@@ -198,6 +191,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
     private function generate_queue_number($branch_id, $service_id, $prefix) {
         $last_onsite_queue = DirectQueue::where('service_id', $service_id)
             ->whereDate('created_at', date('Y-m-d'))
+            ->where('queue_no', 'LIKE', $prefix . '%')
             ->orderBy('queue_no', 'desc')
             ->first();
 

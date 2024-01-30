@@ -62,7 +62,7 @@ class ReportController extends Controller
             if ($request->start_date && date('Y-m-d', strtotime($request->start_date)) < $last_month) {
                 $request->session()->flash('error', __('Can not select report more then last 3 months'));
                 return view('adminBranch.report.directQueue.daily', [
-                    'appointments' => [],
+                    'directQueues' => [],
                     'start_date' => $start_date,
                     'end_date' => $end_date,
                     'service_id' => $request->service_id,

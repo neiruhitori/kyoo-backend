@@ -21,11 +21,11 @@ use App\Events\OnsiteQueueCalled;
 
 class DirectQueueController extends Controller
 {
-    private DirectQueueRepositoryInterface $onsite_repository;
+    private DirectQueueRepositoryInterface $appointment_onsite_repository;
 
-    public function __construct(DirectQueueRepositoryInterface $onsite_repository)
+    public function __construct(DirectQueueRepositoryInterface $appointment_onsite_repository)
     {
-        $this->onsite_repository = $onsite_repository;
+        $this->appointment_onsite_repository = $appointment_onsite_repository;
     }
 
     private function InitQuery()
@@ -137,7 +137,7 @@ class DirectQueueController extends Controller
             $data['service_id'] = $workstation_service->service_id;
             $data['direct_queue_channel'] = 'Web';
 
-            $direct_queue = $this->onsite_repository->store($data);
+            $direct_queue = $this->appointment_onsite_repository->store($data);
 
             event(new VCTDirectQueueEvent($direct_queue, Auth::user()->branch_id));
             event(new DirectQueueEvent($direct_queue, Auth::user()->branch_id));
@@ -616,21 +616,10 @@ class DirectQueueController extends Controller
             ], 404);
         }
 
-        if ($oldDirectQueue->client_id) {
-            event(new OnsiteQueueUpdated($oldDirectQueue));
-        }
-
-        $workstation_service = WorkstationService::find($request->workstation_service_id);
-
-        $data['queue_no'] = $request->queue_no;
-        $data['phone'] = $request->phone;
-        $data['user_id'] = Auth::id();
-        $data['status'] = 'waiting';
-        $data['service_id'] = $workstation_service->service_id;
-        $data['old_service_id'] = $oldDirectQueue->service_id;
-        $data['direct_queue_channel'] = 'Web';
-
-        $directQueue = $this->onsite_repository->transfer($data);
+        $oldDirectQueue->status = 'end served';
+        $oldDirectQueue->done_at = Date('Y-m-d H:i:s');
+        $oldDirectQueue->serving_duration = $request->serving_duration;
+        $oldDirectQueue->save();
 
         event(new QueueStatusUpdated([
             'queue_no' => $oldDirectQueue->queue_no,
@@ -638,6 +627,26 @@ class DirectQueueController extends Controller
             'branch_id' => Auth::user()->branch_id,
             'workstation_id' => $oldDirectQueue->workstation_id
         ]));
+
+        if ($oldDirectQueue->client_id) {
+            event(new OnsiteQueueUpdated($oldDirectQueue));
+        }
+
+        $workstation_service = WorkstationService::find($request->workstation_service_id);
+
+        $data = $request->all();
+        $data['name'] = $oldDirectQueue->name;
+        $data['phone'] = $oldDirectQueue->phone;
+        $data['workstation_id'] = $workstation_service->workstation_id;
+        $data['user_id'] = Auth::id();
+        $data['service_id'] = $workstation_service->service_id;
+        $data['old_service_id'] = $oldDirectQueue->service_id;
+        $data['direct_queue_channel'] = 'Web';
+
+        $directQueue = $this->appointment_onsite_repository->transfer($data);
+        $oldDirectQueue->new_service_id = $directQueue->service_id;
+        $oldDirectQueue->save();
+
         event(new VCTDirectQueueEvent($directQueue, Auth::user()->branch_id));
         event(new DirectQueueEvent($directQueue, Auth::user()->branch_id));
 
