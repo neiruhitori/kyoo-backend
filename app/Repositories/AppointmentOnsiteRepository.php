@@ -90,8 +90,6 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             $appointmentOnsite = AppointmentOnsite::create($data);
 
-            $appointmentOnsite->sendAppointmentOnsiteCreatedNotification($appointmentOnsite);
-
             AppointmentOnsiteCreated::dispatch($appointmentOnsite);
 
             return $appointmentOnsite;
