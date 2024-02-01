@@ -44,6 +44,7 @@ class DirectQueueController extends Controller
                     ->orderBy('vct_priority', 'ASC')
                     ->orderBy('direct_queues.requeue_count', 'ASC')
                     ->orderBy('direct_queues.priority', 'ASC')
+                    ->orderBy('created_at', 'ASC')
                     ->orderBy('direct_queues.queue_no', 'ASC');
     }
 
@@ -58,7 +59,7 @@ class DirectQueueController extends Controller
 
         $directQueues->when($request->keyword, function($query) use ($request){
             return $query->where(function($query) use ($request){
-                return $query->where('name', 'ilike', '%'.$request->keyword.'%')->orWhere('queue_no', (int) $request->keyword);
+                return $query->where('name', 'ilike', '%'.$request->keyword.'%')->orWhere('queue_no', $request->keyword);
             });
         });
 
