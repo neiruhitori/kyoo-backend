@@ -25,30 +25,13 @@ class AppointmentOnsiteController extends Controller
 
     public function index(Branch $branch, Request $request)
     {
-        $userIDs = User::select('id')->where([
-            'branch_id' => $branch->id,
-            'role' => 'cs',
-        ])->get();
-
-        $vctIds = [];
-        foreach ($userIDs as $value) {
-            array_push($vctIds, $value->id);
-        }
-
-        $workstationServices = WorkstationService::whereHas('Workstation.WorkstationVct', function($query) use ($vctIds) {
-            return $query->whereIn('vct_id', $vctIds);
-        })->with('Service')->get();
-
-        $services = [];
-        foreach($workstationServices as $value) {
-            array_push($services, $value->service);
-        }
-
         $branchConfiguration = $branch->BranchConfiguration;
         $schedule = $branch->schedule->where('day', $request->day)->first();
         $startTime = $schedule ? strtotime($schedule->start_time) : null;
         $endTime = $schedule ? strtotime($schedule->end_time) : null;
         $timeInterval = $branchConfiguration->time_interval * 60 * 60;
+
+        $services = Service::where('branch_id', $branch->id)->get();
 
         foreach ($services as $service) {
             $service->available_slot = 0;
