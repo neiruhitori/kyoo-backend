@@ -95,6 +95,8 @@ Route::namespace('AdminBranch')
             Route::put('/user/restore', 'UserController@restore')->name('user.restore');
             Route::post('/user/reset-password/{user}', 'UserController@resetPassword')->name('user.reset-password');
             Route::resource('user', 'UserController');
+            Route::get('user/edit-workstation/{user}', 'UserController@editWorkstation')->name('user.edit-workstation');
+            Route::put('user/update-workstation/{user}', 'UserController@updateWorkstation')->name('user.update-workstation');
 
             Route::get('/menu-portal', 'PortalMenuController@edit')->name('menu-portal');
             Route::put('/menu-portal', 'PortalMenuController@update')->name('menu-portal.update');

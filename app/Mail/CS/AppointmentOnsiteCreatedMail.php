@@ -2,11 +2,12 @@
 
 namespace App\Mail\CS;
 
-use App\Models\AppointmentOnsite;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+
+use App\Models\AppointmentOnsite;
 
 class AppointmentOnsiteCreatedMail extends Mailable
 {
@@ -43,7 +44,13 @@ class AppointmentOnsiteCreatedMail extends Mailable
                 'appointment_onsite_id' => $this->appointmentOnsite->id,
                 'branch_id' => $branch->id,
                 'branch_name' => $branch->name,
-                'booking_date' => date('j F Y', strtotime($this->appointmentOnsite->date))
+                'booking_code' => $this->appointmentOnsite->booking_code,
+                'booking_day' => date('l', strtotime($this->appointmentOnsite->date)),
+                'booking_date' => date('j F Y', strtotime($this->appointmentOnsite->date)),
+                'start_time' => $this->appointmentOnsite->start_time,
+                'end_time' => $this->appointmentOnsite->end_time,
+                'service_name' => $this->appointmentOnsite->Service->name,
+                'address' => $branch->address
             ]);
     }
 }
