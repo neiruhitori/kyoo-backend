@@ -50,7 +50,7 @@ class AppointmentOnsiteCreatedMail extends Mailable
                 'branch_name' => $branch->name,
                 'booking_code' => $this->appointmentOnsite->booking_code,
                 'booking_day' => $id_date->isoFormat('dddd'),
-                'booking_date' => $id_date->isoFormat('j F Y'),
+                'booking_date' => $id_date->isoFormat('LL', 'id'),
                 'start_time' => $this->appointmentOnsite->start_time,
                 'end_time' => $this->appointmentOnsite->end_time,
                 'service_name' => $this->appointmentOnsite->Service->name,
