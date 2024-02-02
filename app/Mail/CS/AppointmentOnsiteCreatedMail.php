@@ -32,7 +32,8 @@ class AppointmentOnsiteCreatedMail extends Mailable
      */
     public function build()
     {
-        $branch = $this->appointmentOnsite->Slot->Service->Branch;
+        $branch = $this->appointmentOnsite->Service->Branch;
+        config(['app.name' => $branch->name]);
 
         setlocale(LC_TIME, 'id_ID');
 
