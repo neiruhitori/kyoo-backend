@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 use App\Models\AppointmentOnsite;
+use Carbon\Carbon;
 
 class AppointmentOnsiteCreatedMail extends Mailable
 {
@@ -33,6 +34,8 @@ class AppointmentOnsiteCreatedMail extends Mailable
     public function build()
     {
         $branch = $this->appointmentOnsite->Service->Branch;
+        $id_date = Carbon::parse($this->appointmentOnsite->date);
+        $id_date->setLocale('id');
         config(['app.name' => $branch->name]);
 
         setlocale(LC_TIME, 'id_ID');
@@ -46,8 +49,8 @@ class AppointmentOnsiteCreatedMail extends Mailable
                 'branch_id' => $branch->id,
                 'branch_name' => $branch->name,
                 'booking_code' => $this->appointmentOnsite->booking_code,
-                'booking_day' => date('l', strtotime($this->appointmentOnsite->date)),
-                'booking_date' => date('j F Y', strtotime($this->appointmentOnsite->date)),
+                'booking_day' => $id_date->isoFormat('dddd'),
+                'booking_date' => $id_date->isoFormat('j F Y'),
                 'start_time' => $this->appointmentOnsite->start_time,
                 'end_time' => $this->appointmentOnsite->end_time,
                 'service_name' => $this->appointmentOnsite->Service->name,
