@@ -212,6 +212,10 @@ class HomeController extends Controller
             $data['direct_queue_channel'] = 'Device';
 
             $direct_queue = $this->onsite_repository->store($data);
+            $direct_queue->total_waiting = DirectQueue::whereServiceId($direct_queue->service_id)
+                                                        ->whereStatus('waiting')
+                                                        ->whereDate('created_at', date('Y-m-d'))
+                                                        ->count();
 
             event(new VCTDirectQueueEvent($direct_queue, $user->branch_id));
             event(new DirectQueueEvent($direct_queue, $user->branch_id));

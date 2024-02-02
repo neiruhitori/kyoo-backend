@@ -5,11 +5,13 @@ namespace App\Repositories;
 use App\Events\AppointmentOnsiteCreated;
 use App\Interfaces\AppointmentOnsiteRepositoryInterface;
 use App\Listeners\SendAppointmentOnsiteCreatedNotification;
+use App\Mail\CS\AppointmentOnsiteCreatedMail;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Service;
 use App\Schedule;
 use App\Models\AppointmentOnsite;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 
 class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterface
 {
@@ -90,7 +92,7 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             $appointmentOnsite = AppointmentOnsite::create($data);
 
-            AppointmentOnsiteCreated::dispatch($appointmentOnsite);
+            Mail::to($appointmentOnsite->email)->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
 
             return $appointmentOnsite;
         });

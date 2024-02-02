@@ -109,8 +109,9 @@
                                             </div>
                                             <div class="wrapper-service-card">
                                                 <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center;"> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4>
-                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.5rem;text-align: center; font-weight: 600;">{{ currentDay }}, {{ currentFormattedDate }}</span>
-                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.5rem;text-align: center; font-weight: 600;">{{ currentTimes }} WIB</span>
+                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">{{ currentDay }}, {{ currentFormattedDate }}</span>
+                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">{{ currentTimes }} WIB</span>
+                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">Sisa Antrian : {{ responseQueue.total_waiting }}</span>
                                             </div>
                                         </div>
                                         <svg width="263" height="403" viewBox="0 0 263 403" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -377,6 +378,7 @@ export default {
             const currentDay = this.currentDay;
             const currentFormattedDate = this.currentFormattedDate;
             const currentTimes = this.currentTimes;
+            const queueRemaining = this.responseQueue.total_waiting;
 
             printWindow.document.open();
             printWindow.document.write(`
@@ -417,6 +419,8 @@ export default {
                                 <span style="font-size: 12px;color: #132D58;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentDay}, ${currentFormattedDate}</span>
                                 <br>
                                 <span style="font-size: 12px;color: #132D58;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentTimes} WIB</span>
+                                <br>
+                                <span style="font-size: 12px;color: #132D58;margin: 0 0 8px;text-align: center; font-weight: 600;">Sisa Antrian : ${queueRemaining}</span>
                             </div>
                         </div>
                         <svg width="263" height="403" viewBox="0 0 263 403" fill="none" xmlns="http://www.w3.org/2000/svg">
