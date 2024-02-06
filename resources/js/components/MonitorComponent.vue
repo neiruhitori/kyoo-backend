@@ -396,7 +396,7 @@ export default {
         const seconds = Math.floor(this.timer % 3600 % 60)
         const minutes = Math.floor(this.timer % 3600 / 60)
         const hours = Math.floor(this.timer / 3600)
-  
+
         if (!!slaDuration && this.timer >= slaDuration) {
           const coundownHours = this.$refs.coundownHours;
           coundownHours.classList.add('text-danger');
@@ -460,7 +460,7 @@ export default {
     },
 
     selectQueue(queue_no) {
-      this.manualInput = false;
+      this.manualInput = true;
       this.selected_queue = queue_no;
 
       const current_queue = this.queues.filter(v => v.queue_no === queue_no)[0] || null
@@ -492,6 +492,7 @@ export default {
           queue_no: this.selected_queue,
           service_id: selected_queue.service_id,
           is_skip: this.manualInput,
+          workstation_id: this.workstation.id,
           waiting_duration: Math.floor(moment().diff(moment(selected_queue.created_at)) / 1000)
         });
 
@@ -516,7 +517,7 @@ export default {
       }
       this.isLoading = false;
     },
-  
+
     async onRecall() {
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
@@ -610,7 +611,7 @@ export default {
 
       this.isLoading = false;
     },
-  
+
     async onNoShow() {
       if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop()
@@ -637,10 +638,10 @@ export default {
 
       this.isLoading = false;
     },
-  
+
     async onTransfer() {
       this.isLoading = true;
-      
+
       try {
         const workstationServices = await axios.get(
           "/cs/directQueue/allWorkstationServices"
@@ -653,7 +654,7 @@ export default {
 
       this.isLoading = false;
     },
-  
+
     async onSubmitTransfer(e) {
       if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop()
