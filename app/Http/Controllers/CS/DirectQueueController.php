@@ -41,8 +41,8 @@ class DirectQueueController extends Controller
                     ->with('Service')
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
                     ->whereNotIn('status', ['end served', 'no show'])
-                    ->orderBy('vct_priority', 'ASC')
                     ->orderBy('direct_queues.requeue_count', 'ASC')
+                    ->orderBy('vct_priority', 'ASC')
                     ->orderBy('direct_queues.priority', 'ASC')
                     ->orderBy('created_at', 'ASC')
                     ->orderBy('direct_queues.queue_no', 'ASC');
@@ -258,6 +258,12 @@ class DirectQueueController extends Controller
                 'data' => null
             ], 404);
         }
+
+        $workstation_old = $directQueue->workstation_id;
+        $directQueue->update([
+            'workstation_id' => $request->workstation_id,
+        ]);
+        $directQueue->refresh();
 
         // check queue can called if previous queue end served
         if ($this->checkPreviousQueue($directQueue, $request->is_skip)) {
