@@ -156,26 +156,36 @@
                         <div class="monitor-image-container">
                             <label for="image_1">
                                 <div class="monitor-image-upload">
-                                    <img src="{{ asset($image_1) }}" id="preview_image_1">
+                                    {{-- <img src="{{ asset($image_1) }}" id="preview_image_1"> --}}
+                                    @if (pathinfo($image_1, PATHINFO_EXTENSION) === 'mp4')
+                                        <video width="100%" height="100%" id="preview_media" autoplay muted>
+                                            <source src="{{ asset($image_1) }}" type="video/mp4">
+                                        </video>
+                                    @else
+                                        <img src="{{ asset($image_1) }}" id="preview_media">
+                                    @endif
 
-                                    <input type="file" accept="image/*" name="image_1" id="image_1" onchange="previewImage(this, 1)" hidden>
+                                    <input type="file" accept="image/*, video/mp4" name="image_1" id="image_1"
+                                        onchange="previewMedia(this, 1)" hidden>
 
-                                        <span class="monitor-image-label">
-                                            <span class="fas fa-upload"></span>
-                                        </span>
-                                    </div>
-                                </label>
+                                    <span class="monitor-image-label">
+                                        <span class="fas fa-upload"></span>
+                                    </span>
+                                </div>
+                            </label>
 
                             <div>
-                                <div class="mb-1">Gambar Iklan 1</div>
+                                <div class="mb-1">Gambar / Video Iklan 1</div>
                                 <div>
-                                    <button type="button" class="delete-image-button hidden" id="delete_button_1" onclick="deleteImage(1)">
+                                    <button type="button" class="delete-image-button hidden" id="delete_button_1"
+                                        onclick="deleteMedia(1)">
                                         <span class="fas fa-times mr-1"></span>
                                         Hapus
                                     </button>
                                 </div>
                             </div>
                         </div>
+
 
                             <div class="monitor-image-container">
                                 <label for="image_2">
@@ -594,6 +604,28 @@
                 $('#submit_image').removeClass('hidden');
             }
         }
+    }
+
+    function deleteMedia(mediaNo) {
+        let mediaSrc = '{{ asset($image_1) }}';
+        let mediaImg = mediaSrc.includes("tv_images");
+
+        if (mediaSrc) {
+            $('#image_' + mediaNo).prevAll().remove();
+            $('#image_' + mediaNo).before(mediaImg ?
+                `<img src="${mediaSrc}" id="preview_media" style="object-fit: cover;">` :
+                `<video width="100%" height="100%" id="preview_media" autoplay muted>
+                <source src="${mediaSrc}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>`
+            );
+        } else {
+            $('#image_' + mediaNo).prevAll().remove();
+            $('#image_' + mediaNo).before('');
+        }
+
+        $('#image_' + mediaNo).val(null);
+        $('#delete_button_' + mediaNo).addClass('hidden');
     }
 
     function deleteImage(imageNo) {

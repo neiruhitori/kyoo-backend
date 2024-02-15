@@ -44,7 +44,7 @@
                     height="100%"
                     autoplay
                 >
-                    <source :src="promotionMedia[0].data" type="video/mp4" />
+                    <source v-if="promotionMedia[0]" :src="promotionMedia[0].data" type="video/mp4" />
                     Your browser does not support the video tag.
                 </video>
                 <img
@@ -115,7 +115,7 @@ export default {
             isAutoPlayBlocked: false,
             playQueue: [],
             currentImageDuration: 5000,
-            promotionMedia: null
+            promotionMedia: []
         };
     },
 
@@ -148,7 +148,7 @@ export default {
                         };
                     });
                 } catch (error) {
-                    // console.error("Error fetching the video:", error);
+                    console.error(error);
                 }
             } else {
                 self.currentImageDuration = 5000;
@@ -179,7 +179,8 @@ export default {
                     this.features.find((v) => v.additional_feature.name === "Panggilan Suara") &&
                     this.servingQueue[message.workstation_id] &&
                     message.status &&
-                    ["recall", "served"].includes(message.status)
+                    ["recall", "served"].includes(message.status) &&
+                    !message.not_called
                 ) {
                     this.getQueueCallAudio(message);
                 }
@@ -366,12 +367,21 @@ export default {
                 data: { audio },
             } = await axios.get(`/queue-caller/${queueID}`);
 
+            const videoEl = document.querySelector('video');
+            const originalVolume = videoEl.volume;
+
+            videoEl.volume = 0.2;
+
             if (audioEl.paused) {
                 audioEl.src = audio.data;
                 audioEl.play();
             } else {
                 this.playQueue.push(audio.data);
             }
+
+            audioEl.onended = function() {
+                videoEl.volume = originalVolume;
+            };
         },
     },
 };

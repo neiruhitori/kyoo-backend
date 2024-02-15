@@ -432,7 +432,8 @@ class DirectQueueController extends Controller
             'queue_no' => $directQueue->queue_no,
             'status' => 'served',
             'branch_id' => Auth::user()->branch_id,
-            'workstation_id' => $directQueue->workstation_id
+            'workstation_id' => $directQueue->workstation_id,
+            'not_called' => $directQueue->call_time ? 1 : 0
         ]));
 
         if ($directQueue->client_id) {
