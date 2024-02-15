@@ -9,12 +9,13 @@ use App\Department;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreService;
 use App\Http\Requests\AdminBranch\UpdateService;
+use App\Models\ServiceCategory;
 use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
 
-    private $PREFIX_QUEUE_LIST = array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E");
+    private $PREFIX_QUEUE_LIST = array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "I", "J", "K", "L", "M", "N", "O", "P");
     /**
      * Display a listing of the resource.
      *
@@ -23,7 +24,7 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::whereBranchId(Auth::user()->branch_id)->get();
-        
+
         return view('adminBranch.service.index', [
             'services' => $services
         ]);
@@ -37,8 +38,10 @@ class ServiceController extends Controller
     public function create()
     {
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
+        $service_categories = ServiceCategory::whereBranchId(Auth::user()->branch_id)->get();
         return view('adminBranch.service.create', [
-            'departments' => $departments
+            'departments' => $departments,
+            'service_categories' => $service_categories
         ]);
     }
 
@@ -61,7 +64,7 @@ class ServiceController extends Controller
         $input['branch_id'] = Auth::user()->branch_id;
 
         Service::create($input);
-    
+
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Insert Service'
@@ -102,10 +105,12 @@ class ServiceController extends Controller
 
         $isDirectQueueAndPemiumUser = Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->BranchType->is_premium;
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
-        
+        $service_categories = ServiceCategory::whereBranchId(Auth::user()->branch_id)->get();
+
         return view('adminBranch.service.edit', [
             'service' => $service,
             'departments' => $departments,
+            'service_categories' => $service_categories,
             'prefixQueueList' => $this->PREFIX_QUEUE_LIST,
             'isAllowConfigPrefix' => $this->isAllowConfigPrefix(),
             'isDirectQueueAndPemiumUser' => $isDirectQueueAndPemiumUser,
@@ -139,6 +144,7 @@ class ServiceController extends Controller
         }
 
         $service->is_show = $request->has('is_show');
+        $service->is_show_webkiosk = $request->has('is_show_webkiosk');
         $service->update($request->all());
         Log::create([
             'user_id' => Auth::id(),
@@ -160,14 +166,14 @@ class ServiceController extends Controller
             if ($service->branch_id != Auth::user()->branch_id) {
                 return redirect(route('unauthorized'));
             }
-            
+
             $service->delete();
-            
+
             Log::create([
                 'user_id' => Auth::id(),
                 'description' => 'Remove Service'
             ]);
-            
+
             $request->session()->flash('error', __('module.removed', ['module' => __('Service'), 'name' => $service->name]));
 
             return redirect(route('admin-branch.branch-configuration.department.index'));

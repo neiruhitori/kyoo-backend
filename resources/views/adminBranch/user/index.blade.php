@@ -22,7 +22,7 @@
                 <p>
                     <ul style="padding-left: 2rem;">
                         <li style="margin-bottom: 0.25rem;">
-                            Berikut adalah halaman untuk melihat dan mengatur petugas layanan di antrian kantor Cabang Anda. 
+                            Berikut adalah halaman untuk melihat dan mengatur petugas layanan di antrian kantor Cabang Anda.
                         </li>
                         <li style="margin-bottom: 0.25rem;">
                             Untuk versi gratis, hanya akan tersedia 1 petugas saja. Untuk penggunaan pertamakali, perlu disetting password user petugas agar dapat login sebagai petugas layanan.
@@ -87,18 +87,29 @@
                                                     @if ($user->deleted_at)
                                                         <span class="badge badge-danger">{{ __('Non Active') }}</span>
                                                     @else
-                                                        <span class="badge badge-primary">{{ __('Active') }}</span>                                                    
+                                                        <span class="badge badge-primary">{{ __('Active') }}</span>
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if (!$user->deleted_at)
+                                                        <a
+                                                            href="{{ route('admin-branch.branch-configuration.user.edit-workstation', $user->id) }}"
+                                                            class="btn
+                                                            btn-warning" data-toggle="tooltip"
+                                                            data-placement="bottom"
+                                                            title="{{
+                                                                __('edit.module', ['module' => __('Workstation')])
+                                                            }}"
+                                                        >
+                                                            <i class="fas fa-fw fa-edit"></i>
+                                                        </a>
                                                         <a
                                                             href="{{ route('admin-branch.branch-configuration.user.edit', $user->id) }}"
                                                             class="btn
                                                             btn-warning" data-toggle="tooltip"
                                                             data-placement="bottom"
                                                             title="{{
-                                                                __('edit.module', ['module' => __('Virtual Counter')])
+                                                                __('Change Password')
                                                             }}"
                                                         >
                                                             <i class="fas fa-fw fa-edit"></i>
@@ -137,7 +148,7 @@
                                                     @endif
 
                                                     <form action="{{route('admin-branch.branch-configuration.user.reset-password', $user->id)}}" method="post" style="display: inline">
-                                                        @csrf   
+                                                        @csrf
                                                         <button
                                                             type="submit"
                                                             class="btn btn-info"

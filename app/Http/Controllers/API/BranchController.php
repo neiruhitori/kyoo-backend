@@ -63,7 +63,7 @@ class BranchController extends Controller
         })->where('is_liked', true)->count();
 
         $branch->likes = $appointmentLikes + $directQueueLikes;
-        
+
         return response()->json([
             'success' => true,
             'message' => 'get detail branch with schedule and service',

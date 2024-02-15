@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="{{asset('admin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link href="{{asset('admin/css/sb-admin-2.css')}}" rel="stylesheet">
     <link rel="stylesheet"
@@ -49,15 +50,39 @@
         @if ($layoutCode == "layout_2")
         <layout-2-web-kiosk
             :branch="{{ $branch }}"
-            :auth="{{ Auth::user() }}"
             qr={{ $qr }}
             :layout_config="{{ $layoutConfig }}"
-            :is_allow_wa={{ $isAllowWA }}
+            :is_allow_wa={{ json_encode($isAllowWA)  }}
+            :active_menus={{ $activeMenus }}
+        />
+        @endif
+
+        @if($layoutCode == "layout_3")
+        <layout-3-web-kiosk
+            :branch="{{ $branch }}"
+            :layout_config="{{ $layoutConfig }}"
+            :is_allow_wa={{ json_encode($isAllowWA) }}
+            :active_menus={{ $activeMenus }}
+        />
+        @endif
+
+        @if($layoutCode == "layout_4")
+        <layout-4-web-kiosk
+            :branch="{{ $branch }}"
+            :layout_config="{{ $layoutConfig }}"
+            :is_allow_wa={{ json_encode($isAllowWA) }}
             :active_menus={{ $activeMenus }}
         />
         @endif
     </div>
     <script src="{{asset('js/app.js')}}"></script>
+    <script>
+        const auth = @json(Auth::user());
+        if(auth) {
+            localStorage.removeItem('auth');
+            localStorage.setItem('auth', JSON.stringify(auth));
+        }
+    </script>
 </body>
 
 </html>

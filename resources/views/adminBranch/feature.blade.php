@@ -49,7 +49,7 @@
                             method="post">
                                 @csrf
                                 @method('PUT')
-                            
+
                                 @if (Auth::user()->Branch->BranchType->is_direct_queue)
                                     <div class="form-group">
                                         <label for="maximum_recall">{{ __('Max Recall') }}</label>
@@ -164,6 +164,25 @@
                                     </div>
 
                                     @include('layouts.inputError', ['errorName' => 'wa_notification'])
+                                </div>
+
+                                <label for="serving-directly">Melayani Langsung</label>
+
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="serving_directly" class="form-check-input"
+                                            id="serving-directly"
+                                            {{
+                                                ($branch_config && $branch_config->serving_directly) ||
+                                                old('serving_directly')
+                                                ? 'checked'
+                                                : ''
+                                            }}>
+
+                                        <label for="serving-directly" class="form-check-label">Aktifkan</label>
+                                    </div>
+
+                                    @include('layouts.inputError', ['errorName' => 'serving_directly'])
                                 </div>
 
                                 <button type="submit" class="btn btn-warning">{{ __('Update') }}</button>

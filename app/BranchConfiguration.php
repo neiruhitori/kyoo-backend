@@ -16,6 +16,10 @@ class BranchConfiguration extends Model
     'queue_layout_configuration',
     'wa_notification',
     'wa_notification_owner',
-    'phone_owner'
+    'phone_owner',
+    'layer',
+    'time_interval',
+    'max_slots',
+    'serving_directly'
   ];
 }

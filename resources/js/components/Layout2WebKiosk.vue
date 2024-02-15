@@ -29,7 +29,7 @@
                     <template v-for="workstation in this.workstationServices">
                         <button
                             class="btn btn-lg btn-primary button-length"
-                            v-if="workstation.service.is_show"
+                            v-if="workstation.service.is_show_webkiosk"
                             @click="onClickWorkstation(workstation.id)"
                             v-bind:style="[button_style]"
                         >
@@ -157,10 +157,6 @@ export default {
             type: Object,
             required: true
         },
-        auth: {
-            type: Object,
-            required: true
-        },
         layout_config: {
             type: Object,
             required: true
@@ -170,7 +166,7 @@ export default {
             required: true
         },
         is_allow_wa: {
-            type: Number,
+            type: Boolean,
             required: true
         },
         active_menus: {
@@ -180,12 +176,14 @@ export default {
     },
 
     async mounted() {
+        this.getAuth();
         await this.getWorkStations();
     },
 
     data() {
         return {
             isLoading: true,
+            auth: null,
             branch_logo: this.branch
                 ? `/storage/${this.branch.logo}`
                 : `/img/logo-color.svg`,
@@ -229,7 +227,8 @@ export default {
                 name: "",
                 phone: "",
                 workstation_service_id: "",
-                vct_id: ""
+                vct_id: "",
+                user_id: ""
             },
             responseQueue: {},
             isError: false,
@@ -238,12 +237,16 @@ export default {
         };
     },
     methods: {
+        getAuth() {
+            this.auth = JSON.parse(localStorage.getItem('auth'));
+            this.formData["user_id"] = this.auth.id;
+        },
         async getWorkStations() {
             this.isLoading = true;
 
             try {
                 const workstationServices = await axios.get(
-                    "/device/directQueue/allWorkstationServices"
+                    `/device/directQueue/allWorkstationServices/${this.branch.id}`
                 );
 
                 this.workstationServices =
@@ -283,7 +286,8 @@ export default {
                 name: "",
                 phone: "",
                 workstation_service_id: "",
-                vct_id: ""
+                vct_id: "",
+                user_id: this.auth.id
             }
         },
         handleCreateOnsiteQueue(type) {

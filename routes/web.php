@@ -54,7 +54,7 @@ Route::namespace('AdminBranch')
                 ->name('exhibition')
                 ->middleware('exhibitionPermissionIsValid');
         });
-        
+
         // Product Guide
         Route::prefix('/product-guide')->name('product-guide.')->group(function () {
             Route::get('/queue-configuration', 'BranchConfigGuideController')
@@ -76,9 +76,11 @@ Route::namespace('AdminBranch')
         Route::prefix('/branch-configuration')->name('branch-configuration.')->group(function () {
             Route::resource('department', 'DepartmentController');
 
+            Route::resource('service-category', 'ServiceCategoryController');
+
             Route::resource('service', 'ServiceController');
             Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
-            
+
             Route::get('holiday/template', 'HolidayController@template')->name('holiday.template.create');
             Route::post('holiday/template', 'HolidayController@storeAll')->name('holiday.template.store');
             Route::get('holiday/create', 'HolidayController@create')->name('holiday.create');
@@ -93,6 +95,11 @@ Route::namespace('AdminBranch')
             Route::put('/user/restore', 'UserController@restore')->name('user.restore');
             Route::post('/user/reset-password/{user}', 'UserController@resetPassword')->name('user.reset-password');
             Route::resource('user', 'UserController');
+            Route::get('user/edit-workstation/{user}', 'UserController@editWorkstation')->name('user.edit-workstation');
+            Route::put('user/update-workstation/{user}', 'UserController@updateWorkstation')->name('user.update-workstation');
+
+            Route::get('/menu-portal', 'PortalMenuController@edit')->name('menu-portal');
+            Route::put('/menu-portal', 'PortalMenuController@update')->name('menu-portal.update');
 
             Route::put('/device-account/restore', 'DeviceAccountController@restore')->name('device-account.restore');
             Route::post('/device-account/reset-password/{user}', 'DeviceAccountController@resetPassword')->name('device-account.reset-password');
@@ -110,6 +117,12 @@ Route::namespace('AdminBranch')
             Route::put('queue-monitor/update-layout/{branch}','TVDisplayConfigurationController@updateLayout')
                 ->name('queue-monitor.update-layout')
                 ->middleware('access:Web Signage TV');
+            Route::put('/queue-monitor/update-token/{branch}', 'TVDisplayConfigurationController@updateToken')
+                ->name('queue-monitor.update-token')
+                ->middleware('access:Web Signage TV');
+            Route::put('/queue-monitor/update-custom-layout/{branch}', 'TVDisplayConfigurationController@updateCustomLayout')
+                ->name('queue-monitor.update-custom-layout')
+                ->middleware('access:Web Signage TV');
 
             Route::get('webkiosk', 'WebkioskConfigurationController@index')
                 ->name('webkiosk')
@@ -117,10 +130,13 @@ Route::namespace('AdminBranch')
             Route::put('webkiosk/{branch}', 'WebkioskConfigurationController@update')
                 ->name('webkiosk.update')
                 ->middleware('access:Webkiosk');
+            Route::put('/webkiosk/update-token/{branch}', 'WebkioskConfigurationController@updateToken')
+            ->name('webkiosk.update-token')
+            ->middleware('access:Webkiosk');;
             Route::put('webkiosk/active_menus/{branch}', 'WebkioskConfigurationController@updateActiveMenus')
                 ->name('webkiosk.active-menus.update')
                 ->middleware('access:Webkiosk');
-            
+
             Route::get('terms-conditions', 'TermsConditionsController@index')->name('terms-conditions.index');
             Route::get('terms-conditions/get', 'TermsConditionsController@get')->name('terms-conditions.get');
             Route::put('terms-conditions', 'TermsConditionsController@update')->name('terms-conditions.store');
@@ -157,7 +173,7 @@ Route::namespace('AdminBranch')
             Route::get('/service', 'ServiceMonitoringController@index')->name('service');
             Route::get('/service/{id}', 'ServiceMonitoringController@show')->name('service.show');
         });
-        
+
         // Report
         Route::prefix('/report')->name('report.')->group(function () {
             Route::get('/daily/appointment', 'ReportController@daily')
@@ -173,7 +189,7 @@ Route::namespace('AdminBranch')
             Route::get('/monthly/onsite', 'ReportController@directQueueMonthly')
                 ->name('monthly.onsite')
                 ->middleware('checkDirectQueue');
-            
+
             Route::get('/daily/exhibition', 'ReportController@exhibitionDaily')
                 ->name('daily.exhibition')
                 ->middleware('exhibitionPermissionIsValid');
@@ -261,7 +277,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::post('branchToken', 'BranchTokenController@store')->name('branchToken.store');
     Route::resource('branch', 'BranchController');
     Route::resource('registrationBranch', 'RegistrationBranchController')->only(['index', 'show', 'update', 'destroy']);
-    
+
     Route::get('/branch/{id}/license', 'BranchLicenseController@index')->name('branch.license');
     Route::put('/branch/{id}/license', 'BranchLicenseController@update')->name('branch.license.update');
 
@@ -318,7 +334,7 @@ Route::namespace('AdminCorporate')
         Route::get('/monitoring', 'MonitoringController@index')->name('monitoring');
         Route::get('/monitoring/branches', 'MonitoringController@monitorBranches')->name('monitoring.branches.index');
         Route::get('/monitoring/branches/{id}/services', 'MonitoringController@monitorServices')->name('monitoring.branches.services');
-        
+
         Route::get('/report/customer-satisfaction', 'CustomerSatisfactionReportController@index')->name('report.customerSatisfaction.index');
         Route::get('/report/branch', 'BranchReportController@index')->name('report.branch.index');
         Route::get('/report/service', 'ServiceReportController@index')->name('report.service.index');
@@ -337,7 +353,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     Route::put('appointment/{appointment}', 'HomeController@updateAppointment')->name('appointment.update')->middleware('checkAppointmentQueue');
     Route::get('mini-report', 'HomeController@miniReport')->name('miniReport');
     Route::get('qr', 'HomeController@qr')->name('qr');
-    
+
     // Appointment Monitor
     Route::middleware('checkAppointmentQueue')->group(function () {
         Route::get('appointments/monitor', 'AppointmentMonitorController@index')->name('appointments.monitor');
@@ -356,6 +372,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     Route::get('directQueue/workstationServices', 'DirectQueueController@workstationServices')->middleware('checkDirectQueue');
     Route::get('directQueue/allWorkstationServices', 'DirectQueueController@getAllWorkstationServiceByBranch')->middleware('checkDirectQueue');
     Route::resource('directQueue', 'DirectQueueController')->middleware('checkDirectQueue');
+    Route::post('directQueue/onCall', 'DirectQueueController@onCall')->middleware('checkDirectQueue');
     Route::post('directQueue/onServed', 'DirectQueueController@onServed')->middleware('checkDirectQueue');
     Route::post('directQueue/onRecall', 'DirectQueueController@onRecall')->middleware('checkDirectQueue');
     Route::post('directQueue/onRequeue', 'DirectQueueController@onRequeue')->middleware('checkDirectQueue');
@@ -383,15 +400,18 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
 
 Route::namespace('Device')->prefix('device')->middleware('auth', 'checkDevice')->name('device.')->group(function () {
     Route::get('/', 'HomeController@index')->name('home');
+});
+
+Route::namespace('Device')->prefix('device')->name('device.')->group(function () {
+    Route::get('directQueue/allWorkstationServices/{branch_id}', 'HomeController@getAllWorkstationServiceByBranch');
+
+    Route::post('directQueue/store', 'HomeController@store');
+    Route::post('directQueueByBookingCode/store', 'HomeController@storeByBookingCode');
+
     Route::get('web-kiosk-ui', 'HomeController@webKioskUI')->name('web-kiosk-ui');
     Route::get('web-monitor', 'HomeController@webMonitor')->name('web-monitor');
 
-
     Route::get('branch/{branch_id}/queue', 'HomeController@directQueueList')->name('branch.queue');
-
-    Route::get('directQueue/allWorkstationServices', 'HomeController@getAllWorkstationServiceByBranch');
-
-    Route::post('directQueue/store', 'HomeController@store');
 });
 
 Route::group([], __DIR__ . '/web/exhibition.php');

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 
 import { onMessage } from 'firebase/messaging'
 import { useMessaging, useToken } from '../lib/firebase'
@@ -10,14 +10,20 @@ import QRReader from './QRReader/QRReader'
 
 import ServiceList from './ServiceList/ServiceList'
 import TimeSlotList from './TimeSlotList/TimeSlotList'
+import OnsiteTimeSlotList from './onsite/TimeSlotList'
 import VisitorInformation from './VisitorInformation/VisitorInformation'
 import BookingConfirmation from './BookingConfirmation/BookingConfirmation'
 import BookingStatus from './BookingStatus/BookingStatus'
 import OnsiteBookingStatus from './OnsiteBookingStatus/OnsiteBookingStatus'
+import AppointmentOnsiteBookingStatus from './AppointmentOnsiteBookingStatus/AppointmentOnsiteBookingStatus'
+import OnsiteServicesTwoLayer from './onsite/ServicesTwoLayer'
 import BranchDetail from './BranchDetail/BranchDetail'
 import OnsiteVisitorInformation from './OnsiteVisitorInformation/OnsiteVisitorInformation'
+import AppointmentOnsiteVisitorInformation from './AppointmentOnsiteVisitorInformation/AppointmentOnsiteVisitorInformation'
 import BookingDetail from './BookingDetail/BookingDetail'
+import AppointmentServicesCategories from './appointment/ServiceCategories'
 import AppointmentServices from './appointment/Services'
+import AppointmentServicesTwoLayer from './appointment/ServicesTwoLayer'
 import Promotions from './Promotions/Promotions'
 
 import InfoAlert from '../components/InfoAlert'
@@ -36,7 +42,7 @@ function App() {
     const CLIENT_ID = getCookie('client_id')
 
     const [infoMessasge, setInfoMessage] = useState('')
-    
+
     // const messaging = useMessaging()
     // useToken(messaging, process.env.MIX_FIREBASE_VAPID_KEY)
 
@@ -49,7 +55,7 @@ function App() {
             .listen('OnsiteQueueCalled', ({ message }) => {
                 handleShowNotification(message)
             })
-        
+
         return () => {
             window.Echo.leave(`onsite_queues.${CLIENT_ID}`)
         }
@@ -57,7 +63,7 @@ function App() {
 
     function handleShowNotification(message) {
         setInfoMessage(message)
-    
+
         setTimeout(function () {
             setInfoMessage('')
         }, 5000)
@@ -75,25 +81,34 @@ function App() {
         }}>
             <InfoAlert style={{
                 width: 'max-content',
-                maxWidth: '382px', 
+                maxWidth: '382px',
                 margin: '0 auto',
                 marginTop: '2rem'
             }}>
                 {infoMessasge}
             </InfoAlert>
         </div>}
-        
+
         <Routes>
             <Route path="/scan" element={<QRReader />} />
 
             <Route path="/customer/:branchId/appointment/services" element={<AppointmentServices />} />
+            <Route path="/customer/:branchId/appointment/:serviceCategoryId/services" element={<AppointmentServices />} />
+            <Route path="/customer/:branchId/appointment/services/two-layer" element={<AppointmentServicesCategories />} />
             <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
+            <Route path="/customer/:branchId/onsite/services/two-layer" element={<OnsiteServicesTwoLayer />} />
+            <Route path="/customer/:branchId/onsite/services/:serviceId" element={<OnsiteTimeSlotList />} />
             <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
             <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />
+            <Route path="/customer/:branchId/appointment-onsite/services/:serviceId/visitor" element={<AppointmentOnsiteVisitorInformation />} />
             <Route path="/customer/:branchId/onsite/services/:serviceId/visitor" element={<OnsiteVisitorInformation />} />
             <Route
                 path="/customer/:branchId/:queueType/services/:serviceId/booking-confirmation"
                 element={<BookingConfirmation />}
+            />
+            <Route
+                path="/customer/:branchId/appointment-onsite/booking-status/:bookingId"
+                element={<AppointmentOnsiteBookingStatus />}
             />
             <Route
                 path="/customer/:branchId/onsite/booking-status/:bookingId"

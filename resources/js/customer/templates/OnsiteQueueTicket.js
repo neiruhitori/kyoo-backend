@@ -24,10 +24,11 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
             <p style={{
                 color: '#7A7A7A',
                 marginBottom: '.325rem'
-            }}>Nomor Antrian</p>
+            }}>{booking.queue_no ? 'Nomor Antrian' : 'Kode Booking' }</p>
             <h1 style={{
-                fontSize: '3.5rem'
-            }}>{booking.queue_no}</h1>
+                fontSize: '3.5rem',
+                textTransform: 'uppercase'
+            }}>{booking.queue_no ?? booking.booking_code}</h1>
         </div>
 
         <div style={{
@@ -40,17 +41,19 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
             gridTemplateColumns: '1fr 1fr',
             gap: '1.5rem'
         }}>
-            <div>
-                <p style={{ color: '#7A7A7A',
-                    marginBottom: '.6rem'
-                }}>Kode Unik</p>
-                <div style={{
-                    fontSize: '1.2rem'
-                }}>{booking.booking_code.toUpperCase()}</div>
-            </div>
+            {booking.queue_no &&
+                <div>
+                    <p style={{ color: '#7A7A7A',
+                        marginBottom: '.6rem'
+                    }}>Kode Unik</p>
+                    <div style={{
+                        fontSize: '1.2rem'
+                    }}>{booking.booking_code.toUpperCase()}</div>
+                </div>
+            }
 
             <div style={{
-                textAlign: 'right'
+                textAlign: booking.queue_no ? 'right' : ''
             }}>
                 <p style={{
                     color: '#7A7A7A',
@@ -61,7 +64,9 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                 }}>{booking.service_name}</div>
             </div>
 
-            <div>
+            <div style={{
+                textAlign: booking.queue_no ? '' : 'right'
+            }}>
                 <p style={{
                     color: '#7A7A7A',
                     marginBottom: '.6rem'
@@ -71,17 +76,19 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                 }}>{format(formatBrowser(booking.date))}</div>
             </div>
 
-            <div style={{
-                textAlign: 'right'
-            }}>
-                <p style={{
-                    color: '#7A7A7A',
-                    marginBottom: '.6rem'
-                }}>Waktu</p>
+            {booking.queue_no &&
                 <div style={{
-                    fontSize: '1.2rem'
-                }}>{formatTime(formatBrowser(booking.date))}</div>
-            </div>
+                    textAlign: 'right'
+                }}>
+                    <p style={{
+                        color: '#7A7A7A',
+                        marginBottom: '.6rem'
+                    }}>Waktu</p>
+                    <div style={{
+                        fontSize: '1.2rem'
+                    }}>{formatTime(formatBrowser(booking.date))}</div>
+                </div>
+            }
         </div>
 
         <div style={{
@@ -156,12 +163,21 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                 textTransform: 'capitalize'
             }}>Informasi Status Antrian</h4>
 
-            <p style={{
-                lineHeight: '1.5',
-                fontSize: '1rem'
-            }}>
-                Akses ke alamat web <strong>scan.kyoo.id</strong>, pilih Kode Unik, masukan Kode Unik antrian anda untuk melihat status antrian
-            </p>
+            {booking.queue_no ?
+                <p style={{
+                    lineHeight: '1.5',
+                    fontSize: '1rem'
+                }}>
+                    Akses ke alamat web <strong>scan.kyoo.id</strong>, pilih Kode Unik, masukan Kode Unik antrian anda untuk melihat status antrian
+                </p>
+                :
+                <p style={{
+                    lineHeight: '1.5',
+                    fontSize: '1rem'
+                }}>
+                    Simpan kode ini dan masukkan di mesin Web Kiosk di tempat pelayanan untuk mendapatkan nomer antrian
+                </p>
+            }
         </InfoAlert>
 
         <div style={{

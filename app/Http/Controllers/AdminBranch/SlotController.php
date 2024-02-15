@@ -40,6 +40,10 @@ class SlotController extends Controller
      */
     public function store(StoreSlot $request, Service $service)
     {
+        if($request->max_slots > $service->Branch->max_queue) {
+            return redirect()->back()->with("error", "Maks. pelayanan tidak boleh lebih dari {$service->Branch->max_queue}");
+        }
+
         $input = $request->all();
         $input['service_id'] = $service->id;
         Slot::create($input);
@@ -74,7 +78,7 @@ class SlotController extends Controller
         if ($slot->Service->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
-        
+
         return view('adminBranch.service.slot.edit')->withSlot($slot);
     }
 
@@ -91,7 +95,11 @@ class SlotController extends Controller
         if ($slot->Service->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
-        
+
+        if($request->max_slots > $slot->Service->Branch->max_queue) {
+            return redirect()->back()->with("error", "Maks. pelayanan tidak boleh lebih dari {$slot->Service->Branch->max_queue}");
+        }
+
         $slot->update($request->all());
         Log::create([
             'user_id' => Auth::id(),
@@ -113,7 +121,7 @@ class SlotController extends Controller
         if ($slot->Service->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
         }
-        
+
         $slot->delete();
         Log::create([
             'user_id' => Auth::id(),

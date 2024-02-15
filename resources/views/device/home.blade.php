@@ -23,6 +23,14 @@
     </style>
 @endpush
 
+@php
+    $tv_token = auth()->user()->Branch->TVconfiguration->TVToken;
+    $tv_token = $tv_token ? $tv_token->token : Str::random(12);
+
+    $webkiosk_token = auth()->user()->Branch->WebkioskConfiguration->WebkioskToken;
+    $webkiosk_token = $webkiosk_token ? $webkiosk_token->token : Str::random(12);
+@endphp
+
 @section('content')
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">{{ __('Device Dashboard') }}</h1>
@@ -37,10 +45,10 @@
             <div class="card-body">
                 <div class="row wrapper-menus">
                     <div class="col-md-6 col-12 wrapper-button">
-                        <a href="{{route('device.web-monitor')}}" class="button-style">Monitor Antrian (TV)</a>
+                        <a href="{{route('device.web-monitor', ['branch_id' => auth()->user()->branch_id, 'token' => $tv_token])}}" class="button-style">Monitor Antrian (TV)</a>
                     </div>
                     <div class="col-md-6 col-12 wrapper-button">
-                        <a href="{{route('device.web-kiosk-ui')}}" class="button-style">Web Kiosk UI</a>
+                        <a href="{{route('device.web-kiosk-ui', ['branch_id' => auth()->user()->branch_id, 'token' => $webkiosk_token])}}" class="button-style">Web Kiosk UI</a>
                     </div>
                 </div>
             </div>

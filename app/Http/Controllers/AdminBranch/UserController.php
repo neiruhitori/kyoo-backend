@@ -10,6 +10,7 @@ use App\Log;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminBranch\StoreUser;
 use App\Http\Requests\AdminBranch\UpdateUser;
+use App\Http\Requests\AdminBranch\UpdateWorkstationVCT;
 use App\Mail\CS\ResetPassword;
 use Mail;
 use Illuminate\Support\Facades\Auth;
@@ -129,31 +130,17 @@ class UserController extends Controller
             return redirect()->back();
         }
         $input = $request->all();
-        $input['name'] = "KY{$user['branch_id']}_".$request->username;
-        $input['username'] = "KY{$user['branch_id']}_".$request->username;
         $input['is_password_changed'] = true;
         if (!$request->password) {
             unset($input['password']);
         }
         $user->update($input);
 
-        $existing_workstation = WorkstationVct::where('vct_id', $user->id)->first();
-        if ($existing_workstation) {
-            WorkstationVct::where('vct_id', $user->id)->update([
-                'workstation_id' => $request->workstation_id
-            ]);
-        } else {
-            WorkstationVct::create([
-                'vct_id' => $user->id,
-                'workstation_id' => $request->workstation_id
-            ]);
-        }
-
         Log::create([
             'user_id' => Auth::id(),
-            'description' => 'Update VCT User'
+            'description' => 'Update Password User'
         ]);
-        $request->session()->flash('warning', __('module.updated', ['module' => __('Account'), 'name' => $input['username']]));
+        $request->session()->flash('warning', __('module.updated', ['module' => __('Account'), 'name' => $user->username]));
         return redirect(route('admin-branch.branch-configuration.user.index'));
     }
 
@@ -175,6 +162,44 @@ class UserController extends Controller
             'description' => 'Remove VCT User'
         ]);
         $request->session()->flash('error', __('module.removed', ['module' => __('Account'), 'name' => $user->name]));
+        return redirect(route('admin-branch.branch-configuration.user.index'));
+    }
+
+    public function editWorkstation(User $user)
+    {
+        $workstations = Workstation::whereHas('Department', function($query){
+            return $query->whereBranchId(Auth::user()->branch_id);
+        })->get();
+        return view('adminBranch.user.editWorkstation')->withUser($user)->withWorkstations($workstations);
+    }
+
+    public function updateWorkstation(UpdateWorkstationVCT $request, User $user)
+    {
+        if ($user->branch_id != Auth::user()->branch_id) {
+            return redirect(route('unauthorized'));
+        }
+
+        $input['name'] = "KY{$user['branch_id']}_".$request->username;
+        $input['username'] = "KY{$user['branch_id']}_".$request->username;
+        $user->update($input);
+
+        $existing_workstation = WorkstationVct::where('vct_id', $user->id)->first();
+        if ($existing_workstation) {
+            WorkstationVct::where('vct_id', $user->id)->update([
+                'workstation_id' => $request->workstation_id
+            ]);
+        } else {
+            WorkstationVct::create([
+                'vct_id' => $user->id,
+                'workstation_id' => $request->workstation_id
+            ]);
+        }
+
+        Log::create([
+            'user_id' => Auth::id(),
+            'description' => 'Update VCT User'
+        ]);
+        $request->session()->flash('warning', __('module.updated', ['module' => __('Account'), 'name' => $input['username']]));
         return redirect(route('admin-branch.branch-configuration.user.index'));
     }
 
@@ -223,7 +248,7 @@ class UserController extends Controller
                 'regex:/[0-9]/',      // must contain at least one digit
             ]
         ]);
-        
+
         if ($validator->fails()) {
             $request->session()->flash('error', __('Please check password rules'));
             return redirect(route('admin-branch.branch-configuration.user.reset', $user_id));

@@ -41,6 +41,9 @@ Route::get('branch/{branch}/term-condition', 'API\BranchController@getTermsCondi
 Route::get('branch/{branch}/promotions', 'API\BranchController@getPromotions');
 Route::get('branch/{branch_id}/holiday', 'API\HolidayController@getHolidayByBranchId');
 
+// service categories routes
+Route::get('service-category/branch/{branch_id}', 'API\ServiceCategoryController@getAllByBranchId');
+
 // service routes
 Route::get('service/branch/{branch_id}', 'API\ServiceController@getAllByBranchId');
 Route::get('service/{service_id}', 'API\ServiceController@getById');
@@ -66,6 +69,11 @@ Route::get('exhibition/{exhibition}', 'API\ExhibitionController@show');
 Route::post('direct-queue', 'API\DirectQueueController@store')->middleware('cookie.clientid');
 Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
 Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
+
+Route::post('appointment-onsite', 'API\AppointmentOnsiteController@store')->middleware('cookie.clientid');
+Route::get('appointment-onsite/{appointmentOnsite}', 'API\AppointmentOnsiteController@show');
+Route::get('appointment-onsite/{branch}/slots', 'API\AppointmentOnsiteController@slots');
+Route::get('appointment-onsite/direct-queue-by-branch/{branch}', 'API\AppointmentOnsiteController@index');
 
 Route::middleware(['auth:api'])->group(function () {
     // user routes

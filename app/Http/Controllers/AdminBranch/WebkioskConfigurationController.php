@@ -8,6 +8,8 @@ use App\Branch;
 use App\Interfaces\WebKioskConfigurationRepositoryInterface;
 use Auth;
 use App\Models\WebkioskConfiguration;
+use App\Models\WebkioskToken;
+use Illuminate\Support\Str;
 
 class WebkioskConfigurationController extends Controller
 {
@@ -18,7 +20,7 @@ class WebkioskConfigurationController extends Controller
     const DEFAULT_BUTTON_COLOR = '#0c30a8';
     const DEFAULT_BUTTON_BORDER = '#ffffff';
     const DEFAULT_FONT_COLOR = '#ffffff';
-    
+
     private WebKioskConfigurationRepositoryInterface $webKioskConfigurationRepository;
 
     public function __construct(
@@ -27,7 +29,7 @@ class WebkioskConfigurationController extends Controller
     {
         $this->webKioskConfigurationRepository = $webKioskConfigurationRepository;
     }
- 
+
     public function index()
     {
         $webkiosConfigurationFormValue = (object) array(
@@ -43,6 +45,10 @@ class WebkioskConfigurationController extends Controller
             'button_background_color' => self::DEFAULT_BUTTON_COLOR,
             'botton_border_color' => self::DEFAULT_BUTTON_BORDER,
             'font_color' => self::DEFAULT_FONT_COLOR,
+            'button_checkin_background_color' => self::DEFAULT_BUTTON_COLOR,
+            'button_checkin_border_color' => self::DEFAULT_BUTTON_BORDER,
+            'font_checkin_color' => self::DEFAULT_FONT_COLOR,
+            'logo' => self::DEFAULT_IMAGE,
             'active_menus' => [],
         );
 
@@ -51,19 +57,32 @@ class WebkioskConfigurationController extends Controller
 
         if($webkiosConfiguration) {
             $webkiosConfigurationFormValue->layout = $webkiosConfiguration->layout_id;
+            // $layoutConfiguration = $webkiosConfiguration->layout_id == 2 ? $webkiosConfiguration->layoutConfiguration2 : $webkiosConfiguration->layoutConfiguration3;
+            $layoutConfigurationMapping = [
+                1 => null,
+                2 => 'layoutConfiguration2',
+                3 => 'layoutConfiguration3',
+                4 => 'layoutConfiguration4',
+            ];
 
-            if ($webkiosConfiguration->layoutConfiguration) {
+            $layoutConfiguration = $webkiosConfiguration->{$layoutConfigurationMapping[$webkiosConfiguration->layout_id]};
+
+            if ($layoutConfiguration) {
                 $webkiosConfigurationFormValue = (object) array(
                     'layout' => $webkiosConfiguration->layout_id,
-                    'primary_background_type' => $webkiosConfiguration->layoutConfiguration->primary_background_type,
-                    'primary_background_image' => $webkiosConfiguration->layoutConfiguration->primary_background_image ? 'storage/' . $webkiosConfiguration->layoutConfiguration->primary_background_image : self::DEFAULT_IMAGE,
-                    'primary_background_color' => $webkiosConfiguration->layoutConfiguration->primary_background_color,
-                    'secondary_background_type' => $webkiosConfiguration->layoutConfiguration->secondary_background_type,
-                    'secondary_background_image' => $webkiosConfiguration->layoutConfiguration->secondary_background_image ? 'storage/' . $webkiosConfiguration->layoutConfiguration->secondary_background_image : self::DEFAULT_IMAGE,
-                    'secondary_background_color' => $webkiosConfiguration->layoutConfiguration->secondary_background_color,
-                    'button_background_color' => $webkiosConfiguration->layoutConfiguration->button_background_color,
-                    'botton_border_color' => $webkiosConfiguration->layoutConfiguration->botton_border_color,
-                    'font_color' => $webkiosConfiguration->layoutConfiguration->font_color,
+                    'primary_background_type' => $layoutConfiguration->primary_background_type,
+                    'primary_background_image' => $layoutConfiguration->primary_background_image ? 'storage/' . $layoutConfiguration->primary_background_image : self::DEFAULT_IMAGE,
+                    'primary_background_color' => $layoutConfiguration->primary_background_color,
+                    'secondary_background_type' => $layoutConfiguration->secondary_background_type,
+                    'secondary_background_image' => $layoutConfiguration->secondary_background_image ? 'storage/' . $layoutConfiguration->secondary_background_image : self::DEFAULT_IMAGE,
+                    'secondary_background_color' => $layoutConfiguration->secondary_background_color,
+                    'button_background_color' => $layoutConfiguration->button_background_color,
+                    'botton_border_color' => $layoutConfiguration->botton_border_color,
+                    'font_color' => $layoutConfiguration->font_color,
+                    'button_checkin_background_color' => $layoutConfiguration->button_checkin_background_color,
+                    'button_checkin_border_color' => $layoutConfiguration->button_checkin_border_color,
+                    'font_checkin_color' => $layoutConfiguration->font_checkin_color,
+                    'logo' => $layoutConfiguration->logo ? 'storage/' . $layoutConfiguration->logo : self::DEFAULT_IMAGE,
                 );
             }
 
@@ -96,7 +115,7 @@ class WebkioskConfigurationController extends Controller
         ]);
 
         $configuration = $this->webKioskConfigurationRepository->Upsert($branch->id, $request);
-        
+
 
         return redirect()
             ->route('admin-branch.branch-configuration.webkiosk')
@@ -109,11 +128,11 @@ class WebkioskConfigurationController extends Controller
             $request->validate([
                 'input_active_menus.*' => 'in:wa,photo,print',
             ]);
-    
+
             $webkioskConfig = WebkioskConfiguration::where('branch_id', $branch->id)->firstOrFail();
             $webkioskConfig->active_menus = json_encode($request->get('input_active_menus'));
             $webkioskConfig->save();
-            
+
             return redirect()
                 ->route('admin-branch.branch-configuration.webkiosk')
                 ->with('success', 'Konfigurasi aktif menu berhasil diperbarui.');
@@ -122,5 +141,25 @@ class WebkioskConfigurationController extends Controller
                 ->route('admin-branch.branch-configuration.webkiosk')
                 ->with('error', 'Error konfigurasi aktif menu');
         }
+    }
+
+    public function updateToken(Branch $branch) {
+        $webkioskConfig = WebkioskConfiguration::where('branch_id', $branch->id)->first();
+        $webkioskToken = WebkioskToken::where('webkiosk_configuration_id', $webkioskConfig->id)->first();
+
+        if($webkioskToken) {
+            $webkioskToken->update([
+                'token' => Str::random(12)
+            ]);
+        } else {
+            WebkioskToken::create([
+                'webkiosk_configuration_id' => $webkioskConfig->id,
+                'token' => Str::random(12)
+            ]);
+        }
+
+        return redirect()
+            ->route('admin-branch.branch-configuration.webkiosk')
+            ->with('success', 'Token Web Kiosk berhasil diperbarui');
     }
 }

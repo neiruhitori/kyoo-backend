@@ -33,7 +33,8 @@ class Branch extends Model
         'branch_type_id',
         'max_counter',
         'corporate_id',
-        'license_expiration_date'
+        'license_expiration_date',
+        'max_queue'
     ];
 
     /**
@@ -156,6 +157,16 @@ class Branch extends Model
     public function CS()
     {
         return $this->hasMany('App\User')->withTrashed()->where('role', 'cs');
+    }
+
+    public function TVConfiguration()
+    {
+        return $this->hasOne('App\Models\TVConfiguration');
+    }
+
+    public function WebkioskConfiguration()
+    {
+        return $this->hasOne('App\Models\WebkioskConfiguration');
     }
 
     public function Schedule()

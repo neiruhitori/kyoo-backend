@@ -13,21 +13,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
-class DirectQueueRepository implements DirectQueueRepositoryInterface 
+class DirectQueueRepository implements DirectQueueRepositoryInterface
 {
     public function store($data)
     {
         return Cache::lock('onsites', 10)->block(5, function () use ($data) {
             $service = Service::find($data['service_id']);
             $branch = $service->Branch;
-            
+
             // user cant create same direct queue 3x at same date
             $total_same_user_queue = 0;
             if (isset($data['email'])) {
                 $total_queue = DirectQueue::where('email', $data['email'])
                     ->whereDate('created_at', date('Y-m-d'))
                     ->count();
-                
+
                 if ($total_queue > $total_same_user_queue) {
                     $total_same_user_queue = $total_queue;
                 }
@@ -36,7 +36,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                 $total_queue = DirectQueue::where('phone', $data['phone'])
                     ->whereDate('created_at', date('Y-m-d'))
                     ->count();
-                
+
                 if ($total_queue > $total_same_user_queue) {
                     $total_same_user_queue = $total_queue;
                 }
@@ -45,7 +45,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                 $total_queue = DirectQueue::where('client_id', $data['client_id'])
                     ->whereDate('created_at', date('Y-m-d'))
                     ->count();
-                
+
                 if ($total_queue > $total_same_user_queue) {
                     $total_same_user_queue = $total_queue;
                 }
@@ -53,13 +53,16 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             if ($total_same_user_queue >= 3) {
                 throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
             }
-            
+
             // free license branch cannot create more than 100 queue
             $total_current_booking = DirectQueue::where('service_id', $data['service_id'])
                 ->whereDate('created_at', date('Y-m-d'))
                 ->count();
-            if (!$branch->BranchType->is_premium && $total_current_booking >= 100) {
+            if (!$branch->BranchType->is_premium && $total_current_booking >= $branch->max_queue) {
                 throw new \Exception('Batas maksimal harian untuk cabang berlisensi gratis telah terlampaui');
+            }
+            if ($branch->BranchType->is_premium && $total_current_booking >= $branch->max_queue) {
+                throw new \Exception('Batas maksimal harian untuk cabang telah terlampaui');
             }
 
             // cant create direct queue on closed day by schedule template
@@ -75,7 +78,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             // cant create direct queue on closed day
             $schedule = Schedule::where('branch_id', $service->branch_id)
                 ->where('day', strtolower(date('l')))
-                ->first();  
+                ->first();
             if ($schedule && $schedule->status == 'closed') {
                 throw new \Exception('Cabang sedang tutup hari ini');
             }
@@ -99,9 +102,96 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
         });
     }
 
+    public function transfer($data)
+    {
+        return Cache::lock('onsites', 10)->block(5, function () use ($data) {
+            $service = Service::find($data['service_id']);
+            $branch = $service->Branch;
+
+            // user cant create same direct queue 3x at same date
+            $total_same_user_queue = 0;
+            if (isset($data['email'])) {
+                $total_queue = DirectQueue::where('email', $data['email'])
+                    ->whereDate('created_at', date('Y-m-d'))
+                    ->count();
+
+                if ($total_queue > $total_same_user_queue) {
+                    $total_same_user_queue = $total_queue;
+                }
+            }
+            if (isset($data['phone'])) {
+                $total_queue = DirectQueue::where('phone', $data['phone'])
+                    ->whereDate('created_at', date('Y-m-d'))
+                    ->count();
+
+                if ($total_queue > $total_same_user_queue) {
+                    $total_same_user_queue = $total_queue;
+                }
+            }
+            if (isset($data['client_id'])) {
+                $total_queue = DirectQueue::where('client_id', $data['client_id'])
+                    ->whereDate('created_at', date('Y-m-d'))
+                    ->count();
+
+                if ($total_queue > $total_same_user_queue) {
+                    $total_same_user_queue = $total_queue;
+                }
+            }
+            if ($total_same_user_queue >= 3) {
+                throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
+            }
+
+            // free license branch cannot create more than 100 queue
+            $total_current_booking = DirectQueue::where('service_id', $data['service_id'])
+                ->whereDate('created_at', date('Y-m-d'))
+                ->count();
+            if (!$branch->BranchType->is_premium && $total_current_booking >= $branch->max_queue) {
+                throw new \Exception('Batas maksimal harian untuk cabang berlisensi gratis telah terlampaui');
+            }
+            if ($branch->BranchType->is_premium && $total_current_booking >= $branch->max_queue) {
+                throw new \Exception('Batas maksimal harian untuk cabang telah terlampaui');
+            }
+
+            // cant create direct queue on closed day by schedule template
+            $holiday = BranchScheduleTemplateDetail::where([
+                'branch_id' => $branch->id,
+                'date' => date('Y-m-d')
+            ])->first();
+
+            if ($holiday) {
+                throw new \Exception('Cabang sedang tutup hari ini');
+            }
+
+            // cant create direct queue on closed day
+            $schedule = Schedule::where('branch_id', $service->branch_id)
+                ->where('day', strtolower(date('l')))
+                ->first();
+            if ($schedule && $schedule->status == 'closed') {
+                throw new \Exception('Cabang sedang tutup hari ini');
+            }
+
+            // cant create direct queue before open time and after closed time
+            if ($schedule && (date('H:i:s') < $schedule->start_time || date('H:i:s') > $schedule->end_time)) {
+                throw new \Exception('Cabang sedang tutup hari ini');
+            }
+
+            $data['branch_id'] = $branch->id;
+            $data['booking_code'] = $this->generate_booking_code();
+
+            $directQueue = DirectQueue::create($data);
+
+            if ($data['phone'] && $branch->is_premium) {
+                OnsiteQueueCreated::dispatch($directQueue);
+            }
+
+            return $directQueue;
+        });
+    }
+
     private function generate_queue_number($branch_id, $service_id, $prefix) {
         $last_onsite_queue = DirectQueue::where('service_id', $service_id)
             ->whereDate('created_at', date('Y-m-d'))
+            ->where('queue_no', 'LIKE', $prefix . '%')
             ->orderBy('queue_no', 'desc')
             ->first();
 
@@ -122,7 +212,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
         if ($prefix) {
             return $prefix . sprintf('%03s', 1);
         }
-        
+
         return $service_order_no . sprintf('%03s', 1);
     }
 
@@ -135,7 +225,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             $random_character = $permitted_chars[mt_rand(0, $input_length - 1)];
             $random_string .= $random_character;
         }
-    
+
         return $random_string;
     }
 
@@ -165,7 +255,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             ->whereBetween('created_at', $date)
             ->groupBy('status', 'hour')
             ->orderBy('hour');
-        
+
         return DB::table(DB::raw("({$sub->toSql()}) AS sub"))
             ->mergeBindings($sub->getQuery())
             ->select(
@@ -208,7 +298,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             ->whereBetween('created_at', $date)
             ->groupBy('status', 'hour')
             ->orderBy('hour');
-        
+
         return DB::table(DB::raw("({$sub->toSql()}) AS sub"))
             ->mergeBindings($sub->getQuery())
             ->select(
@@ -251,7 +341,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             ->whereBetween('created_at', $date)
             ->groupBy('status', 'hour')
             ->orderBy('hour');
-        
+
         return DB::table(DB::raw("({$sub->toSql()}) AS sub"))
             ->mergeBindings($sub->getQuery())
             ->select(
@@ -294,7 +384,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             ->whereBetween('created_at', $date)
             ->groupBy('status', 'hour')
             ->orderBy('hour');
-        
+
         return DB::table(DB::raw("({$sub->toSql()}) AS sub"))
             ->mergeBindings($sub->getQuery())
             ->select(

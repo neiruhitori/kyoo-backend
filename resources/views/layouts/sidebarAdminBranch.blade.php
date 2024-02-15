@@ -144,6 +144,20 @@
                 </a>
 
                 @if (
+                        Auth::user()->Branch->BranchType->is_premium &&
+                        (
+                            Auth::user()->Branch->BranchType->is_appointment ||
+                            Auth::user()->Branch->BranchType->is_direct_queue
+                        )
+                    )
+                    <a class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/menu-portal*') ?: 'active' }}"
+                    href="{{ route('admin-branch.branch-configuration.menu-portal') }}"
+                    >
+                        {{ __('Portal Menu') }}
+                    </a>
+                @endif
+
+                @if (
                   Auth::user()->Branch->BranchType->is_premium &&
                   ( Auth::user()->Branch->hasAccess('Web Signage TV') || Auth::user()->Branch->hasAccess('Webkiosk') )
                 )

@@ -26,7 +26,8 @@ class StoreService extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'department_id' => 'required|exists:departments,id'
+            'department_id' => 'required|exists:departments,id',
+            'service_category_id' => 'exists:service_categories,id'
         ];
     }
 }

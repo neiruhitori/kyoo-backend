@@ -115,7 +115,7 @@
                                         <th>{{ __('Service Time') }} ({{ __('Menit') }})</th>
                                         <th>{{ __('Workstation') }}</th>
                                         <th>{{ __('Service') }}</th>
-                                        <th>{{ __('Old Service') }}</th>
+                                        <th>{{ __('Service Transfer') }}</th>
                                         <th>{{ __('Status') }}</th>
                                     </thead>
                                     <tbody>
@@ -153,8 +153,8 @@
                                                 </td>
                                                 <td>{{ $directQueue->Service->name }}</td>
                                                 <td>
-                                                    @if ($directQueue->OldService)
-                                                        {{ $directQueue->OldService->name }}
+                                                    @if ($directQueue->NewService)
+                                                        {{ $directQueue->NewService->name }}
                                                     @else
                                                         -
                                                     @endif

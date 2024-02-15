@@ -35,7 +35,7 @@
             display: flex;
             gap: 1rem;
         }
-        
+
         .monitor-image-upload {
             width: 100px;
             height: 60px;
@@ -138,6 +138,15 @@
                                     <img id="image_layout" src="{{asset($layouts[(int)$webkiosConfiguration->layout -1]->image)}}" alt="{{$layouts[(int)$webkiosConfiguration->layout -1]->name}}">
                                 </div>
                             </div>
+
+                            <div class="mt-4">
+                                <div class="mb-4">
+                                    <h5 class="font-weight-bold">Perbarui Token</h5>
+                                    <p class="text-caption">Perbarui Token Kiosk Web</p>
+                                </div>
+
+                                <button type="button" onclick="submitUpdateToken()" class="btn btn-primary">Perbarui</button>
+                            </div>
                         </div>
 
                         <div id='layoutConfig' class="col-md-8 {{ $webkiosConfiguration->layout != '1' ?: 'display-none'}}">
@@ -156,6 +165,7 @@
                                                 <label for="primary_background_type">{{ __('Primary Type') }}</label>
                                                 <select
                                                     name="primary_background_type"
+                                                    id="primary_background_type"
                                                     class="form-control @error('primary_background_type') is-invalid @enderror"
                                                     onchange="changeBackgroundType(this, 'primary')"
                                                     required
@@ -169,7 +179,7 @@
                                                 <div class="monitor-image-container">
                                                     <label for="primary_background_image">
                                                         <div class="monitor-image-upload">
-                                                            <img src="{{ asset($webkiosConfiguration->primary_background_image) }}" id="preview_primary_background_image">
+                                                            <img src="{{ asset($webkiosConfiguration->primary_background_image ?? $webkiosConfiguration->primary_background_image_preview) }}" id="preview_primary_background_image">
 
                                                             <input
                                                                 type="file"
@@ -197,20 +207,20 @@
                                             <div class="form-group {{ $webkiosConfiguration->primary_background_type != 'image' ?: 'display-none' }}" id="primary_background_color">
                                                 <label for="primary_background_color">{{ __('Background Color') }}</label>
                                                 <input
-                                                    name="primary_background_color" 
-                                                    type="color" 
+                                                    name="primary_background_color"
+                                                    type="color"
                                                     class="form-control form-input-color @error('primary_background_color') is-invalid @enderror"
                                                     value="{{$webkiosConfiguration->primary_background_color ?? old('primary_background_color')}}"
                                                     required>
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-6">
+                                        <div id="secondaryBackground" class="col-12 col-md-6 {{ $webkiosConfiguration->layout != '4' ?: 'display-none'}}">
                                             <div class="form-group">
                                                 <label for="secondary_background_type">{{ __('Secondary Type') }}</label>
-                                                <select 
-                                                    name="secondary_background_type" 
-                                                    class="form-control @error('secondary_background_type') is-invalid @enderror" 
-                                                    onchange="changeBackgroundType(this, 'secondary')" 
+                                                <select
+                                                    name="secondary_background_type"
+                                                    class="form-control @error('secondary_background_type') is-invalid @enderror"
+                                                    onchange="changeBackgroundType(this, 'secondary')"
                                                     required
                                                 >
                                                     <option value="color" {{ $webkiosConfiguration->secondary_background_type != 'color' ?: 'selected' }} >Color</option>
@@ -250,10 +260,86 @@
                                             <div class="form-group {{ $webkiosConfiguration->secondary_background_type != 'image' ?: 'display-none' }}" id="secondary_background_color">
                                                 <label for="secondary_background_color">{{ __('Background Color') }}</label>
                                                 <input
-                                                    name="secondary_background_color" 
-                                                    type="color" 
+                                                    name="secondary_background_color"
+                                                    type="color"
                                                     class="form-control form-input-color @error('secondary_background_color') is-invalid @enderror"
                                                     value="{{$webkiosConfiguration->secondary_background_color ?? old('secondary_background_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="logoWrapper" class="wrapper-group-action {{ $webkiosConfiguration->layout == '4' ?: 'display-none'}}">
+                                    <b>{{ __('Logo') }}</b>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="monitor-image-container">
+                                                <label for="logo">
+                                                    <div class="monitor-image-upload">
+                                                        <img src="{{ asset($webkiosConfiguration->logo) }}" id="preview_logo">
+
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            name="logo"
+                                                            id="logo"
+                                                            onchange="previewLogo(this)"
+                                                            hidden
+                                                        >
+
+                                                        <span class="monitor-image-label">
+                                                            <span class="fas fa-upload"></span>
+                                                        </span>
+                                                    </div>
+                                                </label>
+
+                                                <div>
+                                                    <button type="button" class="delete-image-button display-none" id="delete_button_logo" onclick="deleteLogo()">
+                                                        <span class="fas fa-times mr-1"></span>
+                                                        Hapus
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="buttonCheckin" class="wrapper-group-action {{ $webkiosConfiguration->layout == '4' ?: 'display-none'}}">
+                                    <b>{{ __('Button Check-In') }}</b>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-12 col-md-3">
+                                            <div class="form-group">
+                                                <label for="button_checkin_background_color">{{ __('Background') }}</label>
+                                                <input
+                                                    name="button_checkin_background_color"
+                                                    type="color"
+                                                    class="form-control @error('button_checkin_background_color') is-invalid @enderror"
+                                                    value="{{$webkiosConfiguration->button_checkin_background_color ?? old('button_checkin_background_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-3">
+                                            <div class="form-group">
+                                                <label for="button_checkin_border_color">{{ __('Border') }}</label>
+                                                <input
+                                                    name="button_checkin_border_color"
+                                                    type="color"
+                                                    class="form-control @error('button_checkin_border_color') is-invalid @enderror"
+                                                    value="{{$webkiosConfiguration->button_checkin_border_color ?? old('button_checkin_border_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-3">
+                                            <div class="form-group">
+                                                <label for="font_checkin_color">{{ __('Font') }}</label>
+                                                <input
+                                                    name="font_checkin_color"
+                                                    type="color"
+                                                    class="form-control @error('font_checkin_color') is-invalid @enderror"
+                                                    value="{{$webkiosConfiguration->font_checkin_color ?? old('font_checkin_color')}}"
                                                     required>
                                             </div>
                                         </div>
@@ -268,8 +354,8 @@
                                             <div class="form-group">
                                                 <label for="button_background_color">{{ __('Background') }}</label>
                                                 <input
-                                                    name="button_background_color" 
-                                                    type="color" 
+                                                    name="button_background_color"
+                                                    type="color"
                                                     class="form-control @error('button_background_color') is-invalid @enderror"
                                                     value="{{$webkiosConfiguration->button_background_color ?? old('button_background_color')}}"
                                                     required>
@@ -279,8 +365,8 @@
                                             <div class="form-group">
                                                 <label for="botton_border_color">{{ __('Border') }}</label>
                                                 <input
-                                                    name="botton_border_color" 
-                                                    type="color" 
+                                                    name="botton_border_color"
+                                                    type="color"
                                                     class="form-control @error('botton_border_color') is-invalid @enderror"
                                                     value="{{$webkiosConfiguration->botton_border_color ?? old('botton_border_color')}}"
                                                     required>
@@ -290,8 +376,8 @@
                                             <div class="form-group">
                                                 <label for="font_color">{{ __('Font') }}</label>
                                                 <input
-                                                    name="font_color" 
-                                                    type="color" 
+                                                    name="font_color"
+                                                    type="color"
                                                     class="form-control @error('font_color') is-invalid @enderror"
                                                     value="{{$webkiosConfiguration->font_color ?? old('font_color')}}"
                                                     required>
@@ -354,6 +440,10 @@
                         </div>
                     </div>
                 </form>
+                <form id="form_update_token" action="{{ route('admin-branch.branch-configuration.webkiosk.update-token', Auth::user()->branch_id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                </form>
             </div>
         </div>
     </div>
@@ -365,11 +455,24 @@
 
         function changeLayout(input) {
             const { value } = input;
+            const type = document.getElementById("primary_background_type").value;
+            console.log(type)
 
             if (value != 1) {
-                document.getElementById("layoutConfig").classList.toggle("display-none")
+                document.getElementById("layoutConfig").classList.remove("display-none")
             } else {
                 document.getElementById("layoutConfig").classList.add("display-none")
+            }
+
+            if(value == 4) {
+                document.getElementById("secondaryBackground").classList.add("display-none")
+                document.getElementById("buttonCheckin").classList.remove("display-none")
+                document.getElementById("logoWrapper").classList.remove("display-none")
+            } else {
+                document.getElementById("secondaryBackground").classList.remove("display-none")
+                document.getElementById("secondary_background_image_wrapper").classList.add("display-none")
+                document.getElementById("buttonCheckin").classList.add("display-none")
+                document.getElementById("logoWrapper").classList.add("display-none")
             }
 
             const { image, name } = layouts.find((obj) => obj.id == value);
@@ -381,6 +484,7 @@
 
         function changeBackgroundType(input, priority) {
             const { value } = input;
+            const layout = document.getElementById('select-layout').value;
 
             if (value == 'image') {
                 if (priority == 'primary') {
@@ -413,14 +517,40 @@
             }
         }
 
+        function previewLogo(input)  {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(input.files[0]);
+
+                reader.onload = function (e) {
+                    $(`#preview_logo`).attr('src', e.target.result);
+                    $(`#delete_button_logo`).removeClass('display-none');
+                }
+            }
+        }
+
         function deleteImage(priority) {
-            
+
             const imageSrc = '{{ asset($defaultImage) }}'
 
             $(`#preview_${priority}_background_image`).attr('src', imageSrc);
 
             $(`#${priority}_background_image`).val(null);
             $(`#delete_button_${priority}_background_image`).addClass('display-none');
+        }
+
+        function deleteLogo() {
+
+            const imageSrc = '{{ asset($defaultImage) }}'
+
+            $(`#preview_logo`).attr('src', imageSrc);
+
+            $(`#logo`).val(null);
+            $(`#delete_button_logo`).addClass('display-none');
+        }
+
+        function submitUpdateToken() {
+            $('#form_update_token').submit()
         }
     </script>
 @endpush

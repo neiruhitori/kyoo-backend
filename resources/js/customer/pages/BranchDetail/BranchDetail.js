@@ -60,6 +60,11 @@ export default function BranchDetail() {
         isBranchOpen = currentSchedule.status === 'open'
     }
 
+    let layer = ''
+    if(branch && branch.branch_configuration.layer == 2) {
+        layer = '/two-layer'
+    }
+
     if (regencyQuery.status === 'success') {
         city = regencyQuery.data
     }
@@ -80,8 +85,8 @@ export default function BranchDetail() {
                         height: '100%',
                         display: 'flex'
                     }}>
-                        <Link to={`/customer/${branchId}/${queueType}/services`} style={{
-                            display: 'flex',    
+                        <Link to={`/customer/${branchId}/${queueType}/services${layer}`} style={{
+                            display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
                             padding: '.85rem 1.375rem'
@@ -108,7 +113,7 @@ export default function BranchDetail() {
                         }}>{branch.name}</H2>
                     </div>
                 </div>
-                
+
                 <div style={{
                     marginTop: 'auto',
                     padding: '0 1.375rem'
@@ -152,7 +157,7 @@ export default function BranchDetail() {
                             }} />
                         </button>
                     </div>
-                    
+
                     {isOpen && <div style={{
                         marginTop: '1.625rem'
                     }}>
@@ -177,7 +182,7 @@ export default function BranchDetail() {
                                     color: '#A5A5A5',
                                     textTransform: 'capitalize'
                                 }}>{day}</div>
-        
+
                                 {schedule && <div style={{
                                     flex: '1',
                                     color: '#103C7C',
