@@ -227,6 +227,124 @@ class DirectQueueController extends Controller
         return $queues;
     }
 
+    public function onCall(Request $request)
+    {
+        $rules = [
+            'queue_no' => 'required|alpha_num|min:1|exists:direct_queues',
+            'is_skip' => 'nullable|boolean',
+            'service_id' => 'required|integer|exists:services,id'
+        ];
+
+        $validation = Validator::make($request->all(), $rules);
+        if ($validation->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error validation',
+                'data' => $validation->errors()
+            ], 400);
+        }
+
+        // check the queue no with created date is today
+        $directQueue = DirectQueue::where('queue_no', $request->queue_no)
+            ->where('service_id', $request->service_id)
+            ->whereNotIn('status', ['no show', 'end served'])
+            ->whereDate('created_at', date('Y-m-d'))
+            ->first();
+
+        if (!$directQueue) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Queue not found',
+                'data' => null
+            ], 404);
+        }
+
+        $workstation_old = $directQueue->workstation_id;
+        $directQueue->update([
+            'workstation_id' => $request->workstation_id,
+        ]);
+        $directQueue->refresh();
+
+        // check queue can called if previous queue end served
+        if ($this->checkPreviousQueue($directQueue, $request->is_skip)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Previous queue not finished',
+                'data' => null
+            ], 400);
+        }
+
+        // check if queue recall_count on limit
+        if ($directQueue->recall_count >= Auth::user()->Branch->BranchConfiguration->maximum_recall) {
+            $directQueue->vct_id = Auth::id();
+            $directQueue->status = 'no show';
+            $directQueue->called_at = $directQueue->called_at ? $directQueue->called_at : Date('Y-m-d H:i:s') ;
+            $directQueue->done_at = Date('Y-m-d H:i:s');
+            $directQueue->save();
+
+            event(new QueueStatusUpdated([
+                'queue_no' => $directQueue->queue_no,
+                'status' => 'no show',
+                'branch_id' => Auth::user()->branch_id,
+                'workstation_id' => $directQueue->workstation_id
+            ]));
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Queue recall has on limited',
+                'data' => null
+            ], 400);
+        }
+
+        $workstation_service = Auth::user()
+            ->WorkstationVct
+            ->Workstation
+            ->WorkstationService()
+            ->where('service_id', $directQueue->service_id)
+            ->first();
+
+        $directQueue->workstation_service_id = $workstation_service->id;
+        $directQueue->workstation_id = Auth::user()->WorkstationVct->workstation_id;
+        $directQueue->status = 'served';
+        $directQueue->recall_count = $directQueue->recall_count > 0 ? $directQueue->recall_count + 1 : 0;
+        $directQueue->called_at = null;
+        $directQueue->call_time = Date('Y-m-d H:i:s');
+        $directQueue->save();
+
+        event(new QueueStatusUpdated([
+            'queue_no' => $directQueue->queue_no,
+            'status' => 'served',
+            'branch_id' => Auth::user()->branch_id,
+            'workstation_id' => $directQueue->workstation_id
+        ]));
+
+        if ($directQueue->client_id) {
+            event(new OnsiteQueueUpdated($directQueue));
+            event(new OnsiteQueueCalled($directQueue));
+        }
+
+        if ($directQueue->fcm_id) {
+            fcm()
+                ->to([$directQueue->fcm_id])
+                ->priority('high')
+                ->timeToLive(0)
+                ->data([
+                    'title' => 'KYOO',
+                    'body' => "Antrian " . $directQueue->queue_no . " sedang dipanggil. Mohon ke " . Auth::user()->WorkstationVct->Workstation->label,
+                    'data' => [
+                        'url' => '/customer/' . Auth::user()->branch_id . '/onsite/booking-status/' . $directQueue->id
+                    ]
+                ])
+                ->send();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Direct Queue on Served',
+            'data' => $directQueue
+        ]);
+    }
+
     public function onServed(Request $request)
     {
         $rules = [
