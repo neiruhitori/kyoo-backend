@@ -367,17 +367,19 @@ export default {
                 data: { audio },
             } = await axios.get(`/queue-caller/${queueID}`);
 
-            const videoEl = document.querySelector('video');
-            const originalVolume = videoEl.volume;
-
-            videoEl.volume = 0.2;
-
             if (audioEl.paused) {
                 audioEl.src = audio.data;
                 audioEl.play();
             } else {
                 this.playQueue.push(audio.data);
             }
+
+            const videoEl = document.querySelector('video');
+            if (!videoEl) {
+                return;
+            }
+            const originalVolume = videoEl.volume;
+            videoEl.volume = 0.2;
 
             audioEl.onended = function() {
                 videoEl.volume = originalVolume;

@@ -512,7 +512,11 @@ class DirectQueueController extends Controller
 
         $directQueue->status = $directQueue->recall_count + 1 >= Auth::user()->Branch->BranchConfiguration->maximum_recall ? 'no show' : 'served';
         $directQueue->recall_count = $directQueue->recall_count + 1;
-        $directQueue->called_at = Date('Y-m-d H:i:s');
+        if($directQueue->call_time) {
+            $directQueue->call_time = Date('Y-m-d H:i:s');
+        } else {
+            $directQueue->called_at = Date('Y-m-d H:i:s');
+        }
         $directQueue->save();
 
         event(new QueueStatusUpdated([

@@ -58,7 +58,7 @@
                         height="100%"
                         autoplay
                     >
-                        <source v-if="promotionMedia" :src="promotionMedia[0].data" type="video/mp4" />
+                        <source v-if="promotionMedia[0]" :src="promotionMedia[0].data" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
                     <img
@@ -445,16 +445,19 @@ export default {
                 data: { audio },
             } = await axios.get(`/queue-caller/${queueID}`);
 
-            const videoEl = document.querySelector('video');
-            const originalVolume = videoEl.volume;
-            videoEl.volume = 0.2;
-
             if (audioEl.paused) {
                 audioEl.src = audio.data;
                 audioEl.play();
             } else {
                 this.playQueue.push(audio.data);
             }
+
+            const videoEl = document.querySelector('video');
+            if (!videoEl) {
+                return;
+            }
+            const originalVolume = videoEl.volume;
+            videoEl.volume = 0.2;
 
             audioEl.onended = function() {
                 videoEl.volume = originalVolume;
@@ -693,8 +696,8 @@ export default {
             max-width: 30rem;
         }
         .calling-card-header {
-            height: 2.2rem;
-            font-size: 1.1rem;
+            height: 2.5rem;
+            font-size: 1.5rem;
         }
         .calling-card-body {
             height: 5rem;

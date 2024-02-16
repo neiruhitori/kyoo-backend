@@ -391,6 +391,17 @@ export default {
             } else {
                 this.playQueue.push(audio.data);
             }
+
+            const videoEl = document.querySelector('video');
+            if (!videoEl) {
+                return;
+            }
+            const originalVolume = videoEl.volume;
+            videoEl.volume = 0.2;
+
+            audioEl.onended = function() {
+                videoEl.volume = originalVolume;
+            };
         },
     },
 };
