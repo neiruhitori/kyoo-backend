@@ -83,7 +83,7 @@ class HomeController extends Controller
                 'department_id',
                 $branch->Departments->pluck('id')->toArray(),
             )
-            ->take(5)
+            ->take(6)
             ->orderBy('label')
             ->get();
 

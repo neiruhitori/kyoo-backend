@@ -53,7 +53,7 @@
     <script>
         $(document).ready(function() {
             const workstation_service_idValue = '{{ old('workstation_service_id') }}';
-                
+
             if(workstation_service_idValue !== '') {
                 $('#workstation_service_id').val(workstation_service_idValue);
             }

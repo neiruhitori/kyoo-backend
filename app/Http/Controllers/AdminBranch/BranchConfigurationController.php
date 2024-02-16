@@ -39,6 +39,10 @@ class BranchConfigurationController extends Controller
       $data['phone_owner'] = $request->phone_owner;
     }
 
+    if (!isset($request->serving_directly)) {
+      $data['serving_directly'] = 'off';
+    }
+
     $branchConfiguration = Auth::user()->Branch->BranchConfiguration;
 
     if ($branchConfiguration) {

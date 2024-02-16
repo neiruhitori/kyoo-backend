@@ -20,7 +20,7 @@ class WorkstationController extends Controller
      */
     public function index()
     {
-        $workstations = Workstation::whereHas('Department', function($query){
+        $workstations = Workstation::whereHas('Department', function ($query) {
             return $query->whereBranchId(Auth::user()->branch_id);
         })->get();
 
@@ -43,7 +43,7 @@ class WorkstationController extends Controller
         }
 
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
-        
+
         return view('adminBranch.workstation.create', [
             'departments' => $departments
         ]);
@@ -72,12 +72,12 @@ class WorkstationController extends Controller
         }
 
         Workstation::create($request->all());
-        
+
         Log::create([
             'user_id' => Auth::id(),
             'description' => 'Insert Workstation'
         ]);
-        
+
         $request->session()->flash('success', __('module.created', ['module' => __('Workstation'), 'name' => $request->name]));
         return redirect(route('admin-branch.branch-configuration.workstation.index'));
     }
@@ -106,7 +106,7 @@ class WorkstationController extends Controller
         }
 
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
-        
+
         return view('adminBranch.workstation.edit', [
             'workstation' => $workstation,
             'departments' => $departments
@@ -147,16 +147,16 @@ class WorkstationController extends Controller
             if ($workstation->Department->branch_id != Auth::user()->branch_id) {
                 return redirect(route('unauthorized'));
             }
-    
+
             $workstation->delete();
-            
+
             Log::create([
                 'user_id' => Auth::id(),
                 'description' => 'Remove Workstation'
             ]);
-            
+
             $request->session()->flash('error', __('module.removed', ['module' => __('Workstation'), 'name' => $workstation->name]));
-            
+
             return redirect(route('admin-branch.branch-configuration.workstation.index'));
         } catch (\Throwable $e) {
             if (str_contains($e->getMessage(), 'SQLSTATE[23503]')) {

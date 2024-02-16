@@ -19,6 +19,7 @@ class BranchConfiguration extends Model
     'phone_owner',
     'layer',
     'time_interval',
-    'max_slots'
+    'max_slots',
+    'serving_directly'
   ];
 }

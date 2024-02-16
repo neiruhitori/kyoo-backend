@@ -114,10 +114,10 @@
                   <div class="col-md-12" v-if="!isOnServed">
                     <button
                       class="btn btn-primary fullwidth mb-2"
-                      @click="onServed"
+                      @click="serving_directly ? onServed() : onCall()"
                       :disabled="!selected_queue || selected_queue.status"
                     >
-                      Layani
+                       Panggil Antrian
                     </button>
                   </div>
 
@@ -159,13 +159,21 @@
                           Tidak Hadir
                         </button>
                       </div>
-                      <div class="col-md-12">
+                      <div :class="{'col-md-12': isServed(), 'col-md-6': !isServed()}">
                         <button
                           class="btn btn-warning fullwidth mb-2"
                           @click="onTransfer"
                           :disabled="!allow_transfer"
                         >
                           Transfer Antrian
+                        </button>
+                      </div>
+                      <div class="col-md-6" :class="{'d-none': isServed()}">
+                        <button
+                          class="btn btn-primary fullwidth mb-2"
+                          @click="onServed()"
+                        >
+                          Mulai Layanan
                         </button>
                       </div>
                     </template>
@@ -302,6 +310,10 @@ export default {
       type: Boolean,
       default: false
     },
+    serving_directly: {
+      type: Boolean,
+      default: false
+    },
     auth: {
       type: Object,
       required: true
@@ -387,6 +399,10 @@ export default {
       this.mediaRecorder.addEventListener('dataavailable', this.handleDataAvailable)
     },
 
+    isServed() {
+        return this.queues.filter(queue => queue.queue_no === this.selected_queue && queue.called_at).length > 0;
+    },
+
     startTimer(selected_queue) {
       const slaDuration = selected_queue?.service?.sla_duration * 60;
 
@@ -468,6 +484,43 @@ export default {
         this.isOnServed = true
         this.onServedQueue = current_queue
       }
+    },
+
+    async onCall() {
+      const [selected_queue] = this.queues.filter(
+        (queue) => queue.queue_no === this.selected_queue
+      );
+
+      if (
+        selected_queue &&
+        selected_queue.status &&
+        selected_queue.status != "waiting" &&
+        selected_queue.status != "served" &&
+        selected_queue.status != "requeue"
+      ) {
+        alert("Status antrian salah");
+        return;
+      }
+
+      this.isLoading = true;
+      try {
+        const queue = await axios.post("/cs/directQueue/onCall", {
+          queue_no: this.selected_queue,
+          service_id: selected_queue.service_id,
+          is_skip: this.manualInput,
+          workstation_id: this.workstation.id
+        });
+
+        this.onServedQueue = queue.data.data;
+        this.isOnServed = true;
+
+        this.getQueues();
+
+      } catch (error) {
+        this.getQueues();
+        console.error(error);
+      }
+      this.isLoading = false;
     },
 
     async onServed() {

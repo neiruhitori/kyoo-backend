@@ -52,7 +52,22 @@
                 </div>
 
                 <div class="monitor-main-content">
-                    <img v-for="(bgImage, idx) in promotionImages" :key="idx + 1" v-show="activeImage === idx + 1" :src="bgImage.url" />
+                    <video
+                        v-if="promotionImages[0] && activeImage === 1 && isVideo(promotionImages[0])"
+                        width="100%"
+                        height="100%"
+                        autoplay
+                    >
+                        <source v-if="promotionMedia[0]" :src="promotionMedia[0].data" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <img
+                        v-else
+                        v-for="(bgImage, idx) in promotionMedia"
+                        :key="idx + 1"
+                        v-show="activeImage === idx + 1"
+                        :src="bgImage.data"
+                    />
                 </div>
             </div>
             <div class="workstation-list">
@@ -91,7 +106,6 @@
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
-const IMAGE_DURATION = 5000;
 const audioEl = new Audio();
 
 export default {
@@ -125,6 +139,8 @@ export default {
             promotionImages: [],
             isAutoPlayBlocked: false,
             playQueue: [],
+            currentImageDuration: 5000,
+            promotionMedia: [],
             background:
                 this.custom_layout_config.background_type == "image"
                     ? {
@@ -173,6 +189,45 @@ export default {
         };
     },
 
+    watch: {
+        async activeImage(newValue) {
+            const self = this;
+
+            const videoExtensions = [".mp4"];
+            const lowerCaseUrl =
+                self.promotionImages[newValue - 1].url.toLowerCase();
+            const isVideo = videoExtensions.some((ext) =>
+                lowerCaseUrl.endsWith(ext)
+            );
+
+            if (isVideo) {
+                try {
+                    const response = await fetch(
+                        self.promotionImages[newValue - 1].url
+                    );
+                    const blob = await response.blob();
+
+                    const video = document.createElement("video");
+                    video.src = URL.createObjectURL(blob);
+
+                    await new Promise((resolve) => {
+                        video.onloadedmetadata = function () {
+                            const duration = video.duration * 1000;
+                            self.currentImageDuration = duration;
+                            resolve();
+                        };
+                    });
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                self.currentImageDuration = 5000;
+            }
+
+            this.animateImage();
+        },
+    },
+
     created() {
         Echo.channel(`event_direct_queue_general.${this.branch.id}`)
             .listen("DirectQueue", () => {
@@ -193,7 +248,8 @@ export default {
                     this.features.find((v) => v.additional_feature.name === "Panggilan Suara") &&
                     this.servingQueue[message.workstation_id] &&
                     message.status &&
-                    ["recall", "served"].includes(message.status)
+                    ["recall", "served"].includes(message.status) &&
+                    !message.not_called
                 ) {
                     this.isBlink(message.workstation_id);
                     this.getQueueCallAudio(message);
@@ -210,6 +266,7 @@ export default {
 
         this.checkAutoPlayPermission();
         this.subscribeAudioEvent();
+        this.saveToLocal();
     },
 
     computed: {
@@ -268,16 +325,79 @@ export default {
                 self.currentDate = new Date();
             }, 5000);
         },
+        isVideo(bgImage) {
+            const videoExtensions = [".mp4"];
+            const lowerCaseUrl = bgImage.url.toLowerCase();
+            const isVideo = videoExtensions.some((ext) =>
+                lowerCaseUrl.endsWith(ext)
+            );
+            return isVideo;
+        },
         animateImage() {
             const self = this;
 
-            setInterval(function () {
+            self.currentInterval = setInterval(function () {
                 self.activeImage++;
 
                 if (self.activeImage > self.promotionImages.length) {
                     self.activeImage = 1;
                 }
-            }, IMAGE_DURATION);
+
+                if (self.currentInterval) {
+                    clearInterval(self.currentInterval);
+                }
+            }, this.currentImageDuration);
+        },
+        async saveToLocal() {
+            const fetchPromises = this.promotionImages.map(async media => {
+                const response = await fetch(media.url);
+                const blob = await response.blob();
+
+                const base64Media = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+
+                return base64Media;
+            });
+
+            const base64Medias = await Promise.all(fetchPromises);
+
+            const db = await indexedDB.open('Media', 1);
+
+            db.onupgradeneeded = event => {
+                const objectStore = db.result.createObjectStore('media', { keyPath: 'id',autoIncrement: true });
+            };
+
+            db.onsuccess = async event => {
+                const transaction = db.result.transaction(['media'], 'readwrite');
+                const objectStore = transaction.objectStore('media');
+
+                const clearRequest = objectStore.clear();
+                await clearRequest.onsuccess;
+
+                base64Medias.forEach((base64Data, index) => {
+                    objectStore.add({ id: index + 1, data: base64Data });
+                });
+            };
+
+            const request = window.indexedDB.open('Media', 1);
+            request.onsuccess = (event) => {
+                this.db = event.target.result;
+                this.getDataFromIndexedDB();
+            };
+        },
+        getDataFromIndexedDB() {
+            const transaction = this.db.transaction(['media'], 'readonly');
+            const store = transaction.objectStore('media');
+
+            const request = store.getAll();
+
+            request.onsuccess = (event) => {
+                this.promotionMedia = event.target.result;
+            };
         },
         async getQueues(queue_no) {
             this.isLoading = true;
@@ -331,6 +451,17 @@ export default {
             } else {
                 this.playQueue.push(audio.data);
             }
+
+            const videoEl = document.querySelector('video');
+            if (!videoEl) {
+                return;
+            }
+            const originalVolume = videoEl.volume;
+            videoEl.volume = 0.2;
+
+            audioEl.onended = function() {
+                videoEl.volume = originalVolume;
+            };
         },
     },
 };
@@ -491,6 +622,12 @@ export default {
         object-fit: stretch;
         position: relative;
     }
+    .monitor-main-content video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: relative;
+    }
     .running-text-container {
         overflow: hidden;
     }
@@ -559,8 +696,8 @@ export default {
             max-width: 30rem;
         }
         .calling-card-header {
-            height: 2.2rem;
-            font-size: 1.1rem;
+            height: 2.5rem;
+            font-size: 1.5rem;
         }
         .calling-card-body {
             height: 5rem;
@@ -586,4 +723,3 @@ export default {
         }
     }
 </style>
-
