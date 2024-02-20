@@ -115,7 +115,9 @@ export default {
             isAutoPlayBlocked: false,
             playQueue: [],
             currentImageDuration: 5000,
-            promotionMedia: []
+            promotionMedia: [],
+            callAudio: [],
+            isPlaying: false,
         };
     },
 
@@ -280,7 +282,8 @@ export default {
             }, this.currentImageDuration);
         },
         async saveToLocal() {
-            const fetchPromises = this.promotionImages.map(async media => {
+            // Fetch Image And Video
+            const fetchMedia = this.promotionImages.map(async media => {
                 const response = await fetch(media.url);
                 const blob = await response.blob();
 
@@ -293,41 +296,90 @@ export default {
 
                 return base64Media;
             });
+            const base64Medias = await Promise.all(fetchMedia);
 
-            const base64Medias = await Promise.all(fetchPromises);
+            // Fetch Audio
+            const audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            for (let i = 0; i <= 9; i++) {
+                audios.push(i.toString());
+            }
+            for (let i = 65; i <= 80; i++) {
+                if (i !== 72) {
+                    audios.push(String.fromCharCode(i));
+                }
+            }
 
+            const base64Audios = [];
+            const fetchAudio = audios.map(async audio => {
+                const audio_url = `/storage/audio/vo/${audio}.mp3`
+                const response = await fetch(audio_url);
+                const blob = await response.blob();
+
+                const base64Audio = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+
+                base64Audios.push({ name: audio, audio: base64Audio });
+            });
+            await Promise.all(fetchAudio);
+
+            if (this.db) {
+                this.db.close();
+            }
+            // Delete the old database
+            const deleteRequest = indexedDB.deleteDatabase('Media');
             const db = await indexedDB.open('Media', 1);
 
             db.onupgradeneeded = event => {
-                const objectStore = db.result.createObjectStore('media', { keyPath: 'id',autoIncrement: true });
+                const database = event.target.result;
+
+                const mediaObjectStore = database.createObjectStore('medias', { keyPath: 'id',autoIncrement: true });
+                const audioObjectStore = database.createObjectStore('audios', { keyPath: 'id' });
             };
 
             db.onsuccess = async event => {
-                const transaction = db.result.transaction(['media'], 'readwrite');
-                const objectStore = transaction.objectStore('media');
+                const transaction = db.result.transaction(['medias', 'audios'], 'readwrite');
+                const mediaObjectStore = transaction.objectStore('medias');
+                const audioObjectStore = transaction.objectStore('audios');
 
-                const clearRequest = objectStore.clear();
-                await clearRequest.onsuccess;
+                const clearMediaRequest = mediaObjectStore.clear();
+                await clearMediaRequest.onsuccess;
 
-                base64Medias.forEach((base64Data, index) => {
-                    objectStore.add({ id: index + 1, data: base64Data });
+                const clearAudioRequest = audioObjectStore.clear();
+                await clearAudioRequest.onsuccess;
+
+                base64Medias.forEach((data, index) => {
+                    mediaObjectStore.add({ id: index + 1, data: data });
+                });
+
+                base64Audios.forEach((data, index) => {
+                    audioObjectStore.add({ id: data.name, data: data.audio });
                 });
             };
 
             const request = window.indexedDB.open('Media', 1);
             request.onsuccess = (event) => {
                 this.db = event.target.result;
-                this.getDataFromIndexedDB();
+                this.getMediaFromIndexedDB();
             };
         },
-        getDataFromIndexedDB() {
-            const transaction = this.db.transaction(['media'], 'readonly');
-            const store = transaction.objectStore('media');
+        getMediaFromIndexedDB() {
+            const transaction = this.db.transaction(['medias', 'audios'], 'readonly');
 
-            const request = store.getAll();
+            const mediaStore = transaction.objectStore('medias');
+            const audioStore = transaction.objectStore('audios');
+            const requestMedia = mediaStore.getAll();
+            const requestAudio = audioStore.getAll();
 
-            request.onsuccess = (event) => {
+            requestMedia.onsuccess = (event) => {
                 this.promotionMedia = event.target.result;
+            };
+
+            requestAudio.onsuccess = (event) => {
+                this.callAudio = event.target.result;
             };
         },
         async getQueues(queue_no) {
@@ -362,16 +414,49 @@ export default {
             this.isLoading = false;
         },
         async getQueueCallAudio(message) {
-            const queueID = this.servingQueue[message.workstation_id].id
-            const {
-                data: { audio },
-            } = await axios.get(`/queue-caller/${queueID}`);
+            if (this.isPlaying) {
+                this.playQueue.push(message);
+                return;
+            }
 
-            if (audioEl.paused) {
-                audioEl.src = audio.data;
-                audioEl.play();
-            } else {
-                this.playQueue.push(audio.data);
+            this.isPlaying = true;
+
+            const servingQueue = this.servingQueue[message.workstation_id];
+            const queueNo = servingQueue.queue_no;
+            const workstation = this.workstations.find(workstation => workstation.id === servingQueue.workstation_id);
+            const counter_id = workstation.label.replace(/\D/g, '');
+            const audio = ['intro_bell', 'nomor_antrian'];
+
+            audio.push(...queueNo.split(''), 'dicounter');
+            if(counter_id) {
+                audio.push(...counter_id.split(''));
+            }
+
+            const playlist = [];
+            audio.forEach(audioID => {
+                const matchingAudio = this.callAudio.find(call => call.id === audioID);
+                if (matchingAudio) {
+                    playlist.push(matchingAudio.data);
+                }
+            });
+
+            for (const audioData of playlist) {
+                if (audioEl.paused) {
+                    audioEl.src = audioData;
+                    audioEl.play();
+                } else {
+                    this.playQueue.push(audioData);
+                }
+
+                await new Promise(resolve => {
+                    audioEl.onended = resolve;
+                });
+            }
+
+            this.isPlaying = false;
+            if (this.playQueue.length > 0) {
+                const nextMessage = this.playQueue.shift();
+                await this.getQueueCallAudio(nextMessage);
             }
 
             const videoEl = document.querySelector('video');
