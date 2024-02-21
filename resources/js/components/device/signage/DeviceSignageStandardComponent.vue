@@ -331,7 +331,7 @@ export default {
 
             const base64Audios = [];
             const fetchAudio = audios.map(async audio => {
-                const audio_url = `/storage/audio/vo/${audio}.mp3`
+                const audio_url = `/storage/audio/vo/${audio}.wav`
                 const response = await fetch(audio_url);
                 const blob = await response.blob();
 
@@ -440,16 +440,10 @@ export default {
 
             this.isPlaying = true;
 
-            const servingQueue = this.servingQueue[message.workstation_id];
-            const queueNo = servingQueue.queue_no;
-            const workstation = this.workstations.find(workstation => workstation.id === servingQueue.workstation_id);
-            const counter_id = workstation.label.replace(/\D/g, '');
+            const queueNo = this.servingQueue.queue_no;
             const audio = ['intro_bell', 'nomor_antrian'];
 
             audio.push(...queueNo.split(''), 'dicounter');
-            if(counter_id) {
-                audio.push(...counter_id.split(''));
-            }
 
             const playlist = [];
             audio.forEach(audioID => {

@@ -379,7 +379,7 @@ export default {
 
             const base64Audios = [];
             const fetchAudio = audios.map(async audio => {
-                const audio_url = `/storage/audio/vo/${audio}.mp3`
+                const audio_url = `/storage/audio/vo/${audio}.wav`
                 const response = await fetch(audio_url);
                 const blob = await response.blob();
 
