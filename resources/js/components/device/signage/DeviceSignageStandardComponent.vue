@@ -342,7 +342,10 @@ export default {
                     reader.readAsDataURL(blob);
                 });
 
-                base64Audios.push({ name: audio, audio: base64Audio });
+                const contentType = 'audio/wav';
+                const dataURL = `data:${contentType};base64,${base64Audio.split(',')[1]}`;
+
+                base64Audios.push({ name: audio, audio: dataURL });
             });
             await Promise.all(fetchAudio);
 
