@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Service;
 use App\Appointment;
+use App\Models\AppointmentOnsite;
 use App\Models\Exhibition;
 use App\Slot;
 
@@ -79,6 +80,17 @@ class ServiceController extends Controller
 
         if ($queue_type === 'exhibition') {
             return Exhibition::whereHas('Slot', function ($query) use ($params) {
+                $query->where('service_id', $params['service_id']);
+            })
+                ->when(isset($params['slot_id']), function ($q) use ($params) {
+                    $q->where('slot_id', $params['slot_id']);
+                })
+                ->where('date', $params['date'])
+                ->count();
+        }
+
+        if($queue_type === 'appointment-onsite') {
+            return AppointmentOnsite::whereHas('Slot', function ($query) use ($params) {
                 $query->where('service_id', $params['service_id']);
             })
                 ->when(isset($params['slot_id']), function ($q) use ($params) {

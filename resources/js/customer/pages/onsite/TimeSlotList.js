@@ -22,30 +22,21 @@ import UserIcon from '../../icons/UserIcon'
 import BoxOpenIcon from '../../icons/BoxOpenIcon'
 import SkeletonItem from '../../components/SkeletonItem'
 import ProgressStep from '../../components/ProgressStep'
-import { fetchAppointmentOnsiteSlots } from '../../api/appointmentOnsite'
 
 function TimeSlotList() {
     const PAGE_TITLE = 'Slot Waktu'
-    const { branchId, serviceId, queueType } = useParams()
+    const { branchId, serviceId } = useParams()
     const [searchParams] = useSearchParams()
     const date = searchParams.get('date') ? formatBrowser(searchParams.get('date')) : new Date()
-    const today = new Date();
 
     const [showCalendar, setShowCalendar] = useState(false)
     const [selectedDate, setSelectedDate] = useState(date)
 
     const branchRes = useQuery('branch', () => fetchBranch(branchId))
     const serviceRes = useQuery(['service', selectedDate], () => fetchServiceById(serviceId, {
-        queueType,
+        queueType: 'appointment-onsite',
         date: getFullDate(selectedDate)
     }))
-    const serviceSlotsRes = useQuery(['service-slots', selectedDate],
-        () => fetchAppointmentOnsiteSlots(branchId, {
-            date: getFullDate(selectedDate, 'en'),
-            day: getDayName(selectedDate, 'en'),
-            serviceId: serviceId
-        })
-    )
 
     let branch = null
     let service = null
@@ -59,10 +50,9 @@ function TimeSlotList() {
 
     if (serviceRes.status === 'success') {
         service = serviceRes.data
-    }
-
-    if (serviceSlotsRes.status === 'success') {
-        slots = serviceSlotsRes.data
+        slots = service.slot.filter(v => {
+            return v.day === getDayName(selectedDate, 'en')
+        })
     }
 
     // EVENTS
@@ -78,10 +68,6 @@ function TimeSlotList() {
         }).map(val => {
             return getDayIndex(val.day)
         }) : []
-    }
-
-    function isSameDay() {
-        return getFullDate(selectedDate) === getFullDate(today)
     }
 
     return <>
@@ -180,7 +166,7 @@ function TimeSlotList() {
                     />
                     <span>
                         {
-                            slots.length && !isSameDay()
+                            slots.length
                                 ? slots.length + ' Sesi Waktu Tersedia'
                                 : 'Tidak Ada Sesi Waktu Tersedia'
                         }
@@ -191,7 +177,7 @@ function TimeSlotList() {
                     <span style={{
                         fontWeight: '700',
                         color: '#007EC6'
-                    }}>{!isSameDay() && schedule?.start_time.slice(0, -3)} - {!isSameDay() && schedule?.end_time.slice(0, -3)}</span>
+                    }}>{schedule?.start_time.slice(0, -3)} - {schedule?.end_time.slice(0, -3)}</span>
                 </div>
             </Card>}
 
@@ -218,7 +204,7 @@ function TimeSlotList() {
                     }}>Berikut adalah sesi waktu yang tersedia</p>
                 </div>
 
-                {serviceSlotsRes.status === 'loading' && <Card style={{
+                {serviceRes.status === 'loading' && <Card style={{
                     borderLeft: '12px solid #007EC6',
                     height: '80px'
                 }}>
@@ -228,7 +214,7 @@ function TimeSlotList() {
                     }} />
                 </Card>}
 
-                {serviceSlotsRes.status === 'success' && (!slots.length || isSameDay()) && <div style={{
+                {serviceRes.status === 'success' && !slots.length && <div style={{
                     flex: '1 1 0%',
                     display: 'flex',
                     flexDirection: 'column',
@@ -259,13 +245,13 @@ function TimeSlotList() {
                     </p>
                 </div>}
 
-                {!isSameDay() && serviceSlotsRes.status === 'success' && slots.map((slot, index) => {
+                {serviceRes.status === 'success' && slots.map(slot => {
                     const isFull = slot.filled_slot === slot.max_slots
 
                     return <Link to={!isFull
-                        ? `/customer/${branchId}/appointment-onsite/services/${serviceId}/visitor?date=${getFullDate(selectedDate)}&start_time=${slot.start_time}&end_time=${slot.end_time}`
+                        ? `/customer/${branchId}/appointment-onsite/services/${serviceId}/visitor?date=${getFullDate(selectedDate)}&slot=${slot.id}`
                         : '#'
-                    } key={index} style={{
+                    } key={slot.id} style={{
                         marginBottom: '1rem'
                     }}>
                         <Card style={{

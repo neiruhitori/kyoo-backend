@@ -10,6 +10,8 @@ use App\Models\BranchScheduleTemplateDetail;
 use App\Service;
 use App\Schedule;
 use App\Models\AppointmentOnsite;
+use App\Slot;
+use App\Workstation;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
@@ -21,37 +23,32 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
             $service = Service::find($data['service_id']);
             $branch = $service->Branch;
 
-            // user cant create same direct queue 3x at same date
-            $total_same_user_queue = 0;
-            if (isset($data['email'])) {
-                $total_queue = AppointmentOnsite::where('email', $data['email'])
-                    ->whereDate('date', date('Y-m-d', strtotime($data['date'])))
-                    ->count();
-
-                if ($total_queue > $total_same_user_queue) {
-                    $total_same_user_queue = $total_queue;
-                }
+            // Prevent double appointments
+            if ($this->isAppoinmentDuplicate($data)) {
+                throw new \Exception('Appointment telah terdaftar');
             }
-            if (isset($data['phone'])) {
-                $total_queue = AppointmentOnsite::where('phone', $data['phone'])
-                    ->whereDate('date', date('Y-m-d', strtotime($data['date'])))
-                    ->count();
 
-                if ($total_queue > $total_same_user_queue) {
-                    $total_same_user_queue = $total_queue;
-                }
+            // Prevent appointment on full slot
+            if ($this->isAppointmentSlotFull($data['slot_id'], $data['date'])) {
+                throw new \Exception('Sesi appointment tidak tersedia');
             }
-            if (isset($data['client_id'])) {
-                $total_queue = AppointmentOnsite::where('client_id', $data['client_id'])
-                    ->whereDate('date', date('Y-m-d', strtotime($data['date'])))
-                ->count();
 
-                if ($total_queue > $total_same_user_queue) {
-                    $total_same_user_queue = $total_queue;
-                }
+            // Prevent appointment on closed days
+            if ($this->isClosed($data['branch_id'], $data['date'])) {
+                throw new \Exception('Sesi appointment tidak tersedia');
             }
-            if ($total_same_user_queue >= 3) {
-                throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
+
+            if ($this->isAppointmentSessionFinish($data['slot_id'], $data['date'])) {
+                throw new \Exception('Sesi appointment sudah berakhir');
+            }
+
+            // Prevent empty workstation service
+            if ($this->isWorkstationServiceEmpty($data['service_id'])) {
+                throw new \Exception('Tidak ada layanan');
+            }
+
+            if ($this->isAppointmentOverlap($data['slot_id'], $data['end_time'])) {
+                throw new \Exception('Sesi waktu telah dibooking oleh layanan lain');
             }
 
             // free license branch cannot create more than 100 queue
@@ -92,10 +89,82 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             $appointmentOnsite = AppointmentOnsite::create($data);
 
-            Mail::to($appointmentOnsite->email)->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
+            // Mail::to($appointmentOnsite->email)->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
 
             return $appointmentOnsite;
         });
+    }
+
+    public function isAppoinmentDuplicate($data)
+    {
+        $formattedDate = date('Y-m-d', strtotime($data['date']));
+        $email = $phone = '';
+
+        if (isset($data['email'])) $email = $data['email'];
+        if (isset($data['phone'])) $phone = $data['phone'];
+
+        $sameAppointment = AppointmentOnsite::where([
+            'slot_id' => $data['slot_id'],
+            'date' => $formattedDate
+        ])
+            ->where(function ($query) use ($email, $phone) {
+                $query->where('email', $email)
+                    ->orWhere('phone', $phone);
+            })
+            ->first();
+
+        return !!$sameAppointment;
+    }
+
+    public function isAppointmentSlotFull($slotId, $date)
+    {
+        $slot = Slot::find($slotId);
+        $formattedDate = date('Y-m-d', strtotime($date));
+
+        $totalTodayAppointmentsBySlot = AppointmentOnsite::where([
+            'slot_id' => $slotId,
+            'date' => $formattedDate
+        ])->count();
+
+        return $totalTodayAppointmentsBySlot >= $slot->max_slots;
+    }
+
+    public function isClosed($branchId, $date)
+    {
+        $day = strtolower(date('l', strtotime($date)));
+
+        $selectedSchedule = Schedule::where([
+            'branch_id' => $branchId,
+            'day' => $day
+        ])->first();
+
+        return $selectedSchedule && $selectedSchedule->status == 'closed';
+    }
+
+    public function isAppointmentSessionFinish($slotId, $date)
+    {
+        $slot = Slot::find($slotId);
+
+        $appointmentEndDateTime = date('Y-m-d H:i:s', strtotime($date . ' ' . $slot->end_time . ':00'));
+        $currentDateTime = date('Y-m-d H:i:s');
+
+        return $appointmentEndDateTime < $currentDateTime;
+    }
+
+    private function isWorkstationServiceEmpty($serviceId)
+    {
+        $workstationService = Workstation::whereHas('WorkstationService', function ($query) use ($serviceId) {
+            $query->where('service_id', $serviceId);
+        })->first();
+
+        return !$workstationService;
+    }
+
+    private function isAppointmentOverlap($slotId, $endTime)
+    {
+        $slot = Slot::find($slotId);
+
+        return date('H:i', strtotime($endTime)) > $slot->end_time;
     }
 
     private function generate_booking_code() {

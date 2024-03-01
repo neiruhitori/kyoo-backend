@@ -156,56 +156,9 @@
             </div>
         </div>
 
-        @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
-            <div class="col-md-12" id="SlotIntervalConfiguration">
-                <div class="form-group">
-                    <label for="time_interval">{{ __('Time Interval') }}</label>
-                    <select name="time_interval" id="time_interval" class="form-control @error('time_interval') is-invalid @enderror">
-                        @for($i = 1; $i < 7; $i++)
-                            <option value={{ $i }} {{ $i == $branchConfiguration->time_interval ? 'selected' : '' }}>{{$i}} Jam</option>
-                        @endfor
-                    </select>
-                    @include('layouts.inputError', ['errorName' => 'time_interval'])
-                </div>
-                <div class="form-group">
-                    <label for="max_slots">{{ __('Maximum Slot') }}</label>
-                    <input name="max_slots" type="number" class="form-control @error('max_slots') is-invalid @enderror" value="{{ old('max_slots') ?: $branchConfiguration->max_slots }}" required>
-                    @include('layouts.inputError', ['errorName' => 'max_slots'])
-                </div>
-            </div>
-        @endif
-
         <div class="wrapper-submit mr-3 mb-3">
             <button type="submit" class="btn btn-warning">Simpan</submit>
         </div>
     </form>
 </div>
-
-@if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const oneLayer = document.getElementById('one-layer');
-            const twoLayer = document.getElementById('two-layer');
-            const SlotIntervalConfiguration = document.getElementById('SlotIntervalConfiguration');
-
-            oneLayer.addEventListener('change', function() {
-                if (this.checked) {
-                    SlotIntervalConfiguration.classList.add('d-none');
-                }
-            });
-
-            twoLayer.addEventListener('change', function() {
-                if (this.checked) {
-                    SlotIntervalConfiguration.classList.remove('d-none');
-                }
-            });
-
-            if (oneLayer.checked) {
-                SlotIntervalConfiguration.classList.add('d-none');
-            } else if (twoLayer.checked) {
-                SlotIntervalConfiguration.classList.remove('d-none');
-            }
-        });
-    </script>
-@endif
 @endsection

@@ -11,10 +11,15 @@ class AppointmentOnsite extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'phone', 'fcm_id', 'client_id', 'booking_code', 'service_id',  'start_time', 'end_time', 'date', 'is_used'];
+    protected $fillable = ['name', 'email', 'phone', 'fcm_id', 'client_id', 'booking_code', 'service_id',  'start_time', 'end_time', 'date', 'is_used', 'slot_id'];
 
     public function Service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    public function Slot()
+    {
+        return $this->belongsTo('App\Slot')->orderBy('start_time', 'desc');
     }
 }
