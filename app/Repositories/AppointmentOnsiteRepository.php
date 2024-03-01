@@ -89,7 +89,7 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             $appointmentOnsite = AppointmentOnsite::create($data);
 
-            // Mail::to($appointmentOnsite->email)->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
+            Mail::to($appointmentOnsite->email)->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
 
             return $appointmentOnsite;
         });
