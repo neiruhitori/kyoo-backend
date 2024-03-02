@@ -59,13 +59,13 @@ function AppointmentOnsiteVisitorInformation() {
         try {
             const booking = await bookingMutation.mutateAsync({
                 service_id: serviceId,
+                branch_id: branchId,
                 name,
                 phone,
                 email,
                 fcm_id,
                 date: searchParams.get('date'),
-                start_time: searchParams.get('start_time'),
-                end_time: searchParams.get('end_time')
+                slot_id: searchParams.get('slot')
             })
 
             if (!booking.success) {

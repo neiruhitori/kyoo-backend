@@ -19,6 +19,10 @@ class CheckAppointmentQueue
         if (
             !Auth::user()->Branch->BranchType->is_appointment &&
             !Auth::user()->Branch->BranchType->is_exhibition &&
+            (
+                Auth::user()->Branch->BranchType->is_direct_queue  &&
+                Auth::user()->Branch->BranchConfiguration->layer === 1
+            ) &&
             Auth::user()->role == 'cs'
         ) {
             $request->session()->flash('warning', __('Only Appointment Queue Branch can access this page'));
@@ -28,6 +32,10 @@ class CheckAppointmentQueue
         if (
             !Auth::user()->Branch->BranchType->is_appointment &&
             !Auth::user()->Branch->BranchType->is_exhibition &&
+            (
+                Auth::user()->Branch->BranchType->is_direct_queue  &&
+                Auth::user()->Branch->BranchConfiguration->layer === 1
+            ) &&
             Auth::user()->role == 'admin_branch'
         ) {
             $request->session()->flash('warning', __('Only Appointment Queue Branch can access this page'));

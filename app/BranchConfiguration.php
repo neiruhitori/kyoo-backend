@@ -20,6 +20,9 @@ class BranchConfiguration extends Model
     'layer',
     'time_interval',
     'max_slots',
-    'serving_directly'
+    'serving_directly',
+    'whatsapp_type',
+    'api_wa',
+    'api_token'
   ];
 }

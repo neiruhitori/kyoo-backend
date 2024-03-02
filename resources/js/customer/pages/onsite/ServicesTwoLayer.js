@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { format } from 'date-fns'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { format, eachMonthOfInterval, parseISO } from 'date-fns'
 import id from 'date-fns/locale/id'
 
+import useBranch from '../../hooks/useBranch'
+import useBranchSchedules from '../../hooks/useBranchSchedules'
 import useBranchHolidays from '../../hooks/useBranchHolidays'
+import useBranchServices from '../../hooks/useBranchServices'
 
 import 'react-day-picker/lib/style.css'
 
@@ -20,95 +23,84 @@ import SliderIndicator from '../../components/SliderIndicator'
 import MainContent from '../../components/MainContent'
 import TextField from '../../components/TextField'
 import IconButton from '../../components/IconButton'
+import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import CalendarWrapper from '../../components/CalendarWrapper'
 import ServiceItemSkeleton from '../../components/ServiceItemSkeleton'
 import ServiceItem from '../../components/ServiceItem'
 
 import AngleRightIcon from '../../icons/AngleRightIcon'
 import CalendarIcon from '../../icons/CalendarIcon'
+import ClockIcon from '../../icons/ClockIcon'
 import BoxOpenIcon from '../../icons/BoxOpenIcon'
-import { fetchServiceByBranchId } from '../../api/services'
-import { useQuery } from 'react-query'
-import { getDayIndex, getDayName, getFullDate, getMonthNames } from '../../utils/date'
 import { fetchBranch } from '../../api/branch'
+import { useQuery } from 'react-query'
+import { getDayName, getFullDate } from '../../utils/date'
 
 function ServicesTwoLayer() {
-    const { branchId } = useParams()
-    const queueType = 'onsite'
+    const { branchId, serviceCategoryId } = useParams()
+    const [searchParams] = useSearchParams()
+    const isAllowback = searchParams.get("is_allow_back")
     const navigate = useNavigate()
 
-    const today = new Date();
-    const date = new Date(today);
-    date.setDate(today.getDate() + 1);
+    const PAGE_TITLE = 'Antrian Appointment'
 
+    const [selectedDate, setSelectedDate] = useState(new Date())
     const [isCalendarShow, setIsCalendarShow] = useState(false)
-    const [selectedDate, setSelectedDate] = useState(date)
-    const [serviceId, setServiceId] = useState()
 
-    const branchRes = useQuery('branch', () => fetchBranch(branchId))
+    const branchQuery = useQuery('branch', () => fetchBranch(branchId))
+    const branchSchedulesQuery = useBranchSchedules(branchId)
     const branchHolidaysQuery = useBranchHolidays(branchId)
-    const servicesRes = useQuery('services',
-        () => fetchServiceByBranchId(branchId, {
+    const branchServicesQuery = useBranchServices(branchId, {
             queueType: 'appointment-onsite',
             date: getFullDate(selectedDate, 'en'),
             day: getDayName(selectedDate, 'en'),
         })
-    )
 
-    let branch = null,
-        holidays = [],
-        todayHoliday = null,
-        schedule = null,
-        services = []
+    const branch = branchQuery?.data
+    const schedules = branchSchedulesQuery?.data
+    const holidays = branchHolidaysQuery?.data
+    const services = branchServicesQuery?.data
 
-    function isBranchOpen() {
-        return schedule?.status === 'open' && !todayHoliday
-    }
-
-    function isSameDay() {
-        return format(selectedDate, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd')
-    }
-
-    if (branchRes.status === 'success') {
-        branch = branchRes.data
-        schedule = branch?.schedule.find(v => (v.day === getDayName(selectedDate, 'en')))
-    }
-
-    if(branchHolidaysQuery.status === 'success') {
-        holidays = branchHolidaysQuery.data
-        todayHoliday = holidays?.find(v => v.date === format(selectedDate, 'yyyy-MM-dd'))
-    }
-
-    if (servicesRes.status === 'success') {
-        services = servicesRes.data
-    }
+    const todaySchedule = schedules?.find(v => v.day === format(selectedDate, 'eeee').toLowerCase())
+    const todayHoliday = holidays?.find(v => v.date === format(selectedDate, 'yyyy-MM-dd'))
 
     if(branch && branch.branch_configuration.layer === 1){
         navigate(`/customer/${branchId}/onsite/services`);
     }
 
     useEffect(() => {
-        servicesRes.refetch()
-    }, [serviceId, selectedDate])
+        branchSchedulesQuery.refetch()
+        branchHolidaysQuery.refetch()
+        branchServicesQuery.refetch()
+    }, [selectedDate])
 
-    useEffect(() => {
-        const service = services.find(service => service.is_show);
-        setServiceId(service?.id);
-    }, [services])
+    function isBranchOpen() {
+        return todaySchedule?.status === 'open' && !todayHoliday
+    }
 
-    // EVENTS
+    function getClosedDayIndexes() {
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+
+        return schedules
+            .filter(v => v.status === 'closed')
+            .map(v => days.indexOf(v.day))
+    }
+
+    function getMonthNames() {
+        const now = new Date()
+
+        return eachMonthOfInterval({
+            start: new Date(now.getFullYear(), 0, 1),
+            end: new Date(now.getFullYear(), 11, 1)
+        })
+            .map(v => {
+                return format(v, 'MMMM', { locale: id })
+            })
+    }
+
     function handleDayClick(day, modifiers = {}) {
         if (modifiers.disabled) return
         setSelectedDate(day)
-    }
-
-    // METHODS
-    function getClosedDays() {
-        return branch ? branch.schedule.filter(v => {
-            return v.status === 'closed'
-        }).map(val => {
-            return getDayIndex(val.day)
-        }) : []
     }
 
     function handleCalendarClose() {
@@ -116,18 +108,52 @@ function ServicesTwoLayer() {
     }
 
     return <>
-        {branchRes.status === 'success' && <Banner imageUrl={branch.photo}>
+        <Banner imageUrl={branch?.photo}>
             <Header>
-                <div style={{
+                {
+                    isAllowback ?
+                        <div style={{
+                            display: 'flex',
+                            height: '100%'
+                        }}>
+                            <div
+                                onClick={() => history.back()}
+                                style={{
+                                    justifyContent: 'center',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    padding: '.85rem 1.375rem',
+                                }}
+                            >
+                                <ArrowLeftIcon/>
+                            </div>
+                        </div>
+                    :
+                        ""
+                }
+
+                <Link to={-1} style={{
                     display: 'flex',
-                    height: '100%'
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '.85rem 1.375rem'
                 }}>
+                    <ArrowLeftIcon />
+                </Link>
+
+                <div style={{
+                    borderLeft: '1px solid #EEEEEE',
+                    textTransform: 'capitalize',
+                    padding: '0 1.375rem 0 .85rem',
+                    flex: '1'
+                }}>{PAGE_TITLE}</div>
+
+                <div style={{margin:'0 10px'}}>
                     <a href="#" style={{
-                        padding: '.5rem .85rem .5rem 1.375rem',
                         display: 'flex',
                         alignItems: 'center'
                     }}>
-                        <img src={branch.logo ? `/storage/${branch.logo}` : `/img/logo-color.svg`} height="26" />
+                        <img src={branch?.logo ? `/storage/${branch?.logo}` : `/img/logo-color.svg`} height="26" />
                     </a>
                 </div>
             </Header>
@@ -143,7 +169,7 @@ function ServicesTwoLayer() {
                 }}>
                     <Chip label={branch?.industry_category.name} />
 
-                    <Link to={`/customer/${branchId}/${queueType}/detail`}>
+                    <Link to={`/customer/${branch?.id}/appointment/detail`}>
                         <div style={{
                             color: '#FFFFFF',
                             display: 'flex',
@@ -154,6 +180,7 @@ function ServicesTwoLayer() {
                             <span style={{
                                 padding: '0 0.75rem'
                             }}>Lihat Detail</span>
+
                             <AngleRightIcon color="#FFFFFF" />
                         </div>
                     </Link>
@@ -165,19 +192,20 @@ function ServicesTwoLayer() {
                     }}>{branch?.name}</H2>
                 </div>
 
-                {schedule && isBranchOpen()
-                ? <BranchStatusOpen
-                    startTime={schedule.start_time.slice(0, -3)}
-                    endTime={schedule.end_time.slice(0, -3)}
-                    style={{
-                        marginTop: '1rem'
-                    }}
-                />
-                : <BranchStatusClosed
-                    style={{
-                        marginTop: '1rem'
-                    }}
-                />}
+                {isBranchOpen()
+                    ? <BranchStatusOpen
+                        startTime={todaySchedule?.start_time.slice(0, -3)}
+                        endTime={todaySchedule?.end_time.slice(0, -3)}
+                        style={{
+                            marginTop: '1rem'
+                        }}
+                    />
+                    : <BranchStatusClosed
+                        style={{
+                            marginTop: '1rem'
+                        }}
+                    />
+                }
 
                 <SliderIndicator active={0} total={3} style={{
                     position: 'absolute',
@@ -186,7 +214,7 @@ function ServicesTwoLayer() {
                     transform: 'translateX(-50%)'
                 }} />
             </div>
-        </Banner>}
+        </Banner>
 
         <MainContent>
             {isCalendarShow && <CalendarWrapper
@@ -199,7 +227,7 @@ function ServicesTwoLayer() {
                         selected: selectedDate,
                         disabled: [
                             ...holidays.map(v => parseISO(v.date)),
-                            { daysOfWeek: getClosedDays() },
+                            { daysOfWeek: getClosedDayIndexes() },
                             { before: new Date() }
                         ]
                     }}
@@ -233,28 +261,50 @@ function ServicesTwoLayer() {
                 marginBottom: '1.125rem'
             }}>Layanan</h4>
 
-            {servicesRes.status === 'loading' && <ServiceItemSkeleton />}
+            {branchServicesQuery.isLoading && <ServiceItemSkeleton />}
 
-            {isBranchOpen() && !isSameDay() && servicesRes.status === 'success' && services.map(service => {
-                if (!service.is_show) return;
+            {isBranchOpen() && services?.map(service => {
+                const availableSlot = service.filledSlot < service.totalSlot
+                    ? service.totalSlot - service.filledSlot
+                    : 0
 
-                const serviceProps = {
-                    title: service.name,
-                    key: service.id,
-                    action: {
-                        label: 'Total Slot Tersedia',
-                        value: service.available_slot
-                    }
-                }
+                if (!service.is_show) return
 
                 return <Link to={`/customer/${branchId}/onsite/services/${service.id}?date=${format(selectedDate, 'yyyy-MM-dd')}`} key={service.id} style={{
                     marginBottom: '1.125rem'
                 }}>
-                    <ServiceItem {...serviceProps} />
+                    <ServiceItem
+                        title={service.name}
+                        action={{
+                            label: "Total Slot Tersedia",
+                            value: availableSlot,
+                            total: service.totalSlot
+                        }}
+                        subtitle={<div style={{
+                            display: 'flex',
+                            alignItems: 'center'
+                        }}>
+                            <ClockIcon
+                                color="#A5A5A5"
+                                width="0.75rem"
+                                height="0.75rem"
+                                style={{
+                                    marginRight: '0.5rem'
+                                }}
+                        />
+                            <span>
+                                {
+                                    service.slots.length
+                                        ? service.slots.length + ' Sesi Waktu'
+                                        : 'Tidak Ada Sesi Waktu'
+                                }
+                            </span>
+                        </div>}
+                    />
                 </Link>
             })}
 
-            {!servicesRes.isLoading && (isSameDay() || !isBranchOpen()) && <div style={{
+            {!isBranchOpen() && <div style={{
                 flex: '1 1 0%',
                 display: 'flex',
                 flexDirection: 'column',
@@ -284,8 +334,40 @@ function ServicesTwoLayer() {
                     Pilih tanggal lain untuk menemukan layanan yang tersedia
                 </p>
             </div>}
+
+            {/* {services && services.length == 0 && isBranchOpen() && <div style={{
+                    flex: '1 1 0%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <div style={{
+                        display: 'inline-flex',
+                        borderRadius: '99999999px',
+                        backgroundColor: '#F5F5F5',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '7.5rem',
+                        width: '7.5rem',
+                        marginBottom: '1.5rem'
+                    }}>
+                        <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
+                    </div>
+                    <h4>Tidak Ada Layanan</h4>
+                    <p style={{
+                        textAlign: 'center',
+                        width: '280px',
+                        marginTop: '0.5rem',
+                        color: '#A5A5A5',
+                        fontSize: '.875rem'
+                    }}>
+                        Pilih kategori lain untuk menemukan layanan yang tersedia
+                    </p>
+                </div>} */}
         </MainContent>
     </>
 }
 
 export default ServicesTwoLayer
+

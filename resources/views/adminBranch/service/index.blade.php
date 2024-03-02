@@ -51,7 +51,8 @@
                                     <td>
                                         @if (
                                             Auth::user()->Branch->BranchType->is_appointment ||
-                                            Auth::user()->Branch->BranchType->is_exhibition
+                                            Auth::user()->Branch->BranchType->is_exhibition ||
+                                            (Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->BranchConfiguration->layer === 2)
                                         )
                                             <a
                                                 href="{{route('admin-branch.branch-configuration.service.slot.index', $service->id)}}"

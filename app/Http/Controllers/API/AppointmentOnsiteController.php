@@ -10,6 +10,7 @@ use App\Service;
 use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
 use App\Models\AppointmentOnsite;
 use App\Http\Resources\AppointmentOnsite\Detail as AppointmentOnsiteDetail;
+use App\Slot;
 use App\User;
 use App\WorkstationService;
 use Illuminate\Http\Request;
@@ -23,30 +24,33 @@ class AppointmentOnsiteController extends Controller
         $this->appointmentOnsiteRepository = $appointmentOnsiteRepository;
     }
 
-    public function index(Branch $branch, Request $request)
+    public function getAllByBranchId(Request $request, $branch_id)
     {
-        $branchConfiguration = $branch->BranchConfiguration;
-        $schedule = $branch->schedule->where('day', $request->day)->first();
-        $startTime = $schedule ? strtotime($schedule->start_time) : null;
-        $endTime = $schedule ? strtotime($schedule->end_time) : null;
-        $timeInterval = $branchConfiguration->time_interval * 60 * 60;
-
-        $services = Service::where('branch_id', $branch->id)->get();
+        $dateNow = $request->date ?? date('Y-m-d');
+        $dayNow =  strtolower(date("l", strtotime($dateNow)));
+        $services = Service::where('branch_id', $branch_id)
+                            ->get();
 
         foreach ($services as $service) {
-            $service->available_slot = 0;
+            // get filled slot
+            $filledSlot = $this->getFilledSlot([
+                'service_id' => $service->id,
+                'date' => $dateNow
+            ]);
 
-            if($startTime && $endTime) {
-                for ($i = $startTime; $i < $endTime; $i += $timeInterval) {
-                    $service->available_slot++;
-                }
-            }
+            // get total slot
+            $slots = Slot::where('day', $dayNow)
+                ->whereServiceId($service->id);
+
+            $service->slots = $slots->get();
+            $service->filledSlot = $filledSlot;
+            $service->totalSlot = $slots->sum('max_slots');
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'get direct queue services by branch id',
-            'data' => $services,
+            'message' => 'get all services by branch id',
+            'data' => $services
         ]);
     }
 
@@ -59,48 +63,28 @@ class AppointmentOnsiteController extends Controller
         ]);
     }
 
-    public function slots(Branch $branch, Request $request)
+    public function getFilledSlot($params)
     {
-        $branchConfiguration = $branch->BranchConfiguration;
-        $schedule = $branch->schedule->where('day', $request->day)->first();
-        $startTime = $schedule ? strtotime($schedule->start_time) : null;
-        $endTime = $schedule ? strtotime($schedule->end_time) : null;
-        $timeInterval = $branchConfiguration->time_interval * 60 * 60;
-        $slots = [];
-
-        if($startTime && $endTime) {
-            for ($i = $startTime; $i < $endTime; $i += $timeInterval) {
-                $slotStartTime = $i;
-                $slotEndTime = $slotStartTime + $timeInterval;
-                if ($slotEndTime > $endTime) {
-                    $slotEndTime = $endTime;
-                }
-
-                $filled_slot = AppointmentOnsite::where('service_id', $request->service_id)->where('date', $request->date)->where('start_time', date('H:i:s', $slotStartTime))->where('end_time', date('H:i:s', $slotEndTime))->count();
-
-                $slots[] = [
-                    'start_time' => date('H:i', $slotStartTime),
-                    'end_time' => date('H:i', $slotEndTime),
-                    'filled_slot' => $filled_slot,
-                    'max_slots' => $branchConfiguration->max_slots
-                ];
-            }
-        }
-
-        return response()->json([
-                'success' => true,
-                'message' => 'get schedule appointment onsite',
-                'data' => $slots
-        ]);
+        return AppointmentOnsite::whereHas('Slot', function ($query) use ($params) {
+            $query->where('service_id', $params['service_id']);
+        })
+            ->when(isset($params['slot_id']), function ($q) use ($params) {
+                $q->where('slot_id', $params['slot_id']);
+            })
+            ->where('date', $params['date'])
+            ->count();
     }
 
     public function store(DirectQueueStore $request)
     {
         try {
             Service::find($request->service_id);
+            $slot = Slot::find($request->slot_id);
 
             $data = $request->all();
             $data['client_id'] = $request->cookie('client_id');
+            $data['start_time'] = $slot->start_time;
+            $data['end_time'] = $slot->end_time;
 
             $appointmentOnsite = $this->appointmentOnsiteRepository->store($data);
 

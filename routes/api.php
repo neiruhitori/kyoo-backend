@@ -73,7 +73,7 @@ Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@f
 Route::post('appointment-onsite', 'API\AppointmentOnsiteController@store')->middleware('cookie.clientid');
 Route::get('appointment-onsite/{appointmentOnsite}', 'API\AppointmentOnsiteController@show');
 Route::get('appointment-onsite/{branch}/slots', 'API\AppointmentOnsiteController@slots');
-Route::get('appointment-onsite/direct-queue-by-branch/{branch}', 'API\AppointmentOnsiteController@index');
+Route::get('appointment-onsite/direct-queue-by-branch/{branch}', 'API\AppointmentOnsiteController@getAllByBranchId');
 
 Route::middleware(['auth:api'])->group(function () {
     // user routes

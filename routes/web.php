@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\WhatsappConfigurationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -277,6 +278,9 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::post('branchToken', 'BranchTokenController@store')->name('branchToken.store');
     Route::resource('branch', 'BranchController');
     Route::resource('registrationBranch', 'RegistrationBranchController')->only(['index', 'show', 'update', 'destroy']);
+
+    // Whatsapp Branch Configuration
+    Route::resource('/whatsappConfiguration', 'WhatsappConfigurationController')->only(['index', 'show', 'update']);
 
     Route::get('/branch/{id}/license', 'BranchLicenseController@index')->name('branch.license');
     Route::put('/branch/{id}/license', 'BranchLicenseController@update')->name('branch.license.update');

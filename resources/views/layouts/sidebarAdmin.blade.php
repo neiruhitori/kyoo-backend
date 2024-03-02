@@ -41,7 +41,7 @@
           </div>
         </div>
       </li>
-      
+
       <li class="nav-item">
         <a class="nav-link" href="{{route('admin.scheduleTemplate.index')}}">
           <i class="fas fa-fw fa-calendar"></i>
@@ -68,6 +68,8 @@
             <a class="collapse-item" href="{{route('admin.registrationBranch.index')}}">{{ __('Verify Branch') }}</a>
 
             <a class="collapse-item" href="{{route('admin.branch.create')}}">{{ __('create.module', ['module' => __('Branch')]) }}</a>
+
+            <a class="collapse-item" href="{{route('admin.whatsappConfiguration.index')}}">Whatsapp Konfigurasi</a>
           </div>
         </div>
       </li>
