@@ -54,7 +54,7 @@
                             class="waiting-card"
                             :id="'calling-no-' + workstation.id" v-bind:style="[firstLetter]"
                         >
-                            <div v-if="servingQueue[workstation.id] && servingQueue[workstation.id].queue_no !== undefined">
+                            <div>
                                 <span>{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
                             </div>
                             <span v-bind:style="[counter]">{{ workstation.label }}</span>
@@ -71,7 +71,7 @@
                             class="waiting-card"
                             :id="'calling-no-' + workstation.id"
                         >
-                            <div v-if="servingQueue[workstation.id] && servingQueue[workstation.id].queue_no !== undefined">
+                            <div>
                                 <span v-bind:style="[firstLetter]">{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
                             </div>
                             <svg width="36" height="22" viewBox="0 0 23 38" fill="none" xmlns="http://www.w3.org/2000/svg">
