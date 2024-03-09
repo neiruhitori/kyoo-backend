@@ -48,14 +48,15 @@
                 </div>
 
                 <div class="monitor-sidebar" v-bind:style="[callingCardBody]">
-                    <div class="oncall-waiting-card">
+                    <div class="oncall-waiting-card" v-if="Object.keys(servingQueue).length > 0">
                         <div
                             v-for="workstation in workstations.slice(0, 2)" :key="workstation.queue_no"
+                            :key="workstation.queue_no"
                             class="waiting-card"
-                            :id="'calling-no-' + workstation.id" v-bind:style="[firstLetter]"
+                            :id="'calling-no-' + workstation.id"
                         >
                             <div>
-                                <span>{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
+                                <span v-bind:style="[firstLetter]">{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
                             </div>
                             <span v-bind:style="[counter]">{{ workstation.label }}</span>
                         </div>
@@ -66,7 +67,7 @@
                         <span>COUNTER</span>
                     </div>
 
-                    <div class="waiting-list" v-for="workstation in workstations.slice(2)" :key="workstation.queue_no">
+                    <div class="waiting-list" v-for="workstation in workstations.slice(2)" :key="workstation.queue_no" v-if="Object.keys(servingQueue).length > 0">
                         <div
                             class="waiting-card"
                             :id="'calling-no-' + workstation.id"
