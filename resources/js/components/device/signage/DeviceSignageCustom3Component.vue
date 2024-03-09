@@ -52,9 +52,10 @@
                         <div
                             v-for="workstation in workstations.slice(0, 2)" :key="workstation.queue_no"
                             class="waiting-card"
+                            :id="'calling-no-' + workstation.id" v-bind:style="[firstLetter]"
                         >
-                            <div>
-                                <span :id="'calling-no-' + workstation.id" v-bind:style="[firstLetter]">{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
+                            <div v-if="servingQueue[workstation.id] && servingQueue[workstation.id].queue_no !== undefined">
+                                <span>{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
                             </div>
                             <span v-bind:style="[counter]">{{ workstation.label }}</span>
                         </div>
@@ -70,13 +71,13 @@
                             class="waiting-card"
                             :id="'calling-no-' + workstation.id"
                         >
-                            <div>
+                            <div v-if="servingQueue[workstation.id] && servingQueue[workstation.id].queue_no !== undefined">
                                 <span v-bind:style="[firstLetter]">{{ servingQueue[workstation.id].queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no.substring(1) }}</span>
                             </div>
                             <svg width="36" height="22" viewBox="0 0 23 38" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M8.297 1.82943L20.8717 14.4041C23.4101 16.9425 23.4101 21.0581 20.8717 23.5965L8.297 36.1712C6.5185 37.9497 3.63981 37.9652 1.84229 36.2059C0.0087747 34.4114 0.00263408 31.4622 1.82866 29.6601L11.0673 20.5424C11.9269 19.6941 11.9269 18.3066 11.0673 17.4582L1.82866 8.34052C0.00262654 6.53838 0.00877646 3.58923 1.84229 1.79473C3.63981 0.0354595 6.51851 0.050936 8.297 1.82943Z" fill="#FFDB1B"/>
                             </svg>
-                            <span v-bind:style="[counterQueueNumber]">{{ workstation.label }}</span>
+                            <span v-bind:style="[counter]">{{ workstation.label }}</span>
                         </div>
                     </div>
                 </div>
