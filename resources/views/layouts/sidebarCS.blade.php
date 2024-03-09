@@ -23,18 +23,43 @@
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('cs.branchQrCode') }}">
-            <i class="fas fa-fw fa-qrcode"></i>
-            <span>{{ __('Show QR Code') }}</span></a>
-    </li>
-
     @if (Auth::user()->Branch->BranchType->is_direct_queue)
         <li class="nav-item">
             <a class="nav-link" href="{{route('cs.directQueue.monitor')}}">
                 <i class="fas fa-list-ul"></i>
                 <span>{{ __('Direct Queue') }}</span></a>
         </li>
+    @endif
+
+    @if (
+        Auth::user()->Branch->BranchType->is_premium &&
+        Auth::user()->Branch->BranchType->is_direct_queue
+    )
+        @foreach (Auth::user()->Branch->getCsActiveMenus(Auth::user()->WorkstationVct->workstation_id) as $key => $menu)
+            @if(is_array($menu))
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#branch-information"
+                        aria-expanded="true" aria-controls="branch-information">
+                        <i class="fas fa-fw fa-building"></i>
+                        <span>{{ __($key) }}</span>
+                    </a>
+
+                    <div class="collapse {{ !request()->is('admin-branch/branch-information/*') ?: 'show' }}"
+                            id="branch-information" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            @foreach ($menu as $submenuKey => $submenu)
+                                <a
+                                    class="collapse-item kyoo-sublink {{ !request()->is($submenu->route) ?: 'active'  }}"
+                                    href="{{ url($submenu->route) }}"
+                                >
+                                    {{ __($submenu->name_label) }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                </li>
+            @endif
+        @endforeach
     @endif
 
     @if (Auth::user()->Branch->BranchType->is_appointment)
@@ -96,28 +121,6 @@
                     <a class="nav-link" href="{{ url($menu->route) }}">
                         <i class="fas fa-cog"></i>
                         <span>{{ __($menu->name_label) }}</span></a>
-                </li>
-            @elseif(is_array($menu))
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#branch-information"
-                       aria-expanded="true" aria-controls="branch-information">
-                        <i class="fas fa-fw fa-building"></i>
-                        <span>{{ __($key) }}</span>
-                    </a>
-
-                    <div class="collapse {{ !request()->is('admin-branch/branch-information/*') ?: 'show' }}"
-                         id="branch-information" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            @foreach ($menu as $submenuKey => $submenu)
-                                <a
-                                    class="collapse-item kyoo-sublink {{ !request()->is($submenu->route) ?: 'active'  }}"
-                                    href="{{ url($submenu->route) }}"
-                                >
-                                    {{ __($submenu->name_label) }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
                 </li>
             @endif
         @endforeach

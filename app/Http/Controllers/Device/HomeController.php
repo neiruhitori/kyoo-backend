@@ -93,11 +93,17 @@ class HomeController extends Controller
                     'features' => $features,
                     'workstations' => $workstations,
                 ]);
-            } else {
+            } elseif($branch->BranchConfiguration->template_signage === 'custom-layout-2') {
                 return view('device.signage.custom-2UI', [
                     'branch' => $branch,
                     'features' => $features,
                     'workstations' => $workstations,
+                    'customLayoutConfig' => $customLayoutConfig
+                ]);
+            } else {
+                return view('device.signage.custom-3UI', [
+                    'branch' => $branch,
+                    'features' => $features,
                     'customLayoutConfig' => $customLayoutConfig
                 ]);
             }
@@ -106,6 +112,40 @@ class HomeController extends Controller
         return view('device.signage.standardUI', [
             'branch' => $branch,
             'features' => $features
+        ]);
+    }
+
+    public function workstationList(Branch $branch)
+    {
+        $workstations = Workstation::whereIn(
+                            'department_id',
+                            $branch->Departments->pluck('id')->toArray(),
+                        )->whereHas('DirectQueues', function($query) {
+                            $query->where('status', 'served')
+                                ->whereDate('created_at', date('Y-m-d'));
+                        })
+                        ->with(['DirectQueues' => function($query) {
+                            $query->where('status', 'served')
+                                ->whereDate('created_at', date('Y-m-d'))
+                                ->latest('updated_at')
+                                ->limit(1);
+                        }])
+                        ->orderBy(
+                            function ($query) {
+                                $query->from('direct_queues')
+                                    ->whereColumn('workstations.id', 'direct_queues.workstation_id')
+                                    ->orderBy('updated_at', 'desc')
+                                    ->limit(1)
+                                    ->select('updated_at');
+                            },
+                            'desc'
+                        )
+                        ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'get queues by branch id',
+            'data' => $workstations
         ]);
     }
 
@@ -122,6 +162,23 @@ class HomeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get queues by branch id',
+            'data' => $queues
+        ]);
+    }
+
+    public function directQueueServed($branch_id)
+    {
+        $queues = DirectQueue::whereHas('Service', function ($query) use ($branch_id) {
+            return $query->where('branch_id', $branch_id);
+        })
+            ->whereDate('created_at', date('Y-m-d'))
+            ->where('status', 'served')
+            ->orderBy('updated_at')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'get queues served by branch id',
             'data' => $queues
         ]);
     }

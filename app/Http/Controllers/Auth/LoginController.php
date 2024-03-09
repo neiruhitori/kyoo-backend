@@ -54,7 +54,7 @@ class LoginController extends Controller
 
         // checking type email / username
         $loginType = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-    
+
         // save credential on new array
         $login = [
             $loginType => $request->email,
@@ -93,10 +93,15 @@ class LoginController extends Controller
             'last_login' => date('Y-m-d H:i:s')
         ]);
 
-        if ($loggedUser->role == 'admin_branch') {
+        $createdAt = Carbon::parse($loggedUser->created_at);
+        $fourMonthsAgo = Carbon::now()->subMonths(4);
+
+        if ($loggedUser->role == 'admin_branch' && $createdAt->lessThan($fourMonthsAgo)) {
+            return redirect()->route('admin-branch.dashboard');
+        } elseif($loggedUser->role == 'admin_branch') {
             return redirect()->route('admin-branch.product-guide.queue-configuration');
         }
-        
+
         return redirect()->route('dashboard');
     }
 
@@ -158,7 +163,7 @@ class LoginController extends Controller
             'workstation_id' => Auth::user()->WorkstationVct->workstation_id,
             'vct_id' => Auth::id()
         ])->first();
-        
+
         if (!$activity) {
             return;
         }
@@ -167,7 +172,7 @@ class LoginController extends Controller
 
         if ($diff < env('SESSION_LIFETIME') * 60) {
             $activity->operation_duration -= env('SESSION_LIFETIME') * 60 - $diff;
-            $activity->save(); 
+            $activity->save();
         }
     }
 }

@@ -25,4 +25,9 @@ class Workstation extends Model
     {
         return $this->hasMany('App\WorkstationVct');
     }
+
+    public function DirectQueues()
+    {
+        return $this->hasMany(DirectQueue::class, 'workstation_id', 'id');
+    }
 }
