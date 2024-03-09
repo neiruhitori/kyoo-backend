@@ -50,7 +50,7 @@
                 <div class="monitor-sidebar" v-bind:style="[callingCardBody]">
                     <div class="oncall-waiting-card" v-if="Object.keys(servingQueue).length > 0">
                         <div
-                            v-for="workstation in workstations.slice(0, 2)" :key="workstation.queue_no"
+                            v-for="workstation in workstations.slice(0, 2)"
                             :key="workstation.queue_no"
                             class="waiting-card"
                             :id="'calling-no-' + workstation.id"
