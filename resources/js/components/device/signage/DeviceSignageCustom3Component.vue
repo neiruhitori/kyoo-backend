@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="monitor-sidebar" v-bind:style="[callingCardBody]">
-                    <div class="oncall-waiting-card" v-if="Object.keys(servingQueue).length > 0">
+                    <div class="oncall-waiting-card">
                         <div
                             v-for="workstation in workstations.slice(0, 2)"
                             :key="workstation.queue_no"
@@ -56,7 +56,7 @@
                             :id="'calling-no-' + workstation.id"
                         >
                             <div>
-                                <span v-if="servingQueue[workstation.id]" v-bind:style="[firstLetter]">{{ servingQueue[workstation.id].queue_no ? servingQueue[workstation.id].queue_no.substring(0, 1) : '' }}</span><span v-if="servingQueue[workstation.id]" v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no ? servingQueue[workstation.id].queue_no.substring(1) : '' }}</span>
+                                <span v-bind:style="[firstLetter]">{{ workstation.queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ workstation.queue_no.substring(1) }}</span>
                             </div>
                             <span v-bind:style="[counter]">{{ workstation.label }}</span>
                         </div>
@@ -67,13 +67,13 @@
                         <span>COUNTER</span>
                     </div>
 
-                    <div class="waiting-list" v-for="workstation in workstations.slice(2)" :key="workstation.queue_no" v-if="Object.keys(servingQueue).length > 0">
+                    <div class="waiting-list" v-for="workstation in workstations.slice(2)" :key="workstation.queue_no">
                         <div
                             class="waiting-card"
                             :id="'calling-no-' + workstation.id"
                         >
                             <div>
-                                <span v-if="servingQueue[workstation.id]" v-bind:style="[firstLetter]">{{ servingQueue[workstation.id].queue_no ? servingQueue[workstation.id].queue_no.substring(0, 1) : '' }}</span><span v-if="servingQueue[workstation.id]" v-bind:style="[nextLetter]">{{ servingQueue[workstation.id].queue_no ? servingQueue[workstation.id].queue_no.substring(1) : '' }}</span>
+                                <span v-bind:style="[firstLetter]">{{ workstation.queue_no.substring(0, 1) }}</span><span v-bind:style="[nextLetter]">{{ workstation.queue_no.substring(1) }}</span>
                             </div>
                             <svg width="36" height="22" viewBox="0 0 23 38" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M8.297 1.82943L20.8717 14.4041C23.4101 16.9425 23.4101 21.0581 20.8717 23.5965L8.297 36.1712C6.5185 37.9497 3.63981 37.9652 1.84229 36.2059C0.0087747 34.4114 0.00263408 31.4622 1.82866 29.6601L11.0673 20.5424C11.9269 19.6941 11.9269 18.3066 11.0673 17.4582L1.82866 8.34052C0.00262654 6.53838 0.00877646 3.58923 1.84229 1.79473C3.63981 0.0354595 6.51851 0.050936 8.297 1.82943Z" fill="#FFDB1B"/>
@@ -179,7 +179,7 @@ export default {
             },
             cardCounterQueueNumber: {
                 "background-color": this.custom_layout_config.waiting_list_card_color || "#f9fafb",
-                color: this.custom_layout_config.font_queue_color || "#e0f0ff",
+                color: this.custom_layout_config.calling_card_font_header_color || "#e0f0ff",
             },
             firstLetter: {
                 color: this.custom_layout_config.font_queue_first_letter_color || "#118bfa"
@@ -730,7 +730,7 @@ export default {
     display: flex;
     justify-content: space-between;
     font-weight: 900;
-    font-size: 1.5rem;
+    font-size: 1rem;
     letter-spacing: 0.06em;
     margin-bottom: 0.5rem;
     text-align: center;
@@ -849,14 +849,13 @@ export default {
         font-size: 1.5rem;
     }
     .sidebar-subtitle {
-        font-size: 1rem;
+        font-size: 1.3rem;
         letter-spacing: -0.04em;
         margin-bottom: 0.5rem;
         display: flex;
         justify-content: space-between;
         text-align: center;
         padding: 10px 20px;
-        font-size: 24px;
     }
     .waiting-card {
         height: 3.25rem;

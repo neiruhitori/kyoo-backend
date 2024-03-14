@@ -121,7 +121,13 @@ class HomeController extends Controller
                             'department_id',
                             $branch->Departments->pluck('id')->toArray(),
                         )->whereHas('DirectQueues', function($query) {
-                            $query->where('status', 'served')
+                            $query->where(function ($query) {
+                                        $query->where('status', 'served')
+                                            ->orWhere(function ($query) {
+                                                $query->where('status', 'waiting')
+                                                        ->whereNotNull('called_at');
+                                            });
+                                    })
                                 ->whereDate('created_at', date('Y-m-d'));
                         })
                         ->with(['DirectQueues' => function($query) {
@@ -134,13 +140,28 @@ class HomeController extends Controller
                             function ($query) {
                                 $query->from('direct_queues')
                                     ->whereColumn('workstations.id', 'direct_queues.workstation_id')
-                                    ->orderBy('updated_at', 'desc')
-                                    ->limit(1)
-                                    ->select('updated_at');
+                                    ->where(function ($query) {
+                                        $query->where('status', 'served')
+                                    ->whereDate('created_at', date('Y-m-d'))
+                                    ->latest('updated_at')
+                                    ->limit(1);
+                                })
+                                ->whereDate('created_at', date('Y-m-d'))
+                                ->orderBy('updated_at', 'desc')
+                                ->limit(1)
+                                ->select('updated_at');
                             },
                             'desc'
                         )
                         ->get();
+
+        foreach($workstations as $workstation) {
+            $queue = DirectQueue::where('workstation_id', $workstation->id)
+                                ->where('status', 'served')
+                                ->whereDate('created_at', date('Y-m-d'))
+                                ->first();
+            $workstation->queue_no = $queue->queue_no;
+        }
 
         return response()->json([
             'success' => true,
