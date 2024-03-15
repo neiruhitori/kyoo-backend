@@ -185,20 +185,18 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="monitor-image-container">
+                            <label for="image_2">
+                                <div class="monitor-image-upload">
+                                    <img src="{{ asset($image_2) }}" id="preview_image_2">
 
+                                <input type="file" accept="image/*" name="image_2" id="image_2" onchange="previewImage(this, 2)" hidden>
 
-                            <div class="monitor-image-container">
-                                <label for="image_2">
-                                    <div class="monitor-image-upload">
-                                        <img src="{{ asset($image_2) }}" id="preview_image_2">
-
-                                    <input type="file" accept="image/*" name="image_2" id="image_2" onchange="previewImage(this, 2)" hidden>
-
-                                        <span class="monitor-image-label">
-                                            <span class="fas fa-upload"></span>
-                                        </span>
-                                    </div>
-                                </label>
+                                    <span class="monitor-image-label">
+                                        <span class="fas fa-upload"></span>
+                                    </span>
+                                </div>
+                            </label>
 
                             <div>
                                 <div class="mb-1">Gambar Iklan 2</div>
@@ -210,24 +208,88 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="monitor-image-container">
+                            <label for="image_3">
+                                <div class="monitor-image-upload">
+                                    <img src="{{ asset($image_3) }}" id="preview_image_3">
 
-                            <div class="monitor-image-container">
-                                <label for="image_3">
-                                    <div class="monitor-image-upload">
-                                        <img src="{{ asset($image_3) }}" id="preview_image_3">
+                                <input type="file" accept="image/*" name="image_3" id="image_3" onchange="previewImage(this, 3)" hidden>
 
-                                    <input type="file" accept="image/*" name="image_3" id="image_3" onchange="previewImage(this, 3)" hidden>
-
-                                        <span class="monitor-image-label">
-                                            <span class="fas fa-upload"></span>
-                                        </span>
-                                    </div>
-                                </label>
-
+                                    <span class="monitor-image-label">
+                                        <span class="fas fa-upload"></span>
+                                    </span>
+                                </div>
+                            </label>
                             <div>
                                 <div class="mb-1">Gambar Iklan 3</div>
                                 <div>
                                     <button type="button" class="delete-image-button hidden" id="delete_button_3" onclick="deleteImage(3)">
+                                        <span class="fas fa-times mr-1"></span>
+                                        Hapus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="monitor-image-container" id="monitor-container-image-4">
+                            <label for="image_4">
+                                <div class="monitor-image-upload">
+                                    <img src="{{ asset($image_4) }}" id="preview_image_4">
+
+                                <input type="file" accept="image/*" name="image_4" id="image_4" onchange="previewImage(this, 4)" hidden>
+
+                                    <span class="monitor-image-label">
+                                        <span class="fas fa-upload"></span>
+                                    </span>
+                                </div>
+                            </label>
+                            <div>
+                                <div class="mb-1">Gambar Iklan 4</div>
+                                <div>
+                                    <button type="button" class="delete-image-button hidden" id="delete_button_4" onclick="deleteImage(4)">
+                                        <span class="fas fa-times mr-1"></span>
+                                        Hapus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="monitor-image-container" id="monitor-container-image-5">
+                            <label for="image_5">
+                                <div class="monitor-image-upload">
+                                    <img src="{{ asset($image_5) }}" id="preview_image_5">
+
+                                <input type="file" accept="image/*" name="image_5" id="image_5" onchange="previewImage(this, 5)" hidden>
+
+                                    <span class="monitor-image-label">
+                                        <span class="fas fa-upload"></span>
+                                    </span>
+                                </div>
+                            </label>
+                            <div>
+                                <div class="mb-1">Gambar Iklan 5</div>
+                                <div>
+                                    <button type="button" class="delete-image-button hidden" id="delete_button_5" onclick="deleteImage(5)">
+                                        <span class="fas fa-times mr-1"></span>
+                                        Hapus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="monitor-image-container" id="monitor-container-image-6">
+                            <label for="image_6">
+                                <div class="monitor-image-upload">
+                                    <img src="{{ asset($image_6) }}" id="preview_image_6">
+
+                                <input type="file" accept="image/*" name="image_6" id="image_6" onchange="previewImage(this, 6)" hidden>
+
+                                    <span class="monitor-image-label">
+                                        <span class="fas fa-upload"></span>
+                                    </span>
+                                </div>
+                            </label>
+                            <div>
+                                <div class="mb-1">Gambar Iklan 6</div>
+                                <div>
+                                    <button type="button" class="delete-image-button hidden" id="delete_button_6" onclick="deleteImage(6)">
                                         <span class="fas fa-times mr-1"></span>
                                         Hapus
                                     </button>
@@ -240,7 +302,7 @@
                 </form>
             </div>
 
-                <div class="col-md-7 col-sm-12">
+            <div class="col-md-7 col-sm-12">
                 <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update-layout', Auth::user()->branch_id) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -256,6 +318,7 @@
                                 @if (!$is_appointment)
                                     <option value="custom-layout-1" {{ $template_signage == 'custom-layout-1' ? 'selected' : '' }}>Custom Layout 1</option>
                                     <option value="custom-layout-2" {{ $template_signage == 'custom-layout-2' ? 'selected' : '' }}>Custom Layout 2</option>
+                                    <option value="custom-layout-3" {{ $template_signage == 'custom-layout-3' ? 'selected' : '' }}>Custom Layout 3</option>
                                 @endif
                             </select>
                         </div>
@@ -287,12 +350,24 @@
                     </div>
                 </form>
             </div>
+            <div class="col-md-5 col-sm-12 mb-5">
+                <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update-token', Auth::user()->branch_id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Perbarui Token</h5>
+                        <p class="text-caption">Perbarui Token Web Monitor TV</p>
+                    </div>
+
+                    <button type="submit" id="submit_image" class="btn btn-primary">Perbarui</submit>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 @if (!$is_appointment)
-    <div id='layoutConfig' class="card shadow mb-4 {{ $template_signage == 'custom-layout-2' ?: 'd-none'}}">
+    <div id='layoutConfig2' class="card shadow mb-4 {{ $template_signage == 'custom-layout-2' ?: 'd-none'}}">
         <div class="card-header">
             <h6 class="font-weight-bold text-primary mb-0">
                 Konfigurasi Display TV
@@ -533,6 +608,248 @@
             </div>
         </div>
     </div>
+
+    <div id='layoutConfig3' class="card shadow mb-4 {{ $template_signage == 'custom-layout-3' ?: 'd-none'}}">
+        <div class="card-header">
+            <h6 class="font-weight-bold text-primary mb-0">
+                Konfigurasi Display TV
+            </h6>
+        </div>
+
+        <div class="card-body">
+            @include('layouts.alert')
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="mt-4 col-md-12">
+                        <div class="mb-4 d-flex flex-column align-items-center">
+                            <h5 class="font-weight-bold">Konfigurasi Layout Display</h5>
+                            <p class="text-caption">Atur tampilan yang akan di tampilkan pada monitor antrian</p>
+                        </div>
+
+                        <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update-custom-layout', Auth::user()->branch_id) }}" method="POST" enctype="multipart/form-data">
+                            <div class="row justify-content-around">
+                                @csrf
+                                @method('PUT')
+                                <div class="wrapper-group-action col-md-5">
+                                    <b>{{ __('Background') }}</b>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-12 col-md-12">
+                                            <div class="form-group">
+                                                <label for="background_type">{{ __('Background Type') }}</label>
+                                                <select
+                                                    name="background_type"
+                                                    class="form-control @error('background_type') is-invalid @enderror"
+                                                    onchange="changeBackgroundType(this)"
+                                                    required
+                                                >
+                                                    <option value="color" {{ $layout_configuration->background_type != 'color' ?: 'selected' }} >Color</option>
+                                                    <option value="image" {{ $layout_configuration->background_type != 'image' ?: 'selected' }} >Image</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group {{ $layout_configuration->background_type != 'color' ?: 'd-none' }}" id="background_image_wrapper">
+                                                <label>{{ __('Background Image') }}</label>
+                                                <div class="monitor-image-container">
+                                                    <label for="background_image">
+                                                        <div class="monitor-image-upload">
+                                                            <img src="{{ asset($layout_configuration->background_image) }}" id="preview_background_image">
+
+                                                            <input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                name="background_image"
+                                                                id="background_image"
+                                                                onchange="previewBackgroundImage(this)"
+                                                                hidden
+                                                            >
+
+                                                            <span class="monitor-image-label">
+                                                                <span class="fas fa-upload"></span>
+                                                            </span>
+                                                        </div>
+                                                    </label>
+
+                                                    <div>
+                                                        <button type="button" class="delete-image-button d-none" id="delete_button_background_image" onclick="deleteImg()">
+                                                            <span class="fas fa-times mr-1"></span>
+                                                            Hapus
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group {{ $layout_configuration->background_type != 'image' ?: 'd-none' }}" id="background_color">
+                                                <label for="background_color">{{ __('Background Color') }}</label>
+                                                <input
+                                                    name="background_color"
+                                                    type="color"
+                                                    class="form-control form-input-color @error('background_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->background_color ?? old('background_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wrapper-group-action col-md-6">
+                                    <b>{{ __('Font Color') }}</b>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-group">
+                                                <label for="datetime_color">{{ __('Date Time') }}</label>
+                                                <input
+                                                    name="datetime_color"
+                                                    type="color"
+                                                    class="form-control @error('datetime_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->datetime_color ?? old('datetime_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-group">
+                                                <label for="sidebar_subtitle_color">{{ __('name.module', ['module' => __('Branch')]) }}</label>
+                                                <input
+                                                    name="sidebar_subtitle_color"
+                                                    type="color"
+                                                    class="form-control @error('sidebar_subtitle_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->sidebar_subtitle_color ?? old('sidebar_subtitle_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-group">
+                                                <label for="waiting_list_font_color">{{ __('Counter') }}</label>
+                                                <input
+                                                    name="waiting_list_font_color"
+                                                    type="color"
+                                                    class="form-control @error('waiting_list_font_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->waiting_list_font_color ?? old('waiting_list_font_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-group">
+                                                <label for="font_queue_first_letter_color">{{ __('First Letter Call Number') }}</label>
+                                                <input
+                                                    name="font_queue_first_letter_color"
+                                                    type="color"
+                                                    class="form-control @error('font_queue_first_letter_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->font_queue_first_letter_color ?? old('font_queue_first_letter_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-group">
+                                                <label for="font_queue_color">{{ __('Next Letter Call Number') }}</label>
+                                                <input
+                                                    name="font_queue_color"
+                                                    type="color"
+                                                    class="form-control @error('font_queue_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->font_queue_color ?? old('font_queue_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-group">
+                                                <label for="calling_card_font_header_color">Label Counter</label>
+                                                <input
+                                                    name="calling_card_font_header_color"
+                                                    type="color"
+                                                    class="form-control @error('calling_card_font_header_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->calling_card_font_header_color ?? old('calling_card_font_header_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-group">
+                                                <label for="running_text_color">{{ __('Running Text') }}</label>
+                                                <input
+                                                    name="running_text_color"
+                                                    type="color"
+                                                    class="form-control @error('running_text_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->running_text_color ?? old('running_text_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wrapper-group-action col-md-5">
+                                    <b>{{ __('Card') }}</b>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-group">
+                                                <label for="calling_card_body_color">Card List Counter</label>
+                                                <input
+                                                    name="calling_card_body_color"
+                                                    type="color"
+                                                    class="form-control @error('calling_card_body_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->calling_card_body_color ?? old('calling_card_body_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-group">
+                                                <label for="waiting_list_card_color">Card Label Counter</label>
+                                                <input
+                                                    name="waiting_list_card_color"
+                                                    type="color"
+                                                    class="form-control @error('waiting_list_card_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->waiting_list_card_color ?? old('waiting_list_card_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-group">
+                                                <label for="calling_card_header_color">Background Text Berjalan</label>
+                                                <input
+                                                    name="calling_card_header_color"
+                                                    type="color"
+                                                    class="form-control @error('calling_card_header_color') is-invalid @enderror"
+                                                    value="{{$layout_configuration->calling_card_header_color ?? old('calling_card_header_color')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wrapper-group-action col-md-6">
+                                    <b>{{ __('Running Text') }}</b>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-12 col-md-12">
+                                            <div class="form-group">
+                                                <label for="running_text">{{ __('Running Text') }}</label>
+                                                <input
+                                                    name="running_text"
+                                                    type="text"
+                                                    class="form-control @error('running_text') is-invalid @enderror"
+                                                    value="{{$layout_configuration->running_text ?? old('running_text')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-12">
+                                            <div class="form-group">
+                                                <label for="running_text_speed">{{ __('Speed') }}</label>
+                                                <input
+                                                    name="running_text_speed"
+                                                    type="number"
+                                                    class="form-control @error('running_text_speed') is-invalid @enderror"
+                                                    value="{{$layout_configuration->running_text_speed ?? old('running_text_speed')}}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wrapper-submit mt-3">
+                                <button type="submit" class="btn btn-warning">Simpan</submit>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endif
 
 <script>
@@ -545,9 +862,25 @@
         const { image } = imageLayouts.find((obj) => obj.key == value);
 
         if (value == 'custom-layout-2') {
-            document.getElementById("layoutConfig").classList.remove("d-none")
+            document.getElementById("layoutConfig2").classList.remove("d-none")
         } else {
-            document.getElementById("layoutConfig").classList.add("d-none")
+            document.getElementById("layoutConfig2").classList.add("d-none")
+        }
+
+        if (value == 'custom-layout-3') {
+            document.getElementById("layoutConfig3").classList.remove("d-none")
+        } else {
+            document.getElementById("layoutConfig3").classList.add("d-none")
+        }
+
+        if (value != 'custom-layout-2' && value != 'custom-layout-3') {
+            document.getElementById("monitor-container-image-4").classList.add("d-none")
+            document.getElementById("monitor-container-image-5").classList.add("d-none")
+            document.getElementById("monitor-container-image-6").classList.add("d-none")
+        } else {
+            document.getElementById("monitor-container-image-4").classList.remove("d-none")
+            document.getElementById("monitor-container-image-5").classList.remove("d-none")
+            document.getElementById("monitor-container-image-6").classList.remove("d-none")
         }
 
         const documentImage = document.getElementById("display-image-layout");
@@ -637,6 +970,12 @@
             imageSrc = '{{ asset($image_2) }}'
         } else if (imageNo === 3) {
             imageSrc = '{{ asset($image_3) }}'
+        } else if (imageNo === 4) {
+            imageSrc = '{{ asset($image_4) }}'
+        } else if (imageNo === 5) {
+            imageSrc = '{{ asset($image_5) }}'
+        } else if (imageNo === 6) {
+            imageSrc = '{{ asset($image_6) }}'
         }
 
         if (imageSrc) {

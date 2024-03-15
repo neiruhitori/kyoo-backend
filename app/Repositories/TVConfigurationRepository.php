@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Branch;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -23,28 +24,49 @@ class TVConfigurationRepository implements TVConfigurationRepositoryInterface
 
     public function Upsert($branchID, Request $request) {
         return DB::transaction(function () use ($branchID, $request){
+            $branch = Branch::find($branchID);
             $STORAGE_FOLDER = 'tv_background_images';
             $DEFAULT_IMAGE = 'img-placeholder.jpg';
 
             $tvConfiguration = TVConfiguration::where('branch_id', $branchID)->first();
 
-            $newTVCustomLayoutConfiguration = [
-                'tv_configuration_id' => $tvConfiguration->id,
-                'background_type' => $request->background_type,
-                'background_color' => $request->background_color,
-                'datetime_color' => $request->datetime_color,
-                'sidebar_subtitle_color' => $request->sidebar_subtitle_color,
-                'waiting_list_card_color' => $request->waiting_list_card_color,
-                'waiting_list_font_color' => $request->waiting_list_font_color,
-                'calling_card_header_color' => $request->calling_card_header_color,
-                'calling_card_body_color' => $request->calling_card_body_color,
-                'calling_card_font_header_color' => $request->calling_card_font_header_color,
-                'font_queue_first_letter_color' => $request->font_queue_first_letter_color,
-                'font_queue_color' => $request->font_queue_color,
-                'running_text' => $request->running_text,
-                'running_text_color' => $request->running_text_color,
-                'running_text_speed' => $request->running_text_speed,
-            ];
+            if($branch->BranchConfiguration->template_signage === 'custom-layout-2') {
+                $newTVCustomLayoutConfiguration = [
+                    'tv_configuration_id' => $tvConfiguration->id,
+                    'background_type' => $request->background_type,
+                    'background_color' => $request->background_color,
+                    'datetime_color' => $request->datetime_color,
+                    'sidebar_subtitle_color' => $request->sidebar_subtitle_color,
+                    'waiting_list_card_color' => $request->waiting_list_card_color,
+                    'waiting_list_font_color' => $request->waiting_list_font_color,
+                    'calling_card_header_color' => $request->calling_card_header_color,
+                    'calling_card_body_color' => $request->calling_card_body_color,
+                    'calling_card_font_header_color' => $request->calling_card_font_header_color,
+                    'font_queue_first_letter_color' => $request->font_queue_first_letter_color,
+                    'font_queue_color' => $request->font_queue_color,
+                    'running_text' => $request->running_text,
+                    'running_text_color' => $request->running_text_color,
+                    'running_text_speed' => $request->running_text_speed,
+                ];
+            } else {
+                $newTVCustomLayoutConfiguration = [
+                    'tv_configuration_id' => $tvConfiguration->id,
+                    'background_type' => $request->background_type,
+                    'background_color' => $request->background_color,
+                    'datetime_color' => $request->datetime_color,
+                    'sidebar_subtitle_color' => $request->sidebar_subtitle_color,
+                    'calling_card_header_color' => $request->calling_card_header_color,
+                    'calling_card_body_color' => $request->calling_card_body_color,
+                    'waiting_list_card_color' => $request->waiting_list_card_color,
+                    'waiting_list_font_color' => $request->waiting_list_font_color,
+                    'font_queue_first_letter_color' => $request->font_queue_first_letter_color,
+                    'font_queue_color' => $request->font_queue_color,
+                    'calling_card_font_header_color' => $request->calling_card_font_header_color,
+                    'running_text' => $request->running_text,
+                    'running_text_color' => $request->running_text_color,
+                    'running_text_speed' => $request->running_text_speed,
+                ];
+            }
 
             $tvCustomLayout2Configuration = TVCustomLayout2Configuration::firstOrNew(['tv_configuration_id' => $tvConfiguration->id]);
 

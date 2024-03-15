@@ -415,7 +415,10 @@ Route::namespace('Device')->prefix('device')->name('device.')->group(function ()
     Route::get('web-kiosk-ui', 'HomeController@webKioskUI')->name('web-kiosk-ui');
     Route::get('web-monitor', 'HomeController@webMonitor')->name('web-monitor');
 
+    Route::get('branch/{branch}/workstations', 'HomeController@workstationList')->name('branch.workstations');
+
     Route::get('branch/{branch_id}/queue', 'HomeController@directQueueList')->name('branch.queue');
+    Route::get('branch/{branch_id}/queue/served', 'HomeController@directQueueServed')->name('branch.queue.served');
 });
 
 Route::group([], __DIR__ . '/web/exhibition.php');

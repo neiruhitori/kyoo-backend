@@ -36,6 +36,32 @@ class DisplayImageController extends Controller
                 ]);
             }
 
+            if (
+                $branch->BranchConfiguration->template_signage === 'custom-layout-2' ||
+                $branch->BranchConfiguration->template_signage === 'custom-layout-3'
+               ) {
+                    if ($tv_config->image_4) {
+                        array_push($tv_images, [
+                            'name' => 'Image 4',
+                            'url' => "/storage/$tv_config->image_4"
+                        ]);
+                    }
+
+                    if ($tv_config->image_5) {
+                        array_push($tv_images, [
+                            'name' => 'Image 5',
+                            'url' => "/storage/$tv_config->image_5"
+                        ]);
+                    }
+
+                    if ($tv_config->image_6) {
+                        array_push($tv_images, [
+                            'name' => 'Image 6',
+                            'url' => "/storage/$tv_config->image_6"
+                        ]);
+                    }
+                }
+
             return response()->json($tv_images);
         }
 

@@ -49,6 +49,9 @@ class TVDisplayConfigurationController extends Controller
         $image_1 = $DEFAULT_IMAGE;
         $image_2 = $DEFAULT_IMAGE;
         $image_3 = $DEFAULT_IMAGE;
+        $image_4 = $DEFAULT_IMAGE;
+        $image_5 = $DEFAULT_IMAGE;
+        $image_6 = $DEFAULT_IMAGE;
 
         $tvConfigurationFormValue = (object) array(
             'background_type' => self::DEFAULT_BACKGROUND_TYPE,
@@ -75,6 +78,9 @@ class TVDisplayConfigurationController extends Controller
             if ($tv_configuration->image_1) $image_1 = 'storage/' . $tv_configuration->image_1;
             if ($tv_configuration->image_2) $image_2 = 'storage/' . $tv_configuration->image_2;
             if ($tv_configuration->image_3) $image_3 = 'storage/' . $tv_configuration->image_3;
+            if ($tv_configuration->image_4) $image_4 = 'storage/' . $tv_configuration->image_4;
+            if ($tv_configuration->image_5) $image_5 = 'storage/' . $tv_configuration->image_5;
+            if ($tv_configuration->image_6) $image_6 = 'storage/' . $tv_configuration->image_6;
         }
 
         if($branch_configuration && $tv_configuration && $tv_configuration->customLayoutConfiguration2) {
@@ -106,6 +112,8 @@ class TVDisplayConfigurationController extends Controller
             $defaultImageLayout = "img/tv-display/custom-layout-1.jpg";
         } elseif(!$is_appointment && Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-2') {
             $defaultImageLayout = "img/tv-display/custom-layout-2.jpg";
+        } elseif(!$is_appointment && Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-3') {
+            $defaultImageLayout = "img/tv-display/custom-layout-3.png";
         }
 
         return view('adminBranch.tvDisplayConfiguration', [
@@ -114,6 +122,9 @@ class TVDisplayConfigurationController extends Controller
             'image_1' => $image_1,
             'image_2' => $image_2,
             'image_3' => $image_3,
+            'image_4' => $image_4,
+            'image_5' => $image_5,
+            'image_6' => $image_6,
             'template_signage' => Auth::user()->Branch->BranchConfiguration->template_signage,
             'is_appointment' => $is_appointment,
             'image_layouts' => [
@@ -124,6 +135,10 @@ class TVDisplayConfigurationController extends Controller
                 [
                     'key' => 'custom-layout-2',
                     'image' => 'img/tv-display/custom-layout-2.jpg'
+                ],
+                [
+                    'key' => 'custom-layout-3',
+                    'image' => 'img/tv-display/custom-layout-3.png'
                 ],
                 [
                     'key' => 'standard-ui',
@@ -144,7 +159,10 @@ class TVDisplayConfigurationController extends Controller
             $request->validate([
                 'image_1' => 'nullable|mimetypes:video/mp4|max:10000',
                 'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
+                'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
             ], [], [
                 'image_1' => 'Video',
             ]);
@@ -152,7 +170,10 @@ class TVDisplayConfigurationController extends Controller
             $request->validate([
                 'image_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,mp4|max:1000',
                 'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
+                'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
             ]);
         }
 
@@ -164,7 +185,7 @@ class TVDisplayConfigurationController extends Controller
             'tv_layout_id' => $request->tv_layout_id ?? $tv_layout->id
         ];
 
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= 6; $i++) {
             if ($request->file("image_$i")) {
                 $imageType = $request->file("image_$i")->getClientOriginalExtension();
                 $STORAGE_FOLDER = $imageType === 'mp4' ? $STORAGE_FOLDER_VIDEOS : $STORAGE_FOLDER_IMAGES;
@@ -173,7 +194,7 @@ class TVDisplayConfigurationController extends Controller
         }
 
         if ($tv_configuration) {
-            for ($i = 1; $i <= 3; $i++) {
+            for ($i = 1; $i <= 6; $i++) {
                 if ($request->file("image_$i") && $tv_configuration->{"image_$i"}) {
                     Storage::disk('public')->delete($tv_configuration->{"image_$i"});
                 }
@@ -218,23 +239,39 @@ class TVDisplayConfigurationController extends Controller
     }
 
     public function updateCustomLayout(Branch $branch, Request $request) {
-        $request->validate([
-            'background_type' => 'required|string|in:color,image',
-            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
-            'background_color' => 'required|string',
-            'datetime_color' => 'required|string',
-            'sidebar_subtitle_color' => 'required|string',
-            'waiting_list_card_color' => 'required|string',
-            'waiting_list_font_color' => 'required|string',
-            'calling_card_header_color' => 'required|string',
-            'calling_card_body_color' => 'required|string',
-            'calling_card_font_header_color' => 'required|string',
-            'font_queue_first_letter_color' => 'required|string',
-            'font_queue_color' => 'required|string',
-            'running_text' => 'required|string|max:100',
-            'running_text_color' => 'required|string',
-            'running_text_speed' => 'required|string',
-        ]);
+        if($branch->BranchConfiguration->template_signage === 'custom-layout-2') {
+            $request->validate([
+                'background_type' => 'required|string|in:color,image',
+                'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
+                'background_color' => 'required|string',
+                'datetime_color' => 'required|string',
+                'sidebar_subtitle_color' => 'required|string',
+                'waiting_list_card_color' => 'required|string',
+                'waiting_list_font_color' => 'required|string',
+                'calling_card_header_color' => 'required|string',
+                'calling_card_body_color' => 'required|string',
+                'calling_card_font_header_color' => 'required|string',
+                'font_queue_first_letter_color' => 'required|string',
+                'font_queue_color' => 'required|string',
+                'running_text' => 'required|string|max:100',
+                'running_text_color' => 'required|string',
+                'running_text_speed' => 'required|string',
+            ]);
+        } else {
+            $request->validate([
+                'background_type' => 'required|string|in:color,image',
+                'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
+                'background_color' => 'required|string',
+                'datetime_color' => 'required|string',
+                'sidebar_subtitle_color' => 'required|string',
+                'waiting_list_card_color' => 'required|string',
+                'waiting_list_font_color' => 'required|string',
+                'font_queue_color' => 'required|string',
+                'running_text' => 'required|string|max:100',
+                'running_text_color' => 'required|string',
+                'running_text_speed' => 'required|string',
+            ]);
+        }
 
         $configuration = $this->tvConfigurationRepository->Upsert($branch->id, $request);
 

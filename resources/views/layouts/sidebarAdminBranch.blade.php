@@ -30,6 +30,33 @@
             <span>{{ __('Dashboard') }}</span></a>
     </li>
 
+    <li class="nav-item {{ !request()->is('admin-branch/monitoring/*') ?: 'active' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#monitoring" aria-expanded="true"
+           aria-controls="monitoring">
+            <i class="fas fa-tv"></i>
+            <span>Monitoring</span>
+        </a>
+
+        <div class="collapse {{ !request()->is('admin-branch/monitoring/*') ?: 'show' }}" id="monitoring"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a
+                    class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/monitoring/department') ?: 'active' }}"
+                    href="{{ route('admin-branch.monitoring.department') }}"
+                >
+                    Departemen
+                </a>
+
+                <a
+                    class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/monitoring/service') ?: 'active' }}"
+                    href="{{ route('admin-branch.monitoring.service') }}"
+                >
+                    Layanan
+                </a>
+            </div>
+        </div>
+    </li>
+
     <li class="nav-item {{ !request()->is('admin-branch/branch-qr-code') ?: 'active' }}">
         <a class="nav-link" href="{{ route('admin-branch.branch-qr-code') }}">
             <i class="fas fa-fw fa-qrcode"></i>
@@ -267,33 +294,6 @@
             </div>
         </li>
     @endif
-
-    <li class="nav-item {{ !request()->is('admin-branch/monitoring/*') ?: 'active' }}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#monitoring" aria-expanded="true"
-           aria-controls="monitoring">
-            <i class="fas fa-tv"></i>
-            <span>Monitoring</span>
-        </a>
-
-        <div class="collapse {{ !request()->is('admin-branch/monitoring/*') ?: 'show' }}" id="monitoring"
-             data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a
-                    class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/monitoring/department') ?: 'active' }}"
-                    href="{{ route('admin-branch.monitoring.department') }}"
-                >
-                    Departemen
-                </a>
-
-                <a
-                    class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/monitoring/service') ?: 'active' }}"
-                    href="{{ route('admin-branch.monitoring.service') }}"
-                >
-                    Layanan
-                </a>
-            </div>
-        </div>
-    </li>
 
     <li class="nav-item {{ !request()->is('admin-branch/report/*') ?: 'active' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#report" aria-expanded="true"
