@@ -211,8 +211,8 @@ export default {
         return {
             isLoading: true,
             auth: null,
-            branch_logo: this.branch
-                ? `/storage/${this.branch.logo}`
+            branch_logo: this.layout_config
+                ? `/storage/${this.layout_config.ticket_logo}`
                 : `/img/logo-color.svg`,
             webkiosk_logo: this.layout_config
                 ? `/storage/${this.layout_config.logo}`
@@ -380,69 +380,101 @@ export default {
             const currentTimes = this.currentTimes;
             const queueRemaining = this.responseQueue.total_waiting;
 
-            printWindow.document.open();
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                <title>Print</title>
-                <style>
-                    @page {
-                            size: 80mm 100mm;
-                    }
-                    body {
-                        width: 80mm;
-                        height: 100mm;
-                        margin: 0;
-                        display: inline-grid;
-                        justify-content: center;
-                        align-items: center;
-                        text-align: center;
-                    }
-                    </style>
-                </head>
-                <body>
-                    <div style="margin-bottom: 25px; position: relative;">
-                        <div class="d-flex flex-column align-items-center justify-content-center" style="position: absolute; width: 100%; top:0; bottom: 0; height: 100%;">
-                            <div style="padding-top: 20.38px;">
-                                <img src="${branchLogo}" alt="logo-kyoo" height="26"/>
-                            </div>
-                            <div class="wrapper-queue-number" style="margin: 20.25px 0 23.72px;">
-                                <span style="font-size: 20px; color: #132D58;text-align: center; font-weight: bolder;margin: 0 0 8px;">Nomor Antrian Anda</span>
-                                <h2 style="margin: 0 0 8px; font-weight: bold;font-size: 64px;color: #21965E;text-align: center;">
-                                    ${serviceNumber}
-                                </h2>
-                                <span style="margin: 0 0 8px;font-size: 12px;color: rgb(122, 122, 122);text-align: center;">Mohon tunggu sampai nomor <br> antrian Anda dipanggil</span>
-                            </div>
-                            <div class="wrapper-service-card" style="padding: 75px 28px;">
-                                <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center; margin: 0;"> ${serviceName} </h4>
-                                <span style="font-size: 12px;color: #132D58;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentDay}, ${currentFormattedDate}</span>
-                                <br>
-                                <span style="font-size: 12px;color: #132D58;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentTimes} WIB</span>
-                                <br>
-                                <span style="font-size: 12px;color: #132D58;margin: 0 0 8px;text-align: center; font-weight: 600;">Sisa Antrian : ${queueRemaining}</span>
-                            </div>
-                        </div>
-                        <svg width="263" height="403" viewBox="0 0 263 403" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0 15C0 6.71573 6.71573 0 15 0H248C256.284 0 263 6.71573 263 15V244.493H0V15Z" fill="#F9FAFB"/>
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 281.013H11.4585V262.513V244.013H-1.90735e-06C7.01681 248.491 11.4585 255.118 11.4585 262.513C11.4585 269.908 7.01681 276.535 0 281.013Z" fill="#F9FAFB"/>
-                        <rect width="240.083" height="37" transform="matrix(1 0 0 -1 11.4585 281.013)" fill="#F9FAFB"/>
-                        <line y1="-1" x2="240.083" y2="-1" transform="matrix(1 0 0 -1 11.4585 262.513)" stroke="#999999" stroke-width="2" stroke-dasharray="8 8"/>
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M263 281.013H251.542V262.513V244.013H263C255.983 248.491 251.542 255.118 251.542 262.513C251.542 269.908 255.983 276.535 263 281.013Z" fill="#F9FAFB"/>
-                        <path d="M0 387.293C0 395.577 6.71573 402.293 15 402.293H248C256.284 402.293 263 395.577 263 387.293V280.533H0V387.293Z" fill="#F9FAFB"/>
-                        </svg>
-                    </div>
-                </body>
-                </html>
-            `);
+            const convertImageToBlackAndWhite = (imgSrc) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
 
-            // Wait for the content to load
-            printWindow.onload = function () {
-                printWindow.print();
-                printWindow.close();
+                img.onload = function() {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+
+                    for (let i = 0; i < data.length; i += 4) {
+                        const grayscale = data[i] * 0.2126 + data[i + 1] * 0.7152 + data[i + 2] * 0.0722;
+                        data[i] = grayscale;
+                        data[i + 1] = grayscale;
+                        data[i + 2] = grayscale;
+                    }
+
+                    ctx.putImageData(imageData, 0, 0);
+                    const convertedImgSrc = canvas.toDataURL();
+                    // Print with converted image
+                    printWithImage(convertedImgSrc);
+                };
+
+                img.src = imgSrc;
             };
 
-            printWindow.document.close();
+            const printWithImage = (imgSrc) => {
+                printWindow.document.open();
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                    <title>Print</title>
+                    <style>
+                        @page {
+                                size: 80mm 100mm;
+                        }
+                        body {
+                            width: 80mm;
+                            height: 100mm;
+                            margin: 0;
+                            display: inline-grid;
+                            justify-content: center;
+                            align-items: center;
+                            text-align: center;
+                        }
+                        </style>
+                    </head>
+                    <body>
+                        <div style="margin-bottom: 25px; position: relative;">
+                            <div class="d-flex flex-column align-items-center justify-content-center" style="position: absolute; width: 100%; top:0; bottom: 0; height: 100%;">
+                                <div style="padding-top: 20.38px;">
+                                    <img src="${imgSrc}" alt="logo-kyoo" height="26"/>
+                                </div>
+                                <div class="wrapper-queue-number" style="margin: 20.25px 0 23.72px;">
+                                    <span style="font-size: 20px; text-align: center; font-weight: bolder;margin: 0 0 8px;">Nomor Antrian Anda</span>
+                                    <h2 style="margin: 0 0 8px; font-weight: bold;font-size: 64px;text-align: center;">
+                                        ${serviceNumber}
+                                    </h2>
+                                    <span style="margin: 0 0 8px;font-size: 12px;text-align: center;">Mohon tunggu sampai nomor <br> antrian Anda dipanggil</span>
+                                </div>
+                                <div class="wrapper-service-card" style="padding: 75px 28px;">
+                                    <h4 style="font-weight: bold;font-size: 16px;text-align: center; margin: 0;"> ${serviceName} </h4>
+                                    <span style="font-size: 12px;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentDay}, ${currentFormattedDate}</span>
+                                    <br>
+                                    <span style="font-size: 12px;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentTimes} WIB</span>
+                                    <br>
+                                    <span style="font-size: 12px;margin: 0 0 8px;text-align: center; font-weight: 600;">Sisa Antrian : ${queueRemaining}</span>
+                                </div>
+                            </div>
+                            <svg width="263" height="403" viewBox="0 0 263 403" fill="none" xmlns="http://www.w3.org/2000/svg" style="background-color: #ffffff;">
+                                <path d="M0 15C0 6.71573 6.71573 0 15 0H248C256.284 0 263 6.71573 263 15V244.493H0V15Z" fill="#ffffff"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 281.013H11.4585V262.513V244.013H-1.90735e-06C7.01681 248.491 11.4585 255.118 11.4585 262.513C11.4585 269.908 7.01681 276.535 0 281.013Z" fill="#ffffff"/>
+                                <rect width="240.083" height="37" transform="matrix(1 0 0 -1 11.4585 281.013)" fill="#ffffff"/>
+                                <line y1="-1" x2="240.083" y2="-1" transform="matrix(1 0 0 -1 11.4585 262.513)" stroke="#000000" stroke-width="2" stroke-dasharray="8 8"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M263 281.013H251.542V262.513V244.013H263C255.983 248.491 251.542 255.118 251.542 262.513C251.542 269.908 255.983 276.535 263 281.013Z" fill="#ffffff"/>
+                                <path d="M0 387.293C0 395.577 6.71573 402.293 15 402.293H248C256.284 402.293 263 395.577 263 387.293V280.533H0V387.293Z" fill="#ffffff"/>
+                            </svg>
+                        </div>
+                    </body>
+                    </html>
+                `);
+
+                printWindow.onload = function () {
+                    printWindow.print();
+                    printWindow.close();
+                };
+
+                printWindow.document.close();
+            };
+
+            convertImageToBlackAndWhite(branchLogo);
         },
         setError(message) {
             this.isError = true;

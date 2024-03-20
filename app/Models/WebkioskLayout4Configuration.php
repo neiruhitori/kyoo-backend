@@ -21,5 +21,6 @@ class WebkioskLayout4Configuration extends Model
         'button_checkin_border_color',
         'font_checkin_color',
         'logo',
+        'ticket_logo',
     ];
 }

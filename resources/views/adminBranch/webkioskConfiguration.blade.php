@@ -276,30 +276,68 @@
                                     <div class="row">
                                         <div class="col-12 col-md-6">
                                             <div class="monitor-image-container">
-                                                <label for="logo">
-                                                    <div class="monitor-image-upload">
-                                                        <img src="{{ asset($webkiosConfiguration->logo) }}" id="preview_logo">
+                                                <div class="col-12 col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="logo">{{ __('Webkiosk Logo') }}</label>
 
-                                                        <input
-                                                            type="file"
-                                                            accept="image/*"
-                                                            name="logo"
-                                                            id="logo"
-                                                            onchange="previewLogo(this)"
-                                                            hidden
-                                                        >
+                                                        <label for="logo">
+                                                            <div class="monitor-image-upload">
+                                                                <img src="{{ asset($webkiosConfiguration->logo) }}" id="preview_logo">
 
-                                                        <span class="monitor-image-label">
-                                                            <span class="fas fa-upload"></span>
-                                                        </span>
+                                                                <input
+                                                                    type="file"
+                                                                    accept="image/*"
+                                                                    name="logo"
+                                                                    id="logo"
+                                                                    onchange="previewLogo(this)"
+                                                                    hidden
+                                                                >
+
+                                                                <span class="monitor-image-label">
+                                                                    <span class="fas fa-upload"></span>
+                                                                </span>
+                                                            </div>
+                                                        </label>
                                                     </div>
-                                                </label>
 
-                                                <div>
-                                                    <button type="button" class="delete-image-button display-none" id="delete_button_logo" onclick="deleteLogo()">
-                                                        <span class="fas fa-times mr-1"></span>
-                                                        Hapus
-                                                    </button>
+                                                    <div>
+                                                        <button type="button" class="delete-image-button display-none" id="delete_button_logo" onclick="deleteLogo()">
+                                                            <span class="fas fa-times mr-1"></span>
+                                                            Hapus
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="ticket_logo">{{ __('Ticket Logo') }}</label>
+
+                                                        <label for="ticket_logo">
+                                                            <div class="monitor-image-upload">
+                                                                <img src="{{ asset($webkiosConfiguration->ticket_logo) }}" id="preview_ticket_logo">
+
+                                                                <input
+                                                                    type="file"
+                                                                    accept="image/*"
+                                                                    name="ticket_logo"
+                                                                    id="ticket_logo"
+                                                                    onchange="previewTicketLogo(this)"
+                                                                    hidden
+                                                                >
+
+                                                                <span class="monitor-image-label">
+                                                                    <span class="fas fa-upload"></span>
+                                                                </span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+
+                                                    <div>
+                                                        <button type="button" class="delete-image-button display-none" id="delete_button_ticket_logo" onclick="deleteTicketLogo()">
+                                                            <span class="fas fa-times mr-1"></span>
+                                                            Hapus
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -529,6 +567,18 @@
             }
         }
 
+        function previewTicketLogo(input)  {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(input.files[0]);
+
+                reader.onload = function (e) {
+                    $(`#preview_ticket_logo`).attr('src', e.target.result);
+                    $(`#delete_button_ticket_logo`).removeClass('display-none');
+                }
+            }
+        }
+
         function deleteImage(priority) {
 
             const imageSrc = '{{ asset($defaultImage) }}'
@@ -547,6 +597,16 @@
 
             $(`#logo`).val(null);
             $(`#delete_button_logo`).addClass('display-none');
+        }
+
+        function deleteTicketLogo() {
+
+            const imageSrc = '{{ asset($defaultImage) }}'
+
+            $(`#preview_ticket_logo`).attr('src', imageSrc);
+
+            $(`#ticket_logo`).val(null);
+            $(`#delete_button_ticket_logo`).addClass('display-none');
         }
 
         function submitUpdateToken() {

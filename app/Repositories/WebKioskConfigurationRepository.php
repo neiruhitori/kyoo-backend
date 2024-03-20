@@ -126,6 +126,11 @@ class WebKioskConfigurationRepository implements WebKioskConfigurationRepository
                             Storage::disk('public')->delete($webkioskLayout4Configuration->logo);
                         }
 
+                        if($request->ticket_logo) {
+                            $newWebkioskLayout4Configuration["ticket_logo"] = Storage::disk('public')->put($STORAGE_FOLDER, $request->ticket_logo);
+                            Storage::disk('public')->delete($webkioskLayout4Configuration->ticket_logo);
+                        }
+
                         $webkioskLayout4Configuration->fill($newWebkioskLayout4Configuration);
                         $webkioskLayout4Configuration->save();
 
