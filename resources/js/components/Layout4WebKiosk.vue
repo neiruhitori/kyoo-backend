@@ -211,10 +211,10 @@ export default {
         return {
             isLoading: true,
             auth: null,
-            branch_logo: this.layout_config
+            branch_logo: this.layout_config.ticket_logo
                 ? `/storage/${this.layout_config.ticket_logo}`
                 : `/img/logo-color.svg`,
-            webkiosk_logo: this.layout_config
+            webkiosk_logo: this.layout_config.logo
                 ? `/storage/${this.layout_config.logo}`
                 : `/img/logo-color.svg`,
             workstationServices: [],
