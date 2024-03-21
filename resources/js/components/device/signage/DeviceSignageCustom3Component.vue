@@ -252,7 +252,7 @@ export default {
                     !message.queue_no ||
                     !["recall", "served"].includes(message.status)
                 ) {
-                    return await this.getQueues();
+                    return await this.getWorkstations();
                 }
 
                 await this.getWorkstations();
