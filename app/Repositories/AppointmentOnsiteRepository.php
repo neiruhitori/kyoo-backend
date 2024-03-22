@@ -88,8 +88,15 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             $appointmentOnsite = AppointmentOnsite::create($data);
 
-            $notification = new AppointmentOnsiteCreatedNotification();
-            $notification->toWhatsApp($appointmentOnsite);
+            if (
+                $appointmentOnsite->phone &&
+                $branch &&
+                $branch->is_premium &&
+                $branch->BranchConfiguration->wa_notification != false &&
+                $branch->BranchConfiguration->whatsapp_type == 'official_wa_branch'
+            ) {
+                $appointmentOnsite->sendAppointmentOnsiteCreatedNotification($appointmentOnsite);
+            }
 
             Mail::to($appointmentOnsite->email)->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
 
