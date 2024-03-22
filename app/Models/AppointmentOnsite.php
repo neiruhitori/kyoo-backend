@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\AppointmentOnsiteCreatedNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,5 +22,11 @@ class AppointmentOnsite extends Model
     public function Slot()
     {
         return $this->belongsTo('App\Slot')->orderBy('start_time', 'desc');
+    }
+
+    public static function sendAppointmentOnsiteCreatedNotification($appointmentOnsite)
+    {
+        $notification = new AppointmentOnsiteCreatedNotification();
+        $notification->toWhatsApp($appointmentOnsite);
     }
 }

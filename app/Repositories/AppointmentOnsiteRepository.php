@@ -2,14 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Events\AppointmentOnsiteCreated;
 use App\Interfaces\AppointmentOnsiteRepositoryInterface;
-use App\Listeners\SendAppointmentOnsiteCreatedNotification;
 use App\Mail\CS\AppointmentOnsiteCreatedMail;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Service;
 use App\Schedule;
 use App\Models\AppointmentOnsite;
+use App\Notifications\AppointmentOnsiteCreatedNotification;
 use App\Slot;
 use App\Workstation;
 use Illuminate\Support\Facades\Cache;
@@ -88,6 +87,16 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
             $data['booking_code'] = $this->generate_booking_code();
 
             $appointmentOnsite = AppointmentOnsite::create($data);
+
+            if (
+                $appointmentOnsite->phone &&
+                $branch &&
+                $branch->is_premium &&
+                $branch->BranchConfiguration->wa_notification != false &&
+                $branch->BranchConfiguration->whatsapp_type == 'official_wa_branch'
+            ) {
+                $appointmentOnsite->sendAppointmentOnsiteCreatedNotification($appointmentOnsite);
+            }
 
             Mail::to($appointmentOnsite->email)->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
 
