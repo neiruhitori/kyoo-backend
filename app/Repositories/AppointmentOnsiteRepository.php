@@ -22,6 +22,18 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
             $service = Service::find($data['service_id']);
             $branch = $service->Branch;
 
+            if($branch) {
+                if($branch->timezone == 'WITA') {
+                    config(['app.timezone' => 'Asia/Makassar']);
+                } else if ($branch->timezone == 'WIT') {
+                    config(['app.timezone' => 'Asia/Jayapura']);
+                } else {
+                    config(['app.timezone' => 'Asia/Jakarta']);
+                }
+
+                date_default_timezone_set(config('app.timezone'));
+            }
+
             // Prevent double appointments
             if ($this->isAppoinmentDuplicate($data)) {
                 throw new \Exception('Appointment telah terdaftar');

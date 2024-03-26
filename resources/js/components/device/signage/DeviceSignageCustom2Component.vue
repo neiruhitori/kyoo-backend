@@ -14,7 +14,7 @@
                         <span>{{ currentFormattedDate }}</span>
                     </div>
 
-                    <span class="monitor-hour" v-bind:style="[lineHour]">{{ currentTimes }} WIB</span>
+                    <span class="monitor-hour" v-bind:style="[lineHour]">{{ currentTimes }} {{ branch.timezone }}</span>
                 </div>
             </div>
             <div class="monitor-container">
@@ -259,6 +259,7 @@ export default {
     },
 
     async mounted() {
+        this.initCurrentDate();
         this.getQueues();
         await this.getDisplayImage();
 
@@ -291,6 +292,20 @@ export default {
     },
 
     methods: {
+        initCurrentDate() {
+            let currentDate = new Date();
+            const branchTimeZone = this.branch.timezone;
+
+            let timezone = 7;
+            if(branchTimeZone === 'WITA') {
+                timezone = 8;
+            } else if (branchTimeZone === 'WIT') {
+                timezone = 9;
+            }
+            currentDate.setUTCHours(timezone);
+
+            this.currentDate = currentDate;
+        },
         subscribeAudioEvent() {
             const self = this;
             audioEl.onended = function () {
@@ -323,7 +338,7 @@ export default {
             const self = this;
 
             setInterval(function () {
-                self.currentDate = new Date();
+                self.initCurrentDate();
             }, 5000);
         },
         isVideo(bgImage) {

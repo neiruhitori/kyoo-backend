@@ -21,6 +21,18 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             $service = Service::find($data['service_id']);
             $branch = $service->Branch;
 
+            if($branch) {
+                if($branch->timezone == 'WITA') {
+                    config(['app.timezone' => 'Asia/Makassar']);
+                } else if ($branch->timezone == 'WIT') {
+                    config(['app.timezone' => 'Asia/Jayapura']);
+                } else {
+                    config(['app.timezone' => 'Asia/Jakarta']);
+                }
+
+                date_default_timezone_set(config('app.timezone'));
+            }
+
             // user cant create same direct queue 3x at same date
             $total_same_user_queue = 0;
             if (isset($data['email'])) {
@@ -108,6 +120,18 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             $service = Service::find($data['service_id']);
             $branch = $service->Branch;
 
+            if($branch) {
+                if($branch->timezone == 'WITA') {
+                    config(['app.timezone' => 'Asia/Makassar']);
+                } else if ($branch->timezone == 'WIT') {
+                    config(['app.timezone' => 'Asia/Jayapura']);
+                } else {
+                    config(['app.timezone' => 'Asia/Jakarta']);
+                }
+
+                date_default_timezone_set(config('app.timezone'));
+            }
+
             // user cant create same direct queue 3x at same date
             $total_same_user_queue = 0;
             if (isset($data['email'])) {
@@ -128,16 +152,21 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                     $total_same_user_queue = $total_queue;
                 }
             }
+            $total_same_client_id = 0;
             if (isset($data['client_id'])) {
                 $total_queue = DirectQueue::where('client_id', $data['client_id'])
                     ->whereDate('created_at', date('Y-m-d'))
                     ->count();
 
-                if ($total_queue > $total_same_user_queue) {
-                    $total_same_user_queue = $total_queue;
+                if ($total_queue > $total_same_client_id) {
+                    $total_same_client_id = $total_same_client_id;
                 }
             }
             if ($total_same_user_queue >= 3) {
+                throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
+            }
+
+            if ($total_same_client_id >= 100) {
                 throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
             }
 

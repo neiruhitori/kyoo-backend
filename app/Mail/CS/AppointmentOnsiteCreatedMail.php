@@ -9,6 +9,8 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\AppointmentOnsite;
 use Carbon\Carbon;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Storage;
 
 class AppointmentOnsiteCreatedMail extends Mailable
 {
@@ -40,6 +42,14 @@ class AppointmentOnsiteCreatedMail extends Mailable
 
         setlocale(LC_TIME, 'id_ID');
 
+        $qrCodeValue = strtoupper('jdsahd2');
+        $qrCode = QrCode::format('png')
+                    ->size(200)->errorCorrection('H')
+                    ->generate($qrCodeValue);
+
+        $qrCodePath = 'public/qr_codes/'. $branch->id .'qr_code.png';
+        Storage::disk('local')->put($qrCodePath, $qrCode);
+
         return $this
             ->from('noreply@kyoo.id', 'KYOO')
             ->subject('Appointment Onsite di ' . $branch->name)
@@ -54,7 +64,8 @@ class AppointmentOnsiteCreatedMail extends Mailable
                 'start_time' => $this->appointmentOnsite->start_time,
                 'end_time' => $this->appointmentOnsite->end_time,
                 'service_name' => $this->appointmentOnsite->Service->name,
-                'address' => $branch->address
+                'address' => $branch->address,
+                'qr_code' => $qrCodePath,
             ]);
     }
 }

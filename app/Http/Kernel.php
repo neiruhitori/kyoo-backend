@@ -73,6 +73,7 @@ class Kernel extends HttpKernel
         'exhibitionPermissionIsValid' => \App\Http\Middleware\ExhibitionPermissionIsValid::class,
         'external.checkBranchToken' => \App\Http\Middleware\API\External\CheckBranchToken::class,
         'cookie.clientid' => \App\Http\Middleware\SetClientIdCookie::class,
-        'access' => \App\Http\Middleware\EnsureUserHasAccess::class, 
+        'access' => \App\Http\Middleware\EnsureUserHasAccess::class,
+        'setTimeZone' => \App\Http\Middleware\SetTimeZone::class,
     ];
 }

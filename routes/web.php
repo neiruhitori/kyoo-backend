@@ -28,7 +28,7 @@ Route::get('/appointments/{appointment_id}/call',  'AppointmentCallController@ca
 
 Route::namespace('AdminBranch')
     ->prefix('admin-branch')
-    ->middleware('auth', 'checkAdminBranch')
+    ->middleware('auth', 'checkAdminBranch', 'setTimeZone')
     ->name('admin-branch.')
     ->group(function () {
         // User Profile
@@ -265,7 +265,7 @@ Route::get('/userRegister/{id}', 'API\UserController@userRegister')->name('user.
 
 Route::get('/display-images/{branch}', 'DisplayImageController@show')->name('display-images');
 
-Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->name('admin.')->group(function () {
+Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin', 'setTimeZone')->name('admin.')->group(function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('profile', 'HomeController@edit')->name('profile.edit');
     Route::put('profile', 'HomeController@update')->name('profile.update');
@@ -317,7 +317,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::get('waSession/me', 'WaSessionController@getProfile')->name('waSession.me');
 });
 
-Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch', 'checkAdminBranchPassword')->name('adminBranch.')->group(function () {
+Route::namespace('AdminBranch')->prefix('adminBranch')->middleware('auth', 'checkAdminBranch', 'setTimeZone', 'checkAdminBranchPassword')->name('adminBranch.')->group(function () {
     Route::middleware('checkAdminBranchPassword')->group(function () {
         Route::get('directQueue/monitor', 'HomeController@directQueueMonitor')->name('directQueue.monitor')->middleware(['checkDirectQueue', 'access:Web Signage TV']);
         Route::get('qr', 'HomeController@qr')->name('qr');
@@ -352,7 +352,7 @@ Route::namespace('AdminCorporate')
         Route::get('/report/workstation/excel', 'WorkstationReportController@exportToExcel')->name('report.workstation.excel');
     });
 
-Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')->group(function () {
+Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS', 'setTimeZone')->name('cs.')->group(function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::put('appointment/{appointment}', 'HomeController@updateAppointment')->name('appointment.update')->middleware('checkAppointmentQueue');
     Route::get('mini-report', 'HomeController@miniReport')->name('miniReport');
@@ -402,7 +402,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS')->name('cs.')
     Route::get('holidays', 'HolidayController@getHolidaysByDate')->name('holidays');
 });
 
-Route::namespace('Device')->prefix('device')->middleware('auth', 'checkDevice')->name('device.')->group(function () {
+Route::namespace('Device')->prefix('device')->middleware('auth', 'checkDevice', 'setTimeZone')->name('device.')->group(function () {
     Route::get('/', 'HomeController@index')->name('home');
 });
 
