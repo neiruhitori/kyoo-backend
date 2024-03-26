@@ -42,13 +42,17 @@ class AppointmentOnsiteCreatedMail extends Mailable
 
         setlocale(LC_TIME, 'id_ID');
 
-        $qrCodeValue = strtoupper('jdsahd2');
+        $qrCodeValue = strtoupper($this->appointmentOnsite->booking_code);
         $qrCode = QrCode::format('png')
                     ->size(200)->errorCorrection('H')
                     ->generate($qrCodeValue);
+        $qrCodePath = 'qr_codes/'. $branch->id .'_qr_code.png';
 
-        $qrCodePath = 'public/qr_codes/'. $branch->id .'_qr_code.png';
-        Storage::disk('local')->put($qrCodePath, $qrCode);
+        if (Storage::disk('local')->exists("public/{$qrCodePath}")) {
+            Storage::disk('local')->delete("public/{$qrCodePath}");
+        }
+
+        Storage::disk('local')->put("public/{$qrCodePath}", $qrCode);
 
         return $this
             ->from('noreply@kyoo.id', 'KYOO')
