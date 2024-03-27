@@ -348,7 +348,7 @@ export default {
                     if (this.activeTab == "result") {
                         setTimeout(() => {
                             this.onReset();
-                        }, 20000);
+                        }, 900000);
                     }
                 })
                 .catch(error => {
@@ -377,7 +377,7 @@ export default {
                     if (this.activeTab == "result") {
                         setTimeout(() => {
                             this.onReset();
-                        }, 20000);
+                        }, 900000);
                     }
                 })
                 .catch(error => {

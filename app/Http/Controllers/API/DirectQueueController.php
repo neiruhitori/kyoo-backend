@@ -105,7 +105,7 @@ class DirectQueueController extends Controller
             'rating' => $request->rating,
             'is_liked' => $request->is_liked,
         ]);
-        
+
         return response()->json([
             'success' => true,
             'message' => 'success give feedback direct queue',

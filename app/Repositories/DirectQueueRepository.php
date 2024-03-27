@@ -21,6 +21,18 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             $service = Service::find($data['service_id']);
             $branch = $service->Branch;
 
+            if($branch) {
+                if($branch->timezone == 'WITA') {
+                    config(['app.timezone' => 'Asia/Makassar']);
+                } else if ($branch->timezone == 'WIT') {
+                    config(['app.timezone' => 'Asia/Jayapura']);
+                } else {
+                    config(['app.timezone' => 'Asia/Jakarta']);
+                }
+
+                date_default_timezone_set(config('app.timezone'));
+            }
+
             // user cant create same direct queue 3x at same date
             $total_same_user_queue = 0;
             if (isset($data['email'])) {
@@ -72,7 +84,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             ])->first();
 
             if ($holiday) {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             // cant create direct queue on closed day
@@ -80,12 +92,12 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                 ->where('day', strtolower(date('l')))
                 ->first();
             if ($schedule && $schedule->status == 'closed') {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             // cant create direct queue before open time and after closed time
             if ($schedule && (date('H:i:s') < $schedule->start_time || date('H:i:s') > $schedule->end_time)) {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             $data['branch_id'] = $branch->id;
@@ -108,6 +120,18 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             $service = Service::find($data['service_id']);
             $branch = $service->Branch;
 
+            if($branch) {
+                if($branch->timezone == 'WITA') {
+                    config(['app.timezone' => 'Asia/Makassar']);
+                } else if ($branch->timezone == 'WIT') {
+                    config(['app.timezone' => 'Asia/Jayapura']);
+                } else {
+                    config(['app.timezone' => 'Asia/Jakarta']);
+                }
+
+                date_default_timezone_set(config('app.timezone'));
+            }
+
             // user cant create same direct queue 3x at same date
             $total_same_user_queue = 0;
             if (isset($data['email'])) {
@@ -128,16 +152,21 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                     $total_same_user_queue = $total_queue;
                 }
             }
+            $total_same_client_id = 0;
             if (isset($data['client_id'])) {
                 $total_queue = DirectQueue::where('client_id', $data['client_id'])
                     ->whereDate('created_at', date('Y-m-d'))
                     ->count();
 
-                if ($total_queue > $total_same_user_queue) {
-                    $total_same_user_queue = $total_queue;
+                if ($total_queue > $total_same_client_id) {
+                    $total_same_client_id = $total_same_client_id;
                 }
             }
             if ($total_same_user_queue >= 3) {
+                throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
+            }
+
+            if ($total_same_client_id >= 100) {
                 throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
             }
 
@@ -159,7 +188,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             ])->first();
 
             if ($holiday) {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             // cant create direct queue on closed day
@@ -167,12 +196,12 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                 ->where('day', strtolower(date('l')))
                 ->first();
             if ($schedule && $schedule->status == 'closed') {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             // cant create direct queue before open time and after closed time
             if ($schedule && (date('H:i:s') < $schedule->start_time || date('H:i:s') > $schedule->end_time)) {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             $data['branch_id'] = $branch->id;

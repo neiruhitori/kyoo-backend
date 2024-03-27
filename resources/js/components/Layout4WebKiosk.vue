@@ -1,7 +1,7 @@
 <template>
     <div style="overflow: hidden;">
         <div v-if="isError" class="alert-error">
-            <strong>Error:</strong> {{ errorMessage }}
+            <div v-if="errorMessage" class="error-message" v-html="errorMessage"></div>
         </div>
         <div class="row monitor-container">
             <loading
@@ -110,7 +110,7 @@
                                             <div class="wrapper-service-card">
                                                 <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center;"> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4>
                                                 <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">{{ currentDay }}, {{ currentFormattedDate }}</span>
-                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">{{ currentTimes }} WIB</span>
+                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">{{ currentTimes }} {{ branch.timezone }}</span>
                                                 <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">Sisa Antrian : {{ responseQueue.total_waiting }}</span>
                                             </div>
                                         </div>
@@ -182,6 +182,7 @@ export default {
     },
 
     async mounted() {
+        this.initCurrentDate();
         this.getAuth();
         await this.getWorkStations();
         this.updateCurrentDate();
@@ -267,6 +268,20 @@ export default {
         };
     },
     methods: {
+        initCurrentDate() {
+            let currentDate = new Date();
+            const branchTimeZone = this.branch.timezone;
+
+            let timezone = 7;
+            if(branchTimeZone === 'WITA') {
+                timezone = 8;
+            } else if (branchTimeZone === 'WIT') {
+                timezone = 9;
+            }
+            currentDate = currentDate.setUTCHours(currentDate.getUTCHours() + timezone - 7);
+
+            this.currentDate = currentDate;
+        },
         getAuth() {
             this.auth = JSON.parse(localStorage.getItem('auth'));
             this.formData["user_id"] = this.auth.id;
@@ -333,12 +348,17 @@ export default {
                     if (this.activeTab == "result") {
                         setTimeout(() => {
                             this.onReset();
-                        }, 20000);
+                        }, 900000);
                     }
                 })
                 .catch(error => {
                     this.isLoading = false;
-                    this.setErrorBooking("Kode booking tidak ditemukan");
+                    if(error.response.data.code) {
+                        const code = String(error.response.data.code).substring(1);
+                        this.setError(`<strong>ERR-${code}:</strong> ${error.response.data.message}`);
+                    } else {
+                        this.setErrorBooking("Kode booking tidak ditemukan");
+                    }
                     console.error(error);
                 });
         },
@@ -359,12 +379,17 @@ export default {
                     if (this.activeTab == "result") {
                         setTimeout(() => {
                             this.onReset();
-                        }, 20000);
+                        }, 900000);
                     }
                 })
                 .catch(error => {
                     this.isLoading = false;
-                    this.setError("Mohon Maaf, Tidak Bisa Mengambil Antrian");
+                    if(error.response.data.code) {
+                        const code = String(error.response.data.code).substring(1);
+                        this.setError(`<strong>ERR-${code}:</strong> ${error.response.data.message}`);
+                    } else {
+                        this.setError("<strong>ERROR:</strong> Mohon Maaf, Tidak Bisa Mengambil Antrian");
+                    }
                     console.error(error);
                 });
         },
@@ -378,6 +403,7 @@ export default {
             const currentDay = this.currentDay;
             const currentFormattedDate = this.currentFormattedDate;
             const currentTimes = this.currentTimes;
+            const timezone = this.branch.timezone;
             const queueRemaining = this.responseQueue.total_waiting;
 
             const convertImageToBlackAndWhite = (imgSrc) => {
@@ -448,7 +474,7 @@ export default {
                                     <h4 style="font-weight: bold;font-size: 16px;text-align: center; margin: 0;"> ${serviceName} </h4>
                                     <span style="font-size: 12px;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentDay}, ${currentFormattedDate}</span>
                                     <br>
-                                    <span style="font-size: 12px;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentTimes} WIB</span>
+                                    <span style="font-size: 12px;margin: 0 0 8px;text-align: center; font-weight: 600;">${currentTimes} ${timezone}</span>
                                     <br>
                                     <span style="font-size: 12px;margin: 0 0 8px;text-align: center; font-weight: 600;">Sisa Antrian : ${queueRemaining}</span>
                                 </div>
@@ -506,7 +532,8 @@ export default {
             const self = this;
 
             setInterval(function () {
-                self.currentDate = new Date();
+                self.
+                initCurrentDate();
             }, 5000);
         },
     }
