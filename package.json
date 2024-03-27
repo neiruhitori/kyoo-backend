@@ -39,6 +39,7 @@
         "moment": "^2.29.4",
         "react-day-picker": "^7.4.10",
         "react-is": "^18.2.0",
+        "react-qr-code": "^2.0.12",
         "react-query": "^3.34.17",
         "react-router-dom": "^6.2.2",
         "styled-components": "^5.3.3",

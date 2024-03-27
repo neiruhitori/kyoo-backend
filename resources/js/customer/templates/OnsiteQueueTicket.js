@@ -1,6 +1,7 @@
 import  { forwardRef } from 'react'
 import InfoAlert from '../components/InfoAlert'
 import { formatBrowser, format, formatTime } from '../utils/date'
+import QRCode from 'react-qr-code';
 
 export default forwardRef(function OnsiteQueueTicket({ booking, branch, style }, ref) {
     return <div ref={ref} style={{
@@ -17,6 +18,13 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
                 height: '100%'
             }} />
         </div>}
+
+        <div style={{
+            textAlign: 'center',
+            marginBottom: '1rem'
+        }}>
+            <QRCode value={booking.booking_code.toUpperCase() || ''} size={100}/>
+        </div>
 
         <div style={{
             textAlign: 'center'
