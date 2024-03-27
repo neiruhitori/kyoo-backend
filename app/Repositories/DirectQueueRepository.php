@@ -84,7 +84,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             ])->first();
 
             if ($holiday) {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             // cant create direct queue on closed day
@@ -92,12 +92,12 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                 ->where('day', strtolower(date('l')))
                 ->first();
             if ($schedule && $schedule->status == 'closed') {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             // cant create direct queue before open time and after closed time
             if ($schedule && (date('H:i:s') < $schedule->start_time || date('H:i:s') > $schedule->end_time)) {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             $data['branch_id'] = $branch->id;
@@ -188,7 +188,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             ])->first();
 
             if ($holiday) {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             // cant create direct queue on closed day
@@ -196,12 +196,12 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                 ->where('day', strtolower(date('l')))
                 ->first();
             if ($schedule && $schedule->status == 'closed') {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             // cant create direct queue before open time and after closed time
             if ($schedule && (date('H:i:s') < $schedule->start_time || date('H:i:s') > $schedule->end_time)) {
-                throw new \Exception('Cabang sedang tutup hari ini');
+                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             $data['branch_id'] = $branch->id;

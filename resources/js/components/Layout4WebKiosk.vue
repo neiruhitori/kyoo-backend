@@ -1,7 +1,7 @@
 <template>
     <div style="overflow: hidden;">
         <div v-if="isError" class="alert-error">
-            <strong>Error:</strong> {{ errorMessage }}
+            <div v-if="errorMessage" class="error-message" v-html="errorMessage"></div>
         </div>
         <div class="row monitor-container">
             <loading
@@ -348,12 +348,17 @@ export default {
                     if (this.activeTab == "result") {
                         setTimeout(() => {
                             this.onReset();
-                        }, 20000);
+                        }, 900000);
                     }
                 })
                 .catch(error => {
                     this.isLoading = false;
-                    this.setErrorBooking("Kode booking tidak ditemukan");
+                    if(error.response.data.code) {
+                        const code = String(error.response.data.code).substring(1);
+                        this.setError(`<strong>ERR-${code}:</strong> ${error.response.data.message}`);
+                    } else {
+                        this.setErrorBooking("Kode booking tidak ditemukan");
+                    }
                     console.error(error);
                 });
         },
@@ -374,12 +379,17 @@ export default {
                     if (this.activeTab == "result") {
                         setTimeout(() => {
                             this.onReset();
-                        }, 20000);
+                        }, 900000);
                     }
                 })
                 .catch(error => {
                     this.isLoading = false;
-                    this.setError("Mohon Maaf, Tidak Bisa Mengambil Antrian");
+                    if(error.response.data.code) {
+                        const code = String(error.response.data.code).substring(1);
+                        this.setError(`<strong>ERR-${code}:</strong> ${error.response.data.message}`);
+                    } else {
+                        this.setError("<strong>ERROR:</strong> Mohon Maaf, Tidak Bisa Mengambil Antrian");
+                    }
                     console.error(error);
                 });
         },
