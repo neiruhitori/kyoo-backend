@@ -302,7 +302,7 @@ export default {
             } else if (branchTimeZone === 'WIT') {
                 timezone = 9;
             }
-            currentDate.setUTCHours(timezone);
+            currentDate = currentDate.setUTCHours(currentDate.getUTCHours() + timezone - 7);
 
             this.currentDate = currentDate;
         },

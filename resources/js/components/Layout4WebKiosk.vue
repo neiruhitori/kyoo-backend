@@ -278,7 +278,7 @@ export default {
             } else if (branchTimeZone === 'WIT') {
                 timezone = 9;
             }
-            currentDate.setUTCHours(timezone);
+            currentDate = currentDate.setUTCHours(currentDate.getUTCHours() + timezone - 7);
 
             this.currentDate = currentDate;
         },
@@ -522,7 +522,8 @@ export default {
             const self = this;
 
             setInterval(function () {
-                self.initCurrentDate();
+                self.
+                initCurrentDate();
             }, 5000);
         },
     }

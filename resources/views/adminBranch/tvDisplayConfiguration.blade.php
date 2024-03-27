@@ -399,26 +399,26 @@
                                                 <select
                                                     name="background_type"
                                                     class="form-control @error('background_type') is-invalid @enderror"
-                                                    onchange="changeBackgroundType(this)"
+                                                    onchange="changeBackgroundType(this, 1)"
                                                     required
                                                 >
                                                     <option value="color" {{ $layout_configuration->background_type != 'color' ?: 'selected' }} >Color</option>
                                                     <option value="image" {{ $layout_configuration->background_type != 'image' ?: 'selected' }} >Image</option>
                                                 </select>
                                             </div>
-                                            <div class="form-group {{ $layout_configuration->background_type != 'color' ?: 'd-none' }}" id="background_image_wrapper">
+                                            <div class="form-group {{ $layout_configuration->background_type != 'color' ?: 'd-none' }}" id="background_image_wrapper_1">
                                                 <label>{{ __('Background Image') }}</label>
                                                 <div class="monitor-image-container">
-                                                    <label for="background_image">
+                                                    <label for="background_image_1">
                                                         <div class="monitor-image-upload">
-                                                            <img src="{{ asset($layout_configuration->background_image) }}" id="preview_background_image">
+                                                            <img src="{{ asset($layout_configuration->background_image) }}" id="preview_background_image_1">
 
                                                             <input
                                                                 type="file"
                                                                 accept="image/*"
                                                                 name="background_image"
-                                                                id="background_image"
-                                                                onchange="previewBackgroundImage(this)"
+                                                                id="background_image_1"
+                                                                onchange="previewBackgroundImage(this, 1)"
                                                                 hidden
                                                             >
 
@@ -429,14 +429,14 @@
                                                     </label>
 
                                                     <div>
-                                                        <button type="button" class="delete-image-button d-none" id="delete_button_background_image" onclick="deleteImg()">
+                                                        <button type="button" class="delete-image-button d-none" id="delete_button_background_image_1" onclick="deleteImg()">
                                                             <span class="fas fa-times mr-1"></span>
                                                             Hapus
                                                         </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group {{ $layout_configuration->background_type != 'image' ?: 'd-none' }}" id="background_color">
+                                            <div class="form-group {{ $layout_configuration->background_type != 'image' ?: 'd-none' }}" id="background_color_1">
                                                 <label for="background_color">{{ __('Background Color') }}</label>
                                                 <input
                                                     name="background_color"
@@ -641,26 +641,26 @@
                                                 <select
                                                     name="background_type"
                                                     class="form-control @error('background_type') is-invalid @enderror"
-                                                    onchange="changeBackgroundType(this)"
+                                                    onchange="changeBackgroundType(this, 2)"
                                                     required
                                                 >
                                                     <option value="color" {{ $layout_configuration->background_type != 'color' ?: 'selected' }} >Color</option>
                                                     <option value="image" {{ $layout_configuration->background_type != 'image' ?: 'selected' }} >Image</option>
                                                 </select>
                                             </div>
-                                            <div class="form-group {{ $layout_configuration->background_type != 'color' ?: 'd-none' }}" id="background_image_wrapper">
+                                            <div class="form-group {{ $layout_configuration->background_type != 'color' ?: 'd-none' }}" id="background_image_wrapper_2">
                                                 <label>{{ __('Background Image') }}</label>
                                                 <div class="monitor-image-container">
-                                                    <label for="background_image">
+                                                    <label for="background_image_2">
                                                         <div class="monitor-image-upload">
-                                                            <img src="{{ asset($layout_configuration->background_image) }}" id="preview_background_image">
+                                                            <img src="{{ asset($layout_configuration->background_image) }}" id="preview_background_image_2">
 
                                                             <input
                                                                 type="file"
                                                                 accept="image/*"
                                                                 name="background_image"
-                                                                id="background_image"
-                                                                onchange="previewBackgroundImage(this)"
+                                                                id="background_image_2"
+                                                                onchange="previewBackgroundImage(this, 2)"
                                                                 hidden
                                                             >
 
@@ -671,14 +671,14 @@
                                                     </label>
 
                                                     <div>
-                                                        <button type="button" class="delete-image-button d-none" id="delete_button_background_image" onclick="deleteImg()">
+                                                        <button type="button" class="delete-image-button d-none" id="delete_button_background_image_2" onclick="deleteImg()">
                                                             <span class="fas fa-times mr-1"></span>
                                                             Hapus
                                                         </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group {{ $layout_configuration->background_type != 'image' ?: 'd-none' }}" id="background_color">
+                                            <div class="form-group {{ $layout_configuration->background_type != 'image' ?: 'd-none' }}" id="background_color_2">
                                                 <label for="background_color">{{ __('Background Color') }}</label>
                                                 <input
                                                     name="background_color"
@@ -891,11 +891,23 @@
         const { value } = input;
 
         if (value == 'image') {
-            document.getElementById("background_color").classList.add("d-none")
-            document.getElementById("background_image_wrapper").classList.toggle("d-none")
+            document.getElementById(`background_color_${priority}`).classList.add("d-none")
+            document.getElementById(`background_image_wrapper_${priority}`).classList.toggle("d-none")
         } else {
-            document.getElementById("background_color").classList.toggle("d-none")
-            document.getElementById("background_image_wrapper").classList.add("d-none")
+            document.getElementById(`background_color_${priority}`).classList.toggle("d-none")
+            document.getElementById(`background_image_wrapper_${priority}`).classList.add("d-none")
+        }
+    }
+
+    function previewBackgroundImage(input, imageNo) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.readAsDataURL(input.files[0]);
+
+            reader.onload = function(e) {
+                $('#preview_background_image_' + imageNo).attr('src', e.target.result);
+                $('#delete_button_background_image_' + imageNo).removeClass('hidden');
+            }
         }
     }
 

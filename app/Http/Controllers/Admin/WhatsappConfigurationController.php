@@ -31,7 +31,7 @@ class WhatsappConfigurationController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'whatsapp_type' => 'required|in:official_wa_branch',
+            'whatsapp_type' => 'required',
             'api_wa' => ($request->whatsapp_type == 'official_wa_branch') ? 'required' : '',
             'api_token' => ($request->whatsapp_type == 'official_wa_branch') ? 'required' : '',
         ]);

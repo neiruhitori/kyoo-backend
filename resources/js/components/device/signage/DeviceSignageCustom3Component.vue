@@ -274,6 +274,7 @@ export default {
     },
 
     async mounted() {
+        this.initCurrentDate();
         await this.getDisplayImage();
         this.getWorkstations();
         this.getQueues();
@@ -307,6 +308,20 @@ export default {
     },
 
     methods: {
+        initCurrentDate() {
+            let currentDate = new Date();
+            const branchTimeZone = this.branch.timezone;
+
+            let timezone = 7;
+            if(branchTimeZone === 'WITA') {
+                timezone = 8;
+            } else if (branchTimeZone === 'WIT') {
+                timezone = 9;
+            }
+            currentDate = currentDate.setUTCHours(currentDate.getUTCHours() + timezone - 7);
+
+            this.currentDate = currentDate;
+        },
         subscribeAudioEvent() {
             const self = this;
             audioEl.onended = function () {
@@ -339,7 +354,7 @@ export default {
             const self = this;
 
             setInterval(function () {
-                self.currentDate = new Date();
+                self.initCurrentDate();
             }, 5000);
         },
         isVideo(bgImage) {
