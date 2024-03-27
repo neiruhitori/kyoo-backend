@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useNavigate, useParams, Link } from 'react-router-dom'
+import QRCode from 'react-qr-code';
 import styled from 'styled-components'
 import html2canvas from 'html2canvas'
 
@@ -67,6 +68,10 @@ function TicketHead(props) {
         padding: '1.75rem'
 
     }}>
+        <div style={{ marginBottom: '1rem' }}>
+            <QRCode value={props.bookingCode.toUpperCase() || ''} size={100}/>
+        </div>
+
         <p style={{
             fontSize: '1rem',
             color: '#7A7A7A',

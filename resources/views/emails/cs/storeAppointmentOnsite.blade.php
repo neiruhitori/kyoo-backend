@@ -28,6 +28,10 @@ Anda telah membuat appointment onsite pada tanggal {{ $booking_date }} di {{ $br
 </table>
 </div>
 
+<div style="text-align: center;">
+<img src="{{ asset('storage/' . $qr_code) }}" alt="{{ strtoupper($booking_code) }}">
+</div>
+
 @component('mail::button', ['url' => url('customer/' . $branch_id. '/appointment-onsite/booking-status/' . $appointment_onsite_id)])
 {{ __('Check My Appointment Onsite') }}
 @endcomponent
