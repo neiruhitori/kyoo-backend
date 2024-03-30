@@ -190,6 +190,9 @@ Route::namespace('AdminBranch')
             Route::get('/monthly/onsite', 'ReportController@directQueueMonthly')
                 ->name('monthly.onsite')
                 ->middleware('checkDirectQueue');
+            Route::get('/appointment-onsites', 'ReportController@appointmentOnsite')
+                ->name('appointment-onsites')
+                ->middleware('checkDirectQueue');
 
             Route::get('/daily/exhibition', 'ReportController@exhibitionDaily')
                 ->name('daily.exhibition')

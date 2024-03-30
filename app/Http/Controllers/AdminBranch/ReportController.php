@@ -8,6 +8,7 @@ use App\Appointment;
 use App\DirectQueue;
 use App\WorkstationService;
 use App\Interfaces\ExhibitionRepositoryInterface;
+use App\Models\AppointmentOnsite;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -282,6 +283,39 @@ class ReportController extends Controller
         }
 
         return view('adminBranch.report.exhibition.monthly', $viewData);
+    }
+
+    public function appointmentOnsite(Request $request)
+    {
+        $date = $request->date ?: date('Y-m-d');
+        $last_month = $newdate = date("Y-m-d", strtotime("-2 months"));
+        if ($request->date && date('Y-m-d', strtotime($request->date)) < $last_month) {
+            $request->session()->flash('error', __('Can not select report more then last 2 months'));
+            return view('adminBranch.report.directQueue.appointment-onsite', [
+                'appointment_onsites' => [],
+                'date' => $date,
+                'service_id' => $request->service_id,
+                'success' => false
+            ]);
+        }
+
+        $appointment_onsites = AppointmentOnsite::whereHas('Slot.Service', function ($query) use ($request) {
+                                                    $request->service_id ? $query->where('id', $request->service_id) : $query->where('branch_id', Auth::user()->branch_id);
+                                                })
+                                                ->where('date', $date)
+                                                ->join('services', 'appointment_onsites.service_id', '=', 'services.id')
+                                                ->orderBy('date')
+                                                ->orderBy('services.name')
+                                                ->orderBy('start_time')
+                                                ->select('appointment_onsites.*')
+                                                ->get();
+
+        return view('adminBranch.report.directQueue.appointment-onsite', [
+            'appointment_onsites' => $appointment_onsites,
+            'date' => $date,
+            'service_id' => $request->service_id,
+            'success' => true
+        ]);
     }
 
     public function customerSatisfaction(Request $request)

@@ -335,6 +335,17 @@
                     {{ __('Monthly Report') }}
                 </a>
 
+                @if(Auth::user()->Branch->BranchType->is_direct_queue)
+                    <a
+                        class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/appointment-onsites') ?: 'active' }}"
+                        href="
+                        {{ route('admin-branch.report.appointment-onsites') }}
+                    "
+                    >
+                        {{ __('Report Appointment') }}
+                    </a>
+                @endif
+
                 @if (Auth::user()->Branch->BranchType->is_premium)
                     <a
                         class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/customer-satisfaction*') ?: 'active' }}"
