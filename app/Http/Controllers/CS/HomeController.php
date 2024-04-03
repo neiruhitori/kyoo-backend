@@ -272,8 +272,9 @@ class HomeController extends Controller
       return response($image)->header('Content-type','image/png');
     }
 
-    public function editWorkstation(User $user)
+    public function workstation()
     {
+        $user = Auth::user();
         $workstations = collect();
         $userDepartments = $user->Branch->Departments->pluck('id');
 
@@ -285,30 +286,17 @@ class HomeController extends Controller
             $counter_activity = CounterActivity::where([
                 'date' => date('Y-m-d'),
                 'workstation_id' => $workstation->id
-            ])->first();
+            ])
+            ->where(function ($query) {
+                $query->whereRaw('last_login > last_logout')
+                      ->orWhereNull('last_logout');
+            })
+            ->latest()
+            ->first();
 
             $vct = null;
             if($counter_activity) {
                 $vct = User::find($counter_activity->vct_id);
-
-                $current_counter_activity = CounterActivity::where([
-                    'date' => date('Y-m-d'),
-                    'vct_id' => $vct->id
-                ])
-                ->where(function ($query) {
-                    $query->whereNotNull('last_logout')
-                          ->whereColumn('last_logout', '>', 'last_login');
-                })
-                ->orWhere(function ($query) {
-                    $query->whereNull('last_logout');
-                })
-                ->orderByDesc('last_login')
-                ->first();
-
-                if($current_counter_activity->workstation_id != $workstation->id) {
-                    $counter_activity = null;
-                    $vct = null;
-                }
             }
 
             $workstation->vct_id = $counter_activity ? $counter_activity->vct_id : null;
@@ -317,7 +305,7 @@ class HomeController extends Controller
 
         $workstations = $workstations->sortBy('name');
 
-        return view('cs.editWorkstation')->withUser($user)->withWorkstations($workstations);
+        return view('cs.workstation')->withUser($user)->withWorkstations($workstations);
     }
 
     public function updateWorkstation(User $user, Request $request)

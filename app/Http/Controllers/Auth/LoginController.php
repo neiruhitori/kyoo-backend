@@ -111,7 +111,7 @@ class LoginController extends Controller
         }
 
         if($loggedUser->role == 'cs' && !$activity) {
-            return redirect()->route('cs.editWorkstation', $loggedUser->id);
+            return redirect()->route('cs.workstation', $loggedUser->id);
         }
 
         return redirect()->route('dashboard');
