@@ -12,6 +12,7 @@ use App\User;
 use App\Models\CounterActivity;
 use Illuminate\Support\Carbon;
 use App\BranchType;
+use App\Models\CsActiveMenus;
 
 class LoginController extends Controller
 {
@@ -110,8 +111,11 @@ class LoginController extends Controller
             return redirect()->route('admin-branch.product-guide.queue-configuration');
         }
 
-        if($loggedUser->role == 'cs' && !$activity) {
-            return redirect()->route('cs.workstation', $loggedUser->id);
+        $branchID = Auth::user()->branch_id;
+        $active_menus = CsActiveMenus::where('branch_id', $branchID)->where('feature_id', 4)->first();
+
+        if($loggedUser->role == 'cs' && !$activity && $active_menus) {
+            return redirect()->route('cs.workstation');
         }
 
         return redirect()->route('dashboard');
