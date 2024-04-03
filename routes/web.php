@@ -360,6 +360,8 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS', 'setTimeZone
     Route::put('appointment/{appointment}', 'HomeController@updateAppointment')->name('appointment.update')->middleware('checkAppointmentQueue');
     Route::get('mini-report', 'HomeController@miniReport')->name('miniReport');
     Route::get('qr', 'HomeController@qr')->name('qr');
+    Route::get('edit-workstation/{user}', 'HomeController@editWorkstation')->name('editWorkstation');
+    Route::put('update-workstation/{user}', 'HomeController@updateWorkstation')->name('updateWorkstation');
 
     // Appointment Monitor
     Route::middleware('checkAppointmentQueue')->group(function () {

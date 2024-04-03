@@ -85,6 +85,14 @@ class LoginController extends Controller
             'description' => 'Login Success'
         ]);
 
+        $activity = [];
+        if ($loggedUser->role == 'cs') {
+            $activity = CounterActivity::where([
+                'date' => date('Y-m-d'),
+                'vct_id' => Auth::id()
+            ])->first();
+        }
+
         if ($loggedUser->WorkstationVct) {
             $this->updateVctActivity();
         }
@@ -100,6 +108,10 @@ class LoginController extends Controller
             return redirect()->route('admin-branch.dashboard');
         } elseif($loggedUser->role == 'admin_branch') {
             return redirect()->route('admin-branch.product-guide.queue-configuration');
+        }
+
+        if($loggedUser->role == 'cs' && !$activity) {
+            return redirect()->route('cs.editWorkstation', $loggedUser->id);
         }
 
         return redirect()->route('dashboard');
@@ -172,6 +184,7 @@ class LoginController extends Controller
 
         if ($diff < env('SESSION_LIFETIME') * 60) {
             $activity->operation_duration -= env('SESSION_LIFETIME') * 60 - $diff;
+            $activity->last_logout = date('Y-m-d H:i:s');
             $activity->save();
         }
     }
