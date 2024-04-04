@@ -176,7 +176,7 @@ class LoginController extends Controller
             return;
         }
 
-        $activity->last_logout = date('Y-m-d H:i:s');
+        $activity->last_login = null;
         $diff = Carbon::now()->diffInSeconds(Carbon::parse($activity->last_login));
 
         if ($diff < env('SESSION_LIFETIME') * 60) {

@@ -287,10 +287,7 @@ class HomeController extends Controller
                 'date' => date('Y-m-d'),
                 'workstation_id' => $workstation->id
             ])
-            ->where(function ($query) {
-                $query->whereRaw('last_login > last_logout')
-                      ->orWhereNull('last_logout');
-            })
+            ->whereNotNull('last_login')
             ->latest()
             ->first();
 
@@ -324,7 +321,7 @@ class HomeController extends Controller
 
         $this->updateVctActivity();
 
-        return redirect()->route('dashboard');
+        return redirect()->route('cs.workstation')->with('success', __('Workstation Service has been updated'));
     }
 
     private function updateVctActivity()
@@ -335,7 +332,7 @@ class HomeController extends Controller
         ])
         ->whereNotIn('workstation_id', [Auth::user()->WorkstationVct->workstation_id])
         ->update([
-            'last_logout' => date('Y-m-d H:i:s')
+            'last_login' => null
         ]);
 
         $activity = CounterActivity::where([
