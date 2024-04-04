@@ -24,6 +24,7 @@
                                     <tr>
                                         <th>{{ __('Workstation List') }}</th>
                                         <th>{{ __('Status') }}</th>
+                                        <th>{{ __('Username') }}</th>
                                         <th>{{ __('Action') }}</th>
                                     </tr>
                                 </thead>
@@ -33,9 +34,20 @@
                                             <td>{{$workstation->name}}</td>
                                             <td>
                                                 @if($workstation->vct_name)
-                                                    Login
+                                                    <span class="badge badge-danger">Login</span>
                                                 @else
-                                                    Logout
+                                                    <span class="badge badge-success">Logout</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($workstation->vct_id == Auth::id())
+                                                    <span class="badge badge-primary">
+                                                        {{ $workstation->vct_name }}
+                                                    </span>
+                                                @elseif($workstation->vct_name)
+                                                    <span class="badge badge-secondary">
+                                                        {{ $workstation->vct_name }}
+                                                    </span>
                                                 @endif
                                             </td>
                                             <td>

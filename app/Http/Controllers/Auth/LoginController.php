@@ -86,14 +86,6 @@ class LoginController extends Controller
             'description' => 'Login Success'
         ]);
 
-        $activity = [];
-        if ($loggedUser->role == 'cs') {
-            $activity = CounterActivity::where([
-                'date' => date('Y-m-d'),
-                'vct_id' => Auth::id()
-            ])->first();
-        }
-
         if ($loggedUser->WorkstationVct) {
             $this->updateVctActivity();
         }
@@ -114,7 +106,7 @@ class LoginController extends Controller
         $branchID = Auth::user()->branch_id;
         $active_menus = CsActiveMenus::where('branch_id', $branchID)->where('feature_id', 4)->first();
 
-        if($loggedUser->role == 'cs' && !$activity && $active_menus) {
+        if($loggedUser->role == 'cs' && $active_menus) {
             return redirect()->route('cs.workstation');
         }
 
