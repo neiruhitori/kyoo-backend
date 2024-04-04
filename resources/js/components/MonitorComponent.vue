@@ -10,9 +10,14 @@
     <div class="col-md-12">
       <div class="card shadow mb-4">
         <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-primary">
-            Monitor Antrian Onsite
-          </h6>
+          <div class="d-flex justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Monitor Antrian Onsite
+            </h6>
+            <h6 class="m-0 font-weight-bold text-primary">
+                {{ workstation.name }}
+            </h6>
+          </div>
         </div>
         <div class="card-body">
           <div class="row">

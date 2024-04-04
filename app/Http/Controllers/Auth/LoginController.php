@@ -176,12 +176,12 @@ class LoginController extends Controller
             return;
         }
 
+        $activity->last_logout = date('Y-m-d H:i:s');
         $diff = Carbon::now()->diffInSeconds(Carbon::parse($activity->last_login));
 
         if ($diff < env('SESSION_LIFETIME') * 60) {
             $activity->operation_duration -= env('SESSION_LIFETIME') * 60 - $diff;
-            $activity->last_logout = date('Y-m-d H:i:s');
-            $activity->save();
         }
+        $activity->save();
     }
 }

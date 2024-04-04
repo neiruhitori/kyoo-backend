@@ -332,7 +332,9 @@ class HomeController extends Controller
         CounterActivity::where([
             'date' => date('Y-m-d'),
             'vct_id' => Auth::id()
-        ])->update([
+        ])
+        ->whereNotIn('workstation_id', [Auth::user()->WorkstationVct->workstation_id])
+        ->update([
             'last_logout' => date('Y-m-d H:i:s')
         ]);
 
@@ -346,15 +348,18 @@ class HomeController extends Controller
 
         if ($activity) {
             $operationDuration += $activity->operation_duration;
+            $activity->update([
+                'operation_duration' => $operationDuration,
+                'last_login' => date('Y-m-d H:i:s')
+            ]);
+        } else {
+            $activity = CounterActivity::create([
+                'date' => date('Y-m-d'),
+                'workstation_id' => Auth::user()->WorkstationVct->workstation_id,
+                'vct_id' => Auth::id(),
+                'operation_duration' => $operationDuration,
+                'last_login' => date('Y-m-d H:i:s')
+            ]);
         }
-
-        CounterActivity::updateOrCreate([
-            'date' => date('Y-m-d'),
-            'workstation_id' => Auth::user()->WorkstationVct->workstation_id,
-            'vct_id' => Auth::id()
-        ], [
-            'operation_duration' => $operationDuration,
-            'last_login' => date('Y-m-d H:i:s')
-        ]);
     }
 }

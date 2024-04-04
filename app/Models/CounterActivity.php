@@ -11,5 +11,5 @@ class CounterActivity extends Model
 
     protected $table = 'counter_activity';
 
-    protected $fillable = ['date', 'workstation_id', 'operation_duration', 'last_login', 'vct_id', 'last_login'];
+    protected $fillable = ['date', 'workstation_id', 'operation_duration', 'last_login', 'vct_id', 'last_logout'];
 }
