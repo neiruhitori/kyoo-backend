@@ -14,10 +14,14 @@ use App\Http\Requests\CS\StoreAppointment;
 use App\Mail\CS\StoreExhibitionMail;
 use App\Interfaces\ExhibitionRepositoryInterface;
 use App\Models\BranchScheduleTemplateDetail;
-use Illuminate\Support\Facades\Auth;
+use App\Models\CounterActivity;
 use Illuminate\Support\Facades\Mail;
 use App\Services\AppointmentService;
+use Auth;
+use App\User;
+use App\Workstation;
 use App\WorkstationService;
+use App\WorkstationVct;
 
 class HomeController extends Controller
 {
@@ -42,7 +46,7 @@ class HomeController extends Controller
             $random_character = $input[mt_rand(0, $input_length - 1)];
             $random_string .= $random_character;
         }
-    
+
         return $random_string;
     }
 
@@ -53,7 +57,7 @@ class HomeController extends Controller
         if (Auth::user()->Branch->BranchType->is_direct_queue) {
             return redirect(route('cs.directQueue.monitor'));
         }
-        
+
         if (Auth::user()->Branch->BranchType->is_appointment) {
             return redirect()->route('cs.appointments.monitor');
         }
@@ -101,7 +105,7 @@ class HomeController extends Controller
 
         try {
             $this->appointmentService->create($data);
-    
+
             $request->session()->flash('success', __('Appointment has been inserted'));
             return redirect(route('cs.appointments.monitor'));
         } catch (\Throwable $e) {
@@ -127,7 +131,7 @@ class HomeController extends Controller
                 $query->where('branch_id', $branch->id);
             })
             ->count();
-        
+
         if (!$branch->BranchType->is_premium && $total_current_booking >= 200) {
             $request->session()->flash('error', 'Jumlah antrian melebihi batas maksimal harian untuk cabang berlisensi gratis');
             return back()->withInput();
@@ -144,10 +148,10 @@ class HomeController extends Controller
         ]);
 
         $sameQueue = Exhibition::where(['email' => $request->email])
-            ->where(['phone' => $request->phone]) 
-            ->where(['slot_id' => $request->slot_id]) 
+            ->where(['phone' => $request->phone])
+            ->where(['slot_id' => $request->slot_id])
             ->where(['date' => $request->date])
-            ->first(); 
+            ->first();
         if ($sameQueue) {
             $request->session()->flash('error', __('Can not create the same queue at the same time'));
             return back()->withInput();
@@ -159,9 +163,9 @@ class HomeController extends Controller
         $slot = Slot::find($request->slot_id);
 
         // cant create queue when slot is full
-        $usedSlots = Exhibition::where(['slot_id' => $request->slot_id]) 
+        $usedSlots = Exhibition::where(['slot_id' => $request->slot_id])
             ->where(['date' => $request->date])
-            ->count(); 
+            ->count();
 
         if ($usedSlots >= $slot->max_slots) {
             $request->session()->flash('error', __("Queue maximum limit already reached, please find other timeslot schedule"));
@@ -231,7 +235,7 @@ class HomeController extends Controller
                 Log::create([
                     'user_id' => Auth::id(),
                     'description' => 'Update exhibition to End Served'
-                ]);    
+                ]);
                 break;
 
             case 'no show':
@@ -244,7 +248,7 @@ class HomeController extends Controller
                 Log::create([
                     'user_id' => Auth::id(),
                     'description' => 'Update exhibition to No Show'
-                ]);    
+                ]);
                 break;
         }
 
@@ -266,5 +270,93 @@ class HomeController extends Controller
                          ->size(500)->errorCorrection('H')
                          ->generate($barcode);
       return response($image)->header('Content-type','image/png');
+    }
+
+    public function workstation()
+    {
+        $user = Auth::user();
+        $workstations = collect();
+        $userDepartments = $user->Branch->Departments->pluck('id');
+
+        foreach ($userDepartments as $departmentId) {
+            $workstations = $workstations->merge(Workstation::where('department_id', $departmentId)->get());
+        }
+
+        foreach ($workstations as $workstation) {
+            $counter_activity = CounterActivity::where([
+                'date' => date('Y-m-d'),
+                'workstation_id' => $workstation->id
+            ])
+            ->whereNotNull('last_login')
+            ->latest()
+            ->first();
+
+            $vct = null;
+            if($counter_activity) {
+                $vct = User::find($counter_activity->vct_id);
+            }
+
+            $workstation->vct_id = $counter_activity ? $counter_activity->vct_id : null;
+            $workstation->vct_name = $vct ? $vct->name : null;
+        }
+
+        $workstations = $workstations->sortBy('name');
+
+        return view('cs.workstation')->withUser($user)->withWorkstations($workstations);
+    }
+
+    public function updateWorkstation(User $user, Request $request)
+    {
+        $existing_workstation = WorkstationVct::where('vct_id', $user->id)->first();
+        if ($existing_workstation) {
+            WorkstationVct::where('vct_id', $user->id)->update([
+                'workstation_id' => $request->workstation_id
+            ]);
+        } else {
+            WorkstationVct::create([
+                'vct_id' => $user->id,
+                'workstation_id' => $request->workstation_id
+            ]);
+        }
+
+        $this->updateVctActivity();
+
+        return redirect()->route('cs.workstation')->with('success', __('Workstation Service has been updated'));
+    }
+
+    private function updateVctActivity()
+    {
+        CounterActivity::where([
+            'date' => date('Y-m-d'),
+            'vct_id' => Auth::id()
+        ])
+        ->whereNotIn('workstation_id', [Auth::user()->WorkstationVct->workstation_id])
+        ->update([
+            'last_login' => null
+        ]);
+
+        $activity = CounterActivity::where([
+            'date' => date('Y-m-d'),
+            'workstation_id' => Auth::user()->WorkstationVct->workstation_id,
+            'vct_id' => Auth::id()
+        ])->first();
+
+        $operationDuration = env('SESSION_LIFETIME') * 60;
+
+        if ($activity) {
+            $operationDuration += $activity->operation_duration;
+            $activity->update([
+                'operation_duration' => $operationDuration,
+                'last_login' => date('Y-m-d H:i:s')
+            ]);
+        } else {
+            $activity = CounterActivity::create([
+                'date' => date('Y-m-d'),
+                'workstation_id' => Auth::user()->WorkstationVct->workstation_id,
+                'vct_id' => Auth::id(),
+                'operation_duration' => $operationDuration,
+                'last_login' => date('Y-m-d H:i:s')
+            ]);
+        }
     }
 }

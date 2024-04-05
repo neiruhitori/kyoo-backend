@@ -46,7 +46,7 @@ class AppointmentOnsiteCreatedMail extends Mailable
         $qrCode = QrCode::format('png')
                     ->size(200)->errorCorrection('H')
                     ->generate($qrCodeValue);
-        $qrCodePath = 'qr_codes/'. $branch->id .'_qr_code.png';
+        $qrCodePath = 'qr_codes/'. $this->appointmentOnsite->id .'_qr_code.png';
 
         if (Storage::disk('local')->exists("public/{$qrCodePath}")) {
             Storage::disk('local')->delete("public/{$qrCodePath}");

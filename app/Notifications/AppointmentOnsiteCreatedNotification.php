@@ -75,7 +75,7 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
                             'value' => strtoupper($appointmentOnsite->booking_code),
                         ],
                     ],
-                    'whatsappNumber' => preg_replace('/^(\+?62?8?)/', '8', $appointmentOnsite->phone),
+                    'whatsappNumber' => $appointmentOnsite->phone,
                 ],
             ],
         ]);

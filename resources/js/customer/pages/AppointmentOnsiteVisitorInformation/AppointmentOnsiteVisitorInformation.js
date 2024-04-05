@@ -35,6 +35,7 @@ function AppointmentOnsiteVisitorInformation() {
     const [name, setName] = useState('')
     const [phone, setPhone] = useState('')
     const [email, setEmail] = useState('')
+    const [headerErrorMessage, setHeaderErrorMessage] = useState('Gagal membuat antrian')
     const [errorMessage, setErrorMessage] = useState('')
     const [selectedButton, setSelectedButton] = useState('submit')
 
@@ -69,12 +70,22 @@ function AppointmentOnsiteVisitorInformation() {
             })
 
             if (!booking.success) {
+                if(booking.code === 10002) {
+                    setHeaderErrorMessage('Gangguan Koneksi')
+                } else {
+                    setHeaderErrorMessage('Gagal membuat antrian')
+                }
                 showError(booking.message)
                 return
             }
 
             navigate(`/customer/${branchId}/appointment-onsite/booking-status/${booking.data.id}`)
         } catch (error) {
+            if(error.code === 10002) {
+                setHeaderErrorMessage('Gangguan Koneksi')
+            } else {
+                setHeaderErrorMessage('Gagal membuat antrian')
+            }
             showError(error.message)
         }
     }
@@ -123,7 +134,7 @@ function AppointmentOnsiteVisitorInformation() {
                         fontSize: '1rem',
                         marginBottom: '.375rem',
                         textTransform: 'capitalize'
-                    }}>Gagal membuat antrian</h4>
+                    }}>{headerErrorMessage}</h4>
 
                     <p style={{
                         lineHeight: '1.5',

@@ -12,6 +12,7 @@ use App\User;
 use App\Models\CounterActivity;
 use Illuminate\Support\Carbon;
 use App\BranchType;
+use App\Models\CsActiveMenus;
 
 class LoginController extends Controller
 {
@@ -102,6 +103,13 @@ class LoginController extends Controller
             return redirect()->route('admin-branch.product-guide.queue-configuration');
         }
 
+        $branchID = Auth::user()->branch_id;
+        $active_menus = CsActiveMenus::where('branch_id', $branchID)->where('feature_id', 4)->first();
+
+        if($loggedUser->role == 'cs' && $active_menus) {
+            return redirect()->route('cs.workstation');
+        }
+
         return redirect()->route('dashboard');
     }
 
@@ -168,11 +176,12 @@ class LoginController extends Controller
             return;
         }
 
+        $activity->last_login = null;
         $diff = Carbon::now()->diffInSeconds(Carbon::parse($activity->last_login));
 
         if ($diff < env('SESSION_LIFETIME') * 60) {
             $activity->operation_duration -= env('SESSION_LIFETIME') * 60 - $diff;
-            $activity->save();
         }
+        $activity->save();
     }
 }

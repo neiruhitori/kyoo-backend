@@ -345,11 +345,11 @@ export default {
                     this.isLoading = false;
                     this.activeTab = "result";
 
-                    if (this.activeTab == "result") {
-                        setTimeout(() => {
-                            this.onReset();
-                        }, 900000);
-                    }
+                    // if (this.activeTab == "result") {
+                    //     setTimeout(() => {
+                    //         this.onReset();
+                    //     }, 900000);
+                    // }
                 })
                 .catch(error => {
                     this.isLoading = false;
@@ -374,11 +374,11 @@ export default {
                         this.print();
                     }
 
-                    if (this.activeTab == "result") {
-                        setTimeout(() => {
-                            this.onReset();
-                        }, 900000);
-                    }
+                    // if (this.activeTab == "result") {
+                    //     setTimeout(() => {
+                    //         this.onReset();
+                    //     }, 900000);
+                    // }
                 })
                 .catch(error => {
                     this.isLoading = false;

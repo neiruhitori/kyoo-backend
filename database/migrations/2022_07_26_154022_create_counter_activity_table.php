@@ -19,7 +19,7 @@ class CreateCounterActivityTable extends Migration
             $table->foreignId('workstation_id');
             $table->foreignId('service_id');
             $table->unsignedBigInteger('operation_duration');
-            $table->datetime('last_login');
+            $table->datetime('last_login')->nullable();
             $table->timestamps();
         });
     }

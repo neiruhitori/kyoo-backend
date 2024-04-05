@@ -53,15 +53,15 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                     $total_same_user_queue = $total_queue;
                 }
             }
-            if (isset($data['client_id'])) {
-                $total_queue = DirectQueue::where('client_id', $data['client_id'])
-                    ->whereDate('created_at', date('Y-m-d'))
-                    ->count();
+            // if (isset($data['client_id'])) {
+            //     $total_queue = DirectQueue::where('client_id', $data['client_id'])
+            //         ->whereDate('created_at', date('Y-m-d'))
+            //         ->count();
 
-                if ($total_queue > $total_same_user_queue) {
-                    $total_same_user_queue = $total_queue;
-                }
-            }
+            //     if ($total_queue > $total_same_user_queue) {
+            //         $total_same_user_queue = $total_queue;
+            //     }
+            // }
             if ($total_same_user_queue >= 3) {
                 throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
             }
