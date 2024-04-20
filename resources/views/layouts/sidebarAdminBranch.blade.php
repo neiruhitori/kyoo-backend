@@ -57,11 +57,13 @@
         </div>
     </li>
 
-    <li class="nav-item {{ !request()->is('admin-branch/appointment-onsites*') ?: 'active' }}">
-        <a class="nav-link" href="{{ route('admin-branch.appointment-onsites') }}">
-            <i class="fas fa-fw fa-calendar-check"></i>
-            <span>{{ __('list.module', ['module' => __('Appointment')]) }}</span></a>
-    </li>
+    @if (Auth::user()->Branch->BranchType->is_direct_queue)
+        <li class="nav-item {{ !request()->is('admin-branch/appointment-onsites*') ?: 'active' }}">
+            <a class="nav-link" href="{{ route('admin-branch.appointment-onsites') }}">
+                <i class="fas fa-fw fa-calendar-check"></i>
+                <span>{{ __('list.module', ['module' => __('Appointment')]) }}</span></a>
+        </li>
+    @endif
 
     <li class="nav-item {{ !request()->is('admin-branch/branch-qr-code') ?: 'active' }}">
         <a class="nav-link" href="{{ route('admin-branch.branch-qr-code') }}">

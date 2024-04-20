@@ -17,7 +17,9 @@ class AppointmentOnsiteController extends Controller
     {
         $date = $request->date ?: date('Y-m-d');
 
-        $appointment_onsites = AppointmentOnsite::where('date', $date)
+        $appointment_onsites = AppointmentOnsite::whereHas('Slot.Service', function ($query) use ($request) {
+                                                    $request->service_id ? $query->where('id', $request->service_id) : $query->where('branch_id', Auth::user()->branch_id);
+                                                })->where('date', $date)
                                                 ->where('is_used', false)
                                                 ->join('services', 'appointment_onsites.service_id', '=', 'services.id')
                                                 ->orderBy('date')
