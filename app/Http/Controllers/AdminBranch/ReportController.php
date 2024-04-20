@@ -288,9 +288,9 @@ class ReportController extends Controller
     public function appointmentOnsite(Request $request)
     {
         $date = $request->date ?: date('Y-m-d');
-        $last_month = $newdate = date("Y-m-d", strtotime("-2 months"));
+        $last_month = $newdate = date("Y-m-d", strtotime("-3 months"));
         if ($request->date && date('Y-m-d', strtotime($request->date)) < $last_month) {
-            $request->session()->flash('error', __('Can not select report more then last 2 months'));
+            $request->session()->flash('error', __('Can not select report more then last 3 months'));
             return view('adminBranch.report.directQueue.appointment-onsite', [
                 'appointment_onsites' => [],
                 'date' => $date,
@@ -310,7 +310,7 @@ class ReportController extends Controller
                                                 ->select('appointment_onsites.*')
                                                 ->get();
 
-        return view('adminBranch.report.directQueue.appointment-onsite', [
+        return view('adminBranch.report.directQueue.appointmentOnsite', [
             'appointment_onsites' => $appointment_onsites,
             'date' => $date,
             'service_id' => $request->service_id,

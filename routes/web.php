@@ -38,6 +38,12 @@ Route::namespace('AdminBranch')
         // Dashboard
         Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 
+        // List Appointment Onsite
+        Route::get('/appointment-onsites', 'AppointmentOnsiteController@index')->name('appointment-onsites');
+        Route::get('/appointment-onsites/slots', 'AppointmentOnsiteController@getSlots')->name('appointment-onsites.slot');
+        Route::get('/appointment-onsites/slot/{appointmentOnsite}', 'AppointmentOnsiteController@editSlot')->name('appointment-onsites.slot.edit');
+        Route::put('/appointment-onsites/{appointmentOnsite}', 'AppointmentOnsiteController@update')->name('appointment-onsites.update');
+
         // QR Code Poster
         Route::get('/branch-qr-code', 'BranchQrCodeController')->name('branch-qr-code');
 
