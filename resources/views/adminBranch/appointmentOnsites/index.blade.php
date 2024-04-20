@@ -40,7 +40,7 @@
                                 <div class="form-row align-items-end">
                                     <div class="col-auto">
                                         <label for="">{{ __('Select Reservation Date') }}</label>
-                                        <input type="date" name="date" class="form-control" value="{{ $date }}" />
+                                        <input type="date" name="date" class="form-control" value="{{ $date }}" min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"/>
                                     </div>
                                     <div class="col-auto">
                                         <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>

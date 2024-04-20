@@ -57,7 +57,10 @@
         </div>
     </li>
 
-    @if (Auth::user()->Branch->BranchType->is_direct_queue)
+    @if (
+            Auth::user()->Branch->BranchType->is_premium &&
+            Auth::user()->Branch->BranchType->is_direct_queue
+        )
         <li class="nav-item {{ !request()->is('admin-branch/appointment-onsites*') ?: 'active' }}">
             <a class="nav-link" href="{{ route('admin-branch.appointment-onsites') }}">
                 <i class="fas fa-fw fa-calendar-check"></i>

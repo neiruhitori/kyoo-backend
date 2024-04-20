@@ -94,7 +94,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="date">{{ __('Date') }}</label>
-                                <input type="date" class="form-control @error('date') is-invalid @enderror" name="date" id="date" value="{{ $appointment_onsite->date }}" onchange="getSlots()" readonly>
+                                <input type="date" class="form-control @error('date') is-invalid @enderror" name="date" id="date" value="{{ $appointment_onsite->date }}" onchange="getSlots()" min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
                                 @include('layouts.inputError', ['errorName' => 'date'])
                             </div>
                         </div>
