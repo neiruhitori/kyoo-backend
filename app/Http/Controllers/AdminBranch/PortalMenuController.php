@@ -19,8 +19,8 @@ class PortalMenuController extends Controller
     {
         $data['layer'] = $request->layer;
 
-        if($request->template_form_booking) {
-            $data['template_form_booking'] = $request->template_form_booking;
+        if($request->template_booking_form) {
+            $data['template_booking_form'] = $request->template_booking_form;
         }
 
         $branchConfiguration = Auth::user()->Branch->BranchConfiguration;

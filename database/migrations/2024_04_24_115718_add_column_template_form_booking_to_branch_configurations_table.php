@@ -14,7 +14,7 @@ class AddColumnTemplateFormBookingToBranchConfigurationsTable extends Migration
     public function up()
     {
         Schema::table('branch_configurations', function (Blueprint $table) {
-            $table->string('template_form_booking')->default('default');
+            $table->string('template_booking_form')->default('standard-form');
         });
     }
 
@@ -26,7 +26,7 @@ class AddColumnTemplateFormBookingToBranchConfigurationsTable extends Migration
     public function down()
     {
         Schema::table('branch_configurations', function (Blueprint $table) {
-            $table->dropColumn('template_form_booking');
+            $table->dropColumn('template_booking_form');
         });
     }
 }

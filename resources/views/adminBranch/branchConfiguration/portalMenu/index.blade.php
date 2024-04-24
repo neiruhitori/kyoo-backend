@@ -159,12 +159,12 @@
         @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
             <div class="col-md-12" id="formBooking">
                 <div class="form-group">
-                    <label for="template_form_booking">{{ __('Template Form Booking') }}</label>
-                    <select name="template_form_booking" id="template_form_booking" class="form-control @error('template_form_booking') is-invalid @enderror">
-                        <option value="default" {{ $branchConfiguration->template_form_booking == 'default' ? 'selected' : '' }}>Standard Form</option>
-                        <option value="form-medical-1" {{ $branchConfiguration->template_form_booking == 'form-medical-1' ? 'selected' : '' }}> Form Medical 1</option>
+                    <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
+                    <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror">
+                        <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
+                        <option value="form-medical-1" {{ $branchConfiguration->template_booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
                     </select>
-                    @include('layouts.inputError', ['errorName' => 'template_form_booking'])
+                    @include('layouts.inputError', ['errorName' => 'template_booking_form'])
                 </div>
             </div>
         @endif

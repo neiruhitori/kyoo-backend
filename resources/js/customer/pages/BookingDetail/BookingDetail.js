@@ -192,7 +192,7 @@ export default function BookingDetail() {
                     </div>
                 </Card>
 
-                {branch?.branch_configuration.template_form_booking === 'default' ?
+                {branch?.branch_configuration.template_booking_form === 'standard-form' ?
                     <Card style={{
                         marginBottom: '1.625rem'
                     }}>

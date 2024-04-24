@@ -168,7 +168,7 @@ function AppointmentOnsiteVisitorInformation() {
                 </DangerAlert>}
 
 
-                {branch?.branch_configuration.template_form_booking === 'default' ?
+                {branch?.branch_configuration.template_booking_form === 'standard-form' ?
                     <div style={{
                         flex: '1 1 0%'
                     }}>
