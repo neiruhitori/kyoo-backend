@@ -19,12 +19,8 @@ class PortalMenuController extends Controller
     {
         $data['layer'] = $request->layer;
 
-        if($request->time_interval) {
-            $data['time_interval'] = $request->time_interval;
-        }
-
-        if($request->max_slots) {
-            $data['max_slots'] = $request->max_slots;
+        if($request->template_booking_form) {
+            $data['template_booking_form'] = $request->template_booking_form;
         }
 
         $branchConfiguration = Auth::user()->Branch->BranchConfiguration;

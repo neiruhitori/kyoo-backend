@@ -81,18 +81,9 @@ class AppointmentOnsiteController extends Controller
             Service::find($request->service_id);
             $slot = Slot::find($request->slot_id);
 
-            $cleaned_phone = preg_replace('/[^0-9]/', '', $request->phone);
-
-            if (substr($cleaned_phone, 0, 1) == '0') {
-                $cleaned_phone = '62' . substr($cleaned_phone, 1);
-            } elseif (substr($cleaned_phone, 0, 3) == '620') {
-                $cleaned_phone = '62' . substr($cleaned_phone, 3);
-            } elseif (substr($cleaned_phone, 0, 1) == '8') {
-                $cleaned_phone = '628' . substr($cleaned_phone, 1);
-            }
-
             $data = $request->all();
-            $data['phone'] = $cleaned_phone;
+            $data['phone'] = $this->cleanPhoneNumber($request->phone);
+            $data['emergency_number'] = $this->cleanPhoneNumber($request->emergency_number);
             $data['client_id'] = $request->cookie('client_id');
             $data['start_time'] = $slot->start_time;
             $data['end_time'] = $slot->end_time;
@@ -111,5 +102,19 @@ class AppointmentOnsiteController extends Controller
                 'code' => $e->getCode()
             ]);
         }
+    }
+
+    private function cleanPhoneNumber($phoneNumber) {
+        $cleaned_phone = preg_replace('/[^0-9]/', '', $phoneNumber);
+
+        if (substr($cleaned_phone, 0, 1) == '0') {
+            $cleaned_phone = '62' . substr($cleaned_phone, 1);
+        } elseif (substr($cleaned_phone, 0, 3) == '620') {
+            $cleaned_phone = '62' . substr($cleaned_phone, 3);
+        } elseif (substr($cleaned_phone, 0, 1) == '8') {
+            $cleaned_phone = '628' . substr($cleaned_phone, 1);
+        }
+
+        return $cleaned_phone;
     }
 }

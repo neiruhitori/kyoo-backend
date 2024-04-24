@@ -28,8 +28,13 @@ class Detail extends JsonResource
             'service_id' => $this->service_id,
             'service_name' => $this->Service->name,
             'name' => $this->name,
+            'date_of_birth' => $this->date_of_birth,
+            'address' => $this->address,
             'phone' => $this->phone,
+            'emergency_number' => $this->emergency_number,
+            'passport_number' => $this->passport_number,
             'email' => $this->email,
+            'reason_for_visit' => $this->reason_for_visit,
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
         ];

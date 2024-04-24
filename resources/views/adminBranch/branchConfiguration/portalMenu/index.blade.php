@@ -156,9 +156,50 @@
             </div>
         </div>
 
+        @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+            <div class="col-md-12" id="formBooking">
+                <div class="form-group">
+                    <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
+                    <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror">
+                        <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
+                        <option value="form-medical-1" {{ $branchConfiguration->template_booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
+                    </select>
+                    @include('layouts.inputError', ['errorName' => 'template_booking_form'])
+                </div>
+            </div>
+        @endif
+
         <div class="wrapper-submit mr-3 mb-3">
             <button type="submit" class="btn btn-warning">Simpan</submit>
         </div>
     </form>
 </div>
+
+@if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const oneLayer = document.getElementById('one-layer');
+            const twoLayer = document.getElementById('two-layer');
+            const formBooking = document.getElementById('formBooking');
+
+            oneLayer.addEventListener('change', function() {
+                if (this.checked) {
+                    formBooking.classList.add('d-none');
+                }
+            });
+
+            twoLayer.addEventListener('change', function() {
+                if (this.checked) {
+                    formBooking.classList.remove('d-none');
+                }
+            });
+
+            if (oneLayer.checked) {
+                formBooking.classList.add('d-none');
+            } else if (twoLayer.checked) {
+                formBooking.classList.remove('d-none');
+            }
+        });
+    </script>
+@endif
 @endsection

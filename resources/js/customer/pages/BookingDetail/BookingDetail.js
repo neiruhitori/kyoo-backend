@@ -192,72 +192,236 @@ export default function BookingDetail() {
                     </div>
                 </Card>
 
-                <Card style={{
-                    marginBottom: '1.625rem'
-                }}>
-                    <h4 style={{
+                {branch?.branch_configuration.template_booking_form === 'standard-form' ?
+                    <Card style={{
                         marginBottom: '1.625rem'
-                    }}>Detail Pengunjung</h4>
+                    }}>
+                        <h4 style={{
+                            marginBottom: '1.625rem'
+                        }}>Detail Pengunjung</h4>
 
-                    <div>
-                        <div style={{
-                            display: 'flex',
-                            fontSize: '.875rem',
-                            marginBottom: '1.125rem'
-                        }}>
+                        <div>
                             <div style={{
-                                flex: '1',
-                                color: '#A5A5A5'
-                            }}>Nama</div>
-
-                            <div style={{
-                                flex: '1',
-                                color: '#103C7C',
-                                fontWeight: '600'
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
                             }}>
-                                {booking?.name}
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>Nama</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.name}
+                                </div>
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
+                            }}>
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>Email</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.email}
+                                </div>
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
+                            }}>
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>No. Telepon</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.phone}
+                                </div>
                             </div>
                         </div>
+                    </Card>
+                    :
+                    <Card style={{
+                        marginBottom: '1.625rem'
+                    }}>
+                        <h4 style={{
+                            marginBottom: '1.625rem'
+                        }}>Detail Pengunjung</h4>
 
-                        <div style={{
-                            display: 'flex',
-                            fontSize: '.875rem',
-                            marginBottom: '1.125rem'
-                        }}>
+                        <div>
                             <div style={{
-                                flex: '1',
-                                color: '#A5A5A5'
-                            }}>Email</div>
-
-                            <div style={{
-                                flex: '1',
-                                color: '#103C7C',
-                                fontWeight: '600'
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
                             }}>
-                                {booking?.email}
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>Nama</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.name}
+                                </div>
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
+                            }}>
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>Tanggal lahir</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.date_of_birth}
+                                </div>
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
+                            }}>
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>Alamat</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.address}
+                                </div>
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
+                            }}>
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>No. Telepon</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.phone}
+                                </div>
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
+                            }}>
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>Nomer Cadangan</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.emergency_number}
+                                </div>
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
+                            }}>
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>NIK/Passport number</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.passport_number}
+                                </div>
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
+                            }}>
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>Email</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.email}
+                                </div>
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                fontSize: '.875rem',
+                                marginBottom: '1.125rem'
+                            }}>
+                                <div style={{
+                                    flex: '1',
+                                    color: '#A5A5A5'
+                                }}>Alasan Kunjungan</div>
+
+                                <div style={{
+                                    flex: '1',
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    {booking?.reason_for_visit}
+                                </div>
                             </div>
                         </div>
-
-                        <div style={{
-                            display: 'flex',
-                            fontSize: '.875rem',
-                            marginBottom: '1.125rem'
-                        }}>
-                            <div style={{
-                                flex: '1',
-                                color: '#A5A5A5'
-                            }}>No. Telepon</div>
-
-                            <div style={{
-                                flex: '1',
-                                color: '#103C7C',
-                                fontWeight: '600'
-                            }}>
-                                {booking?.phone}
-                            </div>
-                        </div>
-                    </div>
-                </Card>
+                    </Card>
+                }
             </div>
         </MainContent>
     </>

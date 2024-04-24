@@ -23,6 +23,7 @@ class BranchConfiguration extends Model
     'serving_directly',
     'whatsapp_type',
     'api_wa',
-    'api_token'
+    'api_token',
+    'template_booking_form'
   ];
 }
