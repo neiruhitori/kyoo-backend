@@ -161,7 +161,7 @@
                 <div class="form-group">
                     <label for="template_form_booking">{{ __('Template Form Booking') }}</label>
                     <select name="template_form_booking" id="template_form_booking" class="form-control @error('template_form_booking') is-invalid @enderror">
-                        <option value="default" {{ $branchConfiguration->template_form_booking == 'default' ? 'selected' : '' }}>Default</option>
+                        <option value="default" {{ $branchConfiguration->template_form_booking == 'default' ? 'selected' : '' }}>Standard Form</option>
                         <option value="form-medical-1" {{ $branchConfiguration->template_form_booking == 'form-medical-1' ? 'selected' : '' }}> Form Medical 1</option>
                     </select>
                     @include('layouts.inputError', ['errorName' => 'template_form_booking'])
