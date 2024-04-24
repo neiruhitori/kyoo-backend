@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useParams, useNavigate, Link, useLocation, useSearchParams } from 'react-router-dom'
 
 import { useToken, useMessaging } from '../../lib/firebase'
@@ -14,6 +14,7 @@ import DangerAlert from '../../components/DangerAlert'
 import Loading from '../../components/Loading'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
+import { fetchBranch } from '../../api/branch'
 
 function useForceUpdate(){
     const [value, setValue] = useState(0)
@@ -33,16 +34,34 @@ function AppointmentOnsiteVisitorInformation() {
     const fcm_id = useToken(messaging, process.env.MIX_FIREBASE_VAPID_KEY)
 
     const [name, setName] = useState('')
+    const [dateOfBirth, setDateOfBirth] = useState(null)
+    const [address, setAddress] = useState(null)
     const [phone, setPhone] = useState('')
+    const [emergencyNumber, setEmergencyNumber] = useState(null)
+    const [passportNumber, setPassportNumber] = useState(null)
     const [email, setEmail] = useState('')
+    const [reasonForVisit, setReasonForVisit] = useState(null)
     const [headerErrorMessage, setHeaderErrorMessage] = useState('Gagal membuat antrian')
     const [errorMessage, setErrorMessage] = useState('')
     const [selectedButton, setSelectedButton] = useState('submit')
 
     const validationMessage = {
         name: validator.message('name', name, ['required']),
+        dateOfBirth: validator.message('dateOfBirth', dateOfBirth, ['required']),
+        address: validator.message('address', address, ['required']),
         phone: validator.message('phone', phone, ['required', 'phone']),
+        emergencyNumber: validator.message('emergencyNumber', emergencyNumber, ['required', 'phone']),
+        passportNumber: validator.message('passportNumber', passportNumber, ['required', 'passportNumber']),
         email: validator.message('email', email, ['required', 'email']),
+        reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
+    }
+
+    let branch = null
+
+    const branchQuery = useQuery(['branch', branchId], () => fetchBranch(branchId))
+
+    if (branchQuery.status === 'success') {
+        branch = branchQuery.data
     }
 
     const bookingMutation = useMutation('booking', (data) => createAppointmentOnsite(data))
@@ -62,9 +81,14 @@ function AppointmentOnsiteVisitorInformation() {
                 service_id: serviceId,
                 branch_id: branchId,
                 name,
+                address,
                 phone,
                 email,
                 fcm_id,
+                date_of_birth: dateOfBirth,
+                emergency_number: emergencyNumber,
+                passport_number: passportNumber,
+                reason_for_visit: reasonForVisit,
                 date: searchParams.get('date'),
                 slot_id: searchParams.get('slot')
             })
@@ -144,47 +168,152 @@ function AppointmentOnsiteVisitorInformation() {
                 </DangerAlert>}
 
 
+                {branch?.branch_configuration.template_form_booking === 'default' ?
+                    <div style={{
+                        flex: '1 1 0%'
+                    }}>
+                        <TextField
+                            label="Nama Lengkap"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Ch. John Doe"
+                            error={!!validationMessage.name}
+                            helperText={validationMessage.name}
+                        />
+
+                        <TextField
+                            label="Email"
+                            type="email"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Ch. john@mail.com"
+                            error={!!validationMessage.email}
+                            helperText={validationMessage.email}
+                        />
+
+                        <TextField
+                            label="No. Telepon"
+                            type="tel"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="+62"
+                            error={!!validationMessage.phone}
+                            helperText={validationMessage.phone}
+                        />
+                    </div>
+                :
                 <div style={{
-                    flex: '1 1 0%'
-                }}>
-                    <TextField
-                        label="Nama Lengkap"
-                        style={{
-                            marginBottom: '1.5rem'
-                        }}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Ch. John Doe"
-                        error={!!validationMessage.name}
-                        helperText={validationMessage.name}
-                    />
+                        flex: '1 1 0%'
+                    }}>
+                        <TextField
+                            label="Nama/Name"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Ch. John Doe"
+                            error={!!validationMessage.name}
+                            helperText={validationMessage.name}
+                        />
 
-                    <TextField
-                        label="Email"
-                        type="email"
-                        style={{
-                            marginBottom: '1.5rem'
-                        }}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Ch. john@mail.com"
-                        error={!!validationMessage.email}
-                        helperText={validationMessage.email}
-                    />
+                        <TextField
+                            label="Tanggal lahir/DOB"
+                            type="date"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={dateOfBirth}
+                            onChange={(e) => setDateOfBirth(e.target.value)}
+                            error={!!validationMessage.dateOfBirth}
+                            helperText={validationMessage.dateOfBirth}
+                        />
 
-                    <TextField
-                        label="No. Telepon"
-                        type="tel"
-                        style={{
-                            marginBottom: '1.5rem'
-                        }}
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="+62"
-                        error={!!validationMessage.phone}
-                        helperText={validationMessage.phone}
-                    />
-                </div>
+                        <TextField
+                            label="Alamat/Address"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            placeholder="Ch. Jln Merdeka"
+                            error={!!validationMessage.address}
+                            helperText={validationMessage.address}
+                        />
+
+                        <TextField
+                            label="No. Telepon/Phone number"
+                            type="tel"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="+62"
+                            error={!!validationMessage.phone}
+                            helperText={validationMessage.phone}
+                        />
+
+                        <TextField
+                            label="Nomer cadangan/Emergency Number"
+                            type="tel"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={emergencyNumber}
+                            onChange={(e) => setEmergencyNumber(e.target.value)}
+                            placeholder="+62"
+                            error={!!validationMessage.emergencyNumber}
+                            helperText={validationMessage.emergencyNumber}
+                        />
+
+                        <TextField
+                            label="NIK/Passport Number"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={passportNumber}
+                            onChange={(e) => setPassportNumber(e.target.value)}
+                            placeholder="NIK"
+                            error={!!validationMessage.passportNumber}
+                            helperText={validationMessage.passportNumber}
+                        />
+
+                        <TextField
+                            label="Email"
+                            type="email"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Ch. john@mail.com"
+                            error={!!validationMessage.email}
+                            helperText={validationMessage.email}
+                        />
+
+                        <TextField
+                            label="Alasan Kunjungan/Reason for visit"
+                            style={{
+                                marginBottom: '1.5rem'
+                            }}
+                            value={reasonForVisit}
+                            onChange={(e) => setReasonForVisit(e.target.value)}
+                            placeholder="Ch. CheckUp"
+                            error={!!validationMessage.reasonForVisit}
+                            helperText={validationMessage.reasonForVisit}
+                        />
+                    </div>
+                }
             </MainContent>
 
             <div style={{

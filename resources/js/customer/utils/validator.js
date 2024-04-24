@@ -22,7 +22,15 @@ class Validator {
 
                     return this.testRegex(value, /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)$/) && !this.testRegex(value, /^\b(\d)\1{8,}\b$/)
                 }
-            }
+            },
+            passportNumber: {
+                message: 'NIK/Passport Number tidak valid',
+                validate: (value) => {
+                    if (!value) return true
+
+                    return this.testRegex(value, /^[0-9]+$/)
+                }
+            },
         }
     }
 
@@ -32,7 +40,7 @@ class Validator {
         for (let rule of rules) {
             if (!this.rules[rule].validate(value)) {
                 this.fields[field] = false
-                
+
                 if (this.messagesShown) {
                     return this.rules[rule].message
                 }
