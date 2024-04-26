@@ -193,12 +193,12 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
     }
 
     private function generate_booking_code() {
-        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $permitted_chars = '123456789abcdefghjkmnpqrstuvwxyz';
         $code_exists = true;
 
         do {
             $random_string = '';
-            for ($i = 0; $i < 6; $i++) {
+            for ($i = 0; $i < 5; $i++) {
                 $random_character = $permitted_chars[mt_rand(0, strlen($permitted_chars) - 1)];
                 $random_string .= $random_character;
             }

@@ -108,7 +108,7 @@
                                                 <span style="font-size: 12px;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Mohon tunggu sampai nomor <br> antrian Anda dipanggil</span>
                                             </div>
                                             <div class="wrapper-service-card">
-                                                <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center;"> {{ workstationServices.find((service) => service.id == responseQueue.workstation_service_id).service.name }} </h4>
+                                                <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center;"> {{ responseQueue.service_name }} </h4>
                                                 <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">{{ currentDay }}, {{ currentFormattedDate }}</span>
                                                 <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">{{ currentTimes }} {{ branch.timezone }}</span>
                                                 <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">Sisa Antrian : {{ responseQueue.total_waiting }}</span>
@@ -293,6 +293,7 @@ export default {
                 const workstationServices = await axios.get(
                     `/device/directQueue/allWorkstationServices/${this.branch.id}`
                 );
+                console.log(workstationServices);
 
                 this.workstationServices =
                     workstationServices.status == 200
@@ -398,7 +399,7 @@ export default {
 
             const branchLogo = this.branch_logo;
             const serviceNumber = this.responseQueue.queue_no;
-            const serviceName = this.workstationServices.find((service) => service.id == this.responseQueue.workstation_service_id).service.name;
+            const serviceName = this.responseQueue.service_name;
             const branchName = this.branch.name;
             const currentDay = this.currentDay;
             const currentFormattedDate = this.currentFormattedDate;

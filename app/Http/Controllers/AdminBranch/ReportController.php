@@ -288,7 +288,7 @@ class ReportController extends Controller
     public function appointmentOnsite(Request $request)
     {
         $date = $request->date ?: date('Y-m-d');
-        $booking_form = $request->booking_form ?? 'default';
+        $booking_form = $request->booking_form ?? 'standard-form';
         $last_month = $newdate = date("Y-m-d", strtotime("-3 months"));
         if ($request->date && date('Y-m-d', strtotime($request->date)) < $last_month) {
             $request->session()->flash('error', __('Can not select report more then last 3 months'));

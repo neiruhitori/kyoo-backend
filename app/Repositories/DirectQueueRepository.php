@@ -105,6 +105,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             $data['booking_code'] = $this->generate_booking_code();
 
             $directQueue = DirectQueue::create($data);
+            $directQueue['service_name'] = $service->name;
 
             if ($data['phone'] && $branch->is_premium) {
                 OnsiteQueueCreated::dispatch($directQueue);

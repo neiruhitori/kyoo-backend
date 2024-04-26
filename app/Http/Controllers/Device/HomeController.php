@@ -324,15 +324,12 @@ class HomeController extends Controller
             ->where('date', date('Y-m-d'))
             ->firstOrFail();
 
-            $workstation_service = WorkstationService::where('service_id', $appointment_onsite->service_id)->first();
-
             $data = $appointment_onsite->toArray();
-            $data['workstation_id'] = $workstation_service->workstation_id;
-            $data['workstation_service_id'] = $workstation_service->id;
             $data['user_id'] = $user->id;
             $data['vct_id'] = $request->vct_id;
             $data['direct_queue_channel'] = 'Device';
             $data['priority'] = 1;
+            $data['appointment_onsite_id'] = $appointment_onsite->id;
 
             $direct_queue = $this->onsite_repository->store($data);
 

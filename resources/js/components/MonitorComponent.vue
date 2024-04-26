@@ -623,7 +623,7 @@ export default {
         const queue = await axios.post("/cs/directQueue/onEndServed", {
           queue_no: this.selected_queue,
           service_id: selected_queue.service_id,
-          serving_duration: Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000)
+          serving_duration: selected_queue.called_at ? Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000) : 0
         });
 
         this.resetTimer()
@@ -730,7 +730,7 @@ export default {
           queue_no: e.target.queue_no.value,
           workstation_service_id: e.target.workstation_service_id.value,
           service_id: selected_queue[0].service_id,
-          serving_duration: Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000)
+          serving_duration: selected_queue.called_at ? Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000) : 0
         };
         await axios.post("/cs/directQueue/onTransfer", data);
         this.isOnServed = false;
