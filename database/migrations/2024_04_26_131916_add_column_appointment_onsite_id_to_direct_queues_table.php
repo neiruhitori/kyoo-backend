@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AddColumnAppointmentOnsiteIdToDirectQueuesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('direct_queues', function (Blueprint $table) {
+            $table->foreignId('appointment_onsite_id')->nullable();
+
+            $table->foreign('appointment_onsite_id')->references('id')->on('appointment_onsites');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('direct_queues', function (Blueprint $table) {
+            $table->dropColumn('appointment_onsite_id');
+        });
+    }
+}

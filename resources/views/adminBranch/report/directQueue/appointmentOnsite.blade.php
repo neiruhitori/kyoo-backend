@@ -94,6 +94,7 @@
                                             <th>{{ __('Order Date') }}</th>
                                             <th>{{ __('Reservation Date') }}</th>
                                             <th>{{ __('Booking Code') }}</th>
+                                            <th>{{ __('Queue No') }}</th>
                                             <th>{{ __('Name') }}</th>
                                             <th>{{ __('Email') }}</th>
                                             <th>{{ __('Mobile Phone') }}</th>
@@ -107,6 +108,7 @@
                                                     <td>{{ $appointment_onsite->created_at->formatLocalized('%d-%b-%Y') }}</td>
                                                     <td>{{ date('d-M-Y', strtotime($appointment_onsite->date)) }}</td>
                                                     <td>{{ strtoupper($appointment_onsite->booking_code) }}</td>
+                                                    <td>{{ $appointment_onsite->DirectQueue->queue_no ?? '-' }}</td>
                                                     <td>{{ $appointment_onsite->name }}</td>
                                                     <td>{{ $appointment_onsite->email }}</td>
                                                     <td>{{ $appointment_onsite->phone }}</td>
@@ -127,6 +129,7 @@
                                             <th>{{ __('Order Date') }}</th>
                                             <th>{{ __('Reservation Date') }}</th>
                                             <th>{{ __('Booking Code') }}</th>
+                                            <th>{{ __('Queue No') }}</th>
                                             <th>{{ __('Name') }}</th>
                                             <th>{{ __('Date of Birth') }}</th>
                                             <th>{{ __('Address') }}</th>
@@ -145,6 +148,7 @@
                                                     <td>{{ $appointment_onsite->created_at->formatLocalized('%d-%b-%Y') }}</td>
                                                     <td>{{ date('d-M-Y', strtotime($appointment_onsite->date)) }}</td>
                                                     <td>{{ strtoupper($appointment_onsite->booking_code) }}</td>
+                                                    <td>{{ $appointment_onsite->DirectQueue->queue_no ?? '-' }}</td>
                                                     <td>{{ $appointment_onsite->name }}</td>
                                                     <td>
                                                         {{ $appointment_onsite->date_of_birth ? date('d-M-Y', strtotime($appointment_onsite->date_of_birth)) : '-' }}

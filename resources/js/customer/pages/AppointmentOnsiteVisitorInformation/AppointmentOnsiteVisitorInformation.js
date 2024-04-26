@@ -34,27 +34,16 @@ function AppointmentOnsiteVisitorInformation() {
     const fcm_id = useToken(messaging, process.env.MIX_FIREBASE_VAPID_KEY)
 
     const [name, setName] = useState('')
-    const [dateOfBirth, setDateOfBirth] = useState(null)
-    const [address, setAddress] = useState(null)
+    const [dateOfBirth, setDateOfBirth] = useState('')
+    const [address, setAddress] = useState('')
     const [phone, setPhone] = useState('')
-    const [emergencyNumber, setEmergencyNumber] = useState(null)
-    const [passportNumber, setPassportNumber] = useState(null)
+    const [emergencyNumber, setEmergencyNumber] = useState('')
+    const [passportNumber, setPassportNumber] = useState('')
     const [email, setEmail] = useState('')
-    const [reasonForVisit, setReasonForVisit] = useState(null)
+    const [reasonForVisit, setReasonForVisit] = useState('')
     const [headerErrorMessage, setHeaderErrorMessage] = useState('Gagal membuat antrian')
     const [errorMessage, setErrorMessage] = useState('')
     const [selectedButton, setSelectedButton] = useState('submit')
-
-    const validationMessage = {
-        name: validator.message('name', name, ['required']),
-        dateOfBirth: validator.message('dateOfBirth', dateOfBirth, ['required']),
-        address: validator.message('address', address, ['required']),
-        phone: validator.message('phone', phone, ['required', 'phone']),
-        emergencyNumber: validator.message('emergencyNumber', emergencyNumber, ['required', 'phone']),
-        passportNumber: validator.message('passportNumber', passportNumber, ['required', 'passportNumber']),
-        email: validator.message('email', email, ['required', 'email']),
-        reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
-    }
 
     let branch = null
 
@@ -63,6 +52,19 @@ function AppointmentOnsiteVisitorInformation() {
     if (branchQuery.status === 'success') {
         branch = branchQuery.data
     }
+
+    const validationMessage = {
+        name: validator.message('name', name, ['required']),
+        phone: validator.message('phone', phone, ['required', 'phone']),
+        email: validator.message('email', email, ['required', 'email']),
+        ...(branch && branch.branch_configuration.template_booking_form !== 'standard-form' && {
+            dateOfBirth: validator.message('dateOfBirth', dateOfBirth, ['required']),
+            address: validator.message('address', address, ['required']),
+            emergencyNumber: validator.message('emergencyNumber', emergencyNumber, ['required', 'phone']),
+            passportNumber: validator.message('passportNumber', passportNumber, ['required', 'passportNumber']),
+            reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
+        }),
+    };
 
     const bookingMutation = useMutation('booking', (data) => createAppointmentOnsite(data))
 
@@ -81,16 +83,18 @@ function AppointmentOnsiteVisitorInformation() {
                 service_id: serviceId,
                 branch_id: branchId,
                 name,
-                address,
                 phone,
                 email,
                 fcm_id,
-                date_of_birth: dateOfBirth,
-                emergency_number: emergencyNumber,
-                passport_number: passportNumber,
-                reason_for_visit: reasonForVisit,
                 date: searchParams.get('date'),
-                slot_id: searchParams.get('slot')
+                slot_id: searchParams.get('slot'),
+                ...(branch && branch.branch_configuration.template_booking_form !== 'standard-form' && {
+                    address,
+                    date_of_birth: dateOfBirth,
+                    emergency_number: emergencyNumber,
+                    passport_number: passportNumber,
+                    reason_for_visit: reasonForVisit,
+                })
             })
 
             if (!booking.success) {

@@ -19,9 +19,14 @@ class AppointmentOnsite extends Model
         return $this->belongsTo(Service::class);
     }
 
-    public function Slot()
+    public function Slot(): BelongsTo
     {
         return $this->belongsTo('App\Slot')->orderBy('start_time', 'desc');
+    }
+
+    public function DirectQueue()
+    {
+        return $this->hasOne('App\DirectQueue', 'appointment_onsite_id', 'id');
     }
 
     public static function sendAppointmentOnsiteCreatedNotification($appointmentOnsite)

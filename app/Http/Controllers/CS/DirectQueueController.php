@@ -647,6 +647,9 @@ class DirectQueueController extends Controller
                 'data' => $validation->errors()
             ], 404);
         }
+        if($directQueue->called_at == null) {
+            $directQueue->called_at = Date('Y-m-d H:i:s');
+        }
         $directQueue->status = 'end served';
         $directQueue->done_at = Date('Y-m-d H:i:s');
         $directQueue->serving_duration = $request->serving_duration;
