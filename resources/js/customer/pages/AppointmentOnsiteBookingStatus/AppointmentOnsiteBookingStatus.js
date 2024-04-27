@@ -190,6 +190,10 @@ function AppointmentOnsiteBookingStatus(props) {
 
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
+
+        if(booking?.is_used) {
+            navigate(`/customer/${branchId}/onsite/booking-status/${booking.direct_queue_id}`)
+        }
     }
 
     if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
