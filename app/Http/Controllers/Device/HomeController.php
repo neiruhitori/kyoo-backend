@@ -319,10 +319,36 @@ class HomeController extends Controller
     {
         try {
             $user = User::find($request->user_id);
+
+            $checked_in_appointment = AppointmentOnsite::where('booking_code', strtolower($request->booking_code))
+            ->where('is_used', true)
+            ->whereDate('date', date('Y-m-d'))
+            ->first();
+
+            if($checked_in_appointment) {
+                $direct_queue = DirectQueue::where('appointment_onsite_id', $checked_in_appointment->id)->first();
+                $direct_queue->total_waiting = DirectQueue::whereServiceId($direct_queue->service_id)
+                ->whereStatus('waiting')
+                ->whereDate('created_at', date('Y-m-d'))
+                ->where('created_at', '<=', $direct_queue->created_at)
+                ->count();
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $direct_queue
+                ]);
+            }
+
             $appointment_onsite = AppointmentOnsite::where('booking_code', strtolower($request->booking_code))
             ->where('is_used', false)
-            ->where('date', date('Y-m-d'))
-            ->firstOrFail();
+            ->whereDate('date', '>=', date('Y-m-d'))
+            ->first();
+
+            if(!$appointment_onsite) {
+                throw new \Exception('Kode Booking tidak ditemukan atau sudah tidak berlaku', 10003);
+            } elseif ($appointment_onsite->date != date('Y-m-d')) {
+                throw new \Exception('Kode booking belum berlaku, silahkan cek tanggal booking.', 10004);
+            }
 
             $data = $appointment_onsite->toArray();
             $data['user_id'] = $user->id;
@@ -332,6 +358,10 @@ class HomeController extends Controller
             $data['appointment_onsite_id'] = $appointment_onsite->id;
 
             $direct_queue = $this->onsite_repository->store($data);
+            $direct_queue->total_waiting = DirectQueue::whereServiceId($direct_queue->service_id)
+                                                        ->whereStatus('waiting')
+                                                        ->whereDate('created_at', date('Y-m-d'))
+                                                        ->count();
 
             event(new VCTDirectQueueEvent($direct_queue, $user->branch_id));
             event(new DirectQueueEvent($direct_queue, $user->branch_id));

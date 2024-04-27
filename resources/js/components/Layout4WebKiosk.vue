@@ -36,6 +36,7 @@
                                                 v-model="formData.booking_code"
                                                 id="booking_code"
                                                 placeholder="XYBJLL"
+                                                ref="bookingCodeInput"
                                             />
                                         </div>
                                         <button
@@ -186,6 +187,7 @@ export default {
         this.getAuth();
         await this.getWorkStations();
         this.updateCurrentDate();
+        this.setFocusBookingCode();
     },
 
     computed: {
@@ -293,7 +295,6 @@ export default {
                 const workstationServices = await axios.get(
                     `/device/directQueue/allWorkstationServices/${this.branch.id}`
                 );
-                console.log(workstationServices);
 
                 this.workstationServices =
                     workstationServices.status == 200
@@ -312,6 +313,7 @@ export default {
         onSubmitBookingCode() {
             if(this.formData.booking_code == "") {
                 this.setErrorBooking("Kode booking wajib diisi");
+                this.setFocusBookingCode();
                 return;
             }
 
@@ -332,6 +334,7 @@ export default {
                 booking_code: "",
                 user_id: this.auth.id
             }
+            this.setFocusBookingCode();
         },
         handleCreateOnsiteQueueByBookingCode() {
             this.isLoading = true;
@@ -536,6 +539,11 @@ export default {
                 self.
                 initCurrentDate();
             }, 5000);
+        },
+        setFocusBookingCode() {
+            this.$nextTick(() => {
+                this.$refs.bookingCodeInput.focus();
+            });
         },
     }
 };

@@ -37,6 +37,8 @@ class Detail extends JsonResource
             'reason_for_visit' => $this->reason_for_visit,
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
+            'is_used' => $this->is_used,
+            'direct_queue_id' => $this->DirectQueue ? $this->DirectQueue->id : null,
         ];
     }
 }
