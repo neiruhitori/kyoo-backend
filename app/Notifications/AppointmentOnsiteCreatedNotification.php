@@ -8,6 +8,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Http;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Storage;
 
 class AppointmentOnsiteCreatedNotification extends Notification implements ShouldQueue
 {
@@ -36,13 +38,25 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
 
     public function toWhatsApp(AppointmentOnsite $appointmentOnsite)
     {
+        $qrCodeValue = strtoupper($appointmentOnsite->booking_code);
+        $qrCode = QrCode::format('png')
+                    ->size(200)->errorCorrection('H')
+                    ->generate($qrCodeValue);
+        $qr_code_url = 'qr_codes/'. $appointmentOnsite->id .'_qr_code.png';
+
+        if (Storage::disk('local')->exists("public/{$qr_code_url}")) {
+            Storage::disk('local')->delete("public/{$qr_code_url}");
+        }
+
+        Storage::disk('local')->put("public/{$qr_code_url}", $qrCode);
+
         Http::withHeaders([
             'Authorization' => $appointmentOnsite->Service->Branch->BranchConfiguration->api_token,
             'content-type' => 'application/json',
         ])
         ->post("{$appointmentOnsite->Service->Branch->BranchConfiguration->api_wa}/api/v1/sendTemplateMessages", [
-            'broadcast_name' => 'kyoo_appointment_in',
-            'template_name' => 'kyoo_appointment_in',
+            'broadcast_name' => 'kyoo_appt_qr_in',
+            'template_name' => 'kyoo_appt_qr_in',
             'receivers' => [
                 [
                     'customParams' => [
@@ -73,6 +87,10 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
                         [
                             'name' => 'appt_code',
                             'value' => strtoupper($appointmentOnsite->booking_code),
+                        ],
+                        [
+                            'name' => 'qr_code',
+                            'value' => config('app.url') . '/storage/' . $qr_code_url,
                         ],
                     ],
                     'whatsappNumber' => $appointmentOnsite->phone,

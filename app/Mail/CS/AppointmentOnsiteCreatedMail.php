@@ -40,19 +40,9 @@ class AppointmentOnsiteCreatedMail extends Mailable
         $id_date->setLocale('id');
         config(['app.name' => $branch->name]);
 
+        $qr_code_url = 'qr_codes/'. $this->appointmentOnsite->id .'_qr_code.png';
+
         setlocale(LC_TIME, 'id_ID');
-
-        $qrCodeValue = strtoupper($this->appointmentOnsite->booking_code);
-        $qrCode = QrCode::format('png')
-                    ->size(200)->errorCorrection('H')
-                    ->generate($qrCodeValue);
-        $qrCodePath = 'qr_codes/'. $this->appointmentOnsite->id .'_qr_code.png';
-
-        if (Storage::disk('local')->exists("public/{$qrCodePath}")) {
-            Storage::disk('local')->delete("public/{$qrCodePath}");
-        }
-
-        Storage::disk('local')->put("public/{$qrCodePath}", $qrCode);
 
         return $this
             ->from('noreply@kyoo.id', 'KYOO')
@@ -69,7 +59,7 @@ class AppointmentOnsiteCreatedMail extends Mailable
                 'end_time' => $this->appointmentOnsite->end_time,
                 'service_name' => $this->appointmentOnsite->Service->name,
                 'address' => $branch->address,
-                'qr_code' => $qrCodePath,
+                'qr_code' => $qr_code_url,
             ]);
     }
 }

@@ -21,11 +21,11 @@ use App\Events\OnsiteQueueCalled;
 
 class DirectQueueController extends Controller
 {
-    private DirectQueueRepositoryInterface $appointment_onsite_repository;
+    private DirectQueueRepositoryInterface $onsite_repository;
 
-    public function __construct(DirectQueueRepositoryInterface $appointment_onsite_repository)
+    public function __construct(DirectQueueRepositoryInterface $onsite_repository)
     {
-        $this->appointment_onsite_repository = $appointment_onsite_repository;
+        $this->onsite_repository = $onsite_repository;
     }
 
     private function InitQuery()
@@ -138,7 +138,7 @@ class DirectQueueController extends Controller
             $data['service_id'] = $workstation_service->service_id;
             $data['direct_queue_channel'] = 'Web';
 
-            $direct_queue = $this->appointment_onsite_repository->store($data);
+            $direct_queue = $this->onsite_repository->store($data);
 
             event(new VCTDirectQueueEvent($direct_queue, Auth::user()->branch_id));
             event(new DirectQueueEvent($direct_queue, Auth::user()->branch_id));
@@ -776,7 +776,7 @@ class DirectQueueController extends Controller
         $data['old_service_id'] = $oldDirectQueue->service_id;
         $data['direct_queue_channel'] = 'Web';
 
-        $directQueue = $this->appointment_onsite_repository->transfer($data);
+        $directQueue = $this->onsite_repository->transfer($data);
         $oldDirectQueue->new_service_id = $directQueue->service_id;
         $oldDirectQueue->save();
 

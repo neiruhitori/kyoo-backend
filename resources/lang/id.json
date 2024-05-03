@@ -169,7 +169,9 @@
     "Select Service Category": "Pilih Kategori Layanan",
     "Priority": "Prioritas",
     "Role": "Grup User",
+    "Group Level": "Grup Level",
     "Select Workstation": "Pilih Meja",
+    "Select Group Level": "Pilih Grup Level",
     "Old Password": "Password Lama",
     "Select Date": "Pilih Tanggal",
     "Select Start Date": "Pilih Tanggal Awal",
@@ -312,6 +314,7 @@
     "Features": "Fitur",
     "Location": "Lokasi",
     "Monthly Report": "Laporan Bulanan",
+    "Appointment Report": "Laporan Appointment",
 
     "January": "Januari",
     "February": "Februari",

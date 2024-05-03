@@ -113,6 +113,18 @@
     </li>
     @if (
         Auth::user()->Branch->BranchType->is_premium &&
+        Auth::user()->Branch->BranchType->is_direct_queue &&
+        Auth::user()->role == 'spv'
+    )
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('cs.report.directQueue.appointmentOnsite') }}">
+                <i class="fas fa-list-ul"></i>
+                <span>{{ __('Appointment Report') }}</span>
+            </a>
+        </li>
+    @endif
+    @if (
+        Auth::user()->Branch->BranchType->is_premium &&
         Auth::user()->Branch->BranchType->is_direct_queue
     )
         @foreach (Auth::user()->Branch->getCsActiveMenus(Auth::user()->WorkstationVct->workstation_id) as $key => $menu)

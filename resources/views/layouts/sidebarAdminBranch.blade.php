@@ -346,7 +346,10 @@
                     {{ __('Monthly Report') }}
                 </a>
 
-                @if(Auth::user()->Branch->BranchType->is_direct_queue)
+                @if(
+                      Auth::user()->Branch->BranchType->is_premium &&
+                      Auth::user()->Branch->BranchType->is_direct_queue
+                   )
                     <a
                         class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/appointment-onsites') ?: 'active' }}"
                         href="
