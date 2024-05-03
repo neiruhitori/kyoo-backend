@@ -66,6 +66,7 @@
                                             <th>{{ __('Workstation') }}</th>
                                             <th>{{ __('Username') }}</th>
                                             <th>{{ __('Role') }}</th>
+                                            <th>{{ __('Group Level') }}</th>
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Action') }}</th>
                                         </tr>
@@ -83,6 +84,7 @@
                                                 </td>
                                                 <td>{{ $user->username }}</td>
                                                 <td>{{ __('Counter') }}</td>
+                                                <td>{{ $user->role == 'cs' ? 'Staff' : 'Supervisor' }}</td>
                                                 <td>
                                                     @if ($user->deleted_at)
                                                         <span class="badge badge-danger">{{ __('Non Active') }}</span>
@@ -98,7 +100,7 @@
                                                             btn-warning" data-toggle="tooltip"
                                                             data-placement="bottom"
                                                             title="{{
-                                                                __('edit.module', ['module' => __('Workstation')])
+                                                                __('edit.module', ['module' => __('Virtual Counter')])
                                                             }}"
                                                         >
                                                             <i class="fas fa-fw fa-edit"></i>

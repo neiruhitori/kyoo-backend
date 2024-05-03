@@ -16,7 +16,7 @@ class CheckCS
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::user()->role != 'cs') {
+        if (Auth::user()->role != 'cs' && Auth::user()->role != 'spv') {
             return redirect(route('unauthorized'));
         }
         return $next($request);

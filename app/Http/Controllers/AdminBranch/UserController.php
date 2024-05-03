@@ -27,10 +27,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::withTrashed()->where([
-            'branch_id' => Auth::user()->branch_id,
-            'role' => 'cs'
-        ])->get();
+        $users = User::withTrashed()
+                ->where('branch_id', Auth::user()->branch_id)
+                ->whereIn('role', ['cs', 'spv'])
+                ->get();
 
         return view('adminBranch.user.index', [
             'users' => $users
@@ -69,7 +69,7 @@ class UserController extends Controller
 
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
-        $input['role'] = 'cs';
+        $input['role'] = $request->role;
         $input['name'] = "KY{$input['branch_id']}_".$request->username;
         $input['username'] = "KY{$input['branch_id']}_".$request->username;
         $input['is_password_changed'] = true;
@@ -181,6 +181,7 @@ class UserController extends Controller
 
         $input['name'] = "KY{$user['branch_id']}_".$request->username;
         $input['username'] = "KY{$user['branch_id']}_".$request->username;
+        $input['role'] = $request->role;
         $user->update($input);
 
         $existing_workstation = WorkstationVct::where('vct_id', $user->id)->first();

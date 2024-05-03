@@ -9,6 +9,7 @@ use App\DirectQueue;
 use App\WorkstationService;
 use Auth;
 use App\Interfaces\ExhibitionRepositoryInterface;
+use App\Models\AppointmentOnsite;
 use Illuminate\Support\Carbon;
 
 class ReportController extends Controller
@@ -105,6 +106,41 @@ class ReportController extends Controller
             'end_date' => $end_date,
             'workstation_service_id' => $request->workstation_service_id,
             'workstationServices' => $workstationServices,
+            'success' => true
+        ]);
+    }
+
+    public function appointmentOnsite(Request $request)
+    {
+        $date = $request->date ?: date('Y-m-d');
+        $booking_form = $request->booking_form ?? 'standard-form';
+        $last_month = $newdate = date("Y-m-d", strtotime("-3 months"));
+        if ($request->date && date('Y-m-d', strtotime($request->date)) < $last_month) {
+            $request->session()->flash('error', __('Can not select report more then last 3 months'));
+            return view('cs.report.directQueue.appointment-onsite', [
+                'appointment_onsites' => [],
+                'date' => $date,
+                'service_id' => $request->service_id,
+                'success' => false
+            ]);
+        }
+
+        $appointment_onsites = AppointmentOnsite::whereHas('Slot.Service', function ($query) use ($request) {
+                                                    $request->service_id ? $query->where('id', $request->service_id) : $query->where('branch_id', Auth::user()->branch_id);
+                                                })
+                                                ->where('date', $date)
+                                                ->join('services', 'appointment_onsites.service_id', '=', 'services.id')
+                                                ->orderBy('date')
+                                                ->orderBy('services.name')
+                                                ->orderBy('start_time')
+                                                ->select('appointment_onsites.*')
+                                                ->get();
+
+        return view('cs.report.directQueue.appointmentOnsite', [
+            'appointment_onsites' => $appointment_onsites,
+            'date' => $date,
+            'service_id' => $request->service_id,
+            'booking_form' => $booking_form,
             'success' => true
         ]);
     }
