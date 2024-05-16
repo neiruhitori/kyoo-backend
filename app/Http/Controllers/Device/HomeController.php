@@ -250,10 +250,10 @@ class HomeController extends Controller
     }
 
     public function getAllWorkstationServiceByBranch($branch_id) {
-        $userIDs = User::select('id')->where([
-            'branch_id' => $branch_id,
-            'role' => 'cs',
-        ])->get();
+        $userIDs = User::select('id')
+            ->where('branch_id', $branch_id)
+            ->whereIn('role', ['cs', 'spv'])
+            ->get();
 
         $vctIds = [];
         foreach ($userIDs as $value) {
