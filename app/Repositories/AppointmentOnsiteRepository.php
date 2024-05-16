@@ -13,6 +13,8 @@ use App\Slot;
 use App\Workstation;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Storage;
 
 class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterface
 {
@@ -99,6 +101,19 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
             $data['booking_code'] = $this->generate_booking_code();
 
             $appointmentOnsite = AppointmentOnsite::create($data);
+
+            $qrCodeValue = strtoupper($appointmentOnsite->booking_code);
+            $qrCode = QrCode::format('png')
+                        ->size(200)->errorCorrection('H')
+                        ->generate($qrCodeValue);
+            $qr_code_url = 'qr_codes/'. $appointmentOnsite->id .'_qr_code.png';
+
+            if (Storage::disk('local')->exists("public/{$qr_code_url}")) {
+                Storage::disk('local')->delete("public/{$qr_code_url}");
+            }
+
+            Storage::disk('local')->put("public/{$qr_code_url}", $qrCode);
+            $appointmentOnsite->qr_code = $qr_code_url;
 
             if (
                 $appointmentOnsite->phone &&

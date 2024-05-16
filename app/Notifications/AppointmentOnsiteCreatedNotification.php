@@ -8,8 +8,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Http;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Storage;
 
 class AppointmentOnsiteCreatedNotification extends Notification implements ShouldQueue
 {
@@ -38,18 +36,6 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
 
     public function toWhatsApp(AppointmentOnsite $appointmentOnsite)
     {
-        $qrCodeValue = strtoupper($appointmentOnsite->booking_code);
-        $qrCode = QrCode::format('png')
-                    ->size(200)->errorCorrection('H')
-                    ->generate($qrCodeValue);
-        $qr_code_url = 'qr_codes/'. $appointmentOnsite->id .'_qr_code.png';
-
-        if (Storage::disk('local')->exists("public/{$qr_code_url}")) {
-            Storage::disk('local')->delete("public/{$qr_code_url}");
-        }
-
-        Storage::disk('local')->put("public/{$qr_code_url}", $qrCode);
-
         Http::withHeaders([
             'Authorization' => $appointmentOnsite->Service->Branch->BranchConfiguration->api_token,
             'content-type' => 'application/json',
@@ -90,7 +76,7 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
                         ],
                         [
                             'name' => 'qr_code',
-                            'value' => config('app.url') . '/storage/' . $qr_code_url,
+                            'value' => config('app.url') . '/storage/' . $appointmentOnsite->qr_code,
                         ],
                     ],
                     'whatsappNumber' => $appointmentOnsite->phone,
