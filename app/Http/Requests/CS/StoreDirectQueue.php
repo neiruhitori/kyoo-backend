@@ -12,11 +12,11 @@ class StoreDirectQueue extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
-    {
-        $allowedAction = array('cs', 'device');
-        return in_array(Auth::user()->role, $allowedAction);
-    }
+        public function authorize()
+        {
+            $allowedAction = array('cs', 'spv', 'device');
+            return in_array(Auth::user()->role, $allowedAction);
+        }
 
     /**
      * Get the validation rules that apply to the request.

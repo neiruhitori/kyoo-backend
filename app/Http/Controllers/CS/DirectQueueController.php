@@ -737,6 +737,20 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
+        $workstation_service = WorkstationService::find($request->workstation_service_id);
+
+        $directQueue = DirectQueue::where('queue_no', $request->queue_no)
+            ->where('service_id', $workstation_service->service_id)
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
+        if(!empty($directQueue)) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Direct Queue on Transfer',
+                'data' => $directQueue
+            ]);
+        }
+
         $oldDirectQueue = DirectQueue::where('queue_no' ,$request->queue_no)
             ->where('service_id', $request->service_id)
             ->whereDate('created_at', Date('Y-m-d'))
@@ -764,8 +778,6 @@ class DirectQueueController extends Controller
         if ($oldDirectQueue->client_id) {
             event(new OnsiteQueueUpdated($oldDirectQueue));
         }
-
-        $workstation_service = WorkstationService::find($request->workstation_service_id);
 
         $data = $request->all();
         $data['name'] = $oldDirectQueue->name;
