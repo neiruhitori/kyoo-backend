@@ -133,44 +133,6 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
                 date_default_timezone_set(config('app.timezone'));
             }
 
-            // user cant create same direct queue 3x at same date
-            $total_same_user_queue = 0;
-            if (isset($data['email'])) {
-                $total_queue = DirectQueue::where('email', $data['email'])
-                    ->whereDate('created_at', date('Y-m-d'))
-                    ->count();
-
-                if ($total_queue > $total_same_user_queue) {
-                    $total_same_user_queue = $total_queue;
-                }
-            }
-            if (isset($data['phone'])) {
-                $total_queue = DirectQueue::where('phone', $data['phone'])
-                    ->whereDate('created_at', date('Y-m-d'))
-                    ->count();
-
-                if ($total_queue > $total_same_user_queue) {
-                    $total_same_user_queue = $total_queue;
-                }
-            }
-            $total_same_client_id = 0;
-            if (isset($data['client_id'])) {
-                $total_queue = DirectQueue::where('client_id', $data['client_id'])
-                    ->whereDate('created_at', date('Y-m-d'))
-                    ->count();
-
-                if ($total_queue > $total_same_client_id) {
-                    $total_same_client_id = $total_same_client_id;
-                }
-            }
-            if ($total_same_user_queue >= 3) {
-                throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
-            }
-
-            if ($total_same_client_id >= 100) {
-                throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
-            }
-
             // free license branch cannot create more than 100 queue
             $total_current_booking = DirectQueue::where('service_id', $data['service_id'])
                 ->whereDate('created_at', date('Y-m-d'))
@@ -180,29 +142,6 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             }
             if ($branch->BranchType->is_premium && $total_current_booking >= $branch->max_queue) {
                 throw new \Exception('Batas maksimal harian untuk cabang telah terlampaui');
-            }
-
-            // cant create direct queue on closed day by schedule template
-            $holiday = BranchScheduleTemplateDetail::where([
-                'branch_id' => $branch->id,
-                'date' => date('Y-m-d')
-            ])->first();
-
-            if ($holiday) {
-                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
-            }
-
-            // cant create direct queue on closed day
-            $schedule = Schedule::where('branch_id', $service->branch_id)
-                ->where('day', strtolower(date('l')))
-                ->first();
-            if ($schedule && $schedule->status == 'closed') {
-                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
-            }
-
-            // cant create direct queue before open time and after closed time
-            if ($schedule && (date('H:i:s') < $schedule->start_time || date('H:i:s') > $schedule->end_time)) {
-                throw new \Exception('Mohon Maaf, tidak bisa mengambil nomor antrian diluar jam buka tutup layanan.', 10001);
             }
 
             $data['branch_id'] = $branch->id;

@@ -100,10 +100,10 @@ class DirectQueueController extends Controller
     }
 
     public function getAllWorkstationServiceByBranch() {
-        $userIDs = User::select('id')->where([
-            'branch_id' => Auth::user()->branch_id,
-            'role' => 'cs',
-        ])->get();
+        $userIDs = User::select('id')
+            ->where('branch_id', Auth::user()->branch_id)
+            ->whereIn('role', ['cs', 'spv'])
+            ->get();
 
         $vctIds = [];
         foreach ($userIDs as $value) {
