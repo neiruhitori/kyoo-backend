@@ -11,6 +11,7 @@ use Auth;
 use App\Interfaces\ExhibitionRepositoryInterface;
 use App\Models\AppointmentOnsite;
 use Illuminate\Support\Carbon;
+use Throwable;
 
 class ReportController extends Controller
 {
@@ -50,7 +51,6 @@ class ReportController extends Controller
 
     public function directQueueDaily(Request $request)
     {
-        // only can see report within last two months
         // only can see report within last two months
         $start_date = $request->start_date ?: date('Y-m-d');
         $end_date = $request->end_date ?: date('Y-m-d');
@@ -110,6 +110,55 @@ class ReportController extends Controller
         ]);
     }
 
+    public function directQueueMonthly(Request $request)
+    {
+        $viewData = [
+            'data' => [],
+            'months' => $this->getMonths(),
+            'month' => $request->month ?: date('n'),
+            'year' => $request->year ?: date('Y'),
+            'workstation_service_id' => $request->workstation_service_id,
+            'workstationServices' => [],
+        ];
+
+        try {
+            $params = [
+                'month' => $request->month ?: date('n'),
+                'year' => $request->year ?: date('Y'),
+                'workstation_service_id' => $request->workstation_service_id
+            ];
+
+            $viewData['data'] = DirectQueue::whereHas('Service', function ($query) {
+                $query->whereBranchId(Auth::user()->branch_id);
+            })
+                ->when($params['workstation_service_id'], function ($query) use ($params) {
+                    $query->whereWorkstationServiceId($params['workstation_service_id']);
+                })
+                ->whereMonth('created_at', $params['month'])
+                ->whereYear('created_at', $params['year'])
+                ->orderBy('created_at')
+                ->get();
+
+            $viewData['workstationServices'] = WorkstationService::whereHas('Workstation.Department', function ($query) {
+                $query->whereBranchId(Auth::user()->branch_id);
+            })->get();
+        } catch (Throwable $e) {
+            $viewData['error'] = $e->getMessage();
+        }
+
+        if (!Auth::user()->Branch->BranchType->is_premium) {
+            $last_month = date('Y-m-d', strtotime(date('Y') . '-' . date('m') . '-01 -2 months'));
+            $request_date = date('Y-m-d', mktime(0, 0, 0, $params['month'], 1, $params['year']));
+
+            if ($request_date < $last_month) {
+                $request->session()->flash('error', __('Can not select report more then last 3 months'));
+                $viewData['data'] = [];
+            }
+        }
+
+        return view('cs.report.directQueue.monthly', $viewData);
+    }
+
     public function appointmentOnsite(Request $request)
     {
         $date = $request->date ?: date('Y-m-d');
@@ -126,15 +175,15 @@ class ReportController extends Controller
         }
 
         $appointment_onsites = AppointmentOnsite::whereHas('Slot.Service', function ($query) use ($request) {
-                                                    $request->service_id ? $query->where('id', $request->service_id) : $query->where('branch_id', Auth::user()->branch_id);
-                                                })
-                                                ->where('date', $date)
-                                                ->join('services', 'appointment_onsites.service_id', '=', 'services.id')
-                                                ->orderBy('date')
-                                                ->orderBy('services.name')
-                                                ->orderBy('start_time')
-                                                ->select('appointment_onsites.*')
-                                                ->get();
+                $request->service_id ? $query->where('id', $request->service_id) : $query->where('branch_id', Auth::user()->branch_id);
+            })
+            ->where('date', $date)
+            ->join('services', 'appointment_onsites.service_id', '=', 'services.id')
+            ->orderBy('date')
+            ->orderBy('services.name')
+            ->orderBy('start_time')
+            ->select('appointment_onsites.*')
+            ->get();
 
         return view('cs.report.directQueue.appointmentOnsite', [
             'appointment_onsites' => $appointment_onsites,
@@ -172,5 +221,16 @@ class ReportController extends Controller
         }
 
         return view('cs.report.exhibition.daily', $viewData);
+    }
+
+    private function getMonths()
+    {
+        $months = [];
+
+        for ($i =  0; $i < 12; $i++) {
+            $months[$i] = date('F', mktime(0, 0, 0, ($i + 1), 10));
+        }
+
+        return $months;
     }
 }

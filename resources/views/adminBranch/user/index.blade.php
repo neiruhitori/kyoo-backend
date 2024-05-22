@@ -66,7 +66,9 @@
                                             <th>{{ __('Workstation') }}</th>
                                             <th>{{ __('Username') }}</th>
                                             <th>{{ __('Role') }}</th>
-                                            <th>{{ __('Group Level') }}</th>
+                                            @if(Auth::user()->Branch->BranchType->is_direct_queue)
+                                                <th>{{ __('Group Level') }}</th>
+                                            @endif
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Action') }}</th>
                                         </tr>
@@ -84,7 +86,9 @@
                                                 </td>
                                                 <td>{{ $user->username }}</td>
                                                 <td>{{ __('Counter') }}</td>
-                                                <td>{{ $user->role == 'cs' ? 'Staff' : 'Supervisor' }}</td>
+                                                @if(Auth::user()->Branch->BranchType->is_direct_queue)
+                                                    <td>{{ $user->role == 'cs' ? 'Staff' : 'Supervisor' }}</td>
+                                                @endif
                                                 <td>
                                                     @if ($user->deleted_at)
                                                         <span class="badge badge-danger">{{ __('Non Active') }}</span>

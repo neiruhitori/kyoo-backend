@@ -38,7 +38,7 @@ class DirectQueueController extends Controller
                             ->where('workstation_id', Auth::user()->WorkstationVct->workstation_id)
                             ->limit(1)
                     ])
-                    ->with('Service')
+                    ->with('Service', 'AppointmentOnsite')
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
                     ->whereNotIn('status', ['end served', 'no show'])
                     ->orderBy('direct_queues.requeue_count', 'ASC')
@@ -787,6 +787,7 @@ class DirectQueueController extends Controller
         $data['service_id'] = $workstation_service->service_id;
         $data['old_service_id'] = $oldDirectQueue->service_id;
         $data['direct_queue_channel'] = 'Web';
+        $data['appointment_onsite_id'] = $oldDirectQueue->appointment_onsite_id;
 
         $directQueue = $this->onsite_repository->transfer($data);
         $oldDirectQueue->new_service_id = $directQueue->service_id;

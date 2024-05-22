@@ -69,7 +69,7 @@ class UserController extends Controller
 
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
-        $input['role'] = $request->role;
+        $input['role'] = 'cs';
         $input['name'] = "KY{$input['branch_id']}_".$request->username;
         $input['username'] = "KY{$input['branch_id']}_".$request->username;
         $input['is_password_changed'] = true;
@@ -181,7 +181,7 @@ class UserController extends Controller
 
         $input['name'] = "KY{$user['branch_id']}_".$request->username;
         $input['username'] = "KY{$user['branch_id']}_".$request->username;
-        $input['role'] = $request->role;
+        $input['role'] = $request->role ?? 'cs';
         $user->update($input);
 
         $existing_workstation = WorkstationVct::where('vct_id', $user->id)->first();

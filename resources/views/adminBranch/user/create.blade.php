@@ -58,16 +58,6 @@
 
                                     @include('layouts.inputError', ['errorName' => 'username'])
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="role">{{ __('Group Level') }}</label>
-                                    <select name="role" id="role" class="form-control @error('role') is-invalid @enderror">
-                                        <option value="">- {{ __('Select Group Level') }} -</option>
-                                        <option value="cs">{{ __('Staff') }}</option>
-                                        <option value="spv">{{ __('Supervisor') }}</option>
-                                    </select>
-                                    @include('layouts.inputError', ['errorName' => 'workstation_id'])
-                                </div>
                             </div>
                         </div>
                     </div>

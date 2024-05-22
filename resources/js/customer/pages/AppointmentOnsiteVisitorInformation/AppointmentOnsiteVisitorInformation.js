@@ -58,10 +58,10 @@ function AppointmentOnsiteVisitorInformation() {
         phone: validator.message('phone', phone, ['required', 'phone']),
         email: validator.message('email', email, ['required', 'email']),
         ...(branch && branch.branch_configuration.template_booking_form !== 'standard-form' && {
-            dateOfBirth: validator.message('dateOfBirth', dateOfBirth, ['required']),
-            address: validator.message('address', address, ['required']),
-            emergencyNumber: validator.message('emergencyNumber', emergencyNumber, ['required', 'phone']),
-            passportNumber: validator.message('passportNumber', passportNumber, ['required', 'passportNumber']),
+            dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
+            address: validator.message('address', address, []),
+            emergencyNumber: validator.message('emergencyNumber', emergencyNumber, ['phone']),
+            passportNumber: validator.message('passportNumber', passportNumber, ['passportNumber']),
             reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
         }),
     };

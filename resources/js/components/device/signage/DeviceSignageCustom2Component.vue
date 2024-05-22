@@ -484,7 +484,10 @@ export default {
                     const activeQueue = queues.find(
                         (v) => v.queue_no === queue_no
                     );
-                    this.servingQueue[activeQueue.workstation_id] = activeQueue
+
+                    if (activeQueue && activeQueue.workstation_id) {
+                        this.servingQueue[activeQueue.workstation_id] = activeQueue;
+                    }
                 } else {
                     const servingQueue = {}
                     this.workstations.forEach(item => {

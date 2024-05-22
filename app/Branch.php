@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\CsActiveMenus;
+use Auth;
 
 class Branch extends Model
 {
@@ -248,12 +249,28 @@ class Branch extends Model
 
             $groupLabel = $item->feature->group_label;
             if ($groupLabel === '-') {
-                $groupedData[] = (object) [
-                    'name' => $item->feature->name,
-                    'code' => $item->feature->code,
-                    'name_label' => $item->feature->name_label,
-                    'route' => $this->generateRouteURL($workstationID, $item->feature->code, $item->feature->route),
-                ];
+                if($item->name == 'Report Supervisor' || $item->name == 'Report Staff') {
+                    if (Auth::user()->role == 'cs' && $item->name == 'Report Staff') {
+                        $groupedData[] = (object) [
+                            'name' => $item->feature->name,
+                            'code' => $item->feature->code,
+                            'name_label' => $item->feature->name_label
+                        ];
+                    } elseif(Auth::user()->role == 'spv' && $item->name == 'Report Supervisor') {
+                        $groupedData[] = (object) [
+                            'name' => $item->feature->name,
+                            'code' => $item->feature->code,
+                            'name_label' => $item->feature->name_label
+                        ];
+                    }
+                } else {
+                    $groupedData[] = (object) [
+                        'name' => $item->feature->name,
+                        'code' => $item->feature->code,
+                        'name_label' => $item->feature->name_label,
+                        'route' => $this->generateRouteURL($workstationID, $item->feature->code, $item->feature->route),
+                    ];
+                }
                 continue;
             }
 
