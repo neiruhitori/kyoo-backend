@@ -448,8 +448,8 @@ export default {
                 if (this.playQueue.length > 0) {
                     const nextMessage = this.playQueue.shift();
                     await this.getQueueCallAudio(nextMessage);
-                    return;
                 }
+                return;
             }
 
             const queueNo = servingQueue.queue_no;
