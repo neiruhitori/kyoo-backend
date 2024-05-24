@@ -35,6 +35,7 @@
                             type="submit"
                             class="btn btn-primary"
                             v-bind:style="[button_style]"
+                            :disabled="isLoading"
                         >
                             Check-in
                         </button>
@@ -60,6 +61,7 @@
                             v-if="workstation.service.is_show_webkiosk"
                             @click="onClickWorkstation(workstation.id)"
                             v-bind:style="[button_style]"
+                            :disabled="isLoading"
                         >
                             {{ workstation.service.name }}
                         </button>

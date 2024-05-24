@@ -44,7 +44,7 @@
                         <span>{{ __($key) }}</span>
                     </a>
 
-                    <div class="collapse {{ !request()->is('admin-branch/branch-information/*') ?: 'show' }}"
+                    <div class="collapse {{ !request()->is('cs/monitoring/*') ?: 'show' }}"
                             id="branch-information" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             @foreach ($menu as $submenuKey => $submenu)
@@ -97,29 +97,62 @@
         </li>
     @endif
 
-    <li class="nav-item">
-        <a class="nav-link" href="
-            @if (Auth::user()->Branch->BranchType->is_appointment)
-              {{route('cs.report.daily')}}
-            @elseif (Auth::user()->Branch->BranchType->is_direct_queue)
-              {{route('cs.report.directQueue.daily')}}
-            @elseif (Auth::user()->Branch->BranchType->is_exhibition)
-              {{route('cs.exhibition.report.daily')}}
-            @endif
-        ">
-            <i class="fas fa-list-ul"></i>
-            <span>{{ __('Daily Report') }}</span>
-        </a>
-    </li>
     @if (
         Auth::user()->Branch->BranchType->is_premium &&
-        Auth::user()->Branch->BranchType->is_direct_queue &&
-        Auth::user()->role == 'spv'
+        Auth::user()->Branch->BranchType->is_direct_queue
+    )
+        @foreach (Auth::user()->Branch->getCsActiveMenus(Auth::user()->WorkstationVct->workstation_id) as $key => $menu)
+            @if (is_object($menu) && !isset($menu->route) && $menu->code == Auth::user()->role)
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#report"
+                        aria-expanded="true" aria-controls="report">
+                        <i class="fas fa-fw fa-file-alt"></i>
+                        <span>{{ __('Report') }}</span>
+                    </a>
+
+                    <div class="collapse {{ !request()->is('cs/report/*') ?: 'show' }}"
+                            id="report" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                                <a
+                                    class="collapse-item kyoo-sublink {{ !request()->is('cs/report/directQueue/daily*') ?: 'active' }}"
+                                    href="{{ route('cs.report.directQueue.daily') }}"
+                                >
+                                    {{ __('Daily Report') }}
+                                </a>
+                                <a
+                                    class="collapse-item kyoo-sublink {{ !request()->is('cs/report/directQueue/monthly*') ?: 'active' }}"
+                                    href="{{ route('cs.report.directQueue.monthly') }}"
+                                >
+                                    {{ __('Monthly Report') }}
+                                </a>
+                                <a
+                                    class="collapse-item kyoo-sublink {{ !request()->is('cs/report/appointment-onsite*') ?: 'active' }}"
+                                    href="{{ route('cs.report.directQueue.appointmentOnsite') }}"
+                                >
+                                    {{ __('Appointment Report') }}
+                                </a>
+                        </div>
+                    </div>
+                </li>
+            @endif
+        @endforeach
+    @endif
+
+
+    @if (
+        Auth::user()->Branch->BranchType->is_premium &&
+        !Auth::user()->Branch->BranchType->is_direct_queue
     )
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('cs.report.directQueue.appointmentOnsite') }}">
+            <a class="nav-link" href="
+                @if (Auth::user()->Branch->BranchType->is_appointment)
+                  {{route('cs.report.daily')}}
+                @elseif (Auth::user()->Branch->BranchType->is_exhibition)
+                  {{route('cs.exhibition.report.daily')}}
+                @endif
+            ">
                 <i class="fas fa-list-ul"></i>
-                <span>{{ __('Appointment Report') }}</span>
+                <span>{{ __('Daily Report') }}</span>
             </a>
         </li>
     @endif
@@ -128,7 +161,7 @@
         Auth::user()->Branch->BranchType->is_direct_queue
     )
         @foreach (Auth::user()->Branch->getCsActiveMenus(Auth::user()->WorkstationVct->workstation_id) as $key => $menu)
-            @if (is_object($menu))
+            @if (is_object($menu) && isset($menu->route))
                 <li class="nav-item {{ !request()->is($menu->route) ?: 'active'  }}">
                     <a class="nav-link" href="{{ url($menu->route) }}">
                         <i class="fas fa-cog"></i>

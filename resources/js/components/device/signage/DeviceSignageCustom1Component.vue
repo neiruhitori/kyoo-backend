@@ -416,7 +416,10 @@ export default {
                     const activeQueue = queues.find(
                         (v) => v.queue_no === queue_no
                     );
-                    this.servingQueue[activeQueue.workstation_id] = activeQueue
+
+                    if (activeQueue && activeQueue.workstation_id) {
+                        this.servingQueue[activeQueue.workstation_id] = activeQueue;
+                    }
                 } else {
                     const servingQueue = {}
                     this.workstations.forEach(item => {
@@ -440,6 +443,16 @@ export default {
             this.isPlaying = true;
 
             const servingQueue = this.servingQueue[message.workstation_id];
+
+            if(!servingQueue?.queue_no) {
+                this.isPlaying = false;
+                if (this.playQueue.length > 0) {
+                    const nextMessage = this.playQueue.shift();
+                    await this.getQueueCallAudio(nextMessage);
+                }
+                return;
+            }
+
             const queueNo = servingQueue.queue_no;
             const workstation = this.workstations.find(workstation => workstation.id === servingQueue.workstation_id);
             const counter_id = workstation.label.replace(/\D/g, '');

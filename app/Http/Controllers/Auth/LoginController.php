@@ -106,7 +106,7 @@ class LoginController extends Controller
         $branchID = Auth::user()->branch_id;
         $active_menus = CsActiveMenus::where('branch_id', $branchID)->where('feature_id', 4)->first();
 
-        if($loggedUser->role == ('cs' || 'spv') && $active_menus) {
+        if(Auth::user()->Branch->BranchType->is_direct_queue && ($loggedUser->role == 'cs' || $loggedUser->role == 'spv') && $active_menus) {
             return redirect()->route('cs.workstation');
         }
 

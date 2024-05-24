@@ -31,7 +31,8 @@ class HomeController extends Controller
             case 'admin_branch':
                 return redirect(route('admin-branch.dashboard'));
                 break;
-            case ('cs' || 'spv'):
+            case 'cs':
+            case 'spv':
                 return redirect(route('cs.home'));
                 break;
             case 'admin_corporate':

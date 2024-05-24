@@ -38,7 +38,7 @@ class DirectQueueController extends Controller
                             ->where('workstation_id', Auth::user()->WorkstationVct->workstation_id)
                             ->limit(1)
                     ])
-                    ->with('Service')
+                    ->with('Service', 'AppointmentOnsite')
                     ->whereDate('direct_queues.created_at', Date('Y-m-d'))
                     ->whereNotIn('status', ['end served', 'no show'])
                     ->orderBy('direct_queues.requeue_count', 'ASC')
@@ -100,10 +100,10 @@ class DirectQueueController extends Controller
     }
 
     public function getAllWorkstationServiceByBranch() {
-        $userIDs = User::select('id')->where([
-            'branch_id' => Auth::user()->branch_id,
-            'role' => 'cs',
-        ])->get();
+        $userIDs = User::select('id')
+            ->where('branch_id', Auth::user()->branch_id)
+            ->whereIn('role', ['cs', 'spv'])
+            ->get();
 
         $vctIds = [];
         foreach ($userIDs as $value) {
@@ -737,6 +737,20 @@ class DirectQueueController extends Controller
             ], 400);
         }
 
+        $workstation_service = WorkstationService::find($request->workstation_service_id);
+
+        $directQueue = DirectQueue::where('queue_no', $request->queue_no)
+            ->where('service_id', $workstation_service->service_id)
+            ->whereDate('created_at', Date('Y-m-d'))
+            ->first();
+        if(!empty($directQueue)) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Direct Queue on Transfer',
+                'data' => $directQueue
+            ]);
+        }
+
         $oldDirectQueue = DirectQueue::where('queue_no' ,$request->queue_no)
             ->where('service_id', $request->service_id)
             ->whereDate('created_at', Date('Y-m-d'))
@@ -765,8 +779,6 @@ class DirectQueueController extends Controller
             event(new OnsiteQueueUpdated($oldDirectQueue));
         }
 
-        $workstation_service = WorkstationService::find($request->workstation_service_id);
-
         $data = $request->all();
         $data['name'] = $oldDirectQueue->name;
         $data['phone'] = $oldDirectQueue->phone;
@@ -775,6 +787,7 @@ class DirectQueueController extends Controller
         $data['service_id'] = $workstation_service->service_id;
         $data['old_service_id'] = $oldDirectQueue->service_id;
         $data['direct_queue_channel'] = 'Web';
+        $data['appointment_onsite_id'] = $oldDirectQueue->appointment_onsite_id;
 
         $directQueue = $this->onsite_repository->transfer($data);
         $oldDirectQueue->new_service_id = $directQueue->service_id;

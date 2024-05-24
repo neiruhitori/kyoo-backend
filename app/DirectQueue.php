@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\AppointmentOnsite;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -48,6 +49,16 @@ class DirectQueue extends Model
     public function Service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    /**
+     * Get the AppointmentOnsite that owns the DirectQueue
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function AppointmentOnsite(): BelongsTo
+    {
+        return $this->belongsTo(AppointmentOnsite::class);
     }
 
     /**

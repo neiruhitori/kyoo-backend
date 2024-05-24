@@ -107,6 +107,7 @@
                           <button
                             class="btn btn-success fullwidth"
                             type="submit"
+                            :disabled="isLoading"
                           >
                             Simpan
                           </button>
@@ -234,7 +235,16 @@
                       >
                         <td>{{ queue.queue_no }}</td>
                         <td>{{ queue.booking_code.toUpperCase() }}</td>
-                        <td>{{ queue.name || "-" }}</td>
+                        <td>
+                            <div v-if="queue.name">
+                                <a href="javascript:void(0)" @click="showCustomerDetail(queue)">
+                                    {{ queue.name }}
+                                </a>
+                            </div>
+                            <div v-else>
+                                -
+                            </div>
+                        </td>
                         <td>
                           {{ queue.service.name }}
                         </td>
@@ -268,7 +278,7 @@
                       </tr>
                     </template>
                     <tr v-else>
-                      <td colspan="3">
+                      <td colspan="4">
                         <p class="text-center">Tidak Ada Data</p>
                       </td>
                     </tr>
@@ -282,6 +292,60 @@
         <div class="card-footer text-muted">v1.0.2</div>
       </div>
     </div>
+
+    <div class="modal fade show d-block" tabindex="-1" aria-modal="true" v-if="isShowCustomer">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detail Pelanggan</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="isShowCustomer = false">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row mb-2">
+                            <div class="col-md-4">Nama</div>
+                            <div class="text-dark">{{ customerDetail.name }}</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">Email</div>
+                            <div class="text-dark">{{ customerDetail.email }}</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">No. Telepon</div>
+                            <div class="text-dark">{{ customerDetail.phone }}</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">Tanggal Lahir</div>
+                            <div class="text-dark">{{ customerDetail.dateOfBirth || '-' }}</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">Alamat</div>
+                            <div class="text-dark">{{ customerDetail.address || '-' }}</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">Kode Booking</div>
+                            <div class="text-dark">{{ customerDetail.bookingCode }}</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-md-4">Alasan Kunjungan</div>
+                            <div class="text-dark">{{ customerDetail.reasonForVisit }}</div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="isShowCustomer = false">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
   </div>
 </template>
 
@@ -351,10 +415,20 @@ export default {
         minutes: 0,
         seconds: 0
       },
+      isShowCustomer: false,
+      customerDetail: {
+        name: '',
+        email: '',
+        phone: '',
+        dateOfBirth: '',
+        address: '',
+        bookingCode: '',
+        reasonForVisit: ''
+      },
       timer: 0,
       timerInterval: null,
       audioChunks: [],
-      mediaRecorder: null
+      mediaRecorder: null,
     };
   },
 
@@ -714,6 +788,7 @@ export default {
     },
 
     async onSubmitTransfer(e) {
+      this.isLoading = true;
       if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop()
       }
@@ -722,8 +797,6 @@ export default {
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === e.target.queue_no.value
       );
-
-      this.isLoading = true;
 
       try {
         const data = {
@@ -742,6 +815,18 @@ export default {
       }
 
       this.isLoading = false;
+    },
+
+    showCustomerDetail({name, email, phone, appointment_onsite}) {
+        this.customerDetail.name = name
+        this.customerDetail.email = email
+        this.customerDetail.phone = phone
+        this.customerDetail.dateOfBirth = appointment_onsite?.date_of_birth
+        this.customerDetail.address = appointment_onsite?.address
+        this.customerDetail.bookingCode = appointment_onsite?.booking_code
+        this.customerDetail.reasonForVisit = appointment_onsite?.reason_for_visit
+
+        this.isShowCustomer = true
     },
 
     handleDataAvailable(e) {
