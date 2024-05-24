@@ -445,6 +445,7 @@ export default {
             const servingQueue = this.servingQueue[message.workstation_id];
 
             if(!servingQueue?.queue_no) {
+                this.isPlaying = false;
                 if (this.playQueue.length > 0) {
                     const nextMessage = this.playQueue.shift();
                     await this.getQueueCallAudio(nextMessage);
