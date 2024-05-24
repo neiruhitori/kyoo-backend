@@ -44,6 +44,7 @@
                                             class="btn px-4"
                                             v-bind:style="[button_checkin_style]"
                                             style="font-family: 'Manrope', sans-serif;"
+                                            :disabled="isLoading"
                                         >
                                             Check-in
                                         </button>
@@ -78,6 +79,7 @@
                                             v-if="workstation.service.is_show_webkiosk"
                                             @click="onClickWorkstation(workstation.id)"
                                             v-bind:style="[button_style]"
+                                            :disabled="isLoading"
                                         >
                                             {{ workstation.service.name }}
                                         </button>

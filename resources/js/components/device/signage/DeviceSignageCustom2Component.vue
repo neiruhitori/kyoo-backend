@@ -521,6 +521,15 @@ export default {
             this.isBlink(message.workstation_id);
 
             const servingQueue = this.servingQueue[message.workstation_id];
+
+            if(!servingQueue.queue_no) {
+                if (this.playQueue.length > 0) {
+                    const nextMessage = this.playQueue.shift();
+                    await this.getQueueCallAudio(nextMessage);
+                    return;
+                }
+            }
+
             const queueNo = servingQueue.queue_no;
             const workstation = this.workstations.find(workstation => workstation.id === servingQueue.workstation_id);
             const counter_id = workstation.label.replace(/\D/g, '');

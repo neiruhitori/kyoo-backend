@@ -107,6 +107,7 @@
                           <button
                             class="btn btn-success fullwidth"
                             type="submit"
+                            :disabled="isLoading"
                           >
                             Simpan
                           </button>
@@ -427,7 +428,7 @@ export default {
       timer: 0,
       timerInterval: null,
       audioChunks: [],
-      mediaRecorder: null
+      mediaRecorder: null,
     };
   },
 
@@ -787,6 +788,7 @@ export default {
     },
 
     async onSubmitTransfer(e) {
+      this.isLoading = true;
       if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop()
       }
@@ -795,8 +797,6 @@ export default {
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === e.target.queue_no.value
       );
-
-      this.isLoading = true;
 
       try {
         const data = {
