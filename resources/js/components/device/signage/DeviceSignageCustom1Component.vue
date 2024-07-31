@@ -84,6 +84,8 @@
 <script>
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
+import moment from 'moment';
+import 'moment-timezone';
 
 const audioEl = new Audio();
 
@@ -110,7 +112,7 @@ export default {
             waitingQueue: [],
             servingQueue: servingQueue,
             activeImage: 1,
-            currentDate: new Date(),
+            currentDate: moment.tz('Asia/Jakarta'),
             promotionImages: [],
             isAutoPlayBlocked: false,
             playQueue: [],
@@ -204,37 +206,33 @@ export default {
 
     computed: {
         currentTimes() {
-            return format(this.currentDate, "HH:mm", {
-                locale: id,
-            });
+            return this.currentDate.format('HH:mm');
         },
 
         currentDay() {
-            return format(this.currentDate, "EEEE", {
-                locale: id,
-            });
+            return this.currentDate.format('dddd');
         },
 
         currentFormattedDate() {
-            return format(this.currentDate, "dd MMMM yyyy", {
-                locale: id,
-            });
+            return this.currentDate.format('DD-MM-YYYY');
         },
     },
 
     methods: {
         initCurrentDate() {
-            let currentDate = new Date();
+            let currentDate = moment.tz('Asia/Jakarta');
             const branchTimeZone = this.branch.timezone;
 
-            let timezone = 7;
-            if(branchTimeZone === 'WITA') {
-                timezone = 8;
+            let timezone = 'Asia/Jakarta';
+            if (branchTimeZone === 'WITA') {
+                timezone = 'Asia/Makassar';
             } else if (branchTimeZone === 'WIT') {
-                timezone = 9;
+                timezone = 'Asia/Jayapura';
+            } else {
+                timezone = 'Asia/Jakarta';
             }
-            currentDate = currentDate.setUTCHours(currentDate.getUTCHours() + timezone - 7);
 
+            currentDate = moment.tz(timezone);
             this.currentDate = currentDate;
         },
         subscribeAudioEvent() {

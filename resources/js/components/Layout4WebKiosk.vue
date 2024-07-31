@@ -275,6 +275,46 @@ export default {
         initCurrentDate() {
             let currentDate = new Date();
             const branchTimeZone = this.branch.timezone;
+            if (branchTimeZone === 'WITA') {
+                timezone = 'Asia/Makassar';
+            } else if (branchTimeZone === 'WIT') {
+                timezone = 'Asia/Jayapura';
+            } else {
+                timezone = 'Asia/Jakarta'; // WIB / Indochina Time
+            }
+
+            const options = {
+                weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+                hour: 'numeric', minute: 'numeric', second: 'numeric', timeZone: timezone, timeZoneName: 'short'
+            };
+
+
+
+            axios.get(`/currentDate/${branchTimeZone}`).then(response => {
+                console.log(response)
+                // let currentDate = new Date(response.data.current_date);
+
+                // // Adjust the time based on branch timezone
+                // let timezoneOffset = 0;
+                // if(branchTimeZone === 'WITA') {
+                //     timezoneOffset = 1; // WITA is UTC+8
+                // } else if (branchTimeZone === 'WIT') {
+                //     timezoneOffset = 2; // WIT is UTC+9
+                // }
+
+                // currentDate.setHours(currentDate.getHours() + timezoneOffset);
+
+                // this.currentDate = currentDate;
+            });
+
+            axios.get(`/device/currentDate/${branchTimeZone}`).then(response => {
+                currentDate = response.data.data;
+                console.log('sesudah', currentDate);
+
+                this.currentDate = currentDate;
+            }).catch(error => {
+                console.error('Error fetching current date:', error);
+            });
 
             let timezone = 7;
             if(branchTimeZone === 'WITA') {
@@ -283,7 +323,13 @@ export default {
                 timezone = 9;
             }
             currentDate = currentDate.setUTCHours(currentDate.getUTCHours() + timezone - 7);
-
+            if (timezone === 'WITA') {
+                timezone = 'Asia/Makassar';
+            } else if (timezone === 'WIT') {
+                timezone = 'Asia/Jayapura';
+            } else {
+                timezone = 'Asia/Jakarta';
+            }
             this.currentDate = currentDate;
         },
         getAuth() {
