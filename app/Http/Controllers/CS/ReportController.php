@@ -121,42 +121,86 @@ class ReportController extends Controller
             'workstationServices' => [],
         ];
 
-        try {
-            $params = [
-                'month' => $request->month ?: date('n'),
-                'year' => $request->year ?: date('Y'),
-                'workstation_service_id' => $request->workstation_service_id
-            ];
+        // try {
+        //     $params = [
+        //         'month' => $request->month ?: date('n'),
+        //         'year' => $request->year ?: date('Y'),
+        //         'workstation_service_id' => $request->workstation_service_id
+        //     ];
 
-            $viewData['data'] = DirectQueue::whereHas('Service', function ($query) {
-                $query->whereBranchId(Auth::user()->branch_id);
-            })
-                ->when($params['workstation_service_id'], function ($query) use ($params) {
-                    $query->whereWorkstationServiceId($params['workstation_service_id']);
-                })
-                ->whereMonth('created_at', $params['month'])
-                ->whereYear('created_at', $params['year'])
-                ->orderBy('created_at')
-                ->get();
+        //     $viewData['data'] = DirectQueue::whereHas('Service', function ($query) {
+        //         $query->whereBranchId(Auth::user()->branch_id);
+        //     })
+        //         ->when($params['workstation_service_id'], function ($query) use ($params) {
+        //             $query->whereWorkstationServiceId($params['workstation_service_id']);
+        //         })
+        //         ->whereMonth('created_at', $params['month'])
+        //         ->whereYear('created_at', $params['year'])
+        //         ->orderBy('created_at')
+        //         ->get();
 
             $viewData['workstationServices'] = WorkstationService::whereHas('Workstation.Department', function ($query) {
                 $query->whereBranchId(Auth::user()->branch_id);
             })->get();
-        } catch (Throwable $e) {
-            $viewData['error'] = $e->getMessage();
-        }
+        // } catch (Throwable $e) {
+        //     $viewData['error'] = $e->getMessage();
+        // }
 
-        if (!Auth::user()->Branch->BranchType->is_premium) {
-            $last_month = date('Y-m-d', strtotime(date('Y') . '-' . date('m') . '-01 -2 months'));
-            $request_date = date('Y-m-d', mktime(0, 0, 0, $params['month'], 1, $params['year']));
+        // if (!Auth::user()->Branch->BranchType->is_premium) {
+        //     $last_month = date('Y-m-d', strtotime(date('Y') . '-' . date('m') . '-01 -2 months'));
+        //     $request_date = date('Y-m-d', mktime(0, 0, 0, $params['month'], 1, $params['year']));
 
-            if ($request_date < $last_month) {
-                $request->session()->flash('error', __('Can not select report more then last 3 months'));
-                $viewData['data'] = [];
-            }
-        }
+        //     if ($request_date < $last_month) {
+        //         $request->session()->flash('error', __('Can not select report more then last 3 months'));
+        //         $viewData['data'] = [];
+        //     }
+        // }
 
         return view('cs.report.directQueue.monthly', $viewData);
+    }
+
+    public function getDirectQueueMonthly(Request $request)
+    {
+        $params = [
+            'month' => $request->get('month', date('n')),
+            'year' => $request->get('year', date('Y')),
+            'workstation_service_id' => $request->get('workstation_service_id')
+        ];
+
+        $query = DirectQueue::whereHas('Service', function ($query) {
+            $query->whereBranchId(Auth::user()->branch_id);
+        })
+        ->when($params['workstation_service_id'], function ($query) use ($params) {
+            $query->whereWorkstationServiceId($params['workstation_service_id']);
+        })
+        ->whereMonth('created_at', $params['month'])
+        ->whereYear('created_at', $params['year'])
+        ->orderBy('created_at');
+
+        $totalRecords = $query->count();
+
+        $query->skip($request->start)->take($request->length);
+
+        $data = $query->get()->map(function ($directQueue) {
+            return [
+                'queue_no' => $directQueue->queue_no,
+                'created_at' => date('Y M d H:i:s', strtotime($directQueue->created_at)),
+                'called_at' => $directQueue->called_at ? date('Y M d H:i:s', strtotime($directQueue->called_at)) : '-',
+                'done_at' => $directQueue->done_at ? date('Y M d H:i:s', strtotime($directQueue->done_at)) : '-',
+                'service_time' => $directQueue->done_at ? \Carbon\Carbon::parse($directQueue->done_at)->diffInMinutes(\Carbon\Carbon::parse($directQueue->called_at)) : '-',
+                'workstation' => $directQueue->WorkstationService ? $directQueue->WorkstationService->Workstation->name : '',
+                'service' => $directQueue->Service->name,
+                'service_transfer' => $directQueue->NewService ? $directQueue->NewService->name : '-',
+                'status' => __(ucwords($directQueue->status)),
+            ];
+        });
+
+        return response()->json([
+            'draw' => intval($request->draw),
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalRecords,
+            'data' => $data
+        ]);
     }
 
     public function appointmentOnsite(Request $request)

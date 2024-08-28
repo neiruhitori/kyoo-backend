@@ -106,7 +106,7 @@
 
         .wrapper-submit {
             display: flex;
-            justify-content: flex-end;
+            /* justify-content: flex-end; */
         }
 
         .cursor-pointer {
@@ -125,8 +125,63 @@
             Portal Menu
         </h6>
     </div>
+    <div class="col-md-7 col-sm-12 mt-3">
+        <form action="{{ route('admin-branch.branch-configuration.menu-portal') }}" method="POST">
+            @csrf
+            @method('PUT')
+    
+            <div class="">
+                <div class="row">
+                    <div class="form-group ml-3 col-md-5" style="width: 250px;">
+                        <label for="select-template">Pilih layout yang sesuai</label>
+                        <select name="layer" id="select" class="form-control" onchange="changeLayout(this)">
+                            <option value="1" >Portal Standard 1 Layer</option>
+                            <option value="2" {{ $branchConfiguration->layer == 2 ? 'selected' : '' }}>
+                                {{ Auth::user()->Branch->BranchType->is_direct_queue ? 'Portal Hybrid Onsite-Appointment 2 Layer' : '2 Layer' }}
+                            </option>
+                        </select>
+                    </div>
+                    @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+                    <div class="col-md ml-3" id="formBooking">
+                        <div class="form-group">
+                            <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
+                            <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror">
+                                <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
+                                <option value="form-medical-1" {{ $branchConfiguration->template_booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
+                            </select>
+                            @include('layouts.inputError', ['errorName' => 'template_booking_form'])
+                        </div>
+                    </div>
+                    @endif
+        </div>
 
-    <form action="{{ route('admin-branch.branch-configuration.menu-portal') }}" method="post">
+                <div class="d-flex mb-2">
+                    <div class="d-flex flex-column align-items-center" >
+                        <label for="one-layer" class="" id="one-layer">
+                            <div class="bg-secondary mx-4 p-3">
+                                <div class="bg-primary" style="width: 140px; height: 240px"></div>
+                            </div>
+                        </label>
+                    </div>
+    
+                    <div class="d-flex flex-column align-items-center">
+                        <label for="two-layer" class="twoLayer" id="two-layer">
+                            <div class="bg-secondary mx-4 p-3 d-flex">
+                                <div class="bg-primary mx-2" style="width: 140px; height: 240px"></div>
+                                <div class="bg-primary mx-2" style="width: 140px; height: 240px"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+               
+
+                <div class="col-md-7 ml-2 mb-3">
+                    <button type="submit" class="btn btn-warning ml-1 ">Simpan</submit>
+                </div>
+            </div>
+        </form>
+    </div>
+    {{-- <form action="{{ route('admin-branch.branch-configuration.menu-portal') }}" method="post">
         @csrf
         @method('put')
         <div class="card-body d-flex justify-content-center">
@@ -172,33 +227,52 @@
         <div class="wrapper-submit mr-3 mb-3">
             <button type="submit" class="btn btn-warning">Simpan</submit>
         </div>
-    </form>
+    </form> --}}
 </div>
 
 @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
     <script>
+           
+        const oneLayer = document.getElementById('one-layer');
+        const twoLayer = document.getElementById('two-layer');
+        const formBooking = document.getElementById('formBooking');
+        
+            function changeLayout(input) {
+
+                    const { value } = input;
+                    if (value == '1') {
+                        oneLayer.style.display = 'flex';
+                        twoLayer.style.display = 'none';
+                        formBooking.style.display = 'none';
+                    } else {
+                        oneLayer.style.display = 'none';
+                        twoLayer.style.display = 'flex';
+                        formBooking.style.display = 'flex';
+                    }
+                }
+                window.onload = function() {
+                    var selectTemplate = document.getElementById('select');
+                    console.log(selectTemplate);
+                    
+                    changeLayout(selectTemplate);
+                };
         document.addEventListener("DOMContentLoaded", function() {
-            const oneLayer = document.getElementById('one-layer');
-            const twoLayer = document.getElementById('two-layer');
-            const formBooking = document.getElementById('formBooking');
+           
+           
 
-            oneLayer.addEventListener('change', function() {
-                if (this.checked) {
-                    formBooking.classList.add('d-none');
-                }
-            });
+            // oneLayer.addEventListener('change', function() {
+            //     if (this.checked) {
+            //         formBooking.classList.add('d-none');
+            //     }
+            // });
 
-            twoLayer.addEventListener('change', function() {
-                if (this.checked) {
-                    formBooking.classList.remove('d-none');
-                }
-            });
+            // twoLayer.addEventListener('change', function() {
+            //     if (this.checked) {
+            //         formBooking.classList.remove('d-none');
+            //     }
+            // });
 
-            if (oneLayer.checked) {
-                formBooking.classList.add('d-none');
-            } else if (twoLayer.checked) {
-                formBooking.classList.remove('d-none');
-            }
+            
         });
     </script>
 @endif

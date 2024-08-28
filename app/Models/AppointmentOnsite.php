@@ -34,4 +34,9 @@ class AppointmentOnsite extends Model
         $notification = new AppointmentOnsiteCreatedNotification();
         $notification->toWhatsApp($appointmentOnsite);
     }
+
+    public function getQrCodeAttribute()
+    {
+        return 'qr_codes/' . $this->id . '_qr_code.png';
+    }
 }

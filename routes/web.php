@@ -399,6 +399,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS', 'setTimeZone
     Route::get('report/daily', 'ReportController@daily')->name('report.daily');
     Route::get('report/directQueue/daily', 'ReportController@directQueueDaily')->name('report.directQueue.daily')->middleware('checkDirectQueue');
     Route::get('report/directQueue/monthly', 'ReportController@directQueueMonthly')->name('report.directQueue.monthly')->middleware('checkDirectQueue');
+    Route::get('report/directQueue/getMonthly', 'ReportController@getDirectQueueMonthly')->name('report.directQueue.getMonthly')->middleware('checkDirectQueue');
     Route::get('report/appointment-onsite', 'ReportController@appointmentOnsite')->name('report.directQueue.appointmentOnsite')->middleware('checkDirectQueue');
 
     // Voice Recorder

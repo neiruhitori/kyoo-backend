@@ -119,53 +119,6 @@
                                         <th>{{ __('Status') }}</th>
                                     </thead>
                                     <tbody>
-                                        @forelse ($data as $directQueue)
-                                            <tr>
-                                                <td>{{ $directQueue->queue_no }}</td>
-                                                <td>{{ date('Y M d H:i:s', strtotime($directQueue->created_at)) }}</td>
-                                                <td>
-                                                    @if ($directQueue->called_at)
-                                                        {{ date('Y M d H:i:s', strtotime($directQueue->called_at)) }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($directQueue->done_at)
-                                                        {{ date('Y M d H:i:s', strtotime($directQueue->done_at)) }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($directQueue->done_at)
-                                                        @php
-                                                            $waktuMulai = \Carbon\Carbon::parse($directQueue->called_at);
-                                                            $waktuSelesai = \Carbon\Carbon::parse($directQueue->done_at) ?: '';
-                                                            $durasiLayanan = $waktuSelesai ? $waktuSelesai->diffInMinutes($waktuMulai) : 0;
-                                                        @endphp
-                                                        {{ $durasiLayanan }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>{{ $directQueue->WorkstationService ? $directQueue->WorkstationService->Workstation->name : '' }}
-                                                </td>
-                                                <td>{{ $directQueue->Service->name }}</td>
-                                                <td>
-                                                    @if ($directQueue->NewService)
-                                                        {{ $directQueue->NewService->name }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>{{ __(ucwords($directQueue->status)) }}</td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="7" class="text-center">{{ __('No data') }}</td>
-                                            </tr>
-                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -193,6 +146,28 @@
             $('#workstation_service_id').val(workstation_service_idOldValue);
         });
         $('#dataTable').dataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{ route('cs.report.directQueue.getMonthly') }}',
+                type: 'GET',
+                data: function(d) {
+                    d.month = '{{ $month }}';
+                    d.year = '{{ $year }}';
+                    d.workstation_service_id = '{{ $workstation_service_id }}';
+                }
+            },
+            columns: [
+                { data: 'queue_no' },
+                { data: 'created_at' },
+                { data: 'called_at' },
+                { data: 'done_at' },
+                { data: 'service_time' },
+                { data: 'workstation' },
+                { data: 'service' },
+                { data: 'service_transfer' },
+                { data: 'status' }
+            ],
             "ordering": false,
             "dom": 'Bfrtip',
             "buttons": [{

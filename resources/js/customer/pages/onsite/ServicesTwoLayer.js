@@ -169,7 +169,7 @@ function ServicesTwoLayer() {
                 }}>
                     <Chip label={branch?.industry_category.name} />
 
-                    <Link to={`/customer/${branch?.id}/appointment/detail`}>
+                    <Link to={`/customer/${branch?.id}/onsite/detail`}>
                         <div style={{
                             color: '#FFFFFF',
                             display: 'flex',
