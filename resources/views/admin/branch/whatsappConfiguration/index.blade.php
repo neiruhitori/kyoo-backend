@@ -59,12 +59,21 @@
                                                 <td>
                                                     <a
                                                         href="{{ route('admin.whatsappConfiguration.show', $branch->id) }}"
-                                                        class="btn btn-secondary"
+                                                        class="btn btn-success mx-1 mb-1"
                                                         data-toggle="tooltip"
                                                         data-placement="bottom"
                                                         title="Konfigurasi Whatsapp"
                                                     >
-                                                        <i class="fas fa-cog"></i>
+                                                        <i class="fas fa-phone"></i>
+                                                    </a>
+                                                    <a
+                                                        href="{{ route('admin.gtmConfiguration.show', $branch->id) }}"
+                                                        class="btn btn-secondary mx-1 mb-1"
+                                                        data-toggle="tooltip"
+                                                        data-placement="bottom"
+                                                        title="Konfigurasi Google Tag Manager"
+                                                    >
+                                                        <i class="fas fa-link"></i>
                                                     </a>
                                                 </td>
                                             </tr>

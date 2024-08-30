@@ -69,7 +69,7 @@
 
             <a class="collapse-item" href="{{route('admin.branch.create')}}">{{ __('create.module', ['module' => __('Branch')]) }}</a>
 
-            <a class="collapse-item" href="{{route('admin.whatsappConfiguration.index')}}">Whatsapp Konfigurasi</a>
+            <a class="collapse-item" href="{{route('admin.branchConfiguration.index')}}">Konfigurasi Cabang</a>
           </div>
         </div>
       </li>
