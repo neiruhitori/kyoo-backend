@@ -113,7 +113,6 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
             }
 
             Storage::disk('local')->put("public/{$qr_code_url}", $qrCode);
-            $appointmentOnsite->qr_code = $qr_code_url;
 
             if (
                 $appointmentOnsite->phone &&
