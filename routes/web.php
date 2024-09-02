@@ -290,7 +290,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
 
     // Branch Configuration
     // Route::resource('/branchConfiguration', 'WhatsappConfigurationController')->only(['index', 'show', 'update']);
-    Route::get('/branchConfiguration', [WhatsappConfigurationController::class, 'index'])->name('branchConfiguration.index');
+    Route::get('/branchConfiguration', [WhatsappConfigurationController::class, 'index'])->name('admin.branchConfiguration.index');
     Route::get('/branchConfiguration/whatsapp/{id}', [WhatsappConfigurationController::class, 'show'])->name('whatsappConfiguration.show');
     Route::get('/branchConfiguration/gtm/{id}', [WhatsappConfigurationController::class, 'showGTM'])->name('gtmConfiguration.show');
     Route::put('/branchConfiguration/whatsapp/{id}', [WhatsappConfigurationController::class, 'update'])->name('whatsappConfiguration.update');
