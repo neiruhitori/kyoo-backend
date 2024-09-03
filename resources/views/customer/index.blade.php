@@ -10,8 +10,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Kyoo</title>
+
+    @if ($branchConfiguration != null)
     {!! $branchConfiguration->gtm_script !!}
     {!! $branchConfiguration->gtm_noscript !!}
+    @endif
+
+
     <link rel="icon" href="{{ asset('img/favico.png') }}" type="image/icon type">
 
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
