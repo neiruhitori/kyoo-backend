@@ -62,7 +62,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             //         $total_same_user_queue = $total_queue;
             //     }
             // }
-            if ($total_same_user_queue >= 3) {
+            if ($total_same_user_queue >= 10) {
                 throw new \Exception('Batas antrian maksimal harian untuk pengantri telah terlampaui');
             }
 

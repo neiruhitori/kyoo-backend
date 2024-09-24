@@ -288,9 +288,14 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::resource('branch', 'BranchController');
     Route::resource('registrationBranch', 'RegistrationBranchController')->only(['index', 'show', 'update', 'destroy']);
 
-    // Whatsapp Branch Configuration
-    Route::resource('/whatsappConfiguration', 'WhatsappConfigurationController')->only(['index', 'show', 'update']);
-
+    // Branch Configuration
+    // Route::resource('/branchConfiguration', 'WhatsappConfigurationController')->only(['index', 'show', 'update']);
+    Route::get('/branchConfiguration', [WhatsappConfigurationController::class, 'index'])->name('branchConfiguration.index');
+    Route::get('/branchConfiguration/whatsapp/{id}', [WhatsappConfigurationController::class, 'show'])->name('whatsappConfiguration.show');
+    Route::get('/branchConfiguration/gtm/{id}', [WhatsappConfigurationController::class, 'showGTM'])->name('gtmConfiguration.show');
+    Route::put('/branchConfiguration/whatsapp/{id}', [WhatsappConfigurationController::class, 'update'])->name('whatsappConfiguration.update');
+    Route::put('/branchConfiguration/gtm/{id}', [WhatsappConfigurationController::class, 'updateGTM'])->name('gtmConfiguration.update');
+    
     Route::get('/branch/{id}/license', 'BranchLicenseController@index')->name('branch.license');
     Route::put('/branch/{id}/license', 'BranchLicenseController@update')->name('branch.license.update');
 

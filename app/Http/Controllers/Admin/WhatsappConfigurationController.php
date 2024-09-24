@@ -27,6 +27,18 @@ class WhatsappConfigurationController extends Controller
 
         return view('admin.branch.whatsappConfiguration.show', $data);
     }
+    public function showGTM($id)
+    {
+        $branch = Branch::find($id);
+
+        $data = [
+            'branch' => $branch,
+            'branch_license' => $branch->BranchType,
+            'branch_configuration' => $branch->BranchConfiguration
+        ];
+
+        return view('admin.branch.whatsappConfiguration.showGTM', $data);
+    }
 
     public function update(Request $request, $id)
     {
@@ -45,6 +57,23 @@ class WhatsappConfigurationController extends Controller
         ]);
 
         $request->session()->flash('success', 'Konfigurasi Whatsapp diperbarui');
+        return redirect()->back();
+    }
+    public function updateGTM(Request $request, $id)
+    {
+        $request->validate([
+            'gtm_script' => 'required',
+            'gtm_noscript' => 'required',
+        ]);
+
+        $branchConfiguration = BranchConfiguration::where('branch_id', $id)->first();
+
+
+        $branchConfiguration->gtm_script = $request->gtm_script;
+        $branchConfiguration->gtm_noscript = $request->gtm_noscript;
+        $branchConfiguration->save();
+
+        $request->session()->flash('success', 'Konfigurasi Google Tag Manager diperbarui');
         return redirect()->back();
     }
 }
