@@ -55,6 +55,10 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL', null),
+    
+    'xendit_api_key' => env('XENDIT_API_KEY'),
+    
+    'xendit_callback_token' => env('XENDIT_CALLBACK_TOKEN'),
 
     /*
     |--------------------------------------------------------------------------
@@ -244,7 +248,7 @@ return [
         'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
         'Fcm' => Kawankoding\Fcm\FcmFacade::class,
-        'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class
+        'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class,
     ],
 
 ];

@@ -243,6 +243,14 @@ Route::namespace('AdminBranch')
             Route::get('/vct/chart', 'ChartVctController@index')->name('vct.chart');
             Route::get('/vct/chart/all', 'ChartVctController@getAll')->name('vct.chart.all');
         });
+        
+        
+        Route::get('/billing','BillingController@index')->name('billing');
+        Route::get('/billing/{id}/print','BillingController@print')->name('billing.print');
+        Route::post('/subscription','BillingController@storeInvoice');
+        Route::get('/subscription','BillingController@invoiceForm')->name('subscription');
+       //hanya untuk front-end
+        Route::get('/get_Billing_Prices','BillingController@getBilling');
 
         Route::prefix('/cs')->name('cs.')->group(function () {
             Route::resource('access', 'CSAccessController');
@@ -299,6 +307,17 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::get('/branch/{id}/license', 'BranchLicenseController@index')->name('branch.license');
     Route::put('/branch/{id}/license', 'BranchLicenseController@update')->name('branch.license.update');
 
+    
+    //Billing SA
+    Route::get('billing', 'BillingController@index')->name('billing.index');
+    Route::get('billing/{id}/print', 'BillingController@print')->name('billing.print');
+    Route::get('/branch/{id}/billing', 'BillingController@show')->name('branch.billing');
+    Route::get('/billing-configuration', 'BillingController@list')->name('billing.config');
+    Route::get('/billing-configuration/create', 'BillingController@create')->name('billing-prices.create');
+    Route::post('/billing-configuration/create', 'BillingController@priceStore');
+    Route::get('/billing-configuration/{id}', 'BillingController@priceEdit')->name('billing-prices.update');
+    Route::put('/billing-configuration/{id}', 'BillingController@priceUpdate');
+    
     // Branch Type
     Route::resource('branchType', 'BranchTypeController');
 
@@ -325,6 +344,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::post('corporate/{corporateId}/branch', 'CorporateBranchController@store')->name('corporate.branch.store');
     Route::delete('corporate/{corporateId}/branch/{branchId}', 'CorporateBranchController@destroy')->name('corporate.branch.destroy');
     Route::get('corporate/{corporateId}/branch/options', 'CorporateBranchController@createOptions')->name('corporate.branch.options');
+
 
     Route::get('waSession', 'WaSessionController@index')->name('waSession.index');
     Route::get('waSession/qr', 'WaSessionController@getQr')->name('waSession.qr');

@@ -1,0 +1,250 @@
+<?php
+
+namespace App\Http\Controllers\AdminBranch;
+
+use PDF;
+use App\Branch;
+use Carbon\Carbon;
+use App\BranchType;
+use App\Models\Invoice;
+use App\Models\Subscription;
+use Illuminate\Http\Request;
+use App\Models\AdditionalFeature;
+use App\Models\BillingPricesModel;
+use Illuminate\Support\Facades\DB;
+use App\Models\FeatureSubscription;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
+class BillingController extends Controller
+{
+    public function index()
+    {
+        $branch_id = Auth::user()->branch->id;
+        $features = FeatureSubscription::with('AdditionalFeature')
+        ->where('branch_id',$branch_id)->get();
+        $invoice = Invoice::where('branch_id',$branch_id)->get();
+
+        return view('adminBranch.billing.index',compact('features','invoice'));
+    }
+
+    public function no_transaksi()
+    {
+        $kd =  mt_rand(1000, 9999);
+        return 'INV' . date('dmy') . $kd;
+    }
+
+
+    public function storeInvoice(Request $request)
+    {
+        $credentials = base64_encode(config('app.xendit_api_key'));
+        $client = new \GuzzleHttp\Client();
+
+        try{
+
+            $user= Auth::user()->id;
+            $branch= Auth::user()->Branch->id;
+            $invoice_number = $this->no_transaksi();
+            $invoice_duration = Carbon::now()->addDays(14)->diffInSeconds() + 1; //tepat 14 hari
+    
+            $response = $client->post('https://api.xendit.co/v2/invoices',
+            [
+                'headers' => [
+                    'Authorization' => 'Basic ' . $credentials,
+                ],
+                'json' =>[
+                    'external_id' => $invoice_number, 
+                    'amount' => $request->amount,
+                    // 'invoice_duration' => $invoice_duration
+                ],
+            ]);
+            $jsonResponse = json_decode($response->getBody(), true);
+            $data = $jsonResponse;
+    
+            $invoice_data = [
+                'id_invoice' => $data['id'],
+                'invoice_url' => $data['invoice_url'],
+                'expiry_date' => $data['expiry_date'],
+                'status' => $data['status'],
+                'description' => 'Invoice still on Development',
+                'invoice_number' => $invoice_number,
+                'user_id' => $user,
+                'branch_id' => $branch,
+                'created_at' => Carbon::now(),
+                'amount' => $request->amount
+            ];
+            \DB::transaction(function () use ($invoice_data,$user,$branch,$invoice_number,$request){
+
+                $invoice = Invoice::insert($invoice_data);
+                $subscription = Subscription::insert([
+                    'user_id' => $user,
+                    'branch_id' => $branch,
+                    'invoice' => $invoice_number,
+                    'package' => $request->packageSelection ,
+                    'license_type' => $request->license_type ,
+                    'subs_duration' => $request->subs_duration ,
+                    'queue' => $request->queue ,
+                    'max_table' => $request->table ,
+                    'max_service' => $request->services ,
+                    'kiosk' => $request->kiosk ,
+                    'created_at' => Carbon::now(),
+                    'status' => 'pending'
+                ]);
+            });
+            
+            $request->session()->flash('success', 'Invoice berhasil dibuat');
+
+            return redirect()->back();
+
+        }catch(\Guzzle\Http\Exception\BadResponseException $e){
+            $response = $e->getResponse();
+            $response = json_decode($response->getBody()->getContents(), true);
+            return response()->json([
+                'status' => 'error',
+                'message' => $response
+            ], 403);
+        }
+
+        
+    }
+    public function invoiceForm()
+    {
+        if(Auth::user()->Branch->is_premium){
+            return redirect(route('admin-branch.billing'));
+        }
+
+           $type=Auth::user()->Branch->branch_type_id;
+           $branchType = BranchType::where('id',$type)->first();
+           $isDirect = $branchType->is_direct_queue;
+
+            $unpaidInvoice = Invoice::where('branch_id', Auth::user()->Branch->id)
+                        ->where('status','PENDING')->first();
+
+           
+            return view('adminBranch.billing.invoiceForm',compact('isDirect','unpaidInvoice'));
+    }
+
+    public function callbackInvoice(Request $request)
+    {
+                $callbackToken = config('app.xendit_callback_token');
+   
+                if ($request->header('x-callback-token') != $callbackToken) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Request Ditolak'
+                    ], 403);
+                }
+        try{
+    
+          // Gunakan DB transaction untuk memastikan atomicity
+          $invoice = Invoice::where('invoice_number', $request->external_id)->first();
+        DB::transaction(function () use ($request,$invoice) {
+            if ($invoice) {
+                if ($request->status == "PAID") {
+                    Invoice::where('invoice_number', $request->external_id)
+                        ->where('status', 'PENDING')->update([
+                            'status' => $request->status,
+                        ]);
+
+                   $subscription = Subscription::where('invoice', $request->external_id)
+                        ->where('status', 'pending')->update([
+                            'status' => 'active',
+                        ]);
+                    
+                        if($subscription){
+                                //ambil data membership di subscription
+                               $data = Subscription::where('invoice', $request->external_id)
+                               ->where('status', 'active')
+                               ->first();
+                         if($data){
+                                
+                               //setup
+                               $branch_id = $data->branch_id;
+                               $features = AdditionalFeature::all();
+                               $license = null;
+                               
+                               if($data->license_type == "onsite"){
+                                   $license = 7; //PDQ
+                               }else{
+                                   $license = 6; //PA
+                               }
+                               //reset fitur branch
+                               FeatureSubscription::where('branch_id', $branch_id)->delete();
+
+                               //cek paket pilihan
+                               if($data->package !== "lite"){
+                                   $featuresData = $features->map(function($feature) use($branch_id){
+                                       return [
+                                           'branch_id'  => $branch_id,
+                                           'feature_id' => $feature->id,
+                                           'created_at' => date('Y-m-d H:i:s')
+                                       ];
+                                   });
+                                   FeatureSubscription::insert($featuresData->toArray());
+                               }
+                               //set ke branch
+                               Branch::where('id', $branch_id)->update([
+                                   'branch_type_id' => $license,
+                                   'max_counter' => $data->max_table,
+                                   'max_queue' => $data->queue,
+                                   'license_expiration_date' => Carbon::now()->addMonths($data->subs_duration)->format('Y-m-d H:i:s'),
+                               ]);
+                               }
+                            }
+
+                } elseif ($request->status == "EXPIRED") {
+                    Invoice::where('invoice_number', $request->external_id)
+                        ->where('status', 'PENDING')->update([
+                            'status' => $request->status,
+                        ]);
+
+                    Subscription::where('invoice', $request->external_id)
+                        ->where('status', 'pending')->update([
+                            'status' => 'expired',
+                        ]);
+                }
+            } else {
+                throw new \Exception('Data Tidak Ditemukan');
+            }
+        });
+
+        }catch(\Exception $e){
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $e
+            ], 400);
+        }
+        
+    }
+    public function getBilling()
+    {
+      $type=Auth::user()->Branch->branch_type_id;
+           $branchType = BranchType::where('id',$type)->first();
+           $isDirect = $branchType->is_direct_queue;
+
+            if($isDirect){
+                $prices = BillingPricesModel::where('branch_type_id',7)->get(['prices','billing_types','subscription_duration']);
+            }else{
+                $prices = BillingPricesModel::where('branch_type_id',6)->get(['prices','billing_types','subscription_duration']);
+            }
+            return response()->json([
+                'status' => 200,
+                'data' => $prices
+            ]);
+    }
+    public function print($id)
+    {
+        $print = Invoice::with('branch')->where('id_invoice',$id)->first();
+        $subs = Subscription::where('invoice',$print->invoice_number)->first();
+         $total = $print->amount;
+         $subTotal = $total / 1.11;
+         $ppn = $total - $subTotal;
+   
+        
+         return view('adminBranch.billing.print', compact('print', 'subs', 'total', 'subTotal', 'ppn')); 
+    }
+
+
+    
+}
