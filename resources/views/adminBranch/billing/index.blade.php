@@ -224,7 +224,7 @@
                                         @endif 
                                     </td>
                                     {{-- <td><a href="{{ route('admin-branch.billing.print', $inv->id_invoice) }}" target="_blank" class="btn btn-secondary">Print</a></td> --}}
-                                    <td><button onclick="printInvoice('invoice-{{ $inv->id_invoice }}')" class="btn btn-secondary">Print</button></td>
+                                    <td><a href="{{ route('admin.billing.print',$inv->id_invoice) }}" class="btn btn-secondary">Print</a></td>
                                   </tr>
                                 @endforeach
                             </tbody>
