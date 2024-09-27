@@ -45,7 +45,8 @@ class BillingController extends Controller
             $user= Auth::user()->id;
             $branch= Auth::user()->Branch->id;
             $invoice_number = $this->no_transaksi();
-            $invoice_duration = Carbon::now()->addDays(14)->diffInSeconds() + 1; //tepat 14 hari
+            // $invoice_duration = Carbon::now()->addDays(14)->diffInSeconds() + 1; //tepat 14 hari
+            $invoice_duration = 30*60;
     
             $response = $client->post('https://api.xendit.co/v2/invoices',
             [
@@ -55,7 +56,7 @@ class BillingController extends Controller
                 'json' =>[
                     'external_id' => $invoice_number, 
                     'amount' => $request->amount,
-                    // 'invoice_duration' => $invoice_duration
+                    'invoice_duration' => $invoice_duration
                 ],
             ]);
             $jsonResponse = json_decode($response->getBody(), true);
