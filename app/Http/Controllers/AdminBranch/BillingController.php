@@ -67,7 +67,7 @@ class BillingController extends Controller
                 'invoice_url' => $data['invoice_url'],
                 'expiry_date' =>Carbon::parse($data['expiry_date'])->setTimezone('Asia/Jakarta'),
                 'status' => $data['status'],
-                'description' => 'Invoice still on Development',
+                'description' => 'Invoice pada tanggal '. Carbon::now()->translatedFormat('d F Y'),
                 'invoice_number' => $invoice_number,
                 'user_id' => $user,
                 'branch_id' => $branch,

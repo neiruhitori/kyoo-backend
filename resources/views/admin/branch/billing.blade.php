@@ -54,8 +54,8 @@
                                                     @endif 
                                                 </td>
                                                 <td>
-                                                    <a
-                                                        href="{{ route('admin.billing.print',$inv->id_invoice) }}"
+                                                    <button
+                                                        onclick="printInvoice()"
                                                         class="btn btn-secondary"
                                                         data-toggle="tooltip"
                                                         data-placement="bottom"
@@ -63,7 +63,7 @@
                                                         target="_blank"
                                                     >
                                                         <i class="fas fa-download"></i>
-                                                    </a>
+                                                    </button>
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -87,5 +87,18 @@
         $(function () {
           $('[data-toggle="tooltip"]').tooltip()
         })
+        function printInvoice() {
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';  
+
+        iframe.src = "{{ route('admin.billing.print', $inv->id_invoice) }}";  // Laravel route
+
+        iframe.onload = function() {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print(); 
+        };
+
+        document.body.appendChild(iframe); 
+    }
     </script>
     @endpush

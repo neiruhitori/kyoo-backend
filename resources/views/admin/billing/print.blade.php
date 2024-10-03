@@ -6,8 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Invoice Kyoo Print</title>
 </head>
-<body style="width: 70%" class="mx-auto">
-
+<body style="width: 70%; overflow-x: hidden; " class="mx-auto position-relative">
+  <div class="ribbon">
+    @if($print->status == "PAID")
+    <span>PAID</span>
+    @elseif($print->status == "PENDING")
+    <span class="pending">PENDING</span>
+    @else
+    <span class="expired">EXPIRED</span>
+    @endif
+</div>
     <div class="mx-3 my-3">
         <div class="row" style="margin-bottom: 200px">
             <div class="col-md-12">
@@ -15,7 +23,7 @@
                 
             </div>
         </div>
-        <div class="d-flex justify-content-end">
+        {{-- <div class="d-flex justify-content-end">
             @if($print->status == "PAID")
             <div>
                       <h3 style="color:black;"><b>Status : </b><span class="badge badge-success px-3"  style="color:black; border: none;">PAID</span></h3>
@@ -30,7 +38,7 @@
             </div>
             
             @endif
-          </div>
+          </div> --}}
         </div>
         <div class="row mb-2">
             <div class="col-md-12 py-2" style="background-color:#a2a2a288; color:black">
@@ -53,7 +61,7 @@
                     <thead>
                       <tr>
                         <th scope="col">Description</th>
-                        <th scope="col" style="min-width: 100px;">Total</th>
+                        <th scope="col" style="min-width: 120px;">Total</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -113,7 +121,7 @@
                     </tbody>
                   </table>
             </div>
-        </div>
+        
     </div>
 
     <script type="text/javascript">
@@ -162,8 +170,10 @@
 @media print {
   @page {
         margin: 0;
+        size: A4;
+        width:100%;
+        overflow-x:hidden;
     }
-    /* Jika header/footer ditambahkan sebagai elemen HTML di halaman Anda */
     header, footer {
         display: none !important;
     }
@@ -173,6 +183,7 @@
         print-color-adjust: exact;
         margin: 0;
         padding: 0;
+        width: 100%
     }
     
     .bg-success {
@@ -201,14 +212,44 @@
         border-radius: 50rem !important;
     }
     .badge {
-        padding: 0.5em 1em; /* Atur padding untuk tampilan yang baik */
-        font-size: 1.2em; /* Sesuaikan ukuran teks untuk cetakan */
-        color: rgb(0, 0, 0); /* Warna teks */
-        border: none; /* Menghilangkan border jika tidak diinginkan */
+        padding: 0.5em 1em; 
+        font-size: 1.2em;
+        color: rgb(0, 0, 0); 
+        border: none; 
     }
 
   
 }
+
+.ribbon {
+            width: 450px; /* Ukuran 3x lebih besar */
+            height: 450px; /* Ukuran 3x lebih besar */
+            overflow: hidden;
+            position: absolute;
+            top: -50px; /* Sesuaikan agar ribbon tetap berada di pojok */
+            right: -50px; /* Sesuaikan agar ribbon tetap berada di pojok */
+        }
+        .ribbon span {
+            position: absolute;
+            display: block;
+            width: 600px; /* Lebar ribbon diperbesar */
+            padding: 30px 0; /* Padding diperbesar */
+            background-color: #28a745; /* warna ribbon (green untuk PAID, bisa disesuaikan) */
+            color: white;
+            text-align: center;
+            font-size: 42px; /* Ukuran font diperbesar */
+            font-weight: bold;
+            transform: rotate(45deg);
+            top: 90px; /* Posisi atas disesuaikan */
+            right: -175px; /* Posisi kanan disesuaikan */
+        }
+        .ribbon span.pending {
+            background-color: #ffc107; /* warna ribbon kuning untuk PENDING */
+        }
+        .ribbon span.expired {
+            background-color: #dc3545; /* warna ribbon merah untuk EXPIRED */
+        }
+        
 
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)

@@ -54,16 +54,15 @@
                                                     @endif 
                                                 </td>
                                                 <td>
-                                                    <a
-                                                        href="{{ route('admin.billing.print',$inv->id_invoice) }}"
+                                                    <button
+                                                        onclick="printInvoice()"
                                                         class="btn btn-secondary"
                                                         data-toggle="tooltip"
                                                         data-placement="bottom"
                                                         title="Unduh Riwayat Invoice"
-                                                        target="_blank"
                                                     >
                                                         <i class="fas fa-download"></i>
-                                                    </a>
+                                                    </button>
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -83,9 +82,23 @@
     <script src="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
     <script src="{{asset('admin/js/demo/datatables-demo.js')}}"></script>
 
-    <script>
+    <script type="text/javascript">
         $(function () {
           $('[data-toggle="tooltip"]').tooltip()
         })
+
+    function printInvoice() {
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';  
+
+        iframe.src = "{{ route('admin.billing.print',$inv->id_invoice) }}"
+
+        iframe.onload = function() {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print(); 
+        };
+
+        document.body.appendChild(iframe); 
+    }
     </script>
     @endpush

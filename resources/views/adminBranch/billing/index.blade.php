@@ -224,7 +224,7 @@
                                         @endif 
                                     </td>
                                     {{-- <td><a href="{{ route('admin-branch.billing.print', $inv->id_invoice) }}" target="_blank" class="btn btn-secondary">Print</a></td> --}}
-                                    <td><a href="{{ route('admin-branch.billing.print',$inv->id_invoice) }}" class="btn btn-secondary">Print</a></td>
+                                    <td><button onclick="printInvoice()" class="btn btn-secondary">Print</button></td>
                                   </tr>
                                 @endforeach
                             </tbody>
@@ -240,8 +240,20 @@
     
 </div>
 
+<script type="text/javascript">
+    function printInvoice() {
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';  
 
+        iframe.src = "{{ route('admin-branch.billing.print', $inv->id_invoice) }}";  // Laravel route
 
-    </script>
+        iframe.onload = function() {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print(); 
+        };
+
+        document.body.appendChild(iframe); 
+    }
+</script>
 
 @endsection
