@@ -55,7 +55,7 @@
                                                 </td>
                                                 <td>
                                                     <button
-                                                        onclick="printInvoice()"
+                                                        onclick="printInvoice('{{ $inv->id_invoice }}')"
                                                         class="btn btn-secondary"
                                                         data-toggle="tooltip"
                                                         data-placement="bottom"
@@ -87,18 +87,26 @@
           $('[data-toggle="tooltip"]').tooltip()
         })
 
-    function printInvoice() {
-        var iframe = document.createElement('iframe');
-        iframe.style.display = 'none';  
+        function printInvoice(invoiceId) { 
 
-        iframe.src = "{{ route('admin.billing.print',$inv->id_invoice) }}"
+                if (!invoiceId) {
+                    return
+                }else{
+                    var iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
 
-        iframe.onload = function() {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print(); 
-        };
+                let url = "{{ route('admin.billing.print', ':invoiceId') }}";
+                url = url.replace(':invoiceId', invoiceId); 
 
-        document.body.appendChild(iframe); 
-    }
+                iframe.src = url
+
+                iframe.onload = function() {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                };
+
+                document.body.appendChild(iframe);
+                }  
+        }
     </script>
     @endpush

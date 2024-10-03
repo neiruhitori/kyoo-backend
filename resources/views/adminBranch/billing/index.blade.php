@@ -209,6 +209,11 @@
                               </tr>
                             </thead>
                             <tbody>
+                                @if ($invoice->isEmpty())
+                                <tr>
+                                    <td colspan="5" class="text-center">Tidak ada data invoice.</td>
+                                </tr>    
+                                @else
                                 @foreach ($invoice as $inv)
                                 <tr>
                                     <th>{{ \Carbon\Carbon::parse($inv->created_at)->translatedFormat('d F Y') }}</th>
@@ -224,9 +229,11 @@
                                         @endif 
                                     </td>
                                     {{-- <td><a href="{{ route('admin-branch.billing.print', $inv->id_invoice) }}" target="_blank" class="btn btn-secondary">Print</a></td> --}}
-                                    <td><button onclick="printInvoice()" class="btn btn-secondary">Print</button></td>
+                                    <td><button onclick="printInvoice('{{ $inv->id_invoice }}')" class="btn btn-secondary">Print</button></td>
                                   </tr>
                                 @endforeach
+
+                                @endif
                             </tbody>
                           </table>
                     </div>
@@ -241,19 +248,28 @@
 </div>
 
 <script type="text/javascript">
-    function printInvoice() {
-        var iframe = document.createElement('iframe');
-        iframe.style.display = 'none';  
+    function printInvoice(invoiceId) { 
 
-        iframe.src = "{{ route('admin-branch.billing.print', $inv->id_invoice) }}";  // Laravel route
+        if (!invoiceId) {
+            return
+        }else{
+            var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        
+        let url = "{{ route('admin-branch.billing.print', ':invoiceId') }}";
+        url = url.replace(':invoiceId', invoiceId); 
+
+        iframe.src = url
 
         iframe.onload = function() {
             iframe.contentWindow.focus();
-            iframe.contentWindow.print(); 
+            iframe.contentWindow.print();
         };
 
-        document.body.appendChild(iframe); 
+        document.body.appendChild(iframe);
+        }  
     }
 </script>
+
 
 @endsection
