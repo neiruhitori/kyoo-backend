@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AdminBranch;
 
 use App\Http\Controllers\Controller;
 use App\BranchConfiguration;
+use Illuminate\Http\Request;
 use App\Log;
 use App\Http\Requests\AdminBranch\UpdateBranchConfiguration;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,24 @@ class BranchConfigurationController extends Controller
   public function edit()
   {
     return view('adminBranch.branchConfiguration.edit');
+  }
+
+  public function checkInConfig(Request $request)
+  {
+    $branchConfig = Auth::user()->Branch->BranchConfiguration;
+    if($branchConfig->layer != 2){
+      $request->session()->flash('warning', __('Konfigurasi ini hanya untuk page portal Hybrid Onsite-Appointment'));
+      return back();
+    }
+    $query = BranchConfiguration::where('id',$branchConfig->id)->update([
+      'check_in_rule' => $request->check_in_rule
+    ]);
+
+    if($query){
+      $request->session()->flash('warning', __('Konfigurasi Check-in telah diperbarui'));
+      return back();
+    }
+
   }
 
   public function update(UpdateBranchConfiguration $request)

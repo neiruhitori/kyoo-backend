@@ -113,6 +113,7 @@ Route::namespace('AdminBranch')
             Route::resource('device-account', 'DeviceAccountController');
 
             Route::get('feature', 'FeatureController@index')->name('feature');
+            Route::post('feature/checkInConfig','BranchConfigurationController@checkInConfig')->name('feature.checkIn');
             Route::put('feature', 'BranchConfigurationController@update')->name('feature.update');
 
             Route::get('queue-monitor', 'TVDisplayConfigurationController@index')
@@ -244,6 +245,7 @@ Route::namespace('AdminBranch')
             Route::get('/vct/chart/all', 'ChartVctController@getAll')->name('vct.chart.all');
         });
         
+    
         
         Route::get('/billing','BillingController@index')->name('billing');
         Route::get('/billing/{id}/print','BillingController@print')->name('billing.print');
