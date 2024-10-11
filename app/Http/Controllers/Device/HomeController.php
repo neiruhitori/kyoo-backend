@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers\Device;
 
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
-
-use App\Branch;
-use App\DirectQueue;
 use App\User;
-use App\WorkstationService;
-use App\Workstation;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Device\StoreDirectQueue;
-use App\Interfaces\WebKioskConfigurationRepositoryInterface;
-use App\Interfaces\DirectQueueRepositoryInterface;
-use App\Models\FeatureSubscription;
-use Illuminate\Http\Request;
+use App\Branch;
+use Carbon\Carbon;
+use App\DirectQueue;
 
-use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
-use App\Events\DirectQueue as DirectQueueEvent;
-use App\Events\OnsiteQueueUpdated;
-use App\Models\AppointmentOnsite;
+use App\Workstation;
 use App\Models\TVToken;
+use App\WorkstationService;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Models\WebkioskToken;
+use App\Models\AppointmentOnsite;
+use App\Events\OnsiteQueueUpdated;
+use App\Models\FeatureSubscription;
+use Illuminate\Support\Facades\URL;
+use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\Crypt;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Http\Requests\Device\StoreDirectQueue;
+use App\Events\DirectQueue as DirectQueueEvent;
+use App\Interfaces\DirectQueueRepositoryInterface;
+use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
+use App\Interfaces\WebKioskConfigurationRepositoryInterface;
 
 class HomeController extends Controller
 {
@@ -315,10 +316,15 @@ class HomeController extends Controller
         }
     }
 
+
     public function storeByBookingCode(Request $request)
     {
         try {
             $user = User::find($request->user_id);
+
+            $branchConfig = $user->branch->branchConfiguration;
+
+          
 
             $checked_in_appointment = AppointmentOnsite::where('booking_code', strtolower($request->booking_code))
             ->where('is_used', true)
@@ -343,11 +349,22 @@ class HomeController extends Controller
             ->where('is_used', false)
             ->whereDate('date', '>=', date('Y-m-d'))
             ->first();
+            
 
             if(!$appointment_onsite) {
                 throw new \Exception('Kode Booking tidak ditemukan atau sudah tidak berlaku', 10003);
             } elseif ($appointment_onsite->date != date('Y-m-d')) {
                 throw new \Exception('Kode booking belum berlaku, silahkan cek tanggal booking.', 10004);
+            }
+
+            if ($branchConfig->check_in_rule != 0) {
+                $startTime =  Carbon::createFromFormat('H:i:s', $appointment_onsite->start_time);
+
+                $allowedCheckInTime = $startTime->subHours($branchConfig->check_in_rule);
+    
+                if (now()->format('H:i:s') < $allowedCheckInTime->format('H:i:s')) {
+                    throw new \Exception("Belum bisa check-in. Anda dapat check-in mulai dari " . $allowedCheckInTime->format('H:i') . ".", 10005);
+                }
             }
 
             $data = $appointment_onsite->toArray();
