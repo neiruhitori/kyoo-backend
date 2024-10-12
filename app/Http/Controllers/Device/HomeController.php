@@ -324,8 +324,6 @@ class HomeController extends Controller
 
             $branchConfig = $user->branch->branchConfiguration;
 
-          
-
             $checked_in_appointment = AppointmentOnsite::where('booking_code', strtolower($request->booking_code))
             ->where('is_used', true)
             ->whereDate('date', date('Y-m-d'))
@@ -363,7 +361,8 @@ class HomeController extends Controller
                 $allowedCheckInTime = $startTime->subHours($branchConfig->check_in_rule);
     
                 if (now()->format('H:i:s') < $allowedCheckInTime->format('H:i:s')) {
-                    throw new \Exception("Belum bisa check-in. Anda dapat check-in mulai dari " . $allowedCheckInTime->format('H:i') . ".", 10005);
+                    throw new \Exception("Check-in dilakukan " . $branchConfig->check_in_rule . " jam sebelum layanan buka. Anda dapat check-in pada jam " . $allowedCheckInTime->format('H:i') . ".");
+                    // throw new \Exception(, 10005);
                 }
             }
 
