@@ -361,8 +361,7 @@ class HomeController extends Controller
                 $allowedCheckInTime = $startTime->subHours($branchConfig->check_in_rule);
     
                 if (now()->format('H:i:s') < $allowedCheckInTime->format('H:i:s')) {
-                    throw new \Exception("Check-in dilakukan " . $branchConfig->check_in_rule . " jam sebelum layanan buka. Anda dapat check-in pada jam " . $allowedCheckInTime->format('H:i') . ".");
-                    // throw new \Exception(, 10005);
+                    throw new \Exception("Check-in dilakukan " . $branchConfig->check_in_rule . " jam sebelum layanan buka. Anda dapat check-in pada jam " . $allowedCheckInTime->format('H:i') . ".", 10005);
                 }
             }
 
