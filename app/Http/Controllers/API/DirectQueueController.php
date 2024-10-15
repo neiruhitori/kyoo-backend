@@ -71,10 +71,35 @@ class DirectQueueController extends Controller
                 event(new OnsiteQueueUpdated($directQueue));
             }
 
+            $branch = Branch::where('id',$directQueue->branch_id)->first();
+
+            $webhookUser = [
+                'name' => $directQueue->name,
+                'phone' => $directQueue->phone,
+                'email' => $directQueue->email,
+                'address' => null,
+                'emergency_contact' => null,
+                'reason_for_visit' => null,
+                'date_of_birth' => null,
+            ];
+
+            $webhookQueue = [
+                'id' => $directQueue->id,
+                'service_id' => $directQueue->service_id,
+                'service_name' => $directQueue->service_name,
+                'service_type' => 'Direct Queue',
+                'start_time' => null,
+                'end_time' => null,
+                'booking_code' => $directQueue->booking_code,
+                'branch_name' => $branch->name,
+            ];
+
             return response()->json([
                 'success' => true,
                 'message' => 'direct queue created',
-                'data' => $directQueue
+                'data' => $directQueue,
+                'patient' => $webhookUser,
+                'appointment' => $webhookQueue,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -112,4 +137,42 @@ class DirectQueueController extends Controller
             'data' => $directQueue
         ]);
     }
+
+    protected function sendWebhook($client, $webhookUser, $webhookQueue)
+    {
+     
+        $guzzle = new \GuzzleHttp\Client();  
+
+        try {
+            $response = $guzzle->post($client->webhook_url, [
+                'headers' => [
+                    'x-secret-token' => $client->secret_token,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'patient' => $webhookUser,
+                    'appointment' => $webhookQueue,
+                ]
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                throw new \Exception('Webhook failed with status: ' . $response->getStatusCode());
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'patient' => $webhookUser,
+                'appointment' => $webhookQueue,
+                'x-secret-token' => $client->secret_token,
+                //jgn lupa dihapus pas selesai ygy
+               ]);
+
+        } catch (\Exception $e) {
+           return response()->json([
+            'status' => 'error',
+            'message' =>  $e->getMessage()
+           ]);
+        }
+    }
+
 }

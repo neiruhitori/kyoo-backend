@@ -308,7 +308,8 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     
     Route::get('/branch/{id}/license', 'BranchLicenseController@index')->name('branch.license');
     Route::put('/branch/{id}/license', 'BranchLicenseController@update')->name('branch.license.update');
-
+    
+    Route::get('/branch/{id}/generateSecretToken', 'BranchLicenseController@generateToken')->name('branch.license.generateToken');
     
     //Billing SA
     Route::get('billing', 'BillingController@index')->name('billing.index');

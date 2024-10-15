@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\AdditionalFeature;
-use App\BranchType;
-use App\Branch;
-use App\Models\FeatureSubscription;
 use App\User;
+use App\Branch;
+use App\BranchType;
+use Illuminate\Support\Str;
+use App\Models\SecretKeyAPi;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Models\AdditionalFeature;
+use App\Models\FeatureSubscription;
+use App\Http\Controllers\Controller;
 
 class BranchLicenseController extends Controller
 {
@@ -22,6 +24,7 @@ class BranchLicenseController extends Controller
             'branch_license' => $branch->BranchType,
             'branch_types' => BranchType::all(),
             'features' => AdditionalFeature::all(),
+            'secret_token' => SecretKeyAPi::where('branch_id', $branch->id)->first(),
             'selected_features' => FeatureSubscription::where('branch_id', $branch->id)->get()
         ];
 
@@ -59,5 +62,24 @@ class BranchLicenseController extends Controller
         $request->session()->flash('success', 'Lisensi diperbarui');
 
         return redirect()->back();
+    }
+
+    public function generateToken($id)
+    {
+        $token =  SecretKeyAPi::where('branch_id', $id)->first();
+        $user = User::where('branch_id',$id)->where('role','admin_branch')->first();
+
+        if($token){
+            $token->update([
+                'secret_token' => 'kyoo_' . Str::random(60)
+            ]);
+        }else{
+            $token = SecretKeyAPi::create([
+                'user_id' => $user->id,
+                'branch_id' => $id,
+                'secret_token' => 'kyoo_' . Str::random(60)
+            ]);
+        }
+        return back();
     }
 }
