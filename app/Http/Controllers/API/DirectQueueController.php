@@ -97,6 +97,7 @@ class DirectQueueController extends Controller
                         'branch_name' => $branch->name,
                     ]
                 ];
+                $webhookData = (object) $webhookData;
 
                 $this->sendWebhook($client, $webhookData);
                 
