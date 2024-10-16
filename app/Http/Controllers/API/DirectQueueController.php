@@ -80,24 +80,25 @@ class DirectQueueController extends Controller
 
             if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
                 $webhookMessage = "Webhook Send!";
-                $webhookUser = [
-                    'name' => $directQueue->name,
-                    'phone' => $directQueue->phone,
-                    'email' => $directQueue->email,
-                    'created_at' => $directQueue->created_at,
-                ];
-    
-                $webhookQueue = [
-                    'id' => $directQueue->id,
-                    'service_id' => $directQueue->service_id,
-                    'service_name' => $directQueue->service_name,
-                    'service_type' => 'Direct Queue',
-                    'created_at' => $directQueue->created_at,
-                    'booking_code' => $directQueue->booking_code,
-                    'branch_name' => $branch->name,
+                $webhookData = [
+                    'user' => (object)[
+                        'name' => $directQueue->name,
+                        'phone' => $directQueue->phone,
+                        'email' => $directQueue->email,
+                        'created_at' => $directQueue->created_at,
+                    ],
+                    'queue' => (object)[
+                        'id' => $directQueue->id,
+                        'service_id' => $directQueue->service_id,
+                        'service_name' => $directQueue->service_name,
+                        'service_type' => 'Direct Queue',
+                        'created_at' => $directQueue->created_at,
+                        'booking_code' => $directQueue->booking_code,
+                        'branch_name' => $branch->name,
+                    ]
                 ];
 
-                $this->sendWebhook($client, $webhookUser, $webhookQueue);
+                $this->sendWebhook($client, $webhookData);
                 
             }else{
                 $webhookMessage = "There's no Webhook Url/The feature was inactive";
@@ -147,22 +148,21 @@ class DirectQueueController extends Controller
         ]);
     }
 
-    protected function sendWebhook($client, $webhookUser, $webhookQueue)
+    protected function sendWebhook($client, $webhookData)
     {
      
         $guzzle = new \GuzzleHttp\Client();  
         $tokenAPI = SecretKeyAPi::where('branch_id', $client->branch_id)->first();
+       
 
         try {
+
             $response = $guzzle->post($client->webhook_url, [
                 'headers' => [
                     'x-secret-token' => $tokenAPI->secret_token,
                     'Content-Type' => 'application/json',
                 ],
-                'json' => [
-                    'user' => $webhookUser,
-                    'queue' => $webhookQueue,
-                ]
+                'json' => $webhookData
             ]);
 
             if ($response->getStatusCode() !== 200) {
@@ -171,10 +171,6 @@ class DirectQueueController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'patient' => $webhookUser,
-                'appointment' => $webhookQueue,
-                'x-secret-token' => $client->secret_token,
-                //jgn lupa dihapus pas selesai ygy
                ]);
 
         } catch (\Exception $e) {
