@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use App\DirectQueue;
 use App\Branch;
 use App\Service;
+use App\DirectQueue;
+use App\BranchConfiguration;
+use App\Models\SecretKeyAPi;
+use App\Events\OnsiteQueueUpdated;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Events\DirectQueue as DirectQueueEvent;
+use App\Interfaces\DirectQueueRepositoryInterface;
+use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
+use App\Http\Resources\DirectQueue\Detail as DirectQueueDetail;
 use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
 use App\Http\Requests\API\DirectQueue\Feedback as DirectQueueFeedback;
-use App\Http\Resources\DirectQueue\Detail as DirectQueueDetail;
-use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
-use App\Events\DirectQueue as DirectQueueEvent;
-use App\Events\OnsiteQueueUpdated;
-use App\Interfaces\DirectQueueRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
 
 class DirectQueueController extends Controller
 {
@@ -72,34 +74,41 @@ class DirectQueueController extends Controller
             }
 
             $branch = Branch::where('id',$directQueue->branch_id)->first();
+            $client = BranchConfiguration::where('branch_id',$directQueue->branch_id)->first();
+            $tokenAPI = SecretKeyAPi::where('branch_id', $directQueue->branch_id)->first();
+            $webhookMessage = "You need an Webhook Url or Activate the feature!";
 
-            $webhookUser = [
-                'name' => $directQueue->name,
-                'phone' => $directQueue->phone,
-                'email' => $directQueue->email,
-                'address' => null,
-                'emergency_contact' => null,
-                'reason_for_visit' => null,
-                'date_of_birth' => null,
-            ];
+            if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
+                $webhookMessage = "Webhook Send!";
+                $webhookUser = [
+                    'name' => $directQueue->name,
+                    'phone' => $directQueue->phone,
+                    'email' => $directQueue->email,
+                    'created_at' => $directQueue->created_at,
+                ];
+    
+                $webhookQueue = [
+                    'id' => $directQueue->id,
+                    'service_id' => $directQueue->service_id,
+                    'service_name' => $directQueue->service_name,
+                    'service_type' => 'Direct Queue',
+                    'created_at' => $directQueue->created_at,
+                    'booking_code' => $directQueue->booking_code,
+                    'branch_name' => $branch->name,
+                ];
 
-            $webhookQueue = [
-                'id' => $directQueue->id,
-                'service_id' => $directQueue->service_id,
-                'service_name' => $directQueue->service_name,
-                'service_type' => 'Direct Queue',
-                'start_time' => null,
-                'end_time' => null,
-                'booking_code' => $directQueue->booking_code,
-                'branch_name' => $branch->name,
-            ];
+                $this->sendWebhook($client, $webhookUser, $webhookQueue);
+                
+            }else{
+                $webhookMessage = "There's no Webhook Url/The feature was inactive";
+            }
+            
 
             return response()->json([
                 'success' => true,
                 'message' => 'direct queue created',
                 'data' => $directQueue,
-                'patient' => $webhookUser,
-                'appointment' => $webhookQueue,
+                'Webhook' => $webhookMessage,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -142,16 +151,17 @@ class DirectQueueController extends Controller
     {
      
         $guzzle = new \GuzzleHttp\Client();  
+        $tokenAPI = SecretKeyAPi::where('branch_id', $client->branch_id)->first();
 
         try {
             $response = $guzzle->post($client->webhook_url, [
                 'headers' => [
-                    'x-secret-token' => $client->secret_token,
+                    'x-secret-token' => $tokenAPI->secret_token,
                     'Content-Type' => 'application/json',
                 ],
                 'json' => [
-                    'patient' => $webhookUser,
-                    'appointment' => $webhookQueue,
+                    'user' => $webhookUser,
+                    'queue' => $webhookQueue,
                 ]
             ]);
 

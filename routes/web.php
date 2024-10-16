@@ -310,6 +310,7 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::put('/branch/{id}/license', 'BranchLicenseController@update')->name('branch.license.update');
     
     Route::get('/branch/{id}/generateSecretToken', 'BranchLicenseController@generateToken')->name('branch.license.generateToken');
+    Route::post('/branch/{id}/store/webhook-url', 'BranchLicenseController@storeWebhookUrl')->name('branch.license.webhook');
     
     //Billing SA
     Route::get('billing', 'BillingController@index')->name('billing.index');

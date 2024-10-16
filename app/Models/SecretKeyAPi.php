@@ -14,6 +14,7 @@ class SecretKeyAPi extends Model
     protected $fillable = [
         'user_id',
         'branch_id',
+        'is_active',
         'secret_token',
         'created_at',
         'updated_at',

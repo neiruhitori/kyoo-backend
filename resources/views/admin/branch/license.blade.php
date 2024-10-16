@@ -12,7 +12,8 @@
         </div>
 
         <div class="card-body">
-            {{-- <form action=""> --}}
+            <form action="{{ route('admin.branch.license.webhook', $branch->id) }}" method="POST">
+                @csrf
             <div class="row">
                     <div class="col-md-3">
                         <label for="endpoint" class="font-weight-bold">{{ __('Endpoint Webhook') }}</label>
@@ -25,8 +26,7 @@
                                     name="endpoint"
                                     id="endpoint"
                                     class="form-control"
-                                    min="0"
-                                    value=""
+                                    value="{{ $webhook_url ?? ''}}"
                                     placeholder="http://your.api.endpoint"
                                 >
                             </div>
@@ -36,7 +36,7 @@
                         <button type="submit" class="btn btn-warning">Simpan</button>
                     </div>
                 </div>
-        {{-- </form> --}}
+        </form>
         </div>
     </div>
                     
@@ -49,6 +49,7 @@
 
         <div class="card-body">
             <form action="{{ route('admin.branch.license.generateToken', $branch->id) }}" method="GET">
+                @csrf
                 <div class="row">
                     <div class="col-md-3">
                         <label for="endpoint" class="font-weight-bold">{{ __('Secret Key') }}</label>

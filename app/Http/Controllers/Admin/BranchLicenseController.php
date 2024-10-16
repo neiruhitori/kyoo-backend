@@ -6,6 +6,7 @@ use App\User;
 use App\Branch;
 use App\BranchType;
 use Illuminate\Support\Str;
+use App\BranchConfiguration;
 use App\Models\SecretKeyAPi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -18,12 +19,14 @@ class BranchLicenseController extends Controller
     public function index($id)
     {
         $branch = Branch::find($id);
+        $webhook_url = BranchConfiguration::where('branch_id',$branch->id)->first();
 
         $data = [
             'branch' => $branch,
             'branch_license' => $branch->BranchType,
             'branch_types' => BranchType::all(),
             'features' => AdditionalFeature::all(),
+            'webhook_url' => $webhook_url->webhook_url,
             'secret_token' => SecretKeyAPi::where('branch_id', $branch->id)->first(),
             'selected_features' => FeatureSubscription::where('branch_id', $branch->id)->get()
         ];
@@ -59,6 +62,13 @@ class BranchLicenseController extends Controller
             User::where([ 'branch_id' => $id, 'role' => 'device'])->delete();
         }
 
+        //non-active the webhook token
+        if (in_array(8, $request->feature_name)) {
+            SecretKeyAPi::where('branch_id', $id)->update(['is_active' => true]);
+        } else {
+            SecretKeyAPi::where('branch_id', $id)->update(['is_active' => false]);
+        }
+
         $request->session()->flash('success', 'Lisensi diperbarui');
 
         return redirect()->back();
@@ -77,9 +87,28 @@ class BranchLicenseController extends Controller
             $token = SecretKeyAPi::create([
                 'user_id' => $user->id,
                 'branch_id' => $id,
+                'is_active' => true,
                 'secret_token' => 'kyoo_' . Str::random(60)
             ]);
         }
         return back();
+    }
+
+    public function storeWebhookUrl(Request $request, $id)
+    {
+        $validate = $request->validate([
+            'endpoint' => 'required'
+        ]);
+
+        if($validate)
+        {
+            $query = BranchConfiguration::where('branch_id',$id)->update([
+                'webhook_url' => $request->endpoint
+              ]);
+              if($query){
+                $request->session()->flash('success', 'Webhook URL diperbarui');
+                return redirect()->back();
+              }
+        }
     }
 }
