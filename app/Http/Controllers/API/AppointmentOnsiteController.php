@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Branch;
-use App\DirectQueue;
-use App\Http\Controllers\Controller;
-use App\Interfaces\AppointmentOnsiteRepositoryInterface;
-use App\Service;
-use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
-use App\Models\AppointmentOnsite;
-use App\Http\Resources\AppointmentOnsite\Detail as AppointmentOnsiteDetail;
 use App\Slot;
 use App\User;
+use App\Branch;
+use App\Service;
+use App\DirectQueue;
 use App\WorkstationService;
+use App\BranchConfiguration;
+use App\Models\SecretKeyAPi;
 use Illuminate\Http\Request;
+use App\Models\AppointmentOnsite;
+use App\Http\Controllers\Controller;
+use App\Interfaces\AppointmentOnsiteRepositoryInterface;
+use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
+use App\Http\Resources\AppointmentOnsite\Detail as AppointmentOnsiteDetail;
 
 class AppointmentOnsiteController extends Controller
 {
@@ -90,10 +92,54 @@ class AppointmentOnsiteController extends Controller
 
             $appointmentOnsite = $this->appointmentOnsiteRepository->store($data);
 
+            $branch = Branch::where('id',$appointmentOnsite->branch_id)->first();
+            $client = BranchConfiguration::where('branch_id',$appointmentOnsite->branch_id)->first();
+            $tokenAPI = SecretKeyAPi::where('branch_id', $appointmentOnsite->branch_id)->first();
+            $webhookMessage = "You need an Webhook Url or Activate the feature!";
+
+            if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
+                $webhookMessage = "Webhook Send!";
+                $webhookData = [
+                    'user' => (object)[
+                        'id' => $appointmentOnsite->id,
+                        'service_id' => $appointmentOnsite->service_id,
+                        'name' => $appointmentOnsite->name,
+                        'phone' => $appointmentOnsite->phone,
+                        'email' => $appointmentOnsite->email,
+                        'address' => $appointmentOnsite->address,
+                        'passport' => $appointmentOnsite->passport_number,
+                        'emergency_contact' => $appointmentOnsite->emergency_number,
+                        'reason_for_visit' => $appointmentOnsite->reason_for_visit,
+                        'date_of_birth' => $appointmentOnsite->date_of_birth,
+                        'created_at' => $appointmentOnsite->created_at,
+                    ],
+                    'queue' => (object)[
+                        'id' => $appointmentOnsite->id,
+                        'service_id' => $appointmentOnsite->service_id,
+                        'service_name' => $appointmentOnsite->service_name,
+                        'service_type' => 'Appointment Onsite Queue',
+                        'appointment_date' => $appointmentOnsite->date,
+                        'start_time' => $appointmentOnsite->start_time,
+                        'end_time' => $appointmentOnsite->end_time,
+                        'created_at' => $appointmentOnsite->created_at,
+                        'booking_code' => $appointmentOnsite->booking_code,
+                        'branch_name' => $branch->name,
+                    ]
+                ];
+                $webhookData = (object) $webhookData;
+
+                // $this->sendWebhook($client, $webhookData);
+                
+            }else{
+                $webhookMessage = "There's no Webhook Url/The feature was inactive";
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'appointment onsite created',
-                'data' => $appointmentOnsite
+                'data' => $appointmentOnsite,
+                'data1' => $webhookData
+                //jgn lupa hapus
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -117,4 +163,38 @@ class AppointmentOnsiteController extends Controller
 
         return $cleaned_phone;
     }
+
+    protected function sendWebhook($client, $webhookData)
+    {
+     
+        $guzzle = new \GuzzleHttp\Client();  
+        $tokenAPI = SecretKeyAPi::where('branch_id', $client->branch_id)->first();
+       
+
+        try {
+
+            $response = $guzzle->post($client->webhook_url, [
+                'headers' => [
+                    'x-secret-token' => $tokenAPI->secret_token,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $webhookData
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                throw new \Exception('Webhook failed with status: ' . $response->getStatusCode());
+            }
+
+            return response()->json([
+                'status' => 'success',
+               ]);
+
+        } catch (\Exception $e) {
+           return response()->json([
+            'status' => 'error',
+            'message' =>  $e->getMessage()
+           ]);
+        }
+    }
+    
 }
