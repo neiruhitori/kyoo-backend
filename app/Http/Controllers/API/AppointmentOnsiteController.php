@@ -97,7 +97,7 @@ class AppointmentOnsiteController extends Controller
             $tokenAPI = SecretKeyAPi::where('branch_id', $appointmentOnsite->branch_id)->first();
             $webhookMessage = "You need an Webhook Url or Activate the feature!";
 
-            if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
+            // if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
             //     $webhookMessage = "Webhook Send!";
             //     $webhookData = [
             //         'user' => (object)[
@@ -130,9 +130,9 @@ class AppointmentOnsiteController extends Controller
 
                 // $this->sendWebhook($client, $webhookData);
                 
-            }else{
-                $webhookMessage = "There's no Webhook Url/The feature was inactive";
-            }
+            // }else{
+            //     $webhookMessage = "There's no Webhook Url/The feature was inactive";
+            // }
 
             return response()->json([
                 'success' => true,
