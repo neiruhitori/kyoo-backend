@@ -98,35 +98,35 @@ class AppointmentOnsiteController extends Controller
             $webhookMessage = "You need an Webhook Url or Activate the feature!";
 
             if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
-                $webhookMessage = "Webhook Send!";
-                $webhookData = [
-                    'user' => (object)[
-                        'id' => $appointmentOnsite->id,
-                        'service_id' => $appointmentOnsite->service_id,
-                        'name' => $appointmentOnsite->name,
-                        'phone' => $appointmentOnsite->phone,
-                        'email' => $appointmentOnsite->email,
-                        'address' => $appointmentOnsite->address,
-                        'passport' => $appointmentOnsite->passport_number,
-                        'emergency_contact' => $appointmentOnsite->emergency_number,
-                        'reason_for_visit' => $appointmentOnsite->reason_for_visit,
-                        'date_of_birth' => $appointmentOnsite->date_of_birth,
-                        'created_at' => $appointmentOnsite->created_at,
-                    ],
-                    'queue' => (object)[
-                        'id' => $appointmentOnsite->id,
-                        'service_id' => $appointmentOnsite->service_id,
-                        'service_name' => $appointmentOnsite->service_name,
-                        'service_type' => 'Appointment Onsite Queue',
-                        'appointment_date' => $appointmentOnsite->date,
-                        'start_time' => $appointmentOnsite->start_time,
-                        'end_time' => $appointmentOnsite->end_time,
-                        'created_at' => $appointmentOnsite->created_at,
-                        'booking_code' => $appointmentOnsite->booking_code,
-                        'branch_name' => $branch->name,
-                    ]
-                ];
-                $webhookData = (object) $webhookData;
+            //     $webhookMessage = "Webhook Send!";
+            //     $webhookData = [
+            //         'user' => (object)[
+            //             'id' => $appointmentOnsite->id,
+            //             'service_id' => $appointmentOnsite->service_id,
+            //             'name' => $appointmentOnsite->name,
+            //             'phone' => $appointmentOnsite->phone,
+            //             'email' => $appointmentOnsite->email,
+            //             'address' => $appointmentOnsite->address,
+            //             'passport' => $appointmentOnsite->passport_number,
+            //             'emergency_contact' => $appointmentOnsite->emergency_number,
+            //             'reason_for_visit' => $appointmentOnsite->reason_for_visit,
+            //             'date_of_birth' => $appointmentOnsite->date_of_birth,
+            //             'created_at' => $appointmentOnsite->created_at,
+            //         ],
+            //         'queue' => (object)[
+            //             'id' => $appointmentOnsite->id,
+            //             'service_id' => $appointmentOnsite->service_id,
+            //             'service_name' => $appointmentOnsite->service_name,
+            //             'service_type' => 'Appointment Onsite Queue',
+            //             'appointment_date' => $appointmentOnsite->date,
+            //             'start_time' => $appointmentOnsite->start_time,
+            //             'end_time' => $appointmentOnsite->end_time,
+            //             'created_at' => $appointmentOnsite->created_at,
+            //             'booking_code' => $appointmentOnsite->booking_code,
+            //             'branch_name' => $branch->name,
+            //         ]
+            //     ];
+            //     $webhookData = (object) $webhookData;
 
                 // $this->sendWebhook($client, $webhookData);
                 
@@ -137,8 +137,10 @@ class AppointmentOnsiteController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'appointment onsite created',
+                'webhook' => $webhookMessage,
                 'data' => $appointmentOnsite,
-                'data1' => $webhookData
+                'data1' => $client,
+                'data2' => $tokenAPI
                 //jgn lupa hapus
             ]);
         } catch (\Exception $e) {
