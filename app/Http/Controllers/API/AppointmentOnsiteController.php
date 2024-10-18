@@ -130,7 +130,7 @@ class AppointmentOnsiteController extends Controller
                 ];
                 $webhookData = (object) $webhookData;
 
-                // $this->sendWebhook($client, $webhookData);
+                $this->sendWebhook($client, $webhookData);
                 
             }else{
                 $webhookMessage = "There's no Webhook Url/The feature was inactive";
