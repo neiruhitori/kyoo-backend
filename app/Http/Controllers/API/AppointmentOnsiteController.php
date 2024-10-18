@@ -118,7 +118,7 @@ class AppointmentOnsiteController extends Controller
                     'queue' => (object)[
                         'id' => $appointmentOnsite->id,
                         'service_id' => $appointmentOnsite->service_id,
-                        'service_name' => $appointmentOnsite->service_name,
+                        'service_name' => $appointmentOnsite->service->name,
                         'service_type' => 'Appointment Onsite Queue',
                         'appointment_date' => $appointmentOnsite->date,
                         'start_time' => $appointmentOnsite->start_time,
