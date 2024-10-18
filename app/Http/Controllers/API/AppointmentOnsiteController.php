@@ -92,9 +92,11 @@ class AppointmentOnsiteController extends Controller
 
             $appointmentOnsite = $this->appointmentOnsiteRepository->store($data);
 
-            $branch = Branch::where('id',$appointmentOnsite->branch_id)->first();
-            $client = BranchConfiguration::where('branch_id',$appointmentOnsite->branch_id)->first();
-            $tokenAPI = SecretKeyAPi::where('branch_id', $appointmentOnsite->branch_id)->first();
+            $branchID = $appointmentOnsite->service->branch_id;
+
+            $branch = Branch::where('id',$branchID)->first();
+            $client = BranchConfiguration::where('branch_id',$branchID)->first();
+            $tokenAPI = SecretKeyAPi::where('branch_id', $branchID)->first();
             $webhookMessage = "You need an Webhook Url or Activate the feature!";
 
             // if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
