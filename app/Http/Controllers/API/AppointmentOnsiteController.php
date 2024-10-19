@@ -6,6 +6,7 @@ use App\Slot;
 use App\User;
 use App\Branch;
 use App\Service;
+use Carbon\Carbon;
 use App\DirectQueue;
 use App\WorkstationService;
 use App\BranchConfiguration;
@@ -101,6 +102,10 @@ class AppointmentOnsiteController extends Controller
 
             if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
                 $webhookMessage = "Webhook Send!";
+
+                $startTime = Carbon::createFromFormat('H:i', $appointmentOnsite->start_time)->format('H:i:s');
+                $endTime = Carbon::createFromFormat('H:i',$appointmentOnsite->end_time)->format('H:i:s');
+                
                 $webhookData = [
                     'event_type' => 'onsite_create_booking',
 
@@ -123,8 +128,8 @@ class AppointmentOnsiteController extends Controller
                         'service_name' => $appointmentOnsite->service->name,
                         'service_type' => 'Appointment Onsite Queue',
                         'appointment_date' => $appointmentOnsite->date,
-                        'start_time' => $appointmentOnsite->start_time,
-                        'end_time' => $appointmentOnsite->end_time,
+                        'start_time' => $startTime,
+                        'end_time' => $endTime,
                         'created_at' => $appointmentOnsite->created_at,
                         'booking_code' => $appointmentOnsite->booking_code,
                         'branch_id' => $branchID,
@@ -142,7 +147,7 @@ class AppointmentOnsiteController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'appointment onsite created',
-                'webhook' => $webhookMessage,
+                'webhook' => $webhookData,
                 'data' => $appointmentOnsite,
             ]);
         } catch (\Exception $e) {
