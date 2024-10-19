@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AdminBranch;
 use Auth;
 use App\Slot;
 use App\Service;
+use Carbon\Carbon;
 use App\BranchConfiguration;
 use App\Models\SecretKeyAPi;
 use Illuminate\Http\Request;
@@ -63,6 +64,9 @@ class AppointmentOnsiteController extends Controller
 
         if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
             $webhookMessage = "Webhook Send!";
+            $startTime = Carbon::createFromFormat('H:i', $appointmentOnsite->start_time)->format('H:i:s');
+            $endTime = Carbon::createFromFormat('H:i',$appointmentOnsite->end_time)->format('H:i:s');
+            
             $webhookData = [
                 'event_type' => 'onsite_modify_booking',
 
@@ -85,8 +89,8 @@ class AppointmentOnsiteController extends Controller
                     'service_name' => $appointmentOnsite->service->name,
                     'service_type' => 'Appointment Onsite Queue',
                     'appointment_date' => $appointmentOnsite->date,
-                    'start_time' => $appointmentOnsite->start_time,
-                    'end_time' => $appointmentOnsite->end_time,
+                    'start_time' => $startTime,
+                    'end_time' => $endTime,
                     'created_at' => $appointmentOnsite->created_at,
                     'booking_code' => $appointmentOnsite->booking_code,
                     'branch_id' => $branchID,
