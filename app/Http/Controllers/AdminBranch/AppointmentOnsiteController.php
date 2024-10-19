@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\AdminBranch;
 
-use App\Http\Controllers\Controller;
-use App\Mail\CS\AppointmentOnsiteCreatedMail;
-use App\Models\AppointmentOnsite;
-use App\Service;
-use App\Slot;
-use Illuminate\Http\Request;
 use Auth;
+use App\Slot;
+use App\Service;
+use App\BranchConfiguration;
+use App\Models\SecretKeyAPi;
+use Illuminate\Http\Request;
+use App\Models\AppointmentOnsite;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\CS\AppointmentOnsiteCreatedMail;
 
 class AppointmentOnsiteController extends Controller
 {
@@ -52,6 +54,51 @@ class AppointmentOnsiteController extends Controller
 
         if ($this->isAppointmentSlotFull($request->slot_id, $request->date)) {
             return redirect()->back()->with('error', 'Sesi Appointment Tidak Tersedia');
+        }
+        $branchID = Auth::user()->branch_id;
+
+        $client = BranchConfiguration::where('branch_id',$branchID)->first();
+        $tokenAPI = SecretKeyAPi::where('branch_id', $branchID)->first();
+        $webhookMessage = "You need an Webhook Url or Activate the feature!";
+
+        if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
+            $webhookMessage = "Webhook Send!";
+            $webhookData = [
+                'event_type' => 'onsite_modify_booking',
+
+                'user' => (object)[
+                    'appointment_id' => $appointmentOnsite->id,
+                    'service_id' => $appointmentOnsite->service_id,
+                    'name' => $appointmentOnsite->name,
+                    'phone' => $appointmentOnsite->phone,
+                    'email' => $appointmentOnsite->email,
+                    'address' => $appointmentOnsite->address,
+                    'passport' => $appointmentOnsite->passport_number,
+                    'emergency_contact' => $appointmentOnsite->emergency_number,
+                    'reason_for_visit' => $appointmentOnsite->reason_for_visit,
+                    'date_of_birth' => $appointmentOnsite->date_of_birth,
+                    'created_at' => $appointmentOnsite->created_at,
+                ],
+                'queue' => (object)[
+                    'id' => $appointmentOnsite->id,
+                    'service_id' => $appointmentOnsite->service_id,
+                    'service_name' => $appointmentOnsite->service->name,
+                    'service_type' => 'Appointment Onsite Queue',
+                    'appointment_date' => $appointmentOnsite->date,
+                    'start_time' => $appointmentOnsite->start_time,
+                    'end_time' => $appointmentOnsite->end_time,
+                    'created_at' => $appointmentOnsite->created_at,
+                    'booking_code' => $appointmentOnsite->booking_code,
+                    'branch_id' => $branchID,
+                    'branch_name' => $branch->name,
+                ]
+            ];
+            $webhookData = (object) $webhookData;
+
+           $this->sendWebhook($client, $webhookData);
+            
+        }else{
+            $webhookMessage = "There's no Webhook Url/The feature was inactive";
         }
 
         $appointmentOnsite->update([
@@ -102,5 +149,38 @@ class AppointmentOnsiteController extends Controller
         ])->count();
 
         return $totalTodayAppointmentsBySlot >= $slot->max_slots;
+    }
+
+    protected function sendWebhook($client, $webhookData)
+    {
+     
+        $guzzle = new \GuzzleHttp\Client();  
+        $tokenAPI = SecretKeyAPi::where('branch_id', $client->branch_id)->first();
+       
+
+        try {
+
+            $response = $guzzle->post($client->webhook_url, [
+                'headers' => [
+                    'x-secret-token' => $tokenAPI->secret_token,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $webhookData
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                throw new \Exception('Webhook failed with status: ' . $response->getStatusCode());
+            }
+
+            return response()->json([
+                'status' => 'success',
+               ]);
+
+        } catch (\Exception $e) {
+           return response()->json([
+            'status' => 'error',
+            'message' =>  $e->getMessage()
+           ]);
+        }
     }
 }

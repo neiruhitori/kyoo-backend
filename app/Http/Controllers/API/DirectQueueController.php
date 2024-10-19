@@ -81,6 +81,8 @@ class DirectQueueController extends Controller
             if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
                 $webhookMessage = "Webhook Send!";
                 $webhookData = [
+                    'event_type' => 'onsite_create_booking',
+                    
                     'user' => (object)[
                         'name' => $directQueue->name,
                         'phone' => $directQueue->phone,
@@ -94,6 +96,7 @@ class DirectQueueController extends Controller
                         'service_type' => 'Direct Queue',
                         'created_at' => $directQueue->created_at,
                         'booking_code' => $directQueue->booking_code,
+                        'branch_id' => $directQueue->branch_id,
                         'branch_name' => $branch->name,
                     ]
                 ];

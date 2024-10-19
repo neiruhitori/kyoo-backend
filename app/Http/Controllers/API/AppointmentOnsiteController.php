@@ -102,8 +102,10 @@ class AppointmentOnsiteController extends Controller
             if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
                 $webhookMessage = "Webhook Send!";
                 $webhookData = [
+                    'event_type' => 'onsite_create_booking',
+
                     'user' => (object)[
-                        'id' => $appointmentOnsite->id,
+                        'appointment_id' => $appointmentOnsite->id,
                         'service_id' => $appointmentOnsite->service_id,
                         'name' => $appointmentOnsite->name,
                         'phone' => $appointmentOnsite->phone,
@@ -125,6 +127,7 @@ class AppointmentOnsiteController extends Controller
                         'end_time' => $appointmentOnsite->end_time,
                         'created_at' => $appointmentOnsite->created_at,
                         'booking_code' => $appointmentOnsite->booking_code,
+                        'branch_id' => $branchID,
                         'branch_name' => $branch->name,
                     ]
                 ];
