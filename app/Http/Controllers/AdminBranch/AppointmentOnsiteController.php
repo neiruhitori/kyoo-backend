@@ -66,7 +66,26 @@ class AppointmentOnsiteController extends Controller
             $webhookMessage = "Webhook Send!";
             $startTime = Carbon::createFromFormat('H:i', $appointmentOnsite->start_time)->format('H:i:s');
             $endTime = Carbon::createFromFormat('H:i',$appointmentOnsite->end_time)->format('H:i:s');
-            
+            $timezone = null;
+            if($branch && $branch->timezone){
+                if($branch && $branch->timezone) {
+                    switch($branch->timezone) {
+                        case 'WIB':
+                            $timezone = 'GMT+7';
+                            break;
+                        case 'WITA':
+                            $timezone = 'GMT+8';
+                            break;
+                        case 'WIT':
+                            $timezone = 'GMT+9';
+                            break;
+                        default:
+                            $timezone = null;
+                            break;
+                    }
+                }
+            }
+
             $webhookData = [
                 'event_type' => 'onsite_modify_booking',
 
@@ -89,10 +108,11 @@ class AppointmentOnsiteController extends Controller
                     'service_name' => $appointmentOnsite->service->name,
                     'service_type' => 'Appointment Onsite Queue',
                     'appointment_date' => $appointmentOnsite->date,
+                    'timezone' => $timezone,
                     'start_time' => $startTime,
                     'end_time' => $endTime,
                     'created_at' => $appointmentOnsite->created_at,
-                    'booking_code' => $appointmentOnsite->booking_code,
+                    'booking_code' =>  strtoupper($appointmentOnsite->booking_code),
                     'branch_id' => $branchID,
                     'branch_name' => $branch->name,
                 ]
