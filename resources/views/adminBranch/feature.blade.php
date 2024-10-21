@@ -217,7 +217,7 @@
                         <div class="col-md-3" id="select-check">
                             @if ($branch_config->layer != 1)
                             <select class="custom-select" id="check-in" name="check_in_rule">
-                                <option value="0" {{ $branch_config->check_in_rule == 0 ? 'selected' : ''}}>Tidak Ada</option>
+                                <option value="0" {{ $branch_config->check_in_rule == 0 ? 'selected' : ''}}>0 Jam</option>
                                 <option value="1" {{ $branch_config->check_in_rule == 1 ? 'selected' : ''}}>1 Jam</option>
                                 <option value="2" {{ $branch_config->check_in_rule == 2 ? 'selected' : ''}}>2 Jam</option>
                                 <option value="3" {{ $branch_config->check_in_rule == 3 ? 'selected' : ''}}>3 Jam</option>
