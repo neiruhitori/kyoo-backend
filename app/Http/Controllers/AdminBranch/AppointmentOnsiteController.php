@@ -64,8 +64,8 @@ class AppointmentOnsiteController extends Controller
 
         if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
             $webhookMessage = "Webhook Send!";
-            $startTime = Carbon::createFromFormat('H:i', $appointmentOnsite->start_time)->format('H:i:s');
-            $endTime = Carbon::createFromFormat('H:i',$appointmentOnsite->end_time)->format('H:i:s');
+            $startTime = Carbon::createFromFormat('H:i:s', $appointmentOnsite->start_time)->format('H:i:s');
+            $endTime = Carbon::createFromFormat('H:i:s',$appointmentOnsite->end_time)->format('H:i:s');
             $timezone = null;
             if($branch && $branch->timezone){
                 if($branch && $branch->timezone) {
