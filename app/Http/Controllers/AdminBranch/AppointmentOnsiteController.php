@@ -95,11 +95,6 @@ class AppointmentOnsiteController extends Controller
                     'name' => $appointmentOnsite->name,
                     'phone' => $appointmentOnsite->phone,
                     'email' => $appointmentOnsite->email,
-                    'address' => $appointmentOnsite->address,
-                    'passport' => $appointmentOnsite->passport_number,
-                    'emergency_contact' => $appointmentOnsite->emergency_number,
-                    'reason_for_visit' => $appointmentOnsite->reason_for_visit,
-                    'date_of_birth' => $appointmentOnsite->date_of_birth,
                     'created_at' => $appointmentOnsite->created_at,
                 ],
                 'queue' => (object)[
@@ -117,9 +112,9 @@ class AppointmentOnsiteController extends Controller
                     'branch_name' => $branch->name,
                 ]
             ];
-            $webhookData = (object) $webhookData;
+            $webhookUpdatedData = (object) $webhookData;
 
-           $this->sendWebhook($client, $webhookData);
+           $this->sendWebhook($client, $webhookUpdatedData);
             
         }else{
             $webhookMessage = "There's no Webhook Url/The feature was inactive";
@@ -175,7 +170,7 @@ class AppointmentOnsiteController extends Controller
         return $totalTodayAppointmentsBySlot >= $slot->max_slots;
     }
 
-    protected function sendWebhook($client, $webhookData)
+    protected function sendWebhook($client, $webhookUpdatedData)
     {
      
         $guzzle = new \GuzzleHttp\Client();  
@@ -189,7 +184,7 @@ class AppointmentOnsiteController extends Controller
                     'x-secret-token' => $tokenAPI->secret_token,
                     'Content-Type' => 'application/json',
                 ],
-                'json' => $webhookData
+                'json' => $webhookUpdatedData
             ]);
 
             if ($response->getStatusCode() !== 200) {
