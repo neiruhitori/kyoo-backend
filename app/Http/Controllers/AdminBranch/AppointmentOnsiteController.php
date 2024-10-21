@@ -62,6 +62,14 @@ class AppointmentOnsiteController extends Controller
         $tokenAPI = SecretKeyAPi::where('branch_id', $branchID)->first();
         $webhookMessage = "You need an Webhook Url or Activate the feature!";
 
+        $appointmentOnsite->update([
+            'service_id' => $request->service_id,
+            'start_time' => $slot->start_time,
+            'end_time' => $slot->end_time,
+            'date' => $request->date,
+            'slot_id' => $request->slot_id,
+        ]);
+
         if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
             $webhookMessage = "Webhook Send!";
             $startTime = Carbon::createFromFormat('H:i:s', $appointmentOnsite->start_time)->format('H:i:s');
@@ -120,14 +128,7 @@ class AppointmentOnsiteController extends Controller
             $webhookMessage = "There's no Webhook Url/The feature was inactive";
         }
 
-        $appointmentOnsite->update([
-            'service_id' => $request->service_id,
-            'start_time' => $slot->start_time,
-            'end_time' => $slot->end_time,
-            'date' => $request->date,
-            'slot_id' => $request->slot_id,
-        ]);
-
+        
         if (
             $appointmentOnsite->phone &&
             $branch &&
