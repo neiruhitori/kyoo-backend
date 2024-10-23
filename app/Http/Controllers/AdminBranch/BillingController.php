@@ -31,7 +31,7 @@ class BillingController extends Controller
     public function no_transaksi()
     {
         $kd =  mt_rand(1000, 9999);
-        return 'INV' . date('dmy') . $kd;
+        return 'KYOO_INV' . date('dmy') . $kd;
     }
 
 
