@@ -36,6 +36,7 @@ class BranchLicenseController extends Controller
 
     public function update(Request $request, $id)
     {
+        $branchtype = BranchType::where('id',$request->branch_type_id,)->first();
         Branch::where('id', $id)->update([
             'branch_type_id' => $request->branch_type_id,
             'max_counter' => $request->max_counter,
@@ -44,6 +45,20 @@ class BranchLicenseController extends Controller
         ]);
 
         FeatureSubscription::where('branch_id', $id)->delete();
+
+        if(!$branchtype->is_premium){
+            if (
+                !empty($request->feature_name)
+                && !in_array('1', $request->feature_name)
+                && !in_array(6, $request->feature_name)
+            ) {
+                User::where([ 'branch_id' => $id, 'role' => 'device'])->delete();
+            }
+            SecretKeyAPi::where('branch_id', $id)->update(['is_active' => false]);
+
+            $request->session()->flash('success', 'Lisensi diperbarui');
+            return redirect()->back();
+        }
         FeatureSubscription::insert(collect($request->feature_name)->map(function ($feature_id) use ($id) {
             return [
                 'branch_id' => $id,
@@ -63,11 +78,11 @@ class BranchLicenseController extends Controller
         }
 
         //non-active the webhook token
-        if (in_array(8, $request->feature_name)) {
-            SecretKeyAPi::where('branch_id', $id)->update(['is_active' => true]);
-        } else {
-            SecretKeyAPi::where('branch_id', $id)->update(['is_active' => false]);
-        }
+        $featureNames = $request->input('feature_name', []);
+        $isActive = is_array($featureNames) && in_array(8, $featureNames);
+        SecretKeyAPi::where('branch_id', $id)->update(['is_active' => $isActive]);
+
+        
 
         $request->session()->flash('success', 'Lisensi diperbarui');
 
