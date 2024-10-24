@@ -23,7 +23,7 @@ class BillingController extends Controller
         $branch_id = Auth::user()->branch->id;
         $features = FeatureSubscription::with('AdditionalFeature')
         ->where('branch_id',$branch_id)->get();
-        $invoice = Invoice::where('branch_id',$branch_id)->get();
+        $invoice = Invoice::where('branch_id',$branch_id)->orderBy('created_at','desc')->get();
 
         return view('adminBranch.billing.index',compact('features','invoice'));
     }
