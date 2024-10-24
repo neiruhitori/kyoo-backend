@@ -43,7 +43,7 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
             "name"           => $appointmentOnsite->name,
             "branch_name"    => $branch->name,
             "booking_code"   => strtoupper($appointmentOnsite->booking_code),
-            "appointment-date" => $appointmentOnsite->date,
+            "appointment_date" => $appointmentOnsite->date,
             "start_time"     => $appointmentOnsite->start_time,
             "end_time"       => $appointmentOnsite->end_time,
             "service_name"   => $appointmentOnsite->Service->name,

@@ -49,11 +49,11 @@ class WhatsappConfigurationController extends Controller
             'secret_key' => ($request->whatsapp_type == 'wa_kyoo') ? 'required' : '',
         ]);
          $branchConfiguration = BranchConfiguration::where('branch_id', $id)->first();
-            // Hapus data lama jika berganti layanan
+            
             if ($request->whatsapp_type === 'wa_kyoo') {
                 $branchConfiguration->update([
-                    'api_token' => $request->secret_key, // Simpan secret_key ke api_token
-                    'api_wa' => null, // Kosongkan api_wa
+                    'api_token' => $request->secret_key, 
+                    'api_wa' => null, 
                 ]);
             } elseif ($request->whatsapp_type === 'official_wa_branch') {
                 $branchConfiguration->update([
@@ -62,7 +62,7 @@ class WhatsappConfigurationController extends Controller
                 ]);
             }
 
-            // Simpan whatsapp_type baru
+          
             $branchConfiguration->update([
                 'whatsapp_type' => $request->whatsapp_type,
             ]);

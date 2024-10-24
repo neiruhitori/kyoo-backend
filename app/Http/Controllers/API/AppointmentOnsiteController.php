@@ -170,7 +170,6 @@ class AppointmentOnsiteController extends Controller
                 'message' => 'appointment onsite created',
                 'webhook' => $webhookMessage,
                 'data' => $appointmentOnsite,
-                'branchConfig' => $client,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -194,53 +193,7 @@ class AppointmentOnsiteController extends Controller
 
         return $cleaned_phone;
     }
-    protected function sendNotificationwaBlast($appointmentOnsite, $client){
-        $guzzle = new \GuzzleHttp\Client();
-        $branch = $appointmentOnsite->Service->Branch;
-        $payload = [
-            "phone_number"   => $appointmentOnsite->phone,
-            "name"           => $appointmentOnsite->name,
-            "branch_name"    => $branch->name,
-            "booking_code"   => strtoupper($appointmentOnsite->booking_code),
-            "appointment-date" => $appointmentOnsite->date,
-            "start_time"     => $appointmentOnsite->start_time,
-            "end_time"       => $appointmentOnsite->end_time,
-            "service_name"   => $appointmentOnsite->Service->name,
-            "address"        => $branch->address,
-            "branch_id"      => $branch->id,
-            "id"             => $appointmentOnsite->id,
-            "link_branch"    => "https://Linkmencurigakan.corm",
-        ];
-
-
-        try {
-
-            $response = $guzzle->post('https://api.pawarta.awandigital.id/api/send-message-template', [
-                'headers' => [
-                    'x-api-key' => $client->api_token,
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => $payload
-            ]);
-
-            if ($response->getStatusCode() !== 200) {
-                throw new \Exception('Notification failed with status: ' . $response->getStatusCode());
-            }
-
-            return response()->json([
-                'status' => 'success',
-               ]);
-
-        } catch (\Exception $e) {
-           return response()->json([
-            'status' => 'error',
-            'message' =>  $e->getMessage()
-           ]);
-        }
-    
-    
-    }
-
+   
     protected function sendWebhook($client, $webhookData)
     {
      
