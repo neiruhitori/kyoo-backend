@@ -46,15 +46,26 @@ class WhatsappConfigurationController extends Controller
             'whatsapp_type' => 'required',
             'api_wa' => ($request->whatsapp_type == 'official_wa_branch') ? 'required' : '',
             'api_token' => ($request->whatsapp_type == 'official_wa_branch') ? 'required' : '',
+            'secret_key' => ($request->whatsapp_type == 'wa_kyoo') ? 'required' : '',
         ]);
+         $branchConfiguration = BranchConfiguration::where('branch_id', $id)->first();
+            // Hapus data lama jika berganti layanan
+            if ($request->whatsapp_type === 'wa_kyoo') {
+                $branchConfiguration->update([
+                    'api_token' => $request->secret_key, // Simpan secret_key ke api_token
+                    'api_wa' => null, // Kosongkan api_wa
+                ]);
+            } elseif ($request->whatsapp_type === 'official_wa_branch') {
+                $branchConfiguration->update([
+                    'api_token' => $request->api_token,
+                    'api_wa' => $request->api_wa,
+                ]);
+            }
 
-        $branchConfiguration = BranchConfiguration::where('branch_id', $id)->first();
-
-        $branchConfiguration->update([
-            'whatsapp_type' => $request->whatsapp_type,
-            'api_wa' => $request->api_wa,
-            'api_token' => $request->api_token
-        ]);
+            // Simpan whatsapp_type baru
+            $branchConfiguration->update([
+                'whatsapp_type' => $request->whatsapp_type,
+            ]);
 
         $request->session()->flash('success', 'Konfigurasi Whatsapp diperbarui');
         return redirect()->back();

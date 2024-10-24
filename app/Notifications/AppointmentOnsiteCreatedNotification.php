@@ -34,6 +34,33 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
         return [WhatsAppOfficial::class];
     }
 
+    public function waBlast(AppointmentOnsite $appointmentOnsite){
+        $branch = $appointmentOnsite->Service->Branch;
+
+        // Data JSON yang akan dikirim
+        $payload = [
+            "phone_number"   => $appointmentOnsite->phone,
+            "name"           => $appointmentOnsite->name,
+            "branch_name"    => $branch->name,
+            "booking_code"   => strtoupper($appointmentOnsite->booking_code),
+            "appointment-date" => $appointmentOnsite->date,
+            "start_time"     => $appointmentOnsite->start_time,
+            "end_time"       => $appointmentOnsite->end_time,
+            "service_name"   => $appointmentOnsite->Service->name,
+            "address"        => $branch->address,
+            "branch_id"      => $branch->id,
+            "id"             => $appointmentOnsite->id,
+            "link_branch"    => "https://Linkmencurigakan.corm",
+        ];
+    
+        // Mengirim request POST ke endpoint waBlast
+        $response = Http::withHeaders([
+            'x-api-key' => $branch->BranchConfiguration->api_token,
+            'Content-Type' => 'application/json',
+        ])->post('https://api.pawarta.awandigital.id/api/send-message-template', $payload);
+    
+    }
+
     public function toWhatsApp(AppointmentOnsite $appointmentOnsite)
     {
         Http::withHeaders([

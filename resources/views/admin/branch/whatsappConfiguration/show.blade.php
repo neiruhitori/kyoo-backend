@@ -59,6 +59,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6  {{ $branch_configuration->whatsapp_type !== 'wa_kyoo' ? 'd-none' : ''}}" id="secret_token">
+                        <div class="form-group">
+                            <label for="api_wa">{{ __('SECRET KEY') }}</label>
+                            <input
+                                name="secret_key"
+                                id="secret_key"
+                                type="text"
+                                value="{{ $branch_configuration->whatsapp_type === 'wa_kyoo' ? $branch_configuration->api_token : '' }}"
+                                class="form-control @error('secret_key') is-invalid @enderror">
+                        </div>
+                    </div>
 
                     <div class="col-md-6 {{ $branch_configuration->whatsapp_type !== 'official_wa_branch' ? 'd-none' : ''}}" id="api">
                         <div class="form-group">
@@ -76,7 +87,7 @@
                                 name="api_token"
                                 id="api_token"
                                 type="text"
-                                value="{{ $branch_configuration->api_token }}"
+                                value="{{ $branch_configuration->whatsapp_type === 'official_wa_branch' ? $branch_configuration->api_token : '' }}"
                                 class="form-control @error('api_token') is-invalid @enderror">
                         </div>
                     </div>
@@ -91,14 +102,37 @@
         function changeType(input) {
             const { value } = input;
             const apiDiv = document.getElementById("api");
+            const secretToken = document.getElementById("secret_token");
 
             if (value == 'official_wa_branch') {
+                secretToken.classList.add("d-none")
+                const tokens = secretToken.querySelectorAll("input");
+                tokens.forEach(function(token) {
+                    token.removeAttribute("required", "required");
+                });
                 apiDiv.classList.remove("d-none")
                 const inputs = apiDiv.querySelectorAll("input");
                 inputs.forEach(function(input) {
                     input.setAttribute("required", "required");
                 });
-            } else {
+            }else if(value == "wa_kyoo"){
+                apiDiv.classList.add("d-none")
+                const inputs = apiDiv.querySelectorAll("input");
+                inputs.forEach(function(input) {
+                    input.removeAttribute("required");
+                });
+                secretToken.classList.remove("d-none")
+                const tokens = secretToken.querySelectorAll("input");
+                tokens.forEach(function(token) {
+                    token.setAttribute("required", "required");
+                });
+            }
+             else {
+                secretToken.classList.add("d-none")
+                const tokens = secretToken.querySelectorAll("input");
+                tokens.forEach(function(token) {
+                    token.removeAttribute("required", "required");
+                });
                 apiDiv.classList.add("d-none")
                 const inputs = apiDiv.querySelectorAll("input");
                 inputs.forEach(function(input) {
