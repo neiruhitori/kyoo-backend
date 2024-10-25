@@ -156,7 +156,7 @@ class AppointmentOnsiteController extends Controller
             $branch &&
             $branch->is_premium &&
             $branch->BranchConfiguration->wa_notification != false &&
-            $branch->BrancgConfiguration->whatsapp_type == 'wa_kyoo'
+            $branch->BranchConfiguration->whatsapp_type == 'wa_kyoo'
         ){
             $appointmentOnsite->sendNotificationWaBlast($appointmentOnsite);
         }
