@@ -151,7 +151,16 @@ class AppointmentOnsiteController extends Controller
             $branch->BranchConfiguration->whatsapp_type == 'official_wa_branch'
         ) {
             $appointmentOnsite->sendAppointmentOnsiteCreatedNotification($appointmentOnsite);
+        }elseif(
+            $appointmentOnsite->phone &&
+            $branch &&
+            $branch->is_premium &&
+            $branch->BranchConfiguration->wa_notification != false &&
+            $branch->BrancgConfiguration->whatsapp_type == 'wa_kyoo'
+        ){
+            $appointmentOnsite->sendNotificationWaBlast($appointmentOnsite);
         }
+
 
         try {
             Mail::to($appointmentOnsite->email)->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
