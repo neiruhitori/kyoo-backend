@@ -50,7 +50,7 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
             "address"        => $branch->address,
             "branch_id"      => $branch->id,
             "id"             => $appointmentOnsite->id,
-            "link_branch"    => "https://Linkmencurigakan.corm",
+            "link_branch"    => "",
         ];
     
         // Mengirim request POST ke endpoint waBlast
