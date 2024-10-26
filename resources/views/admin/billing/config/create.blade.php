@@ -93,6 +93,7 @@
                                     class="form-control"
                                     required
                                 >
+                                    <option value="3">3 Bulan</option>
                                     <option value="6">6 Bulan</option>
                                     <option value="12">12 Bulan</option>
                                 </select>

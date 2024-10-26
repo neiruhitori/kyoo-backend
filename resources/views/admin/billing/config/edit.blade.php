@@ -96,6 +96,7 @@
                                     class="form-control"
                                     required
                                 >
+                                    <option value="3"  {{ $prices->subscription_duration == 3 ?? 'selected' }}>3 Bulan</option>
                                     <option value="6" {{ $prices->subscription_duration == 6 ?? 'selected' }}>6 Bulan</option>
                                     <option value="12" {{ $prices->subscription_duration == 12 ?? 'selected' }}>12 Bulan</option>
                                 </select>
