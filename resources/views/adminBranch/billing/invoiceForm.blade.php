@@ -201,6 +201,7 @@
                         <div class="d-flex align-items-start mb-1">
                             <h6 style="min-width: 150px;" class="pt-2">Lama Langganan:</h6>
                             <select class="custom-select" style="max-width: 200px;" name="subs_duration" id="subs_duration"  {{ $unpaidInvoice ? 'disabled' : '' }}>
+                                <option value="3">3</option>
                                 <option value="6">6</option>
                                 <option value="12">12</option>
                               </select>
