@@ -22,7 +22,7 @@
                 <p>
                     <ul style="padding-left: 2rem;">
                         <li style="margin-bottom: 0.25rem;">
-                            Meja merupakan loket/counter tempat petugas akan melayani pelanggan. Untuk versi gratis hanya tersedia 1 Meja/Loket saja.
+                            Meja merupakan loket/counter tempat petugas akan melayani pelanggan.
                         </li>
                         <li>
                             Meja akan melekat ke Layanan di kantor Cabang Anda.

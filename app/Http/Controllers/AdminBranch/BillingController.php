@@ -34,6 +34,41 @@ class BillingController extends Controller
         return 'KYOO_INV' . date('dmy') . $kd;
     }
 
+    public function generateDesc($dataDesc,$branch){
+        if(!$dataDesc && !$branch){
+            return false;
+        }
+        $branchModel = Branch::where('id',$branch)->first();
+        $branchType = null;
+
+        if(!$branchModel){
+            return false;
+        }
+        //cek tipe branch
+        if($branchModel->BranchType->is_appointment){
+            $branchType = "Appointment";
+        }elseif($branchModel->BranchType->is_direct_queue){
+            $branchType = "Onsite";
+        }
+
+        $duration = $dataDesc['subs_duration'];
+        $license = $dataDesc['packageSelection'];
+        $startDate = Carbon::now();
+        $endDate = $startDate->copy()->addMonths($duration);
+
+        $desc = sprintf(
+            "Pembelian Lisensi Antrian %s - Lisensi %s Selama %d Bulan (%s - %s)",
+            $branchType,
+            $license,
+            $duration,
+            $startDate->format('d/m/Y'),
+            $endDate->format('d/m/Y')
+        );
+
+        return $desc;
+ 
+    }
+
 
     public function storeInvoice(Request $request)
     {
@@ -47,6 +82,8 @@ class BillingController extends Controller
             $invoice_number = $this->no_transaksi();
             // $invoice_duration = Carbon::now()->addDays(14)->diffInSeconds() + 1; //tepat 14 hari
             $invoice_duration = 5*60;
+            $description = $this->generateDesc($request->all(),$branch);
+            
     
             $response = $client->post('https://api.xendit.co/v2/invoices',
             [
@@ -56,7 +93,8 @@ class BillingController extends Controller
                 'json' =>[
                     'external_id' => $invoice_number, 
                     'amount' => $request->amount,
-                    'invoice_duration' => $invoice_duration
+                    'invoice_duration' => $invoice_duration,
+                    'success_redirect_url' => 'https://dev.kyoo.id/admin-branch/billing'
                 ],
             ]);
             $jsonResponse = json_decode($response->getBody(), true);
@@ -67,7 +105,7 @@ class BillingController extends Controller
                 'invoice_url' => $data['invoice_url'],
                 'expiry_date' =>Carbon::parse($data['expiry_date'])->setTimezone('Asia/Jakarta'),
                 'status' => $data['status'],
-                'description' => 'Invoice pada tanggal '. Carbon::now()->translatedFormat('d F Y'),
+                'description' => $description,
                 'invoice_number' => $invoice_number,
                 'user_id' => $user,
                 'branch_id' => $branch,
@@ -155,7 +193,7 @@ class BillingController extends Controller
                    ]);
                
                    if($subscription){
-                           //ambil data membership di subscription
+                          //ambil data membership di subscription
                           $data = Subscription::where('invoice', $request->external_id)
                           ->where('status', 'active')
                           ->first();

@@ -22,7 +22,7 @@
                 <p>
                     <ul style="padding-left: 2rem;">
                         <li style="margin-bottom: 0.25rem;">
-                            1 Meja bisa melayani 1 atau lebih jenis Layanan dengan prioritas layanan yang bisa di-atur. Untuk versi gratis maksimal hanya 5 layanan dalam 1 meja saja.
+                            1 Meja bisa melayani 1 atau lebih jenis Layanan dengan prioritas masing-masing layanan yang bisa diatur.
                         </li>
                         <li>
                             Untuk versi Antrian berbayar, 1 atau lebih Meja bisa melayani 1 atau lebih Layanan dengan Prioritas masing-masing Layanan yang bisa diatur.

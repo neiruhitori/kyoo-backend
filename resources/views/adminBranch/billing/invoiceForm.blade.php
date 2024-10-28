@@ -170,7 +170,7 @@
 <div class="card shadow mb-4">
     
     <div class="card-body">     
-        <form action="" method="POST">
+        <form action="" id="formInvoice" method="POST">
             @csrf
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="license" role="tabpanel" aria-labelledby="license-tab">
@@ -286,6 +286,7 @@
     let totalElement = document.getElementById('total');
     let subsDuration = document.getElementById('subs_duration'); 
     let packageSelection = document.getElementById('packageSelection'); 
+    let form = document.getElementById('formInvoice');
 
 function calculateTotal(price) {
     const tax = price * 0.11; // PPN 11%
@@ -399,6 +400,10 @@ subsDuration.addEventListener('change', function() {
     const selectedPackage = packageSelection.value;
     getBillingPrices(selectedPackage);
 });
+
+form.addEventListener('submit', function(e) {
+        confirmBtn.disabled = true;   
+    });
 
 getBillingPrices(packageSelection.value);
 

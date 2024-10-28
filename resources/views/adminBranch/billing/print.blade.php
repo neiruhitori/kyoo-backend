@@ -82,8 +82,7 @@
                             @else
                                 Lite
                             @endif
-                            + {{ $subs->queue }} Antrian + {{ $subs->max_table }} Slot Meja + 
-                            {{ $subs->max_service }} Slot Customer Service - Selama {{ $subs->subs_duration }} Bulan 
+                            Selama {{ $subs->subs_duration }} Bulan 
                             ({{ \Carbon\Carbon::parse($print->created_at)->translatedFormat('d/m/Y') }} - {{ \Carbon\Carbon::parse($print->created_at)->addMonths($subs->subs_duration)->translatedFormat('d/m/Y') }})</th>
                         <td class="text-left"> Rp. {{ number_format($subTotal, 0, ',', '.') }}</td>
                       </tr>

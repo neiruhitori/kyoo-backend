@@ -174,7 +174,8 @@
                     <div class="mx-4 my-4">
                         <div class="d-flex align-items-center mb-3">
                             <h6 style="min-width: 150px;">Jenis License:</h6>
-                            <a href="{{ route('admin-branch.subscription') }}" class="btn btn-warning">Langganan KYOO Premium</a>
+                            <h6><b>Trial</b></h6>
+                            <a href="{{ route('admin-branch.subscription') }}" class="ml-3 btn btn-warning">Daftar Berlangganan KYOO</a>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <h6 style="min-width: 150px;">Masa Aktif:</h6>
@@ -229,7 +230,7 @@
                                         @endif 
                                     </td>
                                     {{-- <td><a href="{{ route('admin-branch.billing.print', $inv->id_invoice) }}" target="_blank" class="btn btn-secondary">Print</a></td> --}}
-                                    <td><button onclick="printInvoice('{{ $inv->id_invoice }}')" class="btn btn-secondary">Print</button></td>
+                                    <td><button onclick="printInvoice('{{ $inv->id_invoice }}')" class="btn btn-secondary" title="Unduh Riwayat Invoice"><i class="fas fa-download"></i></button></td>
                                   </tr>
                                 @endforeach
 
