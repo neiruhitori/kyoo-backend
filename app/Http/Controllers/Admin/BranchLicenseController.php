@@ -8,6 +8,7 @@ use App\BranchType;
 use Illuminate\Support\Str;
 use App\BranchConfiguration;
 use App\Models\SecretKeyAPi;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\AdditionalFeature;
@@ -55,6 +56,10 @@ class BranchLicenseController extends Controller
                 User::where([ 'branch_id' => $id, 'role' => 'device'])->delete();
             }
             SecretKeyAPi::where('branch_id', $id)->update(['is_active' => false]);
+            $subscription = Subscription::where('branch_id',$id)->where('status','active')->first();
+            if($subscription){
+                $subscription->update(['status'=>'expired']);
+            }
 
             $request->session()->flash('success', 'Lisensi diperbarui');
             return redirect()->back();

@@ -158,9 +158,13 @@ class BillingController extends Controller
 
             $unpaidInvoice = Invoice::where('branch_id', Auth::user()->Branch->id)
                         ->where('status','PENDING')->first();
+                        
+            $subscription = $unpaidInvoice ? Subscription::where('invoice', $unpaidInvoice->invoice_number)
+                                      ->where('status', 'pending')
+                                      ->first() : null;
 
-           
-            return view('adminBranch.billing.invoiceForm',compact('isDirect','unpaidInvoice'));
+
+            return view('adminBranch.billing.invoiceForm',compact('isDirect','unpaidInvoice','subscription'));
     }
 
     public function callbackInvoice(Request $request)

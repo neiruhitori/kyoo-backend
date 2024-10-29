@@ -168,7 +168,6 @@
 
 
 <div class="card shadow mb-4">
-    
     <div class="card-body">     
         <form action="" id="formInvoice" method="POST">
             @csrf
@@ -180,9 +179,9 @@
                             <h6 style="min-width: 150px;" class="pt-1">Pilihan Paket:</h6>
                             <div class="d-flex">
                                 <select class="custom-select" id="packageSelection" name="packageSelection" style="max-width: 300px;"  {{ $unpaidInvoice ? 'disabled' : '' }}>
-                                    <option value="lite">Lite</option>
-                                    <option value="premium">Premium</option>
-                                    <option value="custom">Custom</option>
+                                    <option value="lite" {{ $subscription && $subscription->package == 'lite' ? 'selected' : '' }}>Lite</option>
+                                    <option value="premium" {{ $subscription && $subscription->package == 'premium' ? 'selected' : '' }}>Premium</option>
+                                    <option value="custom" {{ $subscription && $subscription->package == 'custom' ? 'selected' : '' }}>Custom</option>
                                 </select>
                             </div>
                         </div>
@@ -201,30 +200,30 @@
                         <div class="d-flex align-items-start mb-1">
                             <h6 style="min-width: 150px;" class="pt-2">Lama Langganan:</h6>
                             <select class="custom-select" style="max-width: 200px;" name="subs_duration" id="subs_duration"  {{ $unpaidInvoice ? 'disabled' : '' }}>
-                                <option value="3">3</option>
-                                <option value="6">6</option>
-                                <option value="12">12</option>
+                                <option value="3" {{ $subscription && $subscription->subs_duration == '3' ? 'selected' : '' }}>3</option>
+                                <option value="6" {{ $subscription && $subscription->subs_duration == '6' ? 'selected' : '' }}>6</option>
+                                <option value="12" {{ $subscription && $subscription->subs_duration == '12' ? 'selected' : '' }}>12</option>
                               </select>
                               <p class="pt-2 ml-3">Bulan</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <h6 style="min-width: 150px;" class="pt-1">Maksimum Antrian:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="queue" id="queue" min="100" max="500" value="100" readonly>
+                            <input style="max-width: 200px;" type="number" class="form-control" name="queue" id="queue" min="100" max="500" value="{{ $subscription ? $subscription->queue  : '100' }}" readonly>
                             <p class="pt-2 ml-3">Antrian / Hari</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <h6 style="min-width: 150px;" class="pt-1">Jumlah Meja:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="table" id="table"  min="1" max="5" value="1" readonly>
+                            <input style="max-width: 200px;" type="number" class="form-control" name="table" id="table"  min="1" max="5" value="{{ $subscription ? $subscription->max_table  : '1' }}" readonly>
                             <p class="pt-2 ml-3">Meja</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <h6 style="min-width: 150px;" class="pt-1">Petugas Layanan:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="services" id="services" min="1" value="1" readonly>
+                            <input style="max-width: 200px;" type="number" class="form-control" name="services" id="services" min="1" value="{{ $subscription ? $subscription->max_service  : '1' }}" readonly>
                             <p class="pt-2 ml-3">Petugas</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <h6 style="min-width: 150px;" class="pt-1">Kiosk Antrian:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="kiosk" id="kiosk" min="1" value="0" readonly>
+                            <input style="max-width: 200px;" type="number" class="form-control" name="kiosk" id="kiosk" min="1" value="{{ $subscription ? $subscription->kiosk  : '0' }}" readonly>
                             <p class="pt-2 ml-3">Perangkat</p>
                         </div>
                         <div class="d-flex align-items-center mb-5">
@@ -351,7 +350,7 @@ function getBillingPrices(selectedPackage) {
                         if (selectedPackage === 'premium') {
                             queue.value = 500;
                             table.value = 1;
-                            services.value = 1;
+                            services.value = 3;
                             kiosk.value = 0;
                             
                         }else{

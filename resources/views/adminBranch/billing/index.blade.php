@@ -229,7 +229,6 @@
                                         <b><span class="badge badge-danger">{{$inv->status}}</span></b>
                                         @endif 
                                     </td>
-                                    {{-- <td><a href="{{ route('admin-branch.billing.print', $inv->id_invoice) }}" target="_blank" class="btn btn-secondary">Print</a></td> --}}
                                     <td><button onclick="printInvoice('{{ $inv->id_invoice }}')" class="btn btn-secondary" title="Unduh Riwayat Invoice"><i class="fas fa-download"></i></button></td>
                                   </tr>
                                 @endforeach
