@@ -57,7 +57,7 @@ class BillingController extends Controller
         $endDate = $startDate->copy()->addMonths($duration);
 
         $desc = sprintf(
-            "Pembelian Lisensi Antrian %s - Lisensi %s Selama %d Bulan (%s - %s)",
+            "Berlangganan Antrian %s - Lisensi %s Selama %d Bulan (%s - %s)",
             $branchType,
             $license,
             $duration,
@@ -158,7 +158,7 @@ class BillingController extends Controller
 
             $unpaidInvoice = Invoice::where('branch_id', Auth::user()->Branch->id)
                         ->where('status','PENDING')->first();
-                        
+
             $subscription = $unpaidInvoice ? Subscription::where('invoice', $unpaidInvoice->invoice_number)
                                       ->where('status', 'pending')
                                       ->first() : null;

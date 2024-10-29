@@ -157,7 +157,7 @@
                         <div class="d-flex align-items-start mb-3">
                             <h6 style="min-width: 150px;">Fitur:</h6>
                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-12 mb-3">
                                     <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_counter }} Meja</button>
                                     <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_queue }} Antrian</button>
 

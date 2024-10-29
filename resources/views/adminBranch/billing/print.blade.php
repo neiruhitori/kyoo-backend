@@ -66,7 +66,7 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th>Pembelian Lisensi 
+                        <th>Berlangganan 
                         @if($subs->license_type == 'onsite')
                             Antrian Onsite
                         @elseif($subs->license_type == 'appointment')
