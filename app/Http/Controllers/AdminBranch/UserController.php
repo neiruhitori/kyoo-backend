@@ -48,7 +48,7 @@ class UserController extends Controller
             $request->session()->flash('warning', __('You only able insert one account'));
             return redirect(route('admin-branch.branch-configuration.user.index'));
         }
-        if(count(Auth::user()->Branch->CS) >= Auth::user()->activeSubscription->max_service){
+        if(count(Auth::user()->Branch->CS) >= Auth::user()->Branch->BranchConfiguration->max_services){
             $request->session()->flash('warning', __('The number of accounts exceeds your subscription limit'));
             return redirect(route('admin-branch.branch-configuration.user.index'));
         }
@@ -68,6 +68,10 @@ class UserController extends Controller
     {
         if (!Auth::user()->Branch->BranchType->is_premium && count(Auth::user()->Branch->CS) > 0) {
             $request->session()->flash('error', __('You only able insert one account'));
+            return redirect(route('admin-branch.branch-configuration.user.index'));
+        }
+        if(count(Auth::user()->Branch->CS) >= Auth::user()->Branch->BranchConfiguration->max_services){
+            $request->session()->flash('warning', __('The number of accounts exceeds your subscription limit'));
             return redirect(route('admin-branch.branch-configuration.user.index'));
         }
 

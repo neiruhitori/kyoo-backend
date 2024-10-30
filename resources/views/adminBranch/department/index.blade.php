@@ -53,15 +53,20 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                    @if (Auth::user()->Branch->BranchType->is_premium || count($departments) < 1)
+                    @if (!Auth::user()->Branch->BranchType->is_premium || count($departments) >= Auth::user()->Branch->BranchConfiguration->max_departments)
                         <div class="row">
                             <div class="col-md-12 text-right">
                                 <button class="btn btn-primary" disabled>{{ __('create.module', ['module' => __('Department')]) }}</button>
-                                {{-- <a href="{{route('admin-branch.branch-configuration.department.create')}}" class="btn btn-primary" >
-                                    {{ __('create.module', ['module' => __('Department')]) }}
-                                </a> --}}
                             </div>
                         </div>
+                    @else
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <a href="{{route('admin-branch.branch-configuration.department.create')}}" class="btn btn-primary" >
+                                {{ __('create.module', ['module' => __('Department')]) }}
+                            </a>
+                        </div>
+                    </div>
                     @endif
                     <div class="row">
                         <div class="col-md-12 mt-3">

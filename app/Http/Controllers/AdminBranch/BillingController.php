@@ -7,6 +7,7 @@ use App\Branch;
 use Carbon\Carbon;
 use App\BranchType;
 use App\Models\Invoice;
+use App\BranchConfiguration;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use App\Models\AdditionalFeature;
@@ -234,6 +235,9 @@ class BillingController extends Controller
                               'max_queue' => $data->queue,
                               'license_expiration_date' => Carbon::now()->addMonths($data->subs_duration)->format('Y-m-d H:i:s'),
                           ]);
+                            BranchConfiguration::where('branch_id',$branch_id)->update([
+                                'max_services' => $data->max_service,
+                            ]);
                           }
                          
                        }

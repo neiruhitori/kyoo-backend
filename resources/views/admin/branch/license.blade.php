@@ -118,6 +118,33 @@
                 </div>
 
                 <div class="license-cfg-item mb-2">
+                    <label for="max_department" class="font-weight-bold">Maks. Departemen</label>
+                    <div>
+                        <input
+                            type="number"
+                            name="max_department"
+                            id="max_department"
+                            class="form-control"
+                            min="0"
+                            value="{{ $branch_config->max_departments }}"
+                        >
+                    </div>
+                </div>
+                
+                <div class="license-cfg-item mb-2">
+                    <label for="max_services" class="font-weight-bold">Maks. Petugas Layanan</label>
+                    <div>
+                        <input
+                            type="number"
+                            name="max_services"
+                            id="max_services"
+                            class="form-control"
+                            min="0"
+                            value="{{ $branch_config->max_services }}"
+                        >
+                    </div>
+                </div>
+                <div class="license-cfg-item mb-2">
                     <label for="max_counter" class="font-weight-bold">Maks. Counter</label>
                     <div>
                         <input
@@ -191,6 +218,7 @@
 
         <button type="submit" class="btn btn-warning">Simpan</button>
     </form>
+
    
     <script>
   function copyText() {

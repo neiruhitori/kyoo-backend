@@ -24,6 +24,7 @@ class BranchLicenseController extends Controller
 
         $data = [
             'branch' => $branch,
+            'branch_config' => $branch->BranchConfiguration,
             'branch_license' => $branch->BranchType,
             'branch_types' => BranchType::all(),
             'features' => AdditionalFeature::all(),
@@ -60,10 +61,18 @@ class BranchLicenseController extends Controller
             if($subscription){
                 $subscription->update(['status'=>'expired']);
             }
+            BranchConfiguration::where('branch_id',$id)->update([
+                'max_services' => 1,
+                'max_departments' => 1,
+            ]);
 
             $request->session()->flash('success', 'Lisensi diperbarui');
             return redirect()->back();
         }
+        BranchConfiguration::where('branch_id',$id)->update([
+            'max_services' => $request->max_services,
+            'max_departments' => $request->max_department,
+        ]);
         FeatureSubscription::insert(collect($request->feature_name)->map(function ($feature_id) use ($id) {
             return [
                 'branch_id' => $id,
