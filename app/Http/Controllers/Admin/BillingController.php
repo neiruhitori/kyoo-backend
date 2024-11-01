@@ -6,6 +6,7 @@ use PDF;
 use Carbon\Carbon;
 use App\BranchType;
 use App\Models\Invoice;
+use App\Models\ItemPrices;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use App\Models\BillingPricesModel;
@@ -42,6 +43,32 @@ class BillingController extends Controller
          $ppn = $total - $subTotal;
         
          return view('admin.billing.print', compact('print', 'subs', 'total', 'subTotal', 'ppn')); 
+    }
+    public function itemList()
+    {
+        $items = ItemPrices::all();
+
+        return view('admin.billing.items.index',compact('items'));
+    }
+    public function itemEdit($id)
+    {
+        $items = ItemPrices::find($id);
+
+        return view('admin.billing.items.edit',compact('items'));
+    }
+    
+    public function itemUpdate(Request $request, $id)
+    {
+       
+            $item = ItemPrices::find($id);
+            if($item){
+                $item->update([
+                    'item_name' => $request->item_name,
+                    'prices' => $request->prices,
+                ]);
+                $request->session()->flash('warning', 'Data Berhasil Diubah');
+                return redirect(route('admin.billing.item'));
+            }
     }
     public function list()
     {

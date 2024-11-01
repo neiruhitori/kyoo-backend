@@ -61,13 +61,15 @@
                                     class="form-control"
                                     required
                                 >
-                                    <option value="lite" {{ $prices->billing_types == "lite" ?? 'selected' }}>Lite</option>
-                                    <option value="premium" {{ $prices->billing_types == "premium" ?? 'selected' }}>Premium</option>
-                                    <option value="custom" {{ $prices->billing_types == "custom" ?? 'selected' }}>Custom</option>
+                                    <option value="lite" {{ $prices->billing_types == "lite" ? 'selected' : '' }}>Lite</option>
+                                    <option value="premium" {{ $prices->billing_types == "premium" ? 'selected' : '' }}>Premium</option>
+                                    <option value="custom" {{ $prices->billing_types == "custom" ? 'selected' : '' }}>Custom</option>
                                 </select>
 
                                 @include('layouts.inputError', ['errorName' => 'subscription_duration'])
                             </div>
+
+                            
 
                            
                         </div>
@@ -87,7 +89,6 @@
 
                                 @include('layouts.inputError', ['errorName' => 'prices'])
                             </div>
-                                
                             <div class="form-group">
                                 <label for="subscription_duration">Durasi Langganan</label>
                                 <select
@@ -96,9 +97,9 @@
                                     class="form-control"
                                     required
                                 >
-                                    <option value="3"  {{ $prices->subscription_duration == 3 ?? 'selected' }}>3 Bulan</option>
-                                    <option value="6" {{ $prices->subscription_duration == 6 ?? 'selected' }}>6 Bulan</option>
-                                    <option value="12" {{ $prices->subscription_duration == 12 ?? 'selected' }}>12 Bulan</option>
+                                    <option value="3"  {{ $prices->subscription_duration == 3 ? 'selected' : '' }}>3 Bulan</option>
+                                    <option value="6" {{ $prices->subscription_duration == 6 ? 'selected' : '' }}>6 Bulan</option>
+                                    <option value="12" {{ $prices->subscription_duration == 12 ? 'selected' : '' }}>12 Bulan</option>
                                 </select>
 
                                 @include('layouts.inputError', ['errorName' => 'subscription_duration'])

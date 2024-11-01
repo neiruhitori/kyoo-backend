@@ -7,6 +7,7 @@ use App\Branch;
 use Carbon\Carbon;
 use App\BranchType;
 use App\Models\Invoice;
+use App\Models\ItemPrices;
 use App\BranchConfiguration;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
@@ -73,6 +74,7 @@ class BillingController extends Controller
 
     public function storeInvoice(Request $request)
     {
+      
         $credentials = base64_encode(config('app.xendit_api_key'));
         $client = new \GuzzleHttp\Client();
 
@@ -84,7 +86,8 @@ class BillingController extends Controller
             // $invoice_duration = Carbon::now()->addDays(14)->diffInSeconds() + 1; //tepat 14 hari
             $invoice_duration = 5*60;
             $description = $this->generateDesc($request->all(),$branch);
-            
+            $amount = (int) $request->amount; //terkadang value nya desimal, jadi dibulatkan kebawah
+           
     
             $response = $client->post('https://api.xendit.co/v2/invoices',
             [
@@ -93,7 +96,7 @@ class BillingController extends Controller
                 ],
                 'json' =>[
                     'external_id' => $invoice_number, 
-                    'amount' => $request->amount,
+                    'amount' => $amount,
                     'invoice_duration' => $invoice_duration,
                     'success_redirect_url' => 'https://dev.kyoo.id/admin-branch/billing'
                 ],
@@ -111,7 +114,7 @@ class BillingController extends Controller
                 'user_id' => $user,
                 'branch_id' => $branch,
                 'created_at' => Carbon::now(),
-                'amount' => $request->amount
+                'amount' => $amount
             ];
             \DB::transaction(function () use ($invoice_data,$user,$branch,$invoice_number,$request){
 
@@ -283,22 +286,76 @@ class BillingController extends Controller
         }
         
     }
-    public function getBilling()
+    public function getBilling(Request $request)
     {
-      $type=Auth::user()->Branch->branch_type_id;
+           $type=Auth::user()->Branch->branch_type_id;
            $branchType = BranchType::where('id',$type)->first();
            $isDirect = $branchType->is_direct_queue;
+           $branch_type_id = $isDirect ? 7 : 6;
 
-            if($isDirect){
-                $prices = BillingPricesModel::where('branch_type_id',7)->get(['prices','billing_types','subscription_duration']);
+           $duration = $request->input('duration');
+           $license = $request->input('license');
+
+           $dataBilling = BillingPricesModel::where('branch_type_id', $branch_type_id)
+           ->where('subscription_duration', $duration)
+           ->where('billing_types', $license)
+           ->first(['prices', 'billing_types', 'subscription_duration']);
+
+           if (!$dataBilling) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Lisensi Tidak Tersedia'
+            ]);
+        }
+
+           $totalprices = 0;
+           $totalItems = 0;
+           
+
+           if($license == 'custom'){
+            $tax = 0.11;
+            $tableQty = $request->input('table_qty');
+            $kioskQty = $request->input('kiosk_qty');
+            $signageQty = $request->input('signage_qty');
+
+            $signagePrices =  ItemPrices::find(4); //signage
+            $kioskPrices =  ItemPrices::find(5); //kiosk
+
+            $totalSignage = ($signagePrices->prices + $signagePrices->prices * $tax )* $signageQty;
+            $totalKiosk = ($kioskPrices->prices +  $kioskPrices->prices * $tax) * $kioskQty;
+
+            if($duration == 3){
+                //Kalau Durasi 3 bulan ambil id 1 utk meja 3 bulan
+                $tablePrices = ItemPrices::find(1);
+                $totalTable = ($tablePrices->prices  + $tablePrices->prices * $tax) * $tableQty;
+            }else if($duration == 6){
+                //Kalau Durasi 6 bulan ambil id 2 utk meja 6 bulan
+                $tablePrices = ItemPrices::find(2);
+                $totalTable = ($tablePrices->prices  + $tablePrices->prices * $tax) * $tableQty;
             }else{
-                $prices = BillingPricesModel::where('branch_type_id',6)->get(['prices','billing_types','subscription_duration']);
+                //Kalau Durasi 12 bulan ambil id 3 utk meja 12 bulan
+                $tablePrices = ItemPrices::find(3);
+                $totalTable = ($tablePrices->prices  + $tablePrices->prices * $tax) * $tableQty;
             }
+
+            $totalItems = $totalTable + $totalKiosk + $totalSignage;
+
+        }
+            $totalprices = $totalItems + $dataBilling->prices;
+           
             return response()->json([
                 'status' => 200,
-                'data' => $prices
+                'data' => [
+                    'license_prices' => $dataBilling->prices,
+                    'item_prices' =>  $totalItems,
+                    'total_prices' => $totalprices,
+                    'billing_type' => $dataBilling->billing_types,
+                    'subscription_duration' => $dataBilling->subscription_duration,
+                ]
             ]);
+        
     }
+   
     public function print($id)
     {
         $print = Invoice::with('branch')->where('id_invoice',$id)->first();

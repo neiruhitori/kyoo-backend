@@ -253,6 +253,7 @@ Route::namespace('AdminBranch')
         Route::get('/subscription','BillingController@invoiceForm')->name('subscription');
        //hanya untuk front-end
         Route::get('/get_Billing_Prices','BillingController@getBilling');
+        //hanya untuk front-end
 
         Route::prefix('/cs')->name('cs.')->group(function () {
             Route::resource('access', 'CSAccessController');
@@ -317,6 +318,9 @@ Route::namespace('Admin')->prefix('admin')->middleware('auth', 'checkAdmin')->na
     Route::get('billing/{id}/print', 'BillingController@print')->name('billing.print');
     Route::get('/branch/{id}/billing', 'BillingController@show')->name('branch.billing');
     Route::get('/billing-configuration', 'BillingController@list')->name('billing.config');
+    Route::get('/billing-configuration/items', 'BillingController@itemList')->name('billing.item');
+    Route::get('/billing-configuration/items/{id}/edit', 'BillingController@itemEdit')->name('billing.item.edit');
+    Route::put('/billing-configuration/items/{id}/edit', 'BillingController@itemUpdate');
     Route::get('/billing-configuration/create', 'BillingController@create')->name('billing-prices.create');
     Route::post('/billing-configuration/create', 'BillingController@priceStore');
     Route::get('/billing-configuration/{id}', 'BillingController@priceEdit')->name('billing-prices.update');

@@ -184,17 +184,16 @@
                                     <option value="custom" {{ $subscription && $subscription->package == 'custom' ? 'selected' : '' }}>Custom</option>
                                 </select>
                             </div>
-                        </div>
-                        
+                        </div> 
                         <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;" class="pt-1">Jenis License:</h6>
+                            <h6 style="min-width: 150px;" class="pt-1">Jenis Antrian:</h6>
 
                            @if ($isDirect)
-                           <input style="max-width: 200px;" type="text" class="form-control" id="license" value="Onsite" readonly>
-                           <input type="hidden" name="license_type" id="license" value="onsite">
+                           <input style="max-width: 200px;" type="text" class="form-control" id="license_input" value="Onsite" readonly>
+                           <input type="hidden" name="license_type" id="license_type" value="onsite">
                            @else
-                           <input type="hidden" name="license_type" id="license" value="appointment">
-                           <input style="max-width: 200px;" type="text" class="form-control" id="license" value="Appointment" readonly>
+                           <input type="hidden" name="license_type" id="license_type" value="appointment">
+                           <input style="max-width: 200px;" type="text" class="form-control" id="license_input" value="Appointment" readonly>
                            @endif
                         </div>
                         <div class="d-flex align-items-start mb-1">
@@ -226,41 +225,27 @@
                             <input style="max-width: 200px;" type="number" class="form-control" name="kiosk" id="kiosk" min="1" value="{{ $subscription ? $subscription->kiosk  : '0' }}" readonly>
                             <p class="pt-2 ml-3">Perangkat</p>
                         </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <div id="web-signage" style="display: flex">
+                                <h6 style="min-width: 150px;" class="pt-1">Web Signage :</h6>
+                                <input style="max-width: 200px;" type="number" class="form-control" name="signage" id="signage" min="1" value="1" readonly>
+                                <p class="pt-2 ml-3">Perangkat</p>
+                            </div>
+                        </div>
                         <div class="d-flex align-items-center mb-5">
                             <h6 style="min-width: 150px;" class="pt-1">Fitur:</h6>
                             <div id="feature">
                                 <b></b>
                             </div>
                         </div>
-                        <hr>
-                        <div class="d-flex align-items-center mb-2">
-                            <h6 style="min-width: 150px;">Harga: </h6>
-                           
-                            <div id="price">
-                                <h6><b></b></h6>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center mb-2">
-                            <h6 style="min-width: 150px;">PPN: </h6>
-                           
-                            <div id="tax">
-                                <h6><b></b></h6>
-                                </div>
-                        </div>
-                        <div class="d-flex align-items-center mb-2">
-                            <h5 style="min-width: 150px;">Total: </h5>
-                            
-                            <input type="hidden" name="amount" id="amount"> 
-                            <div id="total">
-                                <h6><b></b></h6>
-                                </div>
-                        </div>
+                        <input type="hidden" name="amount" id="amount">
+                       
                     </div>
                     <div class="d-flex align-items-center ml-4 mb-2">
                         @if ($unpaidInvoice)
                         <button class="btn btn-primary px-5" disabled>Selesaikan Pembayaran terlebih dahulu</button>
                         @else
-                        <button class="btn btn-primary px-5" id="confirmBtn" type="submit" >Konfirmasi</button>
+                        <button class="btn btn-primary px-5" id="modalBtn" type="button" type="button" data-toggle="modal" data-target="#staticBackdrop" >Lanjutkan</button>
                         @endif
                     </div>
                     
@@ -268,6 +253,150 @@
 
 
             </div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-dark" id="staticBackdropLabel"><b>Pembelian Lisensi Langganan</b></h5>
+        </div>
+        <div class="modal-body">
+          <div class="row " style="color: #000">
+            <div class="col-md-12">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 105px"><b>Pilihan Paket:</b></h6>
+                        <div class="ml-2" style="min-width: 200px">
+                            <h6 class="" id="md_license"></h6>
+                        </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 105px"><b>Jenis Antrian:</b></h6>
+                        <div class="ml-2" style="min-width: 200px">
+                            <h6 class="" id="md_queue_type"></h6>
+                        </div>
+                </div>
+            </div>
+            
+            <div class="col-md-12">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 105px"><b>Lama Langganan:</b></h6>
+                        <div  class="ml-2" style="min-width: 200px">
+                            <h6 class="" id="md_subsDuration"></h6>
+                        </div>
+                </div>
+            </div>
+            <div class="col-md-12" id="no_license_data">
+                <h5><span class="badge badge-danger">Lisensi Tidak Tersedia</span></h5>
+            </div>
+        </div>
+
+        <hr style="border-color:#000;">
+
+
+        <div class="row" style="color: #000">
+        <div class="col-md-6 d-flex">
+            <div class="d-flex align-items-center mb-2">
+                <h6 class="mr-2" style="min-width: 110px"><b>Maks Antrian:</b></h6>
+                    <div class="ml-2" style="min-width: 90px">
+                        <h6 class="" id="md_queue"></h6>
+                    </div>
+            </div>
+        </div>    
+
+        <div class="col-md-6 d-flex">
+            <div class="d-flex align-items-center mb-2">
+                <h6 class="mr-2" style="min-width: 110px"><b>Jumlah Meja:</b></h6>
+                    <div class="ml-2" style="min-width: 90px">
+                        <h6 class="" id="md_table"></h6>
+                    </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 d-flex">
+            <div class="d-flex align-items-center mb-2">
+                <h6 class="mr-2" style="min-width: 110px"><b>Maks. Petugas:</b></h6>
+                    <div class="ml-2" style="min-width: 90px">
+                        <h6 class="" id="md_service"></h6>
+                    </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 d-flex">
+            <div class="d-flex align-items-center mb-2">
+                <h6 class="mr-2" style="min-width: 110px"><b>Kiosk Antrian:</b></h6>
+                    <div class="ml-2" style="min-width: 90px">
+                        <h6 class="" id="md_kiosk"></h6>
+                    </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 " id="md_signage_container">
+            <div class="d-flex align-items-center mb-2" >
+                <h6 class="mr-2" style="min-width: 112px"><b>Web Signage:</b></h6>
+                    <div id="signage" class="ml-2" style="min-width: 90px">
+                        <h6 class="" id="md_signage"></h6>
+                    </div>
+            </div>
+        </div>
+
+          </div>
+
+          <hr>
+
+          <div class="row">
+            <div class="col-md-12 d-flex">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 112px"><b>Harga Lisensi :</b></h6>
+                        <div id="price" class="ml-2" style="min-width: 90px">
+                            <h6 class=""></h6>
+                        </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 d-flex">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 112px"><b>Total Harga Item :</b></h6>
+                        <div id="items" class="ml-2" style="min-width: 90px">
+                            <h6 class=""></h6>
+                        </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 d-flex">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 112px"><b>PPN 11% :</b></h6>
+                        <div id="tax" class="ml-2" style="min-width: 90px">
+                            <h6 class=""></h6>
+                        </div>
+                </div>
+            </div>
+            
+           
+            <div class="col-md-12 d-flex">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 112px"><b>Subtotal :</b></h6>
+                        <div id="total" class="ml-2" style="min-width: 90px">
+                            
+                            <h6 class=""></h6>
+                        </div>
+                </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+          <button type="submit" id="confirmBtn" class="btn btn-primary">Konfirmasi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
         </form>
     </div>
 
@@ -279,18 +408,65 @@
     let table = document.getElementById('table');
     let services = document.getElementById('services');
     let kiosk = document.getElementById('kiosk');
-    let amount = document.getElementById('amount');
-    let priceElement = document.getElementById('price');
-    let taxElement = document.getElementById('tax');
-    let totalElement = document.getElementById('total');
     let subsDuration = document.getElementById('subs_duration'); 
     let packageSelection = document.getElementById('packageSelection'); 
     let form = document.getElementById('formInvoice');
+    let queueType = document.getElementById('license_type');
+    let modalButton = document.getElementById('modalBtn');
+    let signage = document.getElementById('signage');
+    let signageContainer = document.getElementById('web-signage');
+    let modalSignage = document.getElementById('md_signage_container');
+    let priceElement = document.getElementById('price');
+    let taxElement = document.getElementById('tax');
+    let itemsElement = document.getElementById('items');
+    let totalElement = document.getElementById('total');
+    let amount = document.getElementById('amount');
 
-function calculateTotal(price) {
-    const tax = price * 0.11; // PPN 11%
-    const total = price + tax;
-    return { price, tax, total };
+function toggleSignageInput(selectedPackage) {
+    const isDirect = {!! json_encode($isDirect) !!};//blade escape
+    updateFeatures(selectedPackage, isDirect);
+    if (selectedPackage === 'premium') {
+        queue.setAttribute('readonly', true);
+        table.setAttribute('readonly', true);
+        services.setAttribute('readonly', true);
+        kiosk.setAttribute('readonly', true);
+
+        queue.value = 500;
+        table.value = 1;
+        services.value = 3;
+        kiosk.value = 0;
+        signageContainer.style.display = 'flex';  
+        modalSignage.style.display = 'flex';
+        signage.setAttribute('readonly', true);   
+        signage.value = 1; // Nilai default saat premium
+    } else if (selectedPackage === 'custom') {
+        queue.removeAttribute('readonly');
+        table.removeAttribute('readonly');
+        services.removeAttribute('readonly');
+        kiosk.removeAttribute('readonly');
+        table.addEventListener('input', function() {
+        const tableValue = parseInt(table.value) || 0;
+            services.value = tableValue * 3;
+            });
+        signageContainer.style.display = 'flex';
+        modalSignage.style.display = 'flex';  
+        signage.removeAttribute('readonly');  
+        signage.value = 1;     
+    } else {
+        queue.setAttribute('readonly', true);
+        table.setAttribute('readonly', true);
+        services.setAttribute('readonly', true);
+        kiosk.setAttribute('readonly', true);
+        queue.value = 100;
+        table.value = 1;
+        services.value = 1;
+        kiosk.value = 0;
+        signageContainer.style.display = 'none';
+        modalSignage.style.display = 'none';  
+        signage.value = '';                      
+    }
+    updateFeatures(selectedPackage, isDirect);
+                      
 }
 
 function updateFeatures(selectedPackage, isDirect) {
@@ -313,99 +489,129 @@ function updateFeatures(selectedPackage, isDirect) {
     feature.innerHTML = `<b>${featuresText}</b>`;
 }
 
-function getBillingPrices(selectedPackage) {
-    const selectedDuration = parseInt(subsDuration.value); 
 
-    // disable button saat load
+function getModalData() {
+    let tableVal = table.value;
+    let queueVal = queue.value;
+    let serviceVal = services.value;
+    let kioskVal = kiosk.value;
+    let packageVal = '';
+    let subsDurationVal = subsDuration.value;
+    let queueTypeVal = '';
+
+
+    if(packageSelection.value === "custom"){
+        let signageVal = signage.value;
+        document.getElementById('md_signage').innerHTML = signageVal + " Perangkat";
+        packageVal = "Lisensi Langganan Custom";
+        
+    }else if(packageSelection.value === "premium"){
+        let signageVal = signage.value;
+        document.getElementById('md_signage').innerHTML = signageVal + " Perangkat";
+        packageVal = "Lisensi Langganan Premium";
+    }else{
+        packageVal = "Lisensi Langganan Lite";
+    }
+    //tipe antrian
+    if(queueType.value == "onsite"){
+        queueTypeVal = "Antrian Onsite";
+    }else{
+        queueTypeVal = "Antrian Appointment";
+    }
+
+    document.getElementById('md_license').innerHTML = packageVal;
+    document.getElementById('md_queue_type').innerHTML = queueTypeVal;
+    document.getElementById('md_subsDuration').innerHTML = subsDurationVal + " Bulan";
+    document.getElementById('md_queue').innerHTML = queueVal + " Antrian";
+    document.getElementById('md_table').innerHTML = tableVal + " Meja";
+    document.getElementById('md_service').innerHTML = serviceVal + " Petugas";
+    document.getElementById('md_kiosk').innerHTML = kioskVal + " Perangkat";
+}
+
+subsDuration.addEventListener('change', function() {
+    const selectedPackage = packageSelection.value;
+});
+
+packageSelection.addEventListener('change', function() {
+    const selectedPackage = packageSelection.value;
+    toggleSignageInput(selectedPackage);
+});
+
+
+function calculateTotal(price, itemPrices) {
+    const tax = price * 0.11; // PPN 11%
+    const total = price + tax + itemPrices;
+
+    return { price, tax, total};
+}
+
+function getData(selectedPackage){
+    const selectedDuration = parseInt(subsDuration.value);
+    let noDataBadge = document.getElementById('no_license_data');
+    
+        let license = selectedPackage;
+
+        let tableVal = table.value;
+        let kioskVal = kiosk.value;
+        let signageVal = signage.value;
+
     confirmBtn.disabled = true;
     confirmBtn.textContent = 'Loading...';
+    noDataBadge.style.display = 'none';
     $.ajax({
-        url: '/admin-branch/get_Billing_Prices', 
-        method: 'GET',
-        success: function(response) {
-            if (response.status === 200) {
-                const data = response.data;
-
-                const selectedData = data.find(item => item.billing_types === selectedPackage && item.subscription_duration === selectedDuration);
-
-                if (selectedData) {
-                    const { price, tax, total } = calculateTotal(selectedData.prices);
+    url: '/admin-branch/get_Billing_Prices', 
+    method: 'GET',
+    data:{
+        'duration':selectedDuration,
+        'license':selectedPackage,
+        'table_qty': tableVal,
+        'kiosk_qty': kioskVal,
+        'signage_qty': signageVal,
+    },
+    success: function(response) {
+        if (response.status === 200) {
+            const data = response.data;
+            console.log(data);
+            
+            if (data) {  
+                    const { price, tax, total, itemPrices } = calculateTotal(data.license_prices, data.item_prices);
 
                     priceElement.innerHTML = `<h6><b>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
                     taxElement.innerHTML = `<h6><b>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
                     totalElement.innerHTML = `<h6><b>${total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
+                    itemsElement.innerHTML = `<h6><b>${data.item_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
                     amount.value = total;
-                    
-                    if (selectedPackage === 'custom') {
-                        queue.removeAttribute('readonly');
-                        table.removeAttribute('readonly');
-                        services.removeAttribute('readonly');
-                        kiosk.removeAttribute('readonly');
-
-                        table.addEventListener('input', function() {
-                            const tableValue = parseInt(table.value) || 0;
-                            services.value = tableValue * 3;
-                        });
-                    } else {
-                        if (selectedPackage === 'premium') {
-                            queue.value = 500;
-                            table.value = 1;
-                            services.value = 3;
-                            kiosk.value = 0;
-                            
-                        }else{
-                            queue.value = 100;
-                            table.value = 1;
-                            services.value = 1;
-                            kiosk.value = 0;
-                        }
-
-                        queue.setAttribute('readonly', true);
-                        table.setAttribute('readonly', true);
-                        services.setAttribute('readonly', true);
-                        kiosk.setAttribute('readonly', true);
-                    }
-                    
-                    const isDirect = {!! json_encode($isDirect) !!};//blade escape
-                    updateFeatures(selectedPackage, isDirect);
-                    confirmBtn.disabled = false;
-                    confirmBtn.textContent = 'Konfirmasi';
-                }else{
-                      // Jika data tidak ditemukan
-                    priceElement.innerHTML = `<h6><b>Data tidak ditemukan</b></h6>`;
-                    taxElement.innerHTML = `<h6><b>Data tidak ditemukan</b></h6>`;
-                    totalElement.innerHTML = `<h6><b>Data tidak ditemukan</b></h6>`;
-                    amount.value = '';
-
-                    // Nonaktifkan tombol konfirmasi
-                    confirmBtn.disabled = true;
-                    confirmBtn.textContent = 'Data tidak ada';
-                }
+                     const isDirect = {!! json_encode($isDirect) !!};//blade escape
+                     confirmBtn.disabled = false;
+                     confirmBtn.textContent = 'Konfirmasi';
+                     noDataBadge.style.display = 'none';
             }
-        },
-        error: function(xhr) {
-            console.error(xhr.responseText);
-        }
-    });
+        }else{
+                priceElement.innerHTML = ``;
+                taxElement.innerHTML = ``;
+                totalElement.innerHTML = ``;
+                itemsElement.innerHTML = ``;
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = 'Lisensi Tidak Tersedia';
+                noDataBadge.style.display = 'flex';
+            }
+    },
+    error: function(xhr) {
+        console.error(xhr.responseText);
+    }
+});
 }
 
-
-packageSelection.addEventListener('change', function() {
+modalButton.addEventListener('click',function () {
     const selectedPackage = packageSelection.value;
-    getBillingPrices(selectedPackage);
+    getModalData();
+    getData(selectedPackage);
 });
 
-subsDuration.addEventListener('change', function() {
-    const selectedPackage = packageSelection.value;
-    getBillingPrices(selectedPackage);
+form.addEventListener('submit',function (e) {
+    confirmBtn.disabled = true;
 });
-
-form.addEventListener('submit', function(e) {
-        confirmBtn.disabled = true;   
-    });
-
-getBillingPrices(packageSelection.value);
-
+toggleSignageInput(packageSelection.value);
 </script>
 
 

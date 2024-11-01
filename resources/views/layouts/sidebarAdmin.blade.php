@@ -124,6 +124,9 @@
             <a class="collapse-item" href="{{route('admin.billing.config')}}">
               {{ __('Konfigurasi Billing') }}
             </a>
+            <a class="collapse-item" href="{{route('admin.billing.item')}}">
+              {{ __('Konfigurasi Item') }}
+            </a>
           </div>
         </div>
       </li>
