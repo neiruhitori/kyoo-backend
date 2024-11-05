@@ -29,12 +29,12 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>{{ __('#') }}</th>
-                                                <th>{{ __('Nama Branch') }}</th>
-                                                <th>{{ __('Tanggal Invoice') }}</th>
-                                                <th>{{ __('Nominal') }}</th>
-                                                <th>{{ __('Status') }}</th>
-                                                <th>{{ __('Action') }}</th>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Nama Branch</th>
+                                                <th scope="col">Deskripsi</th>
+                                                <th scope="col">Jumlah Nominal</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Opsi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -42,29 +42,19 @@
                                             <tr>
                                                 <td>{{$loop->iteration}}</td>
                                                 <td>{{$inv->branch->name}}</td>
-                                                <td>{{\Carbon\Carbon::parse($inv->created_at)->translatedFormat('d F Y H:i')}} </td>
-                                                <td>Rp. {{ number_format($inv->amount, 2, ',', '.') }}</td>
-                                                <td>
-                                                   @if ($inv->status == "PAID")
-                                                    <b><span class="badge badge-success">{{$inv->status}}</span></b>
-                                                    @elseif($inv->status == "PENDING")
-                                                    <b><span class="badge badge-warning text-dark">{{$inv->status}}</span></b>
-                                                    @else
-                                                    <b><span class="badge badge-danger">{{$inv->status}}</span></b>
-                                                    @endif 
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        onclick="printInvoice('{{ $inv->id_invoice }}')"
-                                                        class="btn btn-secondary"
-                                                        data-toggle="tooltip"
-                                                        data-placement="bottom"
-                                                        title="Unduh Riwayat Invoice"
-                                                    >
-                                                        <i class="fas fa-download"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                                    <td>{{ $inv->description }}</td>
+                                                    <td>Rp. {{ number_format($inv->amount, 2, ',', '.') }}</td>
+                                                    <td>
+                                                        @if ($inv->status == "PAID")
+                                                        <b><span class="badge badge-success">{{$inv->status}}</span></b>
+                                                        @elseif($inv->status == "PENDING")
+                                                        <b><span class="badge badge-warning text-dark">{{$inv->status}}</span></b>
+                                                        @else
+                                                        <b><span class="badge badge-danger">{{$inv->status}}</span></b>
+                                                        @endif 
+                                                    </td>
+                                                    <td><button onclick="printInvoice('{{ $inv->id_invoice }}')" class="btn btn-secondary" title="Unduh Riwayat Invoice"><i class="fas fa-download"></i></button></td>
+                                                  </tr>
                                             @endforeach
                                         </tbody>
                                     </table>

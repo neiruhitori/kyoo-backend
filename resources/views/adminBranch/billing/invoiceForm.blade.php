@@ -207,28 +207,28 @@
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <h6 style="min-width: 150px;" class="pt-1">Maksimum Antrian:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="queue" id="queue" min="100" max="500" value="{{ $subscription ? $subscription->queue  : '100' }}" readonly>
+                            <input style="max-width: 200px;" type="number" class="form-control" name="queue" id="queue" min="100" max="500" required value="{{ $subscription ? $subscription->queue  : '100' }}" readonly>
                             <p class="pt-2 ml-3">Antrian / Hari</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <h6 style="min-width: 150px;" class="pt-1">Jumlah Meja:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="table" id="table"  min="1" max="5" value="{{ $subscription ? $subscription->max_table  : '1' }}" readonly>
+                            <input style="max-width: 200px;" type="number" class="form-control" name="table" id="table"  min="1" max="5" required value="{{ $subscription ? $subscription->max_table  : '1' }}" readonly>
                             <p class="pt-2 ml-3">Meja</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <h6 style="min-width: 150px;" class="pt-1">Petugas Layanan:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="services" id="services" min="1" value="{{ $subscription ? $subscription->max_service  : '1' }}" readonly>
+                            <input style="max-width: 200px;" type="number" class="form-control" name="services" id="services" min="1" max="15" required value="{{ $subscription ? $subscription->max_service  : '1' }}" readonly>
                             <p class="pt-2 ml-3">Petugas</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;" class="pt-1">Kiosk Antrian:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="kiosk" id="kiosk" min="1" value="{{ $subscription ? $subscription->kiosk  : '0' }}" readonly>
+                            <h6 style="min-width: 150px;" class="pt-1">Web Kiosk:</h6>
+                            <input style="max-width: 200px;" type="number" class="form-control" name="kiosk" id="kiosk" required value="{{ $subscription ? $subscription->kiosk  : '0' }}" readonly>
                             <p class="pt-2 ml-3">Perangkat</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <div id="web-signage" style="display: flex">
                                 <h6 style="min-width: 150px;" class="pt-1">Web Signage :</h6>
-                                <input style="max-width: 200px;" type="number" class="form-control" name="signage" id="signage" min="1" value="1" readonly>
+                                <input style="max-width: 200px;" type="number" class="form-control" name="signage" id="signage" min="1" value="1" required readonly>
                                 <p class="pt-2 ml-3">Perangkat</p>
                             </div>
                         </div>
@@ -256,10 +256,10 @@
 
 <!-- Modal -->
 <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title text-dark" id="staticBackdropLabel"><b>Pembelian Lisensi Langganan</b></h5>
+          <h5 class="modal-title text-dark" id="staticBackdropLabel"><b>Langganan Aplikasi Kyoo</b></h5>
         </div>
         <div class="modal-body">
           <div class="row " style="color: #000">
@@ -289,16 +289,8 @@
                         </div>
                 </div>
             </div>
-            <div class="col-md-12" id="no_license_data">
-                <h5><span class="badge badge-danger">Lisensi Tidak Tersedia</span></h5>
-            </div>
-        </div>
 
-        <hr style="border-color:#000;">
-
-
-        <div class="row" style="color: #000">
-        <div class="col-md-6 d-flex">
+        <div class="col-md-4 d-flex">
             <div class="d-flex align-items-center mb-2">
                 <h6 class="mr-2" style="min-width: 110px"><b>Maks Antrian:</b></h6>
                     <div class="ml-2" style="min-width: 90px">
@@ -307,8 +299,8 @@
             </div>
         </div>    
 
-        <div class="col-md-6 d-flex">
-            <div class="d-flex align-items-center mb-2">
+        <div class="col-md-4" id="md_table_container">
+            <div class="d-flex align-items-center mb-2" >
                 <h6 class="mr-2" style="min-width: 110px"><b>Jumlah Meja:</b></h6>
                     <div class="ml-2" style="min-width: 90px">
                         <h6 class="" id="md_table"></h6>
@@ -316,7 +308,9 @@
             </div>
         </div>
 
-        <div class="col-md-6 d-flex">
+        <div class="w-100"></div>
+
+        <div class="col-md-4 d-flex">
             <div class="d-flex align-items-center mb-2">
                 <h6 class="mr-2" style="min-width: 110px"><b>Maks. Petugas:</b></h6>
                     <div class="ml-2" style="min-width: 90px">
@@ -325,16 +319,18 @@
             </div>
         </div>
 
-        <div class="col-md-6 d-flex">
-            <div class="d-flex align-items-center mb-2">
-                <h6 class="mr-2" style="min-width: 110px"><b>Kiosk Antrian:</b></h6>
+        <div class="col-md-4" id="md_kiosk_container">
+            <div class="d-flex align-items-center mb-2" >
+                <h6 class="mr-2" style="min-width: 110px"><b>Web Kiosk:</b></h6>
                     <div class="ml-2" style="min-width: 90px">
                         <h6 class="" id="md_kiosk"></h6>
                     </div>
             </div>
         </div>
 
-        <div class="col-md-6 " id="md_signage_container">
+        <div class="w-100"></div>
+
+        <div class="col-md-4 " id="md_signage_container">
             <div class="d-flex align-items-center mb-2" >
                 <h6 class="mr-2" style="min-width: 112px"><b>Web Signage:</b></h6>
                     <div id="signage" class="ml-2" style="min-width: 90px">
@@ -343,24 +339,74 @@
             </div>
         </div>
 
+        <div class="col-md-12" id="no_license_data">
+            <h5><span class="badge badge-danger">Lisensi Tidak Tersedia</span></h5>
+        </div>
+
           </div>
 
-          <hr>
+          <hr style="border-color:#000;">
 
-          <div class="row">
+          <div class="row mx-1" style="color: #000">
+            <table class="table" style="color: #000" id="itemContainer">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Jumlah</th>
+                    <th>Periode</th>
+                    <th>Harga Item</th>
+                    <th>Harga Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Meja</td>
+                    <td id="tableQty"></td>
+                    <td class="itemPeriod"></td>
+                    <td id="tablePrice"></td>
+                    <td id="tableTotalPrice"></td>
+                  </tr>
+                  <tr id="customSignageContainer">
+                    <td>Web Signage</td>
+                    <td id="signageQty"></td>
+                    <td class="itemPeriod"></td>
+                    <td id="signagePrice"></td>
+                    <td id="signageTotalPrice"></td>
+                  </tr>
+                  <tr id="customKioskContainer">
+                    <td>Web Kiosk</td>
+                    <td id="kioskQty"></td>
+                    <td class="itemPeriod"></td>
+                    <td id="kioskPrice"></td>
+                    <td id="kioskTotalPrice"></td>
+                  </tr>
+                  <tr>
+                    <th colspan="4" class="text-right ">Subtotal Item :</th>
+                    <td id="items"></td>
+                  </tr>
+                  {{-- <tr>
+                    <th colspan="4" class="text-right ">Harga Lisensi:</th>
+                    <td id="customLicensePrice"></td>
+                  </tr> --}}
+                  <tr>
+                    <th colspan="4" class="text-right ">PPN 11% :</th>
+                    <td id="customTax"></td>
+                  </tr>
+                  <tr>
+                    <th colspan="4" class="text-right "><h5><b>TOTAL:</b></h5></th>
+                    <td id="customTotal"></td>
+                  </tr>
+                </tbody>
+              </table>
+
+          </div>
+
+          <div class="row" style="color: #000" id="nonCustom">
+
             <div class="col-md-12 d-flex">
                 <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 112px"><b>Harga Lisensi :</b></h6>
+                    <h6 class="mr-2" style="min-width: 112px"><b>Subtotal Item:</b></h6>
                         <div id="price" class="ml-2" style="min-width: 90px">
-                            <h6 class=""></h6>
-                        </div>
-                </div>
-            </div>
-
-            <div class="col-md-12 d-flex">
-                <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 112px"><b>Total Harga Item :</b></h6>
-                        <div id="items" class="ml-2" style="min-width: 90px">
                             <h6 class=""></h6>
                         </div>
                 </div>
@@ -378,10 +424,10 @@
            
             <div class="col-md-12 d-flex">
                 <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 112px"><b>Subtotal :</b></h6>
+                    <h5 class="mr-2" style="min-width: 112px"><b>TOTAL :</b></h5>
                         <div id="total" class="ml-2" style="min-width: 90px">
                             
-                            <h6 class=""></h6>
+                            <h5 class=""></h5>
                         </div>
                 </div>
             </div>
@@ -390,7 +436,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
-          <button type="submit" id="confirmBtn" class="btn btn-primary">Konfirmasi</button>
+          <button type="submit" id="confirmBtn" class="btn btn-primary">Lanjutkan Pembayaran</button>
         </div>
       </div>
     </div>
@@ -498,19 +544,25 @@ function getModalData() {
     let packageVal = '';
     let subsDurationVal = subsDuration.value;
     let queueTypeVal = '';
-
+        document.getElementById('md_table_container').style.display = 'flex';
+        document.getElementById('md_kiosk_container').style.display = 'flex';
+        document.getElementById('md_signage_container').style.display = 'none';
 
     if(packageSelection.value === "custom"){
         let signageVal = signage.value;
+        packageVal = "Paket Custom";
         document.getElementById('md_signage').innerHTML = signageVal + " Perangkat";
-        packageVal = "Lisensi Langganan Custom";
+        document.getElementById('md_table_container').style.display = 'none';
+        document.getElementById('md_kiosk_container').style.display = 'none';
+        document.getElementById('md_signage_container').style.display = 'none';
         
     }else if(packageSelection.value === "premium"){
-        let signageVal = signage.value;
+        let signageVal = signage.value;        
+        packageVal = "Paket Premium";
+        document.getElementById('md_signage_container').style.display = 'flex';
         document.getElementById('md_signage').innerHTML = signageVal + " Perangkat";
-        packageVal = "Lisensi Langganan Premium";
     }else{
-        packageVal = "Lisensi Langganan Lite";
+        packageVal = "Paket Lite";
     }
     //tipe antrian
     if(queueType.value == "onsite"){
@@ -518,14 +570,14 @@ function getModalData() {
     }else{
         queueTypeVal = "Antrian Appointment";
     }
-
+    document.getElementById('md_kiosk').innerHTML = kioskVal + " Perangkat";
+    document.getElementById('md_table').innerHTML = tableVal + " Meja";
     document.getElementById('md_license').innerHTML = packageVal;
     document.getElementById('md_queue_type').innerHTML = queueTypeVal;
     document.getElementById('md_subsDuration').innerHTML = subsDurationVal + " Bulan";
     document.getElementById('md_queue').innerHTML = queueVal + " Antrian";
-    document.getElementById('md_table').innerHTML = tableVal + " Meja";
     document.getElementById('md_service').innerHTML = serviceVal + " Petugas";
-    document.getElementById('md_kiosk').innerHTML = kioskVal + " Perangkat";
+    
 }
 
 subsDuration.addEventListener('change', function() {
@@ -558,6 +610,9 @@ function getData(selectedPackage){
     confirmBtn.disabled = true;
     confirmBtn.textContent = 'Loading...';
     noDataBadge.style.display = 'none';
+    document.getElementById('itemContainer').style.display = 'none';
+    document.getElementById('nonCustom').style.display = 'none';
+
     $.ajax({
     url: '/admin-branch/get_Billing_Prices', 
     method: 'GET',
@@ -571,23 +626,63 @@ function getData(selectedPackage){
     success: function(response) {
         if (response.status === 200) {
             const data = response.data;
-            console.log(data);
             
-            if (data) {  
-                    const { price, tax, total, itemPrices } = calculateTotal(data.license_prices, data.item_prices);
+            if (data) {
+                const { price, tax, total, itemPrices } = calculateTotal(data.license_prices, data.total_item_prices);
+                if(data.billing_type == 'custom'){
+                    //jika license custom
+                    document.getElementById('itemContainer').style.display = 'table';
+                    const period = document.querySelectorAll('.itemPeriod');
+                    period.forEach(item => {
+                        item.innerHTML = `<h6>${selectedDuration} Bulan</h6>`;
+                    });
 
-                    priceElement.innerHTML = `<h6><b>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
-                    taxElement.innerHTML = `<h6><b>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
-                    totalElement.innerHTML = `<h6><b>${total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
-                    itemsElement.innerHTML = `<h6><b>${data.item_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
-                    amount.value = total;
-                     const isDirect = {!! json_encode($isDirect) !!};//blade escape
-                     confirmBtn.disabled = false;
-                     confirmBtn.textContent = 'Konfirmasi';
-                     noDataBadge.style.display = 'none';
+                    let custKioskContainer = document.getElementById('customKioskContainer');
+                    custKioskContainer.style.display = 'revert';
+                    let custSignageContainer= document.getElementById('customSignageContainer');
+                    custSignageContainer.style.display = 'revert';
+
+                    if(kiosk.value == 0){
+                        custKioskContainer.style.display = 'none';
+                    }
+                    if(signage.value == 0){
+                        custSignageContainer.style.display = 'none';
+                    }
+
+                    let tablePrice = data.table_prices / table.value;
+                    let kioskPrice = data.kiosk_prices / kiosk.value;
+                    let signagePrice = data.signage_prices / signage.value;
+                    signagePrice = isNaN(signagePrice) ? 0 : signagePrice
+                    kioskPrice = isNaN(kioskPrice) ? 0 : kioskPrice;
+
+                    document.getElementById('tableQty').innerHTML = `<h6>${table.value}</h6>`;
+                    document.getElementById('tablePrice').innerHTML = `<h6>${tablePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('tableTotalPrice').innerHTML = `<h6>${data.table_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('kioskQty').innerHTML = `<h6>${kiosk.value}</h6>`;
+                    document.getElementById('kioskPrice').innerHTML = `<h6>${kioskPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('kioskTotalPrice').innerHTML = `<h6>${data.kiosk_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('signageQty').innerHTML = `<h6>${signage.value}</h6>`;
+                    document.getElementById('signagePrice').innerHTML = `<h6>${signagePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('signageTotalPrice').innerHTML = `<h6>${data.signage_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    // document.getElementById('customLicensePrice').innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('customTax').innerHTML = `<h6>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('customTotal').innerHTML = `<h5><b>${total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h5>`;
+                    itemsElement.innerHTML = `<h6><b>${data.total_item_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
+                }else{
+                    document.getElementById('nonCustom').style.display = 'flex';
+                    priceElement.innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    taxElement.innerHTML = `<h6>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    totalElement.innerHTML = `<h5><b>${total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h5>`;
+                   
+                }
+                amount.value = total;
+                const isDirect = {!! json_encode($isDirect) !!};//blade escape
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = 'Lanjutkan Pembayaran';
+                    noDataBadge.style.display = 'none';
             }
         }else{
-                priceElement.innerHTML = ``;
+                // priceElement.innerHTML = ``;
                 taxElement.innerHTML = ``;
                 totalElement.innerHTML = ``;
                 itemsElement.innerHTML = ``;

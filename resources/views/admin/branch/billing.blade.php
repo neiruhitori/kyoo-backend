@@ -29,20 +29,18 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>{{ __('#') }}</th>
-                                                <th>{{ __('Nama Branch') }}</th>
-                                                <th>{{ __('Tanggal Invoice') }}</th>
-                                                <th>{{ __('Nominal') }}</th>
-                                                <th>{{ __('Status') }}</th>
-                                                <th>{{ __('Action') }}</th>
+                                                <th scope="col">Tanggal</th>
+                                                <th scope="col">Deskripsi</th>
+                                                <th scope="col">Jumlah Nominal</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Opsi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($invoice as $inv)
                                             <tr>
-                                                <td>{{$loop->iteration}}</td>
-                                                <td>{{$inv->branch->name}}</td>
                                                 <td>{{\Carbon\Carbon::parse($inv->created_at)->translatedFormat('d F Y H:i')}} </td>
+                                                <td>{{ $inv->description }}</td>
                                                 <td>Rp. {{ number_format($inv->amount, 2, ',', '.') }}</td>
                                                 <td>
                                                    @if ($inv->status == "PAID")

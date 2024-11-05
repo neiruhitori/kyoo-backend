@@ -55,22 +55,45 @@ class BillingController extends Controller
 
         $duration = $dataDesc['subs_duration'];
         $license = $dataDesc['packageSelection'];
+        $queue = $dataDesc['queue'];
+        $services = $dataDesc['services'];
+        $table = $dataDesc['table'];
+        $kiosk = $dataDesc['kiosk'] ?? 0;
+        $signage = $dataDesc['signage'] ?? 0;
         $startDate = Carbon::now();
         $endDate = $startDate->copy()->addMonths($duration);
 
         $desc = sprintf(
-            "Berlangganan Antrian %s - Lisensi %s Selama %d Bulan (%s - %s)",
+            "Berlangganan Antrian %s - Lisensi %s Selama %d Bulan (%s - %s). Jenis Antrian %s, %d Bulan Langganan, Max %d Antrian, Max Petugas Layanan %d User, %d Meja",
             $branchType,
             $license,
             $duration,
             $startDate->format('d/m/Y'),
-            $endDate->format('d/m/Y')
+            $endDate->format('d/m/Y'),
+            $branchType,
+            $duration,
+            $queue,
+            $services,
+            $table,
         );
+
+        if ($signage > 0) {
+            $desc .= sprintf(
+                ", Web Signage %d Perangkat",
+                $signage,
+            );
+        }
+        if ($kiosk > 0) {
+            $desc .= sprintf(
+                ", Web Kiosk %d Perangkat",
+                $kiosk
+            );
+        }
+        
 
         return $desc;
  
     }
-
 
     public function storeInvoice(Request $request)
     {
@@ -87,7 +110,6 @@ class BillingController extends Controller
             $invoice_duration = 5*60;
             $description = $this->generateDesc($request->all(),$branch);
             $amount = (int) $request->amount; //terkadang value nya desimal, jadi dibulatkan kebawah
-           
     
             $response = $client->post('https://api.xendit.co/v2/invoices',
             [
@@ -310,6 +332,9 @@ class BillingController extends Controller
 
            $totalprices = 0;
            $totalItems = 0;
+           $totalKiosk = 0;
+           $totalTable=0;
+           $totalSignage=0;
            
 
            if($license == 'custom'){
@@ -343,11 +368,17 @@ class BillingController extends Controller
         }
             $totalprices = $totalItems + $dataBilling->prices;
            
+            
+            
+           
             return response()->json([
                 'status' => 200,
                 'data' => [
+                    'kiosk_prices' => $totalKiosk,
+                    'table_prices' =>  $totalTable,
+                    'signage_prices' => $totalSignage,
                     'license_prices' => $dataBilling->prices,
-                    'item_prices' =>  $totalItems,
+                    'total_item_prices' =>  $totalItems,
                     'total_prices' => $totalprices,
                     'billing_type' => $dataBilling->billing_types,
                     'subscription_duration' => $dataBilling->subscription_duration,

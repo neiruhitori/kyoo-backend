@@ -11,7 +11,7 @@
     @if($print->status == "PAID")
     <span>PAID</span>
     @elseif($print->status == "PENDING")
-    <span class="pending">PENDING</span>
+    <span class="pending">UNPAID</span>
     @else
     <span class="expired">EXPIRED</span>
     @endif
