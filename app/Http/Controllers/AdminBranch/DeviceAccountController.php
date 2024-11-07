@@ -49,6 +49,10 @@ class DeviceAccountController extends Controller
             $request->session()->flash('warning', __('You need to upgrade to premium user'));
             return redirect(route('admin-branch.branch-configuration.device-account.index'));
         }
+        if(count(Auth::user()->Branch->Device) >= 1){
+            $request->session()->flash('error', __('Maximum Device Account has exceeded'));
+            return redirect(route('admin-branch.branch-configuration.device-account.index'));
+        }
         return view('adminBranch.deviceAccount.create');
     }
 

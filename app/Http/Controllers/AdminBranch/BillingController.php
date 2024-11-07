@@ -97,7 +97,6 @@ class BillingController extends Controller
 
     public function storeInvoice(Request $request)
     {
-      
         $credentials = base64_encode(config('app.xendit_api_key'));
         $client = new \GuzzleHttp\Client();
 
@@ -120,7 +119,7 @@ class BillingController extends Controller
                     'external_id' => $invoice_number, 
                     'amount' => $amount,
                     'invoice_duration' => $invoice_duration,
-                    'success_redirect_url' => 'https://dev.kyoo.id/admin-branch/billing'
+                    'success_redirect_url' => url('/admin-branch/billing')
                 ],
             ]);
             $jsonResponse = json_decode($response->getBody(), true);
@@ -205,7 +204,7 @@ class BillingController extends Controller
                 }
         try{
     
-          // Gunakan DB transaction untuk memastikan atomicity
+          // aman sedikit dunia
           DB::transaction(function () use ($request) {
               // if ($invoice) {
                 if ($request->status == "PAID") {
@@ -242,17 +241,36 @@ class BillingController extends Controller
                           //reset fitur branch
                           FeatureSubscription::where('branch_id', $branch_id)->delete();
 
-                          //cek paket pilihan
-                          if($data->package !== "lite"){
-                              $featuresData = $features->map(function($feature) use($branch_id){
-                                  return [
-                                      'branch_id'  => $branch_id,
-                                      'feature_id' => $feature->id,
-                                      'created_at' => date('Y-m-d H:i:s')
-                                  ];
-                              });
-                              FeatureSubscription::insert($featuresData->toArray());
-                          }
+                          // cek paket pilihan
+                            if ($data->package === "premium") {
+                                // 1 dan 2 khusus premium
+                                $featuresData = $features->filter(function($feature) {
+                                    return in_array($feature->id, [1, 2]);
+                                })->map(function($feature) use($branch_id) {
+                                    return [
+                                        'branch_id'  => $branch_id,
+                                        'feature_id' => $feature->id,
+                                        'created_at' => date('Y-m-d H:i:s')
+                                    ];
+                                });
+                            } elseif ($data->package === "custom") {
+                                // Ambil semua fitur
+                                $featuresData = $features->map(function($feature) use($branch_id) {
+                                    return [
+                                        'branch_id'  => $branch_id,
+                                        'feature_id' => $feature->id,
+                                        'created_at' => date('Y-m-d H:i:s')
+                                    ];
+                                });
+                            } elseif ($data->package === "lite") {
+                                // Jangan tambahkan fitur
+                                $featuresData = collect(); // Kosongkan 
+                            }
+
+                            // Insert jika terdapat data fitur
+                            if ($featuresData->isNotEmpty()) {
+                                FeatureSubscription::insert($featuresData->toArray());
+                            }
                           //set ke branch
                           Branch::where('id', $branch_id)->update([
                               'branch_type_id' => $license,
