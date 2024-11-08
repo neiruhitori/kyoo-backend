@@ -221,21 +221,23 @@
                   
         </div>
 
-                <div class="d-flex mb-2">
+                <div class="d-flex mb-2 ml-3">
                     <div class="d-flex flex-column align-items-center" >
-                        <label for="one-layer" class="" id="one-layer">
-                            <div class="bg-secondary mx-4 p-3">
+                        <label for="one-layer" class="bg-secondary mx-2 p-2 rounded" id="one-layer">
+                            <img src="{{ asset('img/portal-menu/1-layer.jpeg') }}" style="width: 175px; height: 295px" alt="">
+                            {{-- <div class="bg-secondary mx-4 p-3">
                                 <div class="bg-primary" style="width: 140px; height: 240px"></div>
-                            </div>
+                            </div> --}}
                         </label>
                     </div>
     
                     <div class="d-flex flex-column align-items-center">
-                        <label for="two-layer" class="twoLayer" id="two-layer">
-                            <div class="bg-secondary mx-4 p-3 d-flex">
+                        <label for="two-layer" class="twoLayer bg-secondary mx-2 p-2 rounded" id="two-layer">
+                            <img src="{{ asset('img/portal-menu/2-layer.jpeg') }}" style="width: 355px; height: 325px" alt="">
+                            {{-- <div class="bg-secondary mx-4 p-3 d-flex">
                                 <div class="bg-primary mx-2" style="width: 140px; height: 240px"></div>
                                 <div class="bg-primary mx-2" style="width: 140px; height: 240px"></div>
-                            </div>
+                            </div> --}}
                         </label>
                     </div>
                    
