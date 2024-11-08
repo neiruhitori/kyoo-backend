@@ -44,7 +44,19 @@ class HomeController extends Controller
 
     public function index()
     {
-        return view('device.home');
+        $branch = auth()->user()->Branch;
+
+        $tv_config = $branch->TVconfiguration?->TVToken;
+        $webkiosk_config = $branch->WebkioskConfiguration?->WebkioskToken;
+
+    if (!$tv_config && !$webkiosk_config) {
+        auth()->logout();
+        return redirect()->route('login')->with('error', 'Konfigurasi akun masih tidak lengkap');
+    }
+        $tv_token = $tv_config ? $tv_config->token : Str::random(12);
+        $webkiosk_token = $webkiosk_config ? $webkiosk_config->token : Str::random(12);
+
+        return view('device.home', compact(['tv_token','webkiosk_token']));
     }
 
 

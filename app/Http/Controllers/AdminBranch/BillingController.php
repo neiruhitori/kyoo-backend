@@ -254,7 +254,6 @@ class BillingController extends Controller
                                     ];
                                 });
                             } elseif ($data->package === "custom") {
-                                // Ambil semua fitur
                                 $featuresData = $features->map(function($feature) use($branch_id) {
                                     return [
                                         'branch_id'  => $branch_id,
@@ -263,11 +262,10 @@ class BillingController extends Controller
                                     ];
                                 });
                             } elseif ($data->package === "lite") {
-                                // Jangan tambahkan fitur
-                                $featuresData = collect(); // Kosongkan 
+                                $featuresData = collect(); // kosongkan 
                             }
 
-                            // Insert jika terdapat data fitur
+                          
                             if ($featuresData->isNotEmpty()) {
                                 FeatureSubscription::insert($featuresData->toArray());
                             }
