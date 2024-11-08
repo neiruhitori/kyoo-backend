@@ -46,8 +46,8 @@ class HomeController extends Controller
     {
         $branch = auth()->user()->Branch;
 
-        $tv_config = $branch->TVconfiguration?->TVToken;
-        $webkiosk_config = $branch->WebkioskConfiguration?->WebkioskToken;
+        $tv_config = $branch && $branch->TVconfiguration ? $branch->TVconfiguration->TVToken : null;
+    $webkiosk_config = $branch && $branch->WebkioskConfiguration ? $branch->WebkioskConfiguration->WebkioskToken : null;
 
     if (!$tv_config && !$webkiosk_config) {
         auth()->logout();
