@@ -49,10 +49,7 @@ class HomeController extends Controller
         $tv_config = $branch && $branch->TVconfiguration ? $branch->TVconfiguration->TVToken : null;
     $webkiosk_config = $branch && $branch->WebkioskConfiguration ? $branch->WebkioskConfiguration->WebkioskToken : null;
 
-    if (!$tv_config && !$webkiosk_config) {
-        auth()->logout();
-        return redirect()->route('login')->with('error', 'Konfigurasi akun masih tidak lengkap');
-    }
+   
         $tv_token = $tv_config ? $tv_config->token : Str::random(12);
         $webkiosk_token = $webkiosk_config ? $webkiosk_config->token : Str::random(12);
 
