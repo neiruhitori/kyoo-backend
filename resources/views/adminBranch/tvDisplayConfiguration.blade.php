@@ -351,7 +351,7 @@
                 </form>
             </div>
             <div class="col-md-5 col-sm-12 mb-5">
-                @if (!Auth::user()->Branch->TVConfiguration || !Auth::user()->Branch->TVConfiguration->TVToken)
+                @if (!Auth::user()->Branch->TVConfiguration)
                 <form action="" method="">
                     <div class="mb-4">
                         <h5 class="font-weight-bold">Perbarui Token</h5>
