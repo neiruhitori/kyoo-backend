@@ -36,6 +36,8 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
 
     public function waBlast(AppointmentOnsite $appointmentOnsite){
         $branch = $appointmentOnsite->Service->Branch;
+        $type = $branch->getQueueTypeAttribute();
+        $url = url('/customer/'.$branch->id.'/'.$type.'/detail');
 
         // Data JSON yang akan dikirim
         $payload = [
@@ -50,7 +52,7 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
             "address"        => $branch->address,
             "branch_id"      => $branch->id,
             "id"             => $appointmentOnsite->id,
-            "link_branch"    => "",
+            "link_branch"    => $url,
         ];
     
         // Mengirim request POST ke endpoint waBlast
