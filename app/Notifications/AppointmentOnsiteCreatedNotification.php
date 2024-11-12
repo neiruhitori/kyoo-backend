@@ -37,6 +37,7 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
     public function waBlast(AppointmentOnsite $appointmentOnsite){
         $branch = $appointmentOnsite->Service->Branch;
         $type = $branch->getQueueTypeAttribute();
+        //url dynamic to detail branch, example:https://dev.kyoo.id/customer/93/onsite/detail
         $url = url('/customer/'.$branch->id.'/'.$type.'/detail');
 
         // Data JSON yang akan dikirim

@@ -287,6 +287,12 @@ export default {
             },
         }
     },
+    created () {
+        Echo.channel(`event_appointment_queue_general.${this.auth.branch_id}`)
+        .listen('AppointmentQueue', () => {
+            this.getQueues();
+        });
+  },
 
     mounted() {
         this.getQueues()
