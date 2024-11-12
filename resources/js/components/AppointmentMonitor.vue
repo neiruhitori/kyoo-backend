@@ -291,8 +291,9 @@ export default {
 
     mounted() {
         this.getQueues()
-        Echo.channel(`event_appointment_queue_general.${this.auth.branch_id}`).listen("AppointmentQueue", (data) => {
-            this.getQueues();  // Fetch ulang data ketika event diterima
+        Echo.channel(`event_appointment_queue_general.${this.branch.id}`)
+        .listen("AppointmentQueue", (data) => {
+            this.getQueues(); 
         });
     },
 
@@ -301,7 +302,6 @@ export default {
             const finishedAppointmentStatus = ['end served', 'no show', 'canceled']
 
             const { data } = await axios.get('/cs/appointments')
-
             this.finishAppointments = data.filter(v => {
                 return finishedAppointmentStatus.includes(v.status)
             }).sort((a, b) => {

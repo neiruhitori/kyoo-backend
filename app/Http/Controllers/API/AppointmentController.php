@@ -33,12 +33,11 @@ class AppointmentController extends Controller
         $data = $request->all();
         $data['branch_id'] = $slot->Service->Department->branch_id;
         $data['service_id'] = $slot->service_id;
-        $service = Service::find($data['service_id']);
 
         try {
             $appointment = $this->appointmentService->create($data);
 
-            event(new AppointmentQueueEvents($appointment, $service->branch_id));
+            event(new AppointmentQueueEvents($appointment, $data['branch_id']));
     
             return response()->json([
                 'success' => true,
