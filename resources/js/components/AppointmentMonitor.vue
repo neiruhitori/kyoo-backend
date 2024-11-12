@@ -287,15 +287,13 @@ export default {
             },
         }
     },
-    created () {
-        Echo.channel(`event_appointment_queue_general.${this.auth.branch_id}`)
-        .listen('AppointmentQueue', () => {
-            this.getQueues();
-        });
-  },
+   
 
     mounted() {
         this.getQueues()
+        Echo.private(`event_appointment_queue_general.${this.branch.id}`).listen("AppointmentQueue", (data) => {
+            this.getQueues();  // Fetch ulang data ketika event diterima
+        });
     },
 
     methods: {
