@@ -291,7 +291,7 @@ export default {
 
     mounted() {
         this.getQueues()
-        Echo.private(`event_appointment_queue_general.${this.auth.branch_id}`).listen("AppointmentQueue", (data) => {
+        Echo.channel(`event_appointment_queue_general.${this.auth.branch_id}`).listen("AppointmentQueue", (data) => {
             this.getQueues();  // Fetch ulang data ketika event diterima
         });
     },
