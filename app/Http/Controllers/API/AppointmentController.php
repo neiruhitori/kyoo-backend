@@ -29,11 +29,11 @@ class AppointmentController extends Controller
     public function store(StoreAppointment $request)
     {
         $slot = Slot::find($request->slot_id);
-        $service = Service::find($request->service_id);
+       
         $data = $request->all();
-
         $data['branch_id'] = $slot->Service->Department->branch_id;
         $data['service_id'] = $slot->service_id;
+        $service = Service::find($data['service_id']);
 
         try {
             $appointment = $this->appointmentService->create($data);
