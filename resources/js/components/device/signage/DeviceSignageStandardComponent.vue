@@ -209,13 +209,13 @@ export default {
             this.getQueues(); 
         }).listen('QueueAppointmentStatus', async (message) => {
             if (
-                    !message.queue_no ||
+                    !message.number ||
                     !["recall", "served"].includes(message.status)
                 ) {
                     return await this.getQueues();
                 }
-                console.log("call appointment no", message.queue_no);
-                await this.getQueues(message.queue_no);
+                console.log("call appointment no", message.number);
+                await this.getQueues(message.number);
 
                 if (
                     this.servingQueue &&
