@@ -199,6 +199,7 @@ export default {
         await this.getQueues();
 
         if (
+          this.servingQueue &&
           this.features.find(v => v.additional_feature.name === 'Panggilan Suara') &&
           this.config.queue_voice
         ) {
@@ -219,7 +220,7 @@ export default {
 
     this.animateImage();
     this.updateCurrentDate();
-
+    console.log(this.servingQueue);
     this.checkAutoplayPermission();
     this.subscribeAudioEvent();
     this.saveToLocal();
