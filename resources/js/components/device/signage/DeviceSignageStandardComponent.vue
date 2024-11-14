@@ -203,33 +203,7 @@ export default {
                     this.getQueueCallAudio();
                 }
             });
-
-        Echo.channel(`event_appointment_queue_general.${this.branch.id}`)
-        .listen("AppointmentQueue", () => {
-            this.getQueues(); 
-        }).listen('QueueAppointmentStatus', async (message) => {
-            if (
-                    !message.number ||
-                    !["recall", "served"].includes(message.status)
-                ) {
-                    return await this.getQueues();
-                }
-                console.log("call appointment no", message.number);
-                await this.getQueues(message.number);
-
-                if (
-                    this.servingQueue &&
-                    message.status &&
-                    this.config.queue_voice &&
-                    this.features.find(
-                        (v) => v.additional_feature.name === "Panggilan Suara"
-                    ) &&
-                    ["recall", "served"].includes(message.status) &&
-                    !message.not_called
-                ) {
-                    this.getQueueCallAudio();
-                }
-         });
+        
     },
 
     async mounted() {

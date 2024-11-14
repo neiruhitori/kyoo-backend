@@ -340,12 +340,6 @@ class AppointmentService
             'vct_id' => Auth::id(),
             'waiting_duration' => Carbon::now()->diffInseconds(Carbon::parse($appointment->checkin_time))
         ]);
-        event(new QueueAppointmentStatus([
-            'number' => $appointment->number,
-            'status' => 'served',
-            'branch_id' => Auth::user()->branch_id,
-            'workstation_id' => $appointment->workstation_id
-        ]));
 
         AppointmentServed::dispatch($appointment);
     }

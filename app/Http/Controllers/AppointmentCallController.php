@@ -23,14 +23,14 @@ class AppointmentCallController extends Controller
         // Queue number audio
         for ($i = 0; $i < strlen($appointmentNumber); $i++) {
             $fileName = $appointmentNumber[$i] . '.wav';
-            $filePath = '/audio/vo/' . $fileName;
+            $filePath = 'audio/vo/' . $fileName;
 
             if (file_exists(storage_path('app/') . $filePath)) {
                 array_push($audioFiles, $filePath);
             }
         }
 
-        array_push($audioFiles, 'audio/vo/dicounter.wav');
+        array_push($audioFiles, 'audio/vo/mohon-ke-counter.wav');
 
         // Counter number audio
         if ($appointment->Workstation) {
@@ -43,7 +43,7 @@ class AppointmentCallController extends Controller
 
         FFMpeg::open($audioFiles)
             ->export()
-            ->inFormat(new Wav)
+            ->inFormat(new Wav())
             ->concatWithTranscoding($hasVideo = false, $hasAudio = true)
             ->save('audio/vo/mixed-sound.wav');
         
