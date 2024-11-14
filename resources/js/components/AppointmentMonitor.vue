@@ -288,13 +288,18 @@ export default {
         }
     },
    
-
+    created(){
+        Echo.channel(`event_appointment_queue_general.${this.branch.id}`)
+      .listen('QueueAppointmentStatus', () => {
+        this.getQueues();
+      });
+    },
     mounted() {
         this.getQueues()
         Echo.channel(`event_appointment_queue_general.${this.branch.id}`)
-        .listen("AppointmentQueue", (data) => {
+        .listen("AppointmentQueue", () => {
             this.getQueues(); 
-        });
+        })
     },
 
     methods: {
