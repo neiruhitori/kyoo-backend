@@ -30,7 +30,7 @@ class AppointmentCallController extends Controller
             }
         }
 
-        array_push($audioFiles, 'audio/vo/mohon-ke-counter.wav');
+        array_push($audioFiles, 'audio/vo/dicounter.wav');
 
         // Counter number audio
         if ($appointment->Workstation) {

@@ -305,13 +305,12 @@ export default {
 
         if (self.currentInterval) {
           clearInterval(self.currentInterval);
-          }
-        }, this.currentImageDuration);
+        }
+      }, this.currentImageDuration);
       },
 
       async saveToLocal() {
-            // Fetch Image And Video
-            const fetchMedia = this.promotionImages.map(async media => {
+            const fetchPromises = this.promotionImages.map(async media => {
                 const response = await fetch(media.url);
                 const blob = await response.blob();
 
@@ -324,121 +323,33 @@ export default {
 
                 return base64Media;
             });
-            const base64Medias = await Promise.all(fetchMedia);
 
-            // Fetch Audio
-            const audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
-            for (let i = 0; i <= 9; i++) {
-                audios.push(i.toString());
-            }
-            for (let i = 65; i <= 80; i++) {
-                if (i !== 72) {
-                    audios.push(String.fromCharCode(i));
-                }
-            }
+            const base64Medias = await Promise.all(fetchPromises);
 
-            const base64Audios = [];
-            const fetchAudio = audios.map(async audio => {
-                const audio_url = `/storage/audio/vo/${audio}.wav`
-                const response = await fetch(audio_url);
-                const blob = await response.blob();
-
-                const base64Audio = await new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                });
-
-                const contentType = 'audio/wav';
-                const dataURL = `data:${contentType};base64,${base64Audio.split(',')[1]}`;
-
-                base64Audios.push({ name: audio, audio: dataURL });
-            });
-            await Promise.all(fetchAudio);
-
-            if (this.db) {
-                this.db.close();
-            }
-            // Delete the old database
-            const deleteRequest = indexedDB.deleteDatabase('Media');
             const db = await indexedDB.open('Media', 1);
 
             db.onupgradeneeded = event => {
-                const database = event.target.result;
-
-                const mediaObjectStore = database.createObjectStore('medias', { keyPath: 'id',autoIncrement: true });
-                const audioObjectStore = database.createObjectStore('audios', { keyPath: 'id' });
+                const objectStore = db.result.createObjectStore('media', { keyPath: 'id',autoIncrement: true });
             };
 
             db.onsuccess = async event => {
-                const transaction = db.result.transaction(['medias', 'audios'], 'readwrite');
-                const mediaObjectStore = transaction.objectStore('medias');
-                const audioObjectStore = transaction.objectStore('audios');
+                const transaction = db.result.transaction(['media'], 'readwrite');
+                const objectStore = transaction.objectStore('media');
 
-                const clearMediaRequest = mediaObjectStore.clear();
-                await clearMediaRequest.onsuccess;
+                const clearRequest = objectStore.clear();
+                await clearRequest.onsuccess;
 
-                const clearAudioRequest = audioObjectStore.clear();
-                await clearAudioRequest.onsuccess;
-
-                base64Medias.forEach((data, index) => {
-                    mediaObjectStore.add({ id: index + 1, data: data });
-                });
-
-                base64Audios.forEach((data, index) => {
-                    audioObjectStore.add({ id: data.name, data: data.audio });
+                base64Medias.forEach((base64Data, index) => {
+                    objectStore.add({ id: index + 1, data: base64Data });
                 });
             };
 
             const request = window.indexedDB.open('Media', 1);
             request.onsuccess = (event) => {
                 this.db = event.target.result;
-                this.getMediaFromIndexedDB();
+                this.getDataFromIndexedDB();
             };
-        },
-
-    //   async saveToLocal() {
-    //         const fetchPromises = this.promotionImages.map(async media => {
-    //             const response = await fetch(media.url);
-    //             const blob = await response.blob();
-
-    //             const base64Media = await new Promise((resolve, reject) => {
-    //                 const reader = new FileReader();
-    //                 reader.onloadend = () => resolve(reader.result);
-    //                 reader.onerror = reject;
-    //                 reader.readAsDataURL(blob);
-    //             });
-
-    //             return base64Media;
-    //         });
-
-    //         const base64Medias = await Promise.all(fetchPromises);
-
-    //         const db = await indexedDB.open('Media', 1);
-
-    //         db.onupgradeneeded = event => {
-    //             const objectStore = db.result.createObjectStore('media', { keyPath: 'id',autoIncrement: true });
-    //         };
-
-    //         db.onsuccess = async event => {
-    //             const transaction = db.result.transaction(['media'], 'readwrite');
-    //             const objectStore = transaction.objectStore('media');
-
-    //             const clearRequest = objectStore.clear();
-    //             await clearRequest.onsuccess;
-
-    //             base64Medias.forEach((base64Data, index) => {
-    //                 objectStore.add({ id: index + 1, data: base64Data });
-    //             });
-    //         };
-
-    //         const request = window.indexedDB.open('Media', 1);
-    //         request.onsuccess = (event) => {
-    //             this.db = event.target.result;
-    //             this.getDataFromIndexedDB();
-    //         };
-    // },
+    },
 
     getDataFromIndexedDB() {
         const transaction = this.db.transaction(['media'], 'readonly');
