@@ -454,7 +454,7 @@ export default {
 
             this.isPlaying = true;
 
-            const queueNo = this.servingQueue.queue_no;
+            const queueNo = this.servingQueue.number;
             const audio = ['intro_bell', 'nomor_antrian'];
 
             audio.push(...queueNo.split(''), 'dicounter');
