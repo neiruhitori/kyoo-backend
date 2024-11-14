@@ -455,9 +455,10 @@ export default {
             this.isPlaying = true;
 
             const queueNo = this.servingQueue.number;
+            console.log('Prop: ' , this.servingQueue)
             const audio = ['intro_bell', 'nomor_antrian'];
 
-            audio.push(...queueNo.split(''), 'dicounter');
+            audio.push(...queueNo.toString().split(''), 'dicounter');
 
             const playlist = [];
             audio.forEach(audioID => {
