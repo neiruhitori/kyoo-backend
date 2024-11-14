@@ -220,7 +220,6 @@ export default {
 
     this.animateImage();
     this.updateCurrentDate();
-    console.log(this.servingQueue);
     this.checkAutoplayPermission();
     this.subscribeAudioEvent();
     this.saveToLocal();
@@ -455,10 +454,13 @@ export default {
             this.isPlaying = true;
 
             const queueNo = this.servingQueue.number;
-            console.log('Prop: ' , this.servingQueue)
             const audio = ['intro_bell', 'nomor_antrian'];
+            const counter_id = this.servingQueue.workstation.label.replace(/\D/g, "");
 
             audio.push(...queueNo.toString().split(''), 'dicounter');
+            if (counter_id) {
+                audio.push(...counter_id.split(""));
+            }
 
             const playlist = [];
             audio.forEach(audioID => {
