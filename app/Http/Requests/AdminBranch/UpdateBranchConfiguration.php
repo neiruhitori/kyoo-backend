@@ -28,7 +28,7 @@ class UpdateBranchConfiguration extends FormRequest
             'maximum_recall' => 'numeric|min:0',
             'maximum_requeue_count' => 'numeric|min:0',
             'allow_transfer' => 'boolean',
-            'phone_owner' => 'numeric|min:5'
+            // 'phone_owner' => 'numeric|min:5'
         ];
     }
 }

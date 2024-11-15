@@ -38,28 +38,28 @@ class BranchConfigurationController extends Controller
   {
     $data = $request->all();
 
-    if (!isset($request->queue_voice)) {
-      $data['queue_voice'] = 'off';
+    $defaults = [
+        'queue_voice' => 'off',
+        'promotion' => 'off',
+        'wa_notification' => 'off',
+        'wa_notification_owner' => 'off',
+        'serving_directly' => 'off'
+    ];
+
+    foreach($defaults as $key => $value){
+      if(!isset($request->$key)){
+        $data[$key] = $value;
+      }
     }
 
-    if (!isset($request->promotion)) {
-      $data['promotion'] = 'off';
-    }
-
-    if (!isset($request->wa_notification)) {
-      $data['wa_notification'] = 'off';
-    }
-
-    if (!isset($request->wa_notification_owner)) {
-      $data['wa_notification_owner'] = 'off';
-    }
-
-    if (!isset($request->phone_owner)) {
-      $data['phone_owner'] = $request->phone_owner;
-    }
-
-    if (!isset($request->serving_directly)) {
-      $data['serving_directly'] = 'off';
+    if(!isset($request->wa_notification_owner) && empty($request->phone_owner)){
+      $request->validate([
+        'phone_owner' => 'nullable',
+    ]);
+    }else{
+      $request->validate([
+        'phone_owner' => 'numeric|min:5', 
+    ]);
     }
 
     $branchConfiguration = Auth::user()->Branch->BranchConfiguration;
