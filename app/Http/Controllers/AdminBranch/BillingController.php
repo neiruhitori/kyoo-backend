@@ -105,8 +105,8 @@ class BillingController extends Controller
             $user= Auth::user()->id;
             $branch= Auth::user()->Branch->id;
             $invoice_number = $this->no_transaksi();
-            // $invoice_duration = Carbon::now()->addDays(14)->diffInSeconds() + 1; //tepat 14 hari
-            $invoice_duration = 5*60;
+            $invoice_duration = Carbon::now()->addDays(14)->diffInSeconds() + 1; //tepat 14 hari
+            // $invoice_duration = 5*60;
             $description = $this->generateDesc($request->all(),$branch);
             $amount = (int) $request->amount; //terkadang value nya desimal, jadi dibulatkan kebawah
     
