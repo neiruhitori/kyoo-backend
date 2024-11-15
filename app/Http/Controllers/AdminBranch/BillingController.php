@@ -97,6 +97,7 @@ class BillingController extends Controller
 
     public function storeInvoice(Request $request)
     {
+        dd($request->all());
         $credentials = base64_encode(config('app.xendit_api_key'));
         $client = new \GuzzleHttp\Client();
 
@@ -356,11 +357,12 @@ class BillingController extends Controller
             $kioskQty = $request->input('kiosk_qty');
             $signageQty = $request->input('signage_qty');
 
-            $signagePrices =  ItemPrices::find(4); //signage
-            $kioskPrices =  ItemPrices::find(5); //kiosk
-
-            $totalSignage = $signagePrices->prices * $signageQty;
-            $totalKiosk = $kioskPrices->prices * $kioskQty;
+            $signagePrices =  ItemPrices::find(4); //harga signage
+            $kioskPrices =  ItemPrices::find(5); //harga kiosk
+            
+            // ${harga_item selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
+            $totalSignage = $signagePrices->prices * $duration * $signageQty;
+            $totalKiosk = $kioskPrices->prices * $duration * $kioskQty;
 
             // ${harga_meja selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
             $totalTable = $dataBilling->prices * $duration * $tableQty;

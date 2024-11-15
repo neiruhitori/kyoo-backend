@@ -486,13 +486,18 @@ function toggleSignageInput(selectedPackage) {
         signage.setAttribute('readonly', true);   
         signage.value = 1; // Nilai default saat premium
     } else if (selectedPackage === 'custom') {
-        queue.removeAttribute('readonly');
+        // queue.removeAttribute('readonly');
         table.removeAttribute('readonly');
         services.removeAttribute('readonly');
         kiosk.removeAttribute('readonly');
         table.addEventListener('input', function() {
         const tableValue = parseInt(table.value) || 0;
-            services.value = tableValue * 3;
+                services.value = tableValue * 3;
+                if (tableValue >= 2) {
+                    queue.value = 500
+                }else{
+                    queue.value = 100
+                }
             });
         signageContainer.style.display = 'flex';
         modalSignage.style.display = 'flex';  
@@ -653,8 +658,8 @@ function getData(selectedPackage){
                     }
 
                     let tablePrice = data.total_table_prices / table.value / selectedDuration;
-                    let kioskPrice = data.total_kiosk_prices / kiosk.value;
-                    let signagePrice = data.signage_prices / signage.value;
+                    let kioskPrice = data.total_kiosk_prices / kiosk.value / selectedDuration;
+                    let signagePrice = data.signage_prices / signage.value / selectedDuration;
                     signagePrice = isNaN(signagePrice) ? 0 : signagePrice
                     kioskPrice = isNaN(kioskPrice) ? 0 : kioskPrice;
 
@@ -662,10 +667,10 @@ function getData(selectedPackage){
                     document.getElementById('tablePrice').innerHTML = `<h6>${tablePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })} /Bulan</h6>`;
                     document.getElementById('tableTotalPrice').innerHTML = `<h6>${data.total_table_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                     document.getElementById('kioskQty').innerHTML = `<h6>${kiosk.value}</h6>`;
-                    document.getElementById('kioskPrice').innerHTML = `<h6>${kioskPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('kioskPrice').innerHTML = `<h6>${kioskPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })} /Bulan</h6>`;
                     document.getElementById('kioskTotalPrice').innerHTML = `<h6>${data.total_kiosk_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                     document.getElementById('signageQty').innerHTML = `<h6>${signage.value}</h6>`;
-                    document.getElementById('signagePrice').innerHTML = `<h6>${signagePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('signagePrice').innerHTML = `<h6>${signagePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })} /Bulan</h6>`;
                     document.getElementById('signageTotalPrice').innerHTML = `<h6>${data.signage_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                     // document.getElementById('customLicensePrice').innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                     document.getElementById('customTax').innerHTML = `<h6>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
