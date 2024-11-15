@@ -154,6 +154,15 @@
 
                     <div class="monitor-images-wrapper mb-3">
                         <div class="monitor-image-container">
+                            <select class="custom-select" name="selectSwitch" id="selectSwitch" style="width: 200px">
+                                <option value="file">Gambar/Video</option>
+                                <option value="youtube">Youtube</option>
+                              </select>
+                        </div>
+                    </div>
+
+                    <div class="monitor-images-wrapper mb-3">
+                        <div class="monitor-image-container" id="monitor_image1">
                             <label for="image_1">
                                 <div class="monitor-image-upload">
                                     {{-- <img src="{{ asset($image_1) }}" id="preview_image_1"> --}}
@@ -184,8 +193,18 @@
                                     </button>
                                 </div>
                             </div>
+
+                            
                         </div>
-                        <div class="monitor-image-container">
+                        <div class="monitor-image-container d-none" id="youtube_1">
+                            <div class="form-group mb-0">
+                                <label for="exampleFormControlInput1">Link Youtube 1</label>
+                                <input type="text" class="form-control" name="url_1">
+                            </div>
+                        </div>
+
+
+                        <div class="monitor-image-container" id="monitor_image2">
                             <label for="image_2">
                                 <div class="monitor-image-upload">
                                     <img src="{{ asset($image_2) }}" id="preview_image_2">
@@ -208,7 +227,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="monitor-image-container">
+                        <div class="monitor-image-container d-none" id="youtube_2">
+                            <div class="form-group mb-0">
+                                <label for="exampleFormControlInput1">Link Youtube 2</label>
+                                <input type="text" class="form-control" name="url_2">
+                            </div>
+                        </div>
+
+                        <div class="monitor-image-container" id="monitor_image3">
                             <label for="image_3">
                                 <div class="monitor-image-upload">
                                     <img src="{{ asset($image_3) }}" id="preview_image_3">
@@ -230,6 +256,13 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="monitor-image-container mb-3 d-none" id="youtube_3">
+                            <div class="form-group mb-0">
+                                <label for="exampleFormControlInput1">Link Youtube 3</label>
+                                <input type="text" class="form-control" name="url_3">
+                            </div>
+                        </div>
+
                         <div class="monitor-image-container" id="monitor-container-image-4">
                             <label for="image_4">
                                 <div class="monitor-image-upload">
@@ -865,6 +898,49 @@
 <script>
 
     const imageLayouts = @json($image_layouts);
+
+    function switchInput(){
+        let switchInput = document.getElementById('selectSwitch');
+
+        if(switchInput.value == 'youtube'){
+            document.getElementById('monitor_image1').classList.add("d-none")
+            document.getElementById('youtube_1').classList.remove("d-none")
+
+            document.getElementById('monitor_image2').classList.add("d-none")
+            document.getElementById('youtube_2').classList.remove("d-none")
+
+            document.getElementById('monitor_image3').classList.add("d-none")
+            document.getElementById('youtube_3').classList.remove("d-none")
+        }else{
+            document.getElementById('monitor_image1').classList.remove("d-none")
+            document.getElementById('youtube_1').classList.add("d-none")
+
+            document.getElementById('monitor_image2').classList.add("d-none")
+            document.getElementById('youtube_2').classList.remove("d-none")
+
+            document.getElementById('monitor_image3').classList.add("d-none")
+            document.getElementById('youtube_3').classList.remove("d-none")
+        }
+
+    }
+    // function handleURLyoutube(){
+    //     // let val = event.target.value;
+    //     let val_1 = document.getElementById('youtube_1');
+    //     let val_2 = document.getElementById('youtube_2');
+    //     let val_3 = document.getElementById('youtube_3');
+    //     let btn = document.getElementById('submit_image');
+
+    //     if (val_1 == '' && val_2 == '' && val_3 == '') {
+    //         btn.classList.add("hidden")
+    //     }else{
+    //         btn.classList.remove("hidden")
+    //     }
+    // }
+    // document.getElementById('youtube_1').addEventListener('input', handleURLyoutube);
+    // document.getElementById('youtube_2').addEventListener('input', handleURLyoutube);
+    // document.getElementById('youtube_3').addEventListener('input', handleURLyoutube);
+
+    document.getElementById('selectSwitch').addEventListener('change', switchInput);
 
     function changeLayout(input) {
         const { value } = input;

@@ -152,31 +152,46 @@ class TVDisplayConfigurationController extends Controller
 
     public function update(Branch $branch, Request $request)
     {
+        dd($request->all());
         
         $STORAGE_FOLDER_IMAGES = 'tv_images';
         $STORAGE_FOLDER_VIDEOS = 'tv_videos';
 
-        if ($request->file('image_1') && $request->file('image_1')->getClientOriginalExtension() === 'mp4') {
+        if($request->selectSwitch == 'file'){
+            if ($request->file('image_1') && $request->file('image_1')->getClientOriginalExtension() === 'mp4') {
+                $request->validate([
+                    'image_1' => 'nullable|mimetypes:video/mp4|max:10000',
+                    'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                    'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                    'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                    'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                    'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
+                ], [], [
+                    'image_1' => 'Video',
+                ]);
+            } else {
+                $request->validate([
+                    'image_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,mp4|max:1000',
+                    'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                    'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                    'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                    'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                    'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
+                ]);
+            }
+            
+        }else{
+            //jika pake link youtube
             $request->validate([
-                'image_1' => 'nullable|mimetypes:video/mp4|max:10000',
-                'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
-            ], [], [
-                'image_1' => 'Video',
-            ]);
-        } else {
-            $request->validate([
-                'image_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,mp4|max:1000',
-                'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+                'url_1' => 'nullable',
+                'url_2' => 'nullable',
+                'url_3' => 'nullable',
                 'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
                 'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
                 'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
             ]);
         }
+        
 
         $tv_layout = TVLayout::first();
         $tv_configuration = TVConfiguration::where('branch_id', $branch->id)->first();
