@@ -69,6 +69,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Notification');
     }
+    public function activeSubscription()
+    {
+        return $this->hasOne('App\Models\Subscription')->where('status', 'active');
+    }
 
     public function WorkstationVct()
     {

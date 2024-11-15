@@ -35,6 +35,11 @@ class AppointmentOnsite extends Model
         $notification->toWhatsApp($appointmentOnsite);
     }
 
+    public static function sendNotificationWaBlast($appointmentOnsite){
+        $notification = new AppointmentOnsiteCreatedNotification();
+        $notification->waBlast($appointmentOnsite);
+    }
+
     public function getQrCodeAttribute()
     {
         return 'qr_codes/' . $this->id . '_qr_code.png';

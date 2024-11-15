@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use App\DirectQueue;
 use App\Branch;
 use App\Service;
+use App\DirectQueue;
+use App\BranchConfiguration;
+use App\Models\SecretKeyAPi;
+use App\Events\OnsiteQueueUpdated;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Events\DirectQueue as DirectQueueEvent;
+use App\Interfaces\DirectQueueRepositoryInterface;
+use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
+use App\Http\Resources\DirectQueue\Detail as DirectQueueDetail;
 use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
 use App\Http\Requests\API\DirectQueue\Feedback as DirectQueueFeedback;
-use App\Http\Resources\DirectQueue\Detail as DirectQueueDetail;
-use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
-use App\Events\DirectQueue as DirectQueueEvent;
-use App\Events\OnsiteQueueUpdated;
-use App\Interfaces\DirectQueueRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
 
 class DirectQueueController extends Controller
 {
@@ -71,10 +73,47 @@ class DirectQueueController extends Controller
                 event(new OnsiteQueueUpdated($directQueue));
             }
 
+            $branch = Branch::where('id',$directQueue->branch_id)->first();
+            $client = BranchConfiguration::where('branch_id',$directQueue->branch_id)->first();
+            $tokenAPI = SecretKeyAPi::where('branch_id', $directQueue->branch_id)->first();
+            $webhookMessage = "You need an Webhook Url or Activate the feature!";
+
+            if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
+                $webhookMessage = "Webhook Send!";
+                $webhookData = [
+                    'event_type' => 'onsite_create_booking',
+                    
+                    'user' => (object)[
+                        'name' => $directQueue->name,
+                        'phone' => $directQueue->phone,
+                        'email' => $directQueue->email,
+                        'created_at' => $directQueue->created_at,
+                    ],
+                    'queue' => (object)[
+                        'id' => $directQueue->id,
+                        'service_id' => $directQueue->service_id,
+                        'service_name' => $directQueue->service_name,
+                        'service_type' => 'Direct Queue',
+                        'created_at' => $directQueue->created_at,
+                        'booking_code' => $directQueue->booking_code,
+                        'branch_id' => $directQueue->branch_id,
+                        'branch_name' => $branch->name,
+                    ]
+                ];
+                $webhookData = (object) $webhookData;
+
+                $this->sendWebhook($client, $webhookData);
+                
+            }else{
+                $webhookMessage = "There's no Webhook Url/The feature was inactive";
+            }
+            
+
             return response()->json([
                 'success' => true,
                 'message' => 'direct queue created',
-                'data' => $directQueue
+                'data' => $directQueue,
+                'Webhook' => $webhookMessage,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -112,4 +151,38 @@ class DirectQueueController extends Controller
             'data' => $directQueue
         ]);
     }
+
+    protected function sendWebhook($client, $webhookData)
+    {
+     
+        $guzzle = new \GuzzleHttp\Client();  
+        $tokenAPI = SecretKeyAPi::where('branch_id', $client->branch_id)->first();
+       
+
+        try {
+
+            $response = $guzzle->post($client->webhook_url, [
+                'headers' => [
+                    'x-secret-token' => $tokenAPI->secret_token,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $webhookData
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                throw new \Exception('Webhook failed with status: ' . $response->getStatusCode());
+            }
+
+            return response()->json([
+                'status' => 'success',
+               ]);
+
+        } catch (\Exception $e) {
+           return response()->json([
+            'status' => 'error',
+            'message' =>  $e->getMessage()
+           ]);
+        }
+    }
+
 }

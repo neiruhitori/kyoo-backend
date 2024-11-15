@@ -203,6 +203,7 @@ export default {
                     this.getQueueCallAudio();
                 }
             });
+        
     },
 
     async mounted() {

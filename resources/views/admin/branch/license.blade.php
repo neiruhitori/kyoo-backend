@@ -5,6 +5,87 @@
 
     @include('layouts.alert')
 
+    @if ($selected_features->contains('feature_id', 8))
+    <div class="card shadow mb-4">
+        <div class="card-header">
+            <h6 class="m-0 font-weight-bold text-primary">Konfigurasi Endpoint untuk Webhook</h6>
+        </div>
+
+        <div class="card-body">
+            <form action="{{ route('admin.branch.license.webhook', $branch->id) }}" method="POST">
+                @csrf
+            <div class="row">
+                    <div class="col-md-3">
+                        <label for="endpoint" class="font-weight-bold">{{ __('Endpoint Webhook') }}</label>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-group mb-2">
+                            <div>
+                                <input
+                                    type="text"
+                                    name="endpoint"
+                                    id="endpoint"
+                                    class="form-control"
+                                    value="{{ $webhook_url ?? ''}}"
+                                    placeholder="http://your.api.endpoint"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-warning">Simpan</button>
+                    </div>
+                </div>
+        </form>
+        </div>
+    </div>
+                    
+    @endif
+    @if ($selected_features->contains('feature_id', 8))
+    <div class="card shadow mb-4">
+        <div class="card-header">
+            <h6 class="m-0 font-weight-bold text-primary">Webhook Secret Key</h6>
+        </div>
+
+        <div class="card-body">
+            <form action="{{ route('admin.branch.license.generateToken', $branch->id) }}" method="GET">
+                @csrf
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="endpoint" class="font-weight-bold">{{ __('Secret Key') }}</label>
+                    </div>
+                    @if (!empty($secret_token))
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <div>
+                                <input
+                                    type="text"
+                                    id="secret_key"
+                                    class="form-control"
+                                    value="{{ $secret_token->secret_token }}"
+                                    readonly
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" onclick="copyText()" class="btn btn-secondary">Copy Token</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary">Regenerate Token</button>
+                    </div>
+                @else
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary">Generate Token</button>
+                    </div>
+                @endif
+                </div>
+        </form>
+        </div>
+    </div>
+                    
+    @endif
+
     <form action="{{ route('admin.branch.license.update', $branch->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -36,6 +117,33 @@
                     </div>
                 </div>
 
+                <div class="license-cfg-item mb-2">
+                    <label for="max_department" class="font-weight-bold">Maks. Departemen</label>
+                    <div>
+                        <input
+                            type="number"
+                            name="max_department"
+                            id="max_department"
+                            class="form-control"
+                            min="0"
+                            value="{{ $branch_config->max_departments }}"
+                        >
+                    </div>
+                </div>
+                
+                <div class="license-cfg-item mb-2">
+                    <label for="max_services" class="font-weight-bold">Maks. Petugas Layanan</label>
+                    <div>
+                        <input
+                            type="number"
+                            name="max_services"
+                            id="max_services"
+                            class="form-control"
+                            min="0"
+                            value="{{ $branch_config->max_services }}"
+                        >
+                    </div>
+                </div>
                 <div class="license-cfg-item mb-2">
                     <label for="max_counter" class="font-weight-bold">Maks. Counter</label>
                     <div>
@@ -110,6 +218,22 @@
 
         <button type="submit" class="btn btn-warning">Simpan</button>
     </form>
+
+   
+    <script>
+  function copyText() {
+        var copyText = document.getElementById("secret_key");
+        
+        copyText.select();
+        copyText.blur();
+        copyText.setSelectionRange(0, 99999); 
+        document.execCommand("copy");
+        window.getSelection().removeAllRanges();
+       
+    }
+    </script>
+
+  
 @endsection
 
 @push('css')
@@ -128,6 +252,10 @@
     .license-cfg-item div {
         width: 100%;
         max-width: 240px;
+    }
+    .license-endpoint-item div {
+        width: 100%;
+        max-width: 500px;
     }
 
     .license-checkbox {

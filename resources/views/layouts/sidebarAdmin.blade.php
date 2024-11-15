@@ -112,6 +112,30 @@
       </li>
 
       <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Billing" aria-expanded="true" aria-controls="collapseOne">
+          <i class="fas fa-fw fa-credit-card"></i>
+          <span>{{ __('Billing') }}</span>
+        </a>
+        <div id="Billing" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="{{ route('admin.billing.index') }}">
+              {{ __('Daftar Billing') }}
+              </a>
+            <a class="collapse-item" href="{{route('admin.billing.config')}}">
+              {{ __('Konfigurasi Billing') }}
+            </a>
+            <a class="collapse-item" href="{{route('admin.billing.item')}}">
+              {{ __('Konfigurasi Item') }}
+            </a>
+          </div>
+        </div>
+      </li>
+
+      <li class="nav-item {{ !request()->is('admin/billing') ?: 'active' }}">
+        
+    </li>
+
+      <li class="nav-item">
         <a class="nav-link" href="{{route('admin.waSession.index')}}">
           <i class="fab fa-whatsapp"></i>
           <span>WhatsApp Session</span>

@@ -192,6 +192,59 @@
                 </div>
             </div>
 
+            {{-- Setting Check-in --}}
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        {{ __('Konfigurasi Check-in Onsite Hybrid') }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('admin-branch.branch-configuration.feature.checkIn') }}" method="post">
+                    <div class="row">
+                            @csrf
+
+                            {{-- jika layer 1 --}}
+                            @if ($branch_config->layer == 1)
+                            <div class="col-md-12">
+                                <b class="my-2">
+                                    Fitur ini hanya dapat digunakan untuk Page Portal Hybrid Appointment-Onsite
+                                </b>
+                            </div>
+                            @endif
+
+
+                        <div class="col-md-3" id="select-check">
+                            @if ($branch_config->layer != 1)
+                            <select class="custom-select" id="check-in" name="check_in_rule">
+                                <option value="0" {{ $branch_config->check_in_rule == 0 ? 'selected' : ''}}>0 Jam</option>
+                                <option value="1" {{ $branch_config->check_in_rule == 1 ? 'selected' : ''}}>1 Jam</option>
+                                <option value="2" {{ $branch_config->check_in_rule == 2 ? 'selected' : ''}}>2 Jam</option>
+                                <option value="3" {{ $branch_config->check_in_rule == 3 ? 'selected' : ''}}>3 Jam</option>
+                                <option value="4" {{ $branch_config->check_in_rule == 4 ? 'selected' : ''}}>4 Jam</option>
+                                <option value="5" {{ $branch_config->check_in_rule == 5 ? 'selected' : ''}}>5 Jam</option>
+                                <option value="24" {{ $branch_config->check_in_rule == 24 ? 'selected' : ''}}>24 Jam</option>
+                              </select>
+                            @else
+                                
+                            @endif
+
+                        </div>
+                        
+                        <div class="col-md-9">
+                            <b class="my-2" id="desc">
+                            </b>
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            @if ($branch_config->layer != 1)
+                            <button type="submit" id="checkInBtn" class="btn btn-warning" {{ $branch_config->layer == 1 ? 'disabled' : ''}}>{{ __('Update') }}</button>
+                            @endif
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
@@ -211,6 +264,8 @@
                 </div>
             </div>
 
+            
+
             @push('js')
                 <script>
                     $(document).ready(function() {
@@ -224,6 +279,26 @@
                             $('#allow_transfer').val(allow_transferOldValue);
                         }
                     });
+
+                    let checkin = document.getElementById('check-in');
+                    let desc = document.getElementById('desc');
+                    let layerVal = @json($branch_config->layer);
+                    
+                    if (layerVal == 1) {
+                        
+                    } else {
+                        function getValue() {
+                        let value = checkin.value;                       
+                            if (value == '0') {
+                                desc.innerHTML = '*Pengguna dapat langsung melakukan check-in';
+                            } else {
+                                desc.innerHTML = `*Pengguna dapat check-in ${value} Jam sebelum janji temu`;
+                                }
+                        }
+                        getValue()
+                        checkin.addEventListener('change', getValue);
+                    }
+                   
                 </script>
             @endpush
         </div>

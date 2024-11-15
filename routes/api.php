@@ -102,6 +102,8 @@ Route::middleware(['auth:api'])->group(function () {
 
     // corporate routes
     Route::get('corporates/{id}/branches', 'API\CorporateController@getCorporateBranches');
+    
+    
 });
 
 // guest can be get the data
@@ -110,6 +112,8 @@ Route::get('direct-queue-by-branch/{branch}', 'API\DirectQueueController@index')
 // Search queue
 Route::get('search', 'API\SearchQueueController');
 
+
+Route::post('/subscription/callback','AdminBranch\BillingController@callbackInvoice');
 /**
  * External API Routes
  */

@@ -140,13 +140,29 @@
                             </div>
 
                             <div class="mt-4">
+
+                                @if (!Auth::user()->Branch->WebkioskConfiguration)
+                                <div class="mb-4">
+                                    <h5 class="font-weight-bold">Generate Token</h5>
+                                    <p class="text-caption">Konfigurasi dan Simpan Layout Terlebih dahulu</p>
+                                    <button type="button" onclick="" disabled class="btn btn-primary">Generate Token</button>
+                                </div>
+                                @elseif(!Auth::user()->Branch->WebkioskConfiguration->WebkioskToken) 
+                                <div class="mb-4">
+                                    <h5 class="font-weight-bold">Generate Token</h5>
+                                    <p class="text-caption">Generate token untuk menggunakan Kiosk</p>
+                                    <button type="button" onclick="submitUpdateToken()" class="btn btn-primary">Generate Token</button>
+                                </div>
+                                @else     
                                 <div class="mb-4">
                                     <h5 class="font-weight-bold">Perbarui Token</h5>
                                     <p class="text-caption">Perbarui Token Kiosk Web</p>
                                 </div>
-
                                 <button type="button" onclick="submitUpdateToken()" class="btn btn-primary">Perbarui</button>
+                                @endif
+
                             </div>
+
                         </div>
 
                         <div id='layoutConfig' class="col-md-8 {{ $webkiosConfiguration->layout != '1' ?: 'display-none'}}">

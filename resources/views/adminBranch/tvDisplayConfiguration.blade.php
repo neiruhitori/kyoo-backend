@@ -351,6 +351,15 @@
                 </form>
             </div>
             <div class="col-md-5 col-sm-12 mb-5">
+                @if (!Auth::user()->Branch->TVConfiguration)
+                <form action="" method="">
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Perbarui Token</h5>
+                        <p class="text-caption">Konfigurasi Signage terlebih dahulu</p>
+                    </div>
+                    <button type="submit" disabled id="submit_image" class="btn btn-primary">Perbarui</submit>
+                </form>
+                @else
                 <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update-token', Auth::user()->branch_id) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -361,6 +370,7 @@
 
                     <button type="submit" id="submit_image" class="btn btn-primary">Perbarui</submit>
                 </form>
+                @endif
             </div>
         </div>
     </div>

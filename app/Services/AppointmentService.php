@@ -15,6 +15,7 @@ use App\Events\AppointmentCreated;
 use App\Events\OwnerAppointmentCreated;
 use App\Events\AppointmentServed;
 use App\Events\AppointmentEndServed;
+use App\Events\QueueAppointmentStatus;
 
 use Illuminate\Support\Facades\Cache;
 use App\Supports\BookingCode;

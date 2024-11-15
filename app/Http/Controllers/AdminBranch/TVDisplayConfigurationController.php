@@ -152,6 +152,7 @@ class TVDisplayConfigurationController extends Controller
 
     public function update(Branch $branch, Request $request)
     {
+        
         $STORAGE_FOLDER_IMAGES = 'tv_images';
         $STORAGE_FOLDER_VIDEOS = 'tv_videos';
 
@@ -179,7 +180,7 @@ class TVDisplayConfigurationController extends Controller
 
         $tv_layout = TVLayout::first();
         $tv_configuration = TVConfiguration::where('branch_id', $branch->id)->first();
-
+      
         $data = [
             'branch_id' => $branch->id,
             'tv_layout_id' => $request->tv_layout_id ?? $tv_layout->id
@@ -202,7 +203,11 @@ class TVDisplayConfigurationController extends Controller
 
             TVConfiguration::where('id', $tv_configuration->id)->update($data);
         } else {
-            TVConfiguration::create($data);
+            $tv_config = TVConfiguration::create($data);
+            TVToken::create([
+                'tv_configuration_id' => $tv_config->id,
+                'token' => Str::random(12)
+            ]);
         }
 
         return redirect()
@@ -216,6 +221,7 @@ class TVDisplayConfigurationController extends Controller
         return redirect()
             ->route('admin-branch.branch-configuration.queue-monitor')
             ->with('success', 'Manajemen display TV berhasil diperbarui.');
+
     }
 
     public function updateToken(Branch $branch) {

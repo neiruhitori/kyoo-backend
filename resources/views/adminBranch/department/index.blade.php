@@ -22,7 +22,7 @@
                 <p>
                     <ul style="padding-left: 2rem;">
                         <li style="margin-bottom: 0.25rem;">
-                            Departement merupakan hierarki atau unit paling tinggi di antrian KYOO. Untuk versi gratis hanya akan tersedia 1 departmen saja. Dibawah Departemen akan terdapat beberapa jenis layanan.
+                            Departement merupakan hierarki atau unit paling tinggi di antrian KYOO. Dibawah Departemen akan terdapat beberapa jenis layanan.
                         </li>
                         @if(Auth::user()->Branch->BranchType->is_appointment)
                             <li style="margin-bottom: 0.25rem;">
@@ -32,6 +32,9 @@
                         <li>
                             Daftar layanan adalah jenis layanan yang Kantor Cabang anda berikan kepada pelanggan.
                         </li>
+                        <li>
+                            Daftar layanan ini yang akan terlihat di Web 
+                            Portal, Web Kiosk dan Apps Antrian                        </li>
                     </ul>
                 </p>
                 <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
@@ -50,14 +53,20 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                    @if (Auth::user()->Branch->BranchType->is_premium || count($departments) < 1)
+                    @if (!Auth::user()->Branch->BranchType->is_premium || count($departments) >= Auth::user()->Branch->BranchConfiguration->max_departments)
                         <div class="row">
                             <div class="col-md-12 text-right">
-                                <a href="{{route('admin-branch.branch-configuration.department.create')}}" class="btn btn-primary">
-                                    {{ __('create.module', ['module' => __('Department')]) }}
-                                </a>
+                                <button class="btn btn-primary" disabled>{{ __('create.module', ['module' => __('Department')]) }}</button>
                             </div>
                         </div>
+                    @else
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <a href="{{route('admin-branch.branch-configuration.department.create')}}" class="btn btn-primary" >
+                                {{ __('create.module', ['module' => __('Department')]) }}
+                            </a>
+                        </div>
+                    </div>
                     @endif
                     <div class="row">
                         <div class="col-md-12 mt-3">

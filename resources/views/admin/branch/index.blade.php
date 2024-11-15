@@ -102,6 +102,15 @@
                                                     >
                                                         <i class="fas fa-cog"></i>
                                                     </a>
+                                                    <a
+                                                        href="{{ route('admin.branch.billing', $branch->id) }}"
+                                                        class="btn btn-success"
+                                                        data-toggle="tooltip"
+                                                        data-placement="bottom"
+                                                        title="Riwayat Invoice"
+                                                    >
+                                                        <i class="fas fa-fw fa-credit-card"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                             @endforeach

@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Branch;
-use App\DirectQueue;
-use App\Http\Controllers\Controller;
-use App\Interfaces\AppointmentOnsiteRepositoryInterface;
-use App\Service;
-use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
-use App\Models\AppointmentOnsite;
-use App\Http\Resources\AppointmentOnsite\Detail as AppointmentOnsiteDetail;
 use App\Slot;
 use App\User;
+use App\Branch;
+use App\Service;
+use Carbon\Carbon;
+use App\DirectQueue;
 use App\WorkstationService;
+use App\BranchConfiguration;
+use App\Models\SecretKeyAPi;
 use Illuminate\Http\Request;
+use App\Models\AppointmentOnsite;
+use App\Http\Controllers\Controller;
+use App\Interfaces\AppointmentOnsiteRepositoryInterface;
+use App\Http\Requests\API\DirectQueue\Store as DirectQueueStore;
+use App\Http\Resources\AppointmentOnsite\Detail as AppointmentOnsiteDetail;
 
 class AppointmentOnsiteController extends Controller
 {
@@ -90,10 +93,83 @@ class AppointmentOnsiteController extends Controller
 
             $appointmentOnsite = $this->appointmentOnsiteRepository->store($data);
 
+            $branchID = $appointmentOnsite->service->branch_id;
+
+            $branch = Branch::where('id',$branchID)->first();
+            $client = BranchConfiguration::where('branch_id',$branchID)->first();
+            $tokenAPI = SecretKeyAPi::where('branch_id', $branchID)->first();
+            $webhookMessage = "You need an Webhook Url or Activate the feature!";
+
+            if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
+                $webhookMessage = "Webhook Send!";
+
+                $startTime = Carbon::createFromFormat('H:i', $appointmentOnsite->start_time)->format('H:i:s');
+                $endTime = Carbon::createFromFormat('H:i',$appointmentOnsite->end_time)->format('H:i:s');
+                $timezone = null;
+                if($branch && $branch->timezone){
+                    if($branch && $branch->timezone) {
+                        switch($branch->timezone) {
+                            case 'WIB':
+                                $timezone = 'GMT+7';
+                                break;
+                            case 'WITA':
+                                $timezone = 'GMT+8';
+                                break;
+                            case 'WIT':
+                                $timezone = 'GMT+9';
+                                break;
+                            default:
+                                $timezone = null;
+                                break;
+                        }
+                    }
+                }
+
+
+                $webhookData = [
+                    'event_type' => 'onsite_create_booking',
+
+                    'user' => (object)[
+                        'appointment_id' => $appointmentOnsite->id,
+                        'service_id' => $appointmentOnsite->service_id,
+                        'name' => $appointmentOnsite->name,
+                        'phone' => $appointmentOnsite->phone,
+                        'email' => $appointmentOnsite->email,
+                        'address' => $appointmentOnsite->address,
+                        'passport' => $appointmentOnsite->passport_number,
+                        'emergency_contact' => $appointmentOnsite->emergency_number,
+                        'reason_for_visit' => $appointmentOnsite->reason_for_visit,
+                        'date_of_birth' => $appointmentOnsite->date_of_birth,
+                        'created_at' => $appointmentOnsite->created_at,
+                    ],
+                    'queue' => (object)[
+                        'id' => $appointmentOnsite->id,
+                        'service_id' => $appointmentOnsite->service_id,
+                        'service_name' => $appointmentOnsite->service->name,
+                        'service_type' => 'Appointment Onsite Queue',
+                        'appointment_date' => $appointmentOnsite->date,
+                        'timezone' => $timezone,
+                        'start_time' => $startTime,
+                        'end_time' => $endTime,
+                        'created_at' => $appointmentOnsite->created_at,
+                        'booking_code' => strtoupper($appointmentOnsite->booking_code),
+                        'branch_id' => $branchID,
+                        'branch_name' => $branch->name,
+                    ]
+                ];
+                $webhookData = (object) $webhookData;
+
+                $this->sendWebhook($client, $webhookData);
+                
+            }else{
+                $webhookMessage = "There's no Webhook Url/The feature was inactive";
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'appointment onsite created',
-                'data' => $appointmentOnsite
+                'webhook' => $webhookMessage,
+                'data' => $appointmentOnsite,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -117,4 +193,38 @@ class AppointmentOnsiteController extends Controller
 
         return $cleaned_phone;
     }
+   
+    protected function sendWebhook($client, $webhookData)
+    {
+     
+        $guzzle = new \GuzzleHttp\Client();  
+        $tokenAPI = SecretKeyAPi::where('branch_id', $client->branch_id)->first();
+       
+
+        try {
+
+            $response = $guzzle->post($client->webhook_url, [
+                'headers' => [
+                    'x-secret-token' => $tokenAPI->secret_token,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $webhookData
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                throw new \Exception('Webhook failed with status: ' . $response->getStatusCode());
+            }
+
+            return response()->json([
+                'status' => 'success',
+               ]);
+
+        } catch (\Exception $e) {
+           return response()->json([
+            'status' => 'error',
+            'message' =>  $e->getMessage()
+           ]);
+        }
+    }
+    
 }

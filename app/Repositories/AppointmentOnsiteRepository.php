@@ -122,6 +122,14 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
                 $branch->BranchConfiguration->whatsapp_type == 'official_wa_branch'
             ) {
                 $appointmentOnsite->sendAppointmentOnsiteCreatedNotification($appointmentOnsite);
+            }elseif (
+                $appointmentOnsite->phone &&
+                $branch &&
+                $branch->is_premium &&
+                $branch->BranchConfiguration->wa_notification != false &&
+                $branch->BranchConfiguration->whatsapp_type == 'wa_kyoo'
+            ) {
+                $appointmentOnsite->sendNotificationWaBlast($appointmentOnsite);
             }
 
             try {

@@ -646,13 +646,13 @@ export default {
     .monitor-main-content img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: fill;
         position: relative;
     }
     .monitor-main-content video {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: fill;
         position: relative;
     }
     .permission-wrapper {

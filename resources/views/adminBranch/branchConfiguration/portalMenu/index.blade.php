@@ -118,6 +118,70 @@
 @section('content')
 
 @include('layouts.alert')
+<div class="card mb-4 custom-info" data-open="open" role="alert">
+    <div class="card-body">
+        <div class="custom-info-head">
+            <h6 class="font-weight-bold my-0">
+                <span class="fas fa-info-circle text-primary mr-1"></span>
+                Informasi
+            </h6>
+
+            <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
+                Tampilkan
+            </button>
+        </div>
+
+        <div class="custom-info-body">
+            <p>
+                <ul style="padding-left: 2rem;">
+                    <li style="margin-bottom: 0.25rem;">
+                        Disini konfigurasi web portal antrian untuk menampilkan jenis layanan kepada pelanggan.
+                    </li>
+                    <li style="margin-bottom: 0.25rem;">
+                        Pilih konfigurasi layout web portal yang sesuai dengan scenario proses antrian Anda.
+                </ul>
+            </p>
+            <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4 custom-info" data-open="open" role="alert">
+    <div class="card-body">
+        <div class="custom-info-head">
+            <h6 class="font-weight-bold my-0">
+                <span class="fas fa-info-circle text-primary mr-1"></span>
+                Tentang Portal Menu
+            </h6>
+        </div>
+
+        <div class="custom-info-body">
+            <p>
+                <ul style="padding-left: 2rem;" id="desc-1layer">
+                    <li style="margin-bottom: 0.25rem;">
+                        Jenis Portal ini merupakan portal standar dengan 1 tingkatan/layer halaman
+                    </li>
+                    <li style="margin-bottom: 0.25rem;">
+                        Layer ke-1 untuk pemilihan jenis layanan
+                </ul>
+                <ul style="padding-left: 2rem;" id="desc-2layer">
+                    <li style="margin-bottom: 0.25rem;">
+                        Jenis Portal ini merupakan portal onsite hybrid dengan appointment dengan 2 tingkatan/layer halaman 
+                    </li>
+                    <li style="margin-bottom: 0.25rem;">
+                        Layer ke-1 untuk pemilihan jenis layanan 
+                    <li style="margin-bottom: 0.25rem;">
+                        Layer ke-2 untuk pemilihan slot waktu layanan
+                    </li>
+                    <li style="margin-bottom: 0.25rem;">
+                        Form Booking untuk data pelanggan bisa dipilih sesuai dengan kebutuhan anda
+
+                </ul>
+                
+            </p>
+        </div>
+    </div>
+</div>
 
 <div class="card shadow mb-4">
     <div class="card-header">
@@ -125,13 +189,14 @@
             Portal Menu
         </h6>
     </div>
-    <div class="col-md-7 col-sm-12 mt-3">
+    <div class="col-md-12 col-sm-12 mt-3">
         <form action="{{ route('admin-branch.branch-configuration.menu-portal') }}" method="POST">
             @csrf
             @method('PUT')
     
             <div class="">
                 <div class="row">
+                 
                     <div class="form-group ml-3 col-md-5" style="width: 250px;">
                         <label for="select-template">Pilih layout yang sesuai</label>
                         <select name="layer" id="select" class="form-control" onchange="changeLayout(this)">
@@ -142,7 +207,7 @@
                         </select>
                     </div>
                     @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
-                    <div class="col-md ml-3" id="formBooking">
+                    <div class="col-md" id="formBooking">
                         <div class="form-group">
                             <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
                             <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror">
@@ -153,25 +218,29 @@
                         </div>
                     </div>
                     @endif
+                  
         </div>
 
-                <div class="d-flex mb-2">
+                <div class="d-flex mb-2 ml-3">
                     <div class="d-flex flex-column align-items-center" >
-                        <label for="one-layer" class="" id="one-layer">
-                            <div class="bg-secondary mx-4 p-3">
+                        <label for="one-layer" class="bg-secondary mx-2 p-2 rounded" id="one-layer">
+                            <img src="{{ asset('img/portal-menu/1-layer.jpeg') }}" style="width: 175px; height: 295px" alt="">
+                            {{-- <div class="bg-secondary mx-4 p-3">
                                 <div class="bg-primary" style="width: 140px; height: 240px"></div>
-                            </div>
+                            </div> --}}
                         </label>
                     </div>
     
                     <div class="d-flex flex-column align-items-center">
-                        <label for="two-layer" class="twoLayer" id="two-layer">
-                            <div class="bg-secondary mx-4 p-3 d-flex">
+                        <label for="two-layer" class="twoLayer bg-secondary mx-2 p-2 rounded" id="two-layer">
+                            <img src="{{ asset('img/portal-menu/2-layer.jpeg') }}" style="width: 355px; height: 325px" alt="">
+                            {{-- <div class="bg-secondary mx-4 p-3 d-flex">
                                 <div class="bg-primary mx-2" style="width: 140px; height: 240px"></div>
                                 <div class="bg-primary mx-2" style="width: 140px; height: 240px"></div>
-                            </div>
+                            </div> --}}
                         </label>
                     </div>
+                   
                 </div>
                
 
@@ -181,53 +250,7 @@
             </div>
         </form>
     </div>
-    {{-- <form action="{{ route('admin-branch.branch-configuration.menu-portal') }}" method="post">
-        @csrf
-        @method('put')
-        <div class="card-body d-flex justify-content-center">
-            <div class="d-flex gap-4">
-                <div class="d-flex flex-column align-items-center cursor-pointer">
-                    <label for="one-layer" class="font-weight-bolder text-dark cursor-pointer">Portal Standard 1 Layer</label>
-                    <label for="one-layer" class="cursor-pointer">
-                        <div class="bg-secondary mx-4 p-3">
-                            <div class="bg-primary" style="width: 140px; height: 240px"></div>
-                        </div>
-                    </label>
-                    <input type="radio" name="layer" id="one-layer" class="my-3 cursor-pointer" value="1" {{ $branchConfiguration->layer == 1 ? 'checked' : '' }}>
-                </div>
-
-                <div class="d-flex flex-column align-items-center cursor-pointer">
-                    <label for="two-layer" class="ml-4 font-weight-bolder text-dark cursor-pointer">
-                        {{ Auth::user()->Branch->BranchType->is_direct_queue ? 'Portal Hybrid Onsite-Appointment 2 Layer' : '2 Layer' }}
-                    </label>
-                    <label for="two-layer" class="cursor-pointer">
-                        <div class="bg-secondary mx-4 p-3 d-flex">
-                            <div class="bg-primary mx-2" style="width: 140px; height: 240px"></div>
-                            <div class="bg-primary mx-2" style="width: 140px; height: 240px"></div>
-                        </div>
-                    </label>
-                    <input type="radio" name="layer" id="two-layer" class="my-3 cursor-pointer" value="2" {{ $branchConfiguration->layer == 2 ? 'checked' : '' }}>
-                </div>
-            </div>
-        </div>
-
-        @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
-            <div class="col-md-12" id="formBooking">
-                <div class="form-group">
-                    <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
-                    <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror">
-                        <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
-                        <option value="form-medical-1" {{ $branchConfiguration->template_booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
-                    </select>
-                    @include('layouts.inputError', ['errorName' => 'template_booking_form'])
-                </div>
-            </div>
-        @endif
-
-        <div class="wrapper-submit mr-3 mb-3">
-            <button type="submit" class="btn btn-warning">Simpan</submit>
-        </div>
-    </form> --}}
+   
 </div>
 
 @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
@@ -235,16 +258,22 @@
            
         const oneLayer = document.getElementById('one-layer');
         const twoLayer = document.getElementById('two-layer');
+        const oneDesc = document.getElementById('desc-1layer');
+        const twoDesc = document.getElementById('desc-2layer');
         const formBooking = document.getElementById('formBooking');
         
             function changeLayout(input) {
 
                     const { value } = input;
                     if (value == '1') {
+                        oneDesc.style.display = 'block';
+                        twoDesc.style.display = 'none';
                         oneLayer.style.display = 'flex';
                         twoLayer.style.display = 'none';
                         formBooking.style.display = 'none';
                     } else {
+                        oneDesc.style.display = 'none';
+                        twoDesc.style.display = 'block';
                         oneLayer.style.display = 'none';
                         twoLayer.style.display = 'flex';
                         formBooking.style.display = 'flex';
@@ -252,7 +281,6 @@
                 }
                 window.onload = function() {
                     var selectTemplate = document.getElementById('select');
-                    console.log(selectTemplate);
                     
                     changeLayout(selectTemplate);
                 };

@@ -154,6 +154,10 @@ class Branch extends Model
     {
         return $this->hasMany('App\User')->where('role', 'admin_branch');
     }
+    public function Device()
+    {
+        return $this->hasMany('App\User')->where('role', 'device');
+    }
 
     public function CS()
     {

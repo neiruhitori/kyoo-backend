@@ -25,7 +25,7 @@
                             Berikut adalah halaman untuk melihat dan mengatur petugas layanan di antrian kantor Cabang Anda.
                         </li>
                         <li style="margin-bottom: 0.25rem;">
-                            Untuk versi gratis, hanya akan tersedia 1 petugas saja. Untuk penggunaan pertamakali, perlu disetting password user petugas agar dapat login sebagai petugas layanan.
+                           Untuk penggunaan pertama kali, perlu disetting password user petugas agar dapat login sebagai petugas layanan.
                         </li>
                         <li>
                             Jika lupa password user petugas, dapat menekan tombol reset password dibawah dan akan dikirimkan link melalui email admin cabang untuk melakukan proses reset password.

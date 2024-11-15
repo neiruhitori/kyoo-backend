@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Slot;
+use App\Service;
+use App\Appointment;
+use App\DirectQueue;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\AppointmentService;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\API\StoreAppointment;
 use App\Http\Requests\API\FeedbackAppointment;
-use App\Appointment;
-use App\Slot;
-use App\DirectQueue;
-use App\Http\Resources\Appointment as AppointmentCollection;
-use App\Http\Resources\Upcomming as UpcommingCollection;
-use Illuminate\Support\Facades\Auth;
 
-use App\Services\AppointmentService;
+use App\Http\Resources\Upcomming as UpcommingCollection;
+use App\Events\AppointmentQueue as AppointmentQueueEvents;
+use App\Http\Resources\Appointment as AppointmentCollection;
 
 class AppointmentController extends Controller
 {
@@ -27,14 +29,15 @@ class AppointmentController extends Controller
     public function store(StoreAppointment $request)
     {
         $slot = Slot::find($request->slot_id);
-
+       
         $data = $request->all();
-
         $data['branch_id'] = $slot->Service->Department->branch_id;
         $data['service_id'] = $slot->service_id;
 
         try {
             $appointment = $this->appointmentService->create($data);
+
+            event(new AppointmentQueueEvents($appointment, $data['branch_id']));
     
             return response()->json([
                 'success' => true,

@@ -10,31 +10,26 @@
         <ul class="navbar-nav ml-auto">
 
         <!-- Nav Item - Alerts -->
-        {{-- <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-bell fa-fw"></i>
-            <!-- Counter - Alerts -->
-            <span class="badge badge-danger badge-counter">3+</span>
-            </a>
-            <!-- Dropdown - Alerts -->
-            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-            <h6 class="dropdown-header">
-                Alerts Center
-            </h6>
-            <a class="dropdown-item d-flex align-items-center" href="#">
-                <div class="mr-3">
-                <div class="icon-circle bg-primary">
-                    <i class="fas fa-file-alt text-white"></i>
-                </div>
-                </div>
-                <div>
-                <div class="small text-gray-500">December 12, 2019</div>
-                <span class="font-weight-bold">{{ __('A new monthly report is ready to download!') }}</span>
-                </div>
-            </a>
-            </div>
-        </li> --}}
-
+        @switch(Auth::user()->role)
+                @case('admin_kyoo')
+                  
+                    @break
+                @case('admin_branch')
+                        @if(!Auth::user()->Branch->is_premium )
+                        <li class="nav-item no-arrow mx-1">
+                            <div class="mt-3 input-group rounded">
+                                <p class="form-control text-white bg-primary mx-3 rounded">You're using Trial License, upgrade your license to access more features!</p>
+                            
+                                <a class="btn btn-warning " href="{{ route('admin-branch.subscription') }}">Upgrade KYOO</a>
+                            
+                            </div>
+                        </li>
+                        @endif
+                    @break
+                @default
+                    
+            @endswitch
+        
         <div class="topbar-divider d-none d-sm-block"></div>
 
         <!-- Nav Item - User Information -->
