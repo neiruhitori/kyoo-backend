@@ -486,18 +486,24 @@ function toggleSignageInput(selectedPackage) {
         signage.setAttribute('readonly', true);   
         signage.value = 1; // Nilai default saat premium
     } else if (selectedPackage === 'custom') {
-        queue.removeAttribute('readonly');
+        // queue.removeAttribute('readonly');
         table.removeAttribute('readonly');
         services.removeAttribute('readonly');
         kiosk.removeAttribute('readonly');
         table.addEventListener('input', function() {
         const tableValue = parseInt(table.value) || 0;
-            services.value = tableValue * 3;
+                services.value = tableValue * 3;
+                if (tableValue >= 2) {
+                    queue.value = 500
+                }else{
+                    queue.value = 100
+                }
             });
         signageContainer.style.display = 'flex';
         modalSignage.style.display = 'flex';  
         signage.removeAttribute('readonly');  
         signage.value = 1;     
+        kiosk.value = 1;
     } else {
         queue.setAttribute('readonly', true);
         table.setAttribute('readonly', true);
@@ -590,9 +596,9 @@ packageSelection.addEventListener('change', function() {
 });
 
 
-function calculateTotal(price, itemPrices) {
+function calculateTotal(price) {
     const tax = price * 0.11; // PPN 11%
-    const total = price + tax + itemPrices;
+    const total = price + tax;
 
     return { price, tax, total};
 }
@@ -628,7 +634,9 @@ function getData(selectedPackage){
             const data = response.data;
             
             if (data) {
-                const { price, tax, total, itemPrices } = calculateTotal(data.license_prices, data.total_item_prices);
+                console.log(data);
+                
+                const { price, tax, total, itemPrices } = calculateTotal(data.license_prices);
                 if(data.billing_type == 'custom'){
                     //jika license custom
                     document.getElementById('itemContainer').style.display = 'table';
@@ -649,25 +657,25 @@ function getData(selectedPackage){
                         custSignageContainer.style.display = 'none';
                     }
 
-                    let tablePrice = data.table_prices / table.value;
-                    let kioskPrice = data.kiosk_prices / kiosk.value;
-                    let signagePrice = data.signage_prices / signage.value;
+                    let tablePrice = data.total_table_prices / table.value / selectedDuration;
+                    let kioskPrice = data.total_kiosk_prices / kiosk.value / selectedDuration;
+                    let signagePrice = data.signage_prices / signage.value / selectedDuration;
                     signagePrice = isNaN(signagePrice) ? 0 : signagePrice
                     kioskPrice = isNaN(kioskPrice) ? 0 : kioskPrice;
 
                     document.getElementById('tableQty').innerHTML = `<h6>${table.value}</h6>`;
-                    document.getElementById('tablePrice').innerHTML = `<h6>${tablePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-                    document.getElementById('tableTotalPrice').innerHTML = `<h6>${data.table_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('tablePrice').innerHTML = `<h6>${tablePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })} /Bulan</h6>`;
+                    document.getElementById('tableTotalPrice').innerHTML = `<h6>${data.total_table_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                     document.getElementById('kioskQty').innerHTML = `<h6>${kiosk.value}</h6>`;
-                    document.getElementById('kioskPrice').innerHTML = `<h6>${kioskPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-                    document.getElementById('kioskTotalPrice').innerHTML = `<h6>${data.kiosk_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('kioskPrice').innerHTML = `<h6>${kioskPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })} /Bulan</h6>`;
+                    document.getElementById('kioskTotalPrice').innerHTML = `<h6>${data.total_kiosk_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                     document.getElementById('signageQty').innerHTML = `<h6>${signage.value}</h6>`;
-                    document.getElementById('signagePrice').innerHTML = `<h6>${signagePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                    document.getElementById('signagePrice').innerHTML = `<h6>${signagePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })} /Bulan</h6>`;
                     document.getElementById('signageTotalPrice').innerHTML = `<h6>${data.signage_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                     // document.getElementById('customLicensePrice').innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                     document.getElementById('customTax').innerHTML = `<h6>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                     document.getElementById('customTotal').innerHTML = `<h5><b>${total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h5>`;
-                    itemsElement.innerHTML = `<h6><b>${data.total_item_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
+                    itemsElement.innerHTML = `<h6><b>${data.license_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
                 }else{
                     document.getElementById('nonCustom').style.display = 'flex';
                     priceElement.innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
