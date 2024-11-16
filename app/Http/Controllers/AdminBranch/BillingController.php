@@ -97,6 +97,7 @@ class BillingController extends Controller
 
     public function storeInvoice(Request $request)
     {
+        dd($request->all());
         $credentials = base64_encode(config('app.xendit_api_key'));
         $client = new \GuzzleHttp\Client();
 
@@ -105,8 +106,8 @@ class BillingController extends Controller
             $user= Auth::user()->id;
             $branch= Auth::user()->Branch->id;
             $invoice_number = $this->no_transaksi();
-            // $invoice_duration = Carbon::now()->addDays(14)->diffInSeconds() + 1; //tepat 14 hari
-            $invoice_duration = 5*60;
+            $invoice_duration = Carbon::now()->addDays(14)->diffInSeconds() + 1; //tepat 14 hari
+            // $invoice_duration = 5*60;
             $description = $this->generateDesc($request->all(),$branch);
             $amount = (int) $request->amount; //terkadang value nya desimal, jadi dibulatkan kebawah
     
@@ -345,8 +346,6 @@ class BillingController extends Controller
                 'message' => 'Lisensi Tidak Tersedia'
             ]);
         }
-
-           $totalprices = 0;
            $totalItems = 0;
            $totalKiosk = 0;
            $totalTable=0;
@@ -354,48 +353,34 @@ class BillingController extends Controller
            
 
            if($license == 'custom'){
-            $tax = 0.11;
             $tableQty = $request->input('table_qty');
             $kioskQty = $request->input('kiosk_qty');
             $signageQty = $request->input('signage_qty');
 
-            $signagePrices =  ItemPrices::find(4); //signage
-            $kioskPrices =  ItemPrices::find(5); //kiosk
+            $signagePrices =  ItemPrices::find(4); //harga signage
+            $kioskPrices =  ItemPrices::find(5); //harga kiosk
+            
+            // ${harga_item selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
+            $totalSignage = $signagePrices->prices * $duration * $signageQty;
+            $totalKiosk = $kioskPrices->prices * $duration * $kioskQty;
 
-            $totalSignage = ($signagePrices->prices + $signagePrices->prices * $tax )* $signageQty;
-            $totalKiosk = ($kioskPrices->prices +  $kioskPrices->prices * $tax) * $kioskQty;
-
-            if($duration == 3){
-                //Kalau Durasi 3 bulan ambil id 1 utk meja 3 bulan
-                $tablePrices = ItemPrices::find(1);
-                $totalTable = ($tablePrices->prices  + $tablePrices->prices * $tax) * $tableQty;
-            }else if($duration == 6){
-                //Kalau Durasi 6 bulan ambil id 2 utk meja 6 bulan
-                $tablePrices = ItemPrices::find(2);
-                $totalTable = ($tablePrices->prices  + $tablePrices->prices * $tax) * $tableQty;
-            }else{
-                //Kalau Durasi 12 bulan ambil id 3 utk meja 12 bulan
-                $tablePrices = ItemPrices::find(3);
-                $totalTable = ($tablePrices->prices  + $tablePrices->prices * $tax) * $tableQty;
-            }
+            // ${harga_meja selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
+            $totalTable = $dataBilling->prices * $duration * $tableQty;
+            
 
             $totalItems = $totalTable + $totalKiosk + $totalSignage;
 
+        }else{
+
+            $totalItems = $dataBilling->prices;
         }
-            $totalprices = $totalItems + $dataBilling->prices;
-           
-            
-            
-           
             return response()->json([
                 'status' => 200,
                 'data' => [
-                    'kiosk_prices' => $totalKiosk,
-                    'table_prices' =>  $totalTable,
+                    'total_kiosk_prices' => $totalKiosk,
+                    'total_table_prices' =>  $totalTable,
                     'signage_prices' => $totalSignage,
-                    'license_prices' => $dataBilling->prices,
-                    'total_item_prices' =>  $totalItems,
-                    'total_prices' => $totalprices,
+                    'license_prices' => $totalItems ,
                     'billing_type' => $dataBilling->billing_types,
                     'subscription_duration' => $dataBilling->subscription_duration,
                 ]
