@@ -97,7 +97,6 @@ class BillingController extends Controller
 
     public function storeInvoice(Request $request)
     {
-        dd($request->all());
         $credentials = base64_encode(config('app.xendit_api_key'));
         $client = new \GuzzleHttp\Client();
 
@@ -106,7 +105,7 @@ class BillingController extends Controller
             $user= Auth::user()->id;
             $branch= Auth::user()->Branch->id;
             $invoice_number = $this->no_transaksi();
-            $invoice_duration = Carbon::now()->addDays(14)->diffInSeconds() + 1; //tepat 14 hari
+            $invoice_duration = Carbon::now()->addDays(3)->diffInSeconds() + 1; //tepat 14 hari
             // $invoice_duration = 5*60;
             $description = $this->generateDesc($request->all(),$branch);
             $amount = (int) $request->amount; //terkadang value nya desimal, jadi dibulatkan kebawah

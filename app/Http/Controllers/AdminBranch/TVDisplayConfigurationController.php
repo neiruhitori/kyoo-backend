@@ -75,9 +75,38 @@ class TVDisplayConfigurationController extends Controller
         $branch_configuration = BranchConfiguration::where('branch_id', Auth::user()->branch_id)->first();
 
         if ($tv_configuration) {
-            if ($tv_configuration->image_1) $image_1 = 'storage/' . $tv_configuration->image_1;
-            if ($tv_configuration->image_2) $image_2 = 'storage/' . $tv_configuration->image_2;
-            if ($tv_configuration->image_3) $image_3 = 'storage/' . $tv_configuration->image_3;
+            $link_1 =$tv_configuration->image_1 && filter_var($tv_configuration->image_1, FILTER_VALIDATE_URL)
+            ? $tv_configuration->image_1 // Jika image_1 adalah URL
+            : null ;
+
+            $link_2 =$tv_configuration->image_2 && filter_var($tv_configuration->image_2, FILTER_VALIDATE_URL)
+            ? $tv_configuration->image_2 // Jika image_1 adalah URL
+            : null ;
+            
+            $link_3 =$tv_configuration->image_3 && filter_var($tv_configuration->image_3, FILTER_VALIDATE_URL)
+            ? $tv_configuration->image_3 // Jika image_1 adalah URL
+            : null ;
+
+            if($link_1 == null || $link_2 == null || $link_3 == null){
+                $switchLink = true;
+            }else{
+                $switchLink = false;
+            }
+
+            
+           // Cek gambar untuk image 1, 2, dan 3
+            $image_1 = ($tv_configuration->image_1 && !filter_var($tv_configuration->image_1, FILTER_VALIDATE_URL))
+            ? 'storage/' . $tv_configuration->image_1
+            : '';
+
+            $image_2 = ($tv_configuration->image_2 && !filter_var($tv_configuration->image_2, FILTER_VALIDATE_URL))
+            ? 'storage/' . $tv_configuration->image_2
+            : '';
+
+            $image_3 = ($tv_configuration->image_3 && !filter_var($tv_configuration->image_3, FILTER_VALIDATE_URL))
+            ? 'storage/' . $tv_configuration->image_3
+            : '';
+            
             if ($tv_configuration->image_4) $image_4 = 'storage/' . $tv_configuration->image_4;
             if ($tv_configuration->image_5) $image_5 = 'storage/' . $tv_configuration->image_5;
             if ($tv_configuration->image_6) $image_6 = 'storage/' . $tv_configuration->image_6;
@@ -119,6 +148,10 @@ class TVDisplayConfigurationController extends Controller
         return view('adminBranch.tvDisplayConfiguration', [
             'tv_configuration' => $tv_configuration,
             'layout_configuration' => $tvConfigurationFormValue,
+            'switchLink' => $switchLink,
+            'link_1' => $link_1,
+            'link_2' => $link_2,
+            'link_3' => $link_3,
             'image_1' => $image_1,
             'image_2' => $image_2,
             'image_3' => $image_3,
@@ -152,7 +185,6 @@ class TVDisplayConfigurationController extends Controller
 
     public function update(Branch $branch, Request $request)
     {
-        dd($request->all());
         
         $STORAGE_FOLDER_IMAGES = 'tv_images';
         $STORAGE_FOLDER_VIDEOS = 'tv_videos';
@@ -183,9 +215,9 @@ class TVDisplayConfigurationController extends Controller
         }else{
             //jika pake link youtube
             $request->validate([
-                'url_1' => 'nullable',
-                'url_2' => 'nullable',
-                'url_3' => 'nullable',
+                'url_1' => 'nullable|url', 
+                'url_2' => 'nullable|url',
+                'url_3' => 'nullable|url',
                 'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
                 'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
                 'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
@@ -201,13 +233,39 @@ class TVDisplayConfigurationController extends Controller
             'tv_layout_id' => $request->tv_layout_id ?? $tv_layout->id
         ];
 
-        for ($i = 1; $i <= 6; $i++) {
-            if ($request->file("image_$i")) {
-                $imageType = $request->file("image_$i")->getClientOriginalExtension();
-                $STORAGE_FOLDER = $imageType === 'mp4' ? $STORAGE_FOLDER_VIDEOS : $STORAGE_FOLDER_IMAGES;
-                $data["image_$i"] = Storage::disk('public')->put($STORAGE_FOLDER, $request->file("image_$i"));
+
+        if($request->selectSwitch == 'file'){
+            for ($i = 1; $i <= 6; $i++) {
+                if ($request->file("image_$i")) {
+                    $imageType = $request->file("image_$i")->getClientOriginalExtension();
+                    $STORAGE_FOLDER = $imageType === 'mp4' ? $STORAGE_FOLDER_VIDEOS : $STORAGE_FOLDER_IMAGES;
+                    $data["image_$i"] = Storage::disk('public')->put($STORAGE_FOLDER, $request->file("image_$i"));
+                }
+            }
+        }else{
+            if ($tv_configuration) {
+                if ($request->url_1) {
+                    $data['image_1'] = $request->url_1; // Update jika ada URL baru
+                }
+                if ($request->url_2) {
+                    $data['image_2'] = $request->url_2; // Update jika ada URL baru
+                }
+                if ($request->url_3) {
+                    $data['image_3'] = $request->url_3; // Update jika ada URL baru
+                }
+            } else {
+                $data['image_1'] = $request->url_1;
+                $data['image_2'] = $request->url_2;
+                $data['image_3'] = $request->url_3;
+            }
+            for ($i = 4; $i <= 6; $i++) {
+                if ($request->file("image_$i")) {
+                    $data["image_$i"] = Storage::disk('public')->put($STORAGE_FOLDER_IMAGES, $request->file("image_$i"));
+                }
             }
         }
+        // dd($data);
+
 
         if ($tv_configuration) {
             for ($i = 1; $i <= 6; $i++) {

@@ -24,7 +24,7 @@
     </style>
 @endpush
 @section('content')
-    <div class="card mb-4 custom-info" data-open="open" role="alert">
+    {{-- <div class="card mb-4 custom-info" data-open="open" role="alert">
         <div class="card-body">
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
@@ -44,7 +44,7 @@
                 <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="row">
         <div class="col-xl-12 col-lg-7">
