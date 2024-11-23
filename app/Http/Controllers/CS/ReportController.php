@@ -89,7 +89,7 @@ class ReportController extends Controller
             ]);
         }
 
-        $directQueue = DirectQueue::query()->whereHas('Service', function ($query) {
+        $directQueue = DirectQueue::query()->with(['WorkstationVct','WorkstationVct.user'])->whereHas('Service', function ($query) {
             $query->whereBranchId(Auth::user()->branch_id);
         })->whereDate('created_at', '>=', $start_date)
             ->whereDate('created_at', '<=', $end_date)
@@ -99,6 +99,11 @@ class ReportController extends Controller
         $directQueue->when($request->workstation_service_id, function ($query) use ($request) {
             $query->whereWorkstationServiceId($request->workstation_service_id);
         });
+        $q = $directQueue->get();
+        $petugas = $q->map(function ($directQueue) {
+            return $directQueue->WorkstationVct;
+        });
+        // dd($petugas);
 
         return view('cs.report.directQueue.daily', [
             'directQueues' => $directQueue->get(),

@@ -12,4 +12,10 @@ class WorkstationVct extends Model
     {
         return $this->belongsTo('App\Workstation');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'vct_id', 'id');
+    }
+    
+
 }
