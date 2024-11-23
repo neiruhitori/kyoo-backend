@@ -97,7 +97,7 @@
                                         <th>{{ __('Ambil Antrian') }}</th>
                                         <th>{{ __('Antrian Dipanggil') }}</th>
                                         <th>{{ __('Mulai Layanan') }}</th>
-                                        <th>{{ __('Served End ') }}</th>
+                                        <th>{{ __('Selesai Layanan ') }}</th>
                                         <th>{{ __('Durasi Tunggu') }} </th>
                                         <th>{{ __('Durasi Layanan (Panggil)') }} </th>
                                         <th>{{ __('Durasi Layanan') }} </th>
