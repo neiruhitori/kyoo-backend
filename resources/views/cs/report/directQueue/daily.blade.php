@@ -119,8 +119,8 @@
                                                     @if ($directQueue->called_at)
                                                     @php
                                                         $waktuCreate = \Carbon\Carbon::parse($directQueue->created_at);
-                                                        $waktuPanggil = $directQueue->called_at ? \Carbon\Carbon::parse($directQueue->called_at) : null;
-
+                                                        $cek = $directQueue->call_time ? $directQueue->call_time : $directQueue->called_at;
+                                                        $waktuPanggil = \Carbon\Carbon::parse($cek);
                                                         $durasiTunggu = $waktuPanggil ? $waktuPanggil->diff($waktuCreate) : null;
 
                                                         $formattedDurasiTunggu = $durasiTunggu 
