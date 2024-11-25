@@ -72,7 +72,7 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <th>{{ __('Queue Number') }}</th>
-                                        <th>{{ __('Booking Code') }}</th>
+                                        <th>{{ __('Kode Unik') }}</th>
                                         <th>{{ __('Ambil Antrian') }}</th>
                                         <th>{{ __('Antrian Dipanggil') }}</th>
                                         <th>{{ __('Mulai Layanan') }}</th>
@@ -125,7 +125,7 @@
 
                                                         $formattedDurasiTunggu = $durasiTunggu 
                                                             ? sprintf('%02d:%02d:%02d', $durasiTunggu->h, $durasiTunggu->i, $durasiTunggu->s) 
-                                                            : '00:00:00';
+                                                            : '-';
                                                     @endphp
                                                         {{ $formattedDurasiTunggu }} 
                                                     @else
