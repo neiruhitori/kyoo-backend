@@ -99,11 +99,6 @@ class ReportController extends Controller
         $directQueue->when($request->workstation_service_id, function ($query) use ($request) {
             $query->whereWorkstationServiceId($request->workstation_service_id);
         });
-        $q = $directQueue->get();
-        $petugas = $q->map(function ($directQueue) {
-            return $directQueue->WorkstationVct;
-        });
-        // dd($petugas);
 
         return view('cs.report.directQueue.daily', [
             'directQueues' => $directQueue->get(),

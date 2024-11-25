@@ -116,9 +116,10 @@
                                                 <td>
                                                     @if($directQueue->call_time)
                                                         {{ date('Y M d H:i:s', strtotime($directQueue->call_time)) }}
-                                                    @else
+                                                    @elseif($directQueue->called_at)
                                                         {{ date('Y M d H:i:s', strtotime($directQueue->called_at)) }}
-                                                    @endif
+                                                    @else
+                                                        -
                                                 </td>
                                                 <td>
                                                     @if ($directQueue->called_at)

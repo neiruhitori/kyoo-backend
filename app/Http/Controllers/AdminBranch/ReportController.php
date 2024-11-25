@@ -93,7 +93,7 @@ class ReportController extends Controller
             ]);
         }
 
-        $directQueue = DirectQueue::query()->whereHas('Service', function ($query) {
+        $directQueue = DirectQueue::query()->with(['WorkstationVct','WorkstationVct.user'])->whereHas('Service', function ($query) {
             $query->whereBranchId(Auth::user()->branch_id);
         })->whereDate('created_at', '>=', $start_date)
             ->whereDate('created_at', '<=', $end_date)
@@ -286,39 +286,66 @@ class ReportController extends Controller
     }
 
     public function appointmentOnsite(Request $request)
-    {
-        $date = $request->date ?: date('Y-m-d');
-        $booking_form = $request->booking_form ?? 'standard-form';
-        $last_month = $newdate = date("Y-m-d", strtotime("-3 months"));
-        if ($request->date && date('Y-m-d', strtotime($request->date)) < $last_month) {
-            $request->session()->flash('error', __('Can not select report more then last 3 months'));
-            return view('adminBranch.report.directQueue.appointment-onsite', [
+{
+    $start_date = $request->start_date ?: date('Y-m-d');
+    $end_date = $request->end_date ?: date('Y-m-d');
+    $date = $start_date;
+    $booking_form = $request->booking_form ?? 'standard-form';
+
+    if (!Auth::user()->Branch->BranchType->is_premium) {
+        $last_month = date("Y-m-d", strtotime("-3 months"));
+        if ($start_date < $last_month) {
+            $request->session()->flash('error', __('Can not select a report more than 3 months ago.'));
+            return view('adminBranch.report.directQueue.appointmentOnsite', [
                 'appointment_onsites' => [],
-                'date' => $date,
+                'date' => $start_date,
                 'service_id' => $request->service_id,
+                'booking_form' => $booking_form,
                 'success' => false
             ]);
         }
+    }
 
-        $appointment_onsites = AppointmentOnsite::whereHas('Slot.Service', function ($query) use ($request) {
-                                                    $request->service_id ? $query->where('id', $request->service_id) : $query->where('branch_id', Auth::user()->branch_id);
-                                                })
-                                                ->where('date', $date)
-                                                ->join('services', 'appointment_onsites.service_id', '=', 'services.id')
-                                                ->orderBy('date')
-                                                ->orderBy('services.name')
-                                                ->orderBy('start_time')
-                                                ->select('appointment_onsites.*')
-                                                ->get();
+    $startDateObj = Carbon::parse($start_date);
+    $endDateObj = Carbon::parse($end_date);
+    $dateDiff = $endDateObj->diffInDays($startDateObj);
 
+    if ($dateDiff > 30) {
+        $request->session()->flash('error', __('The maximum report selection period is limited to 30 days.'));
         return view('adminBranch.report.directQueue.appointmentOnsite', [
-            'appointment_onsites' => $appointment_onsites,
-            'date' => $date,
+            'appointment_onsites' => [],
+            'date' => $start_date,
             'service_id' => $request->service_id,
             'booking_form' => $booking_form,
-            'success' => true
+            'success' => false
         ]);
     }
+
+    $appointment_onsites = AppointmentOnsite::query()
+        ->whereHas('Slot.Service', function ($query) use ($request) {
+            if ($request->service_id) {
+                $query->where('id', $request->service_id);
+            } else {
+                $query->where('branch_id', Auth::user()->branch_id);
+            }
+        })
+        ->whereDate('appointment_onsites.created_at', '>=', $start_date)
+        ->whereDate('appointment_onsites.created_at', '<=', $end_date)
+        ->join('services', 'appointment_onsites.service_id', '=', 'services.id')
+        ->orderBy('services.name')
+        ->orderBy('start_time')
+        ->select('appointment_onsites.*')
+        ->get();
+
+    return view('adminBranch.report.directQueue.appointmentOnsite', [
+        'appointment_onsites' => $appointment_onsites,
+        'date' => $start_date,
+        'service_id' => $request->service_id,
+        'booking_form' => $booking_form,
+        'success' => true
+    ]);
+}
+
 
     public function customerSatisfaction(Request $request)
     {
