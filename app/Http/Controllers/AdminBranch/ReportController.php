@@ -298,7 +298,8 @@ class ReportController extends Controller
             $request->session()->flash('error', __('Can not select a report more than 3 months ago.'));
             return view('adminBranch.report.directQueue.appointmentOnsite', [
                 'appointment_onsites' => [],
-                'date' => $start_date,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
                 'service_id' => $request->service_id,
                 'booking_form' => $booking_form,
                 'success' => false
@@ -314,7 +315,8 @@ class ReportController extends Controller
         $request->session()->flash('error', __('The maximum report selection period is limited to 30 days.'));
         return view('adminBranch.report.directQueue.appointmentOnsite', [
             'appointment_onsites' => [],
-            'date' => $start_date,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
             'service_id' => $request->service_id,
             'booking_form' => $booking_form,
             'success' => false
@@ -339,7 +341,8 @@ class ReportController extends Controller
 
     return view('adminBranch.report.directQueue.appointmentOnsite', [
         'appointment_onsites' => $appointment_onsites,
-        'date' => $start_date,
+        'start_date' => $start_date,
+        'end_date' => $end_date,
         'service_id' => $request->service_id,
         'booking_form' => $booking_form,
         'success' => true
