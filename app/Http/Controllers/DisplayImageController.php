@@ -15,26 +15,52 @@ class DisplayImageController extends Controller
         if ($tv_config) {
             $tv_images = [];
 
-            if ($tv_config->image_1) {
-                array_push($tv_images, [
-                    'name' => 'Image 1',
-                    'url' => "/storage/$tv_config->image_1"
-                ]);
+            //jika link
+            if($tv_config->image_1 && filter_var($tv_config->image_1, FILTER_VALIDATE_URL)){
+                if ($tv_config->image_1) {
+                    array_push($tv_images, [
+                        'name' => 'Link 1',
+                        'url' => $tv_config->image_1
+                    ]);
+                }
+    
+                if ($tv_config->image_2) {
+                    array_push($tv_images, [
+                        'name' => 'Link 2',
+                        'url' => $tv_config->image_2
+                    ]);
+                }
+    
+                if ($tv_config->image_3) {
+                    array_push($tv_images, [
+                        'name' => 'Link 3',
+                        'url' => $tv_config->image_3
+                    ]);
+                }
+            }else{
+                if ($tv_config->image_1) {
+                    array_push($tv_images, [
+                        'name' => 'Image 1',
+                        'url' => "/storage/$tv_config->image_1"
+                    ]);
+                }
+    
+                if ($tv_config->image_2) {
+                    array_push($tv_images, [
+                        'name' => 'Image 2',
+                        'url' => "/storage/$tv_config->image_2"
+                    ]);
+                }
+    
+                if ($tv_config->image_3) {
+                    array_push($tv_images, [
+                        'name' => 'Image 3',
+                        'url' => "/storage/$tv_config->image_3"
+                    ]);
+                }
             }
 
-            if ($tv_config->image_2) {
-                array_push($tv_images, [
-                    'name' => 'Image 2',
-                    'url' => "/storage/$tv_config->image_2"
-                ]);
-            }
-
-            if ($tv_config->image_3) {
-                array_push($tv_images, [
-                    'name' => 'Image 3',
-                    'url' => "/storage/$tv_config->image_3"
-                ]);
-            }
+            
 
             if (
                 $branch->BranchConfiguration->template_signage === 'custom-layout-2' ||

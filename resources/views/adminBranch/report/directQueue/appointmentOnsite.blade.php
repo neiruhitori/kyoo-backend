@@ -40,11 +40,11 @@
                             <form action="" method="get">
                                 <div class="form-group">
                                     <label for="">{{ __('Select Start Date') }}</label>
-                                    <input type="date" name="start_date" class="form-control" value="{{ $date }}" />
+                                    <input type="date" name="start_date" class="form-control" value="{{ $start_date }}" />
                                 </div>
                                 <div class="form-group">
                                     <label for="">{{ __('Select End Date') }}</label>
-                                    <input type="date" name="end_date" class="form-control" value="{{ $date }}" />
+                                    <input type="date" name="end_date" class="form-control" value="{{ $end_date }}" />
                                 </div>
                                 <div class="form-group">
                                     <label for="">{{ __('Select Service') }}</label>
