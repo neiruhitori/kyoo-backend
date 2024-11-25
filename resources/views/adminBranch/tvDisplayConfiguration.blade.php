@@ -156,7 +156,7 @@
                         <div class="monitor-image-container">
                             <select class="custom-select" name="selectSwitch" id="selectSwitch" style="width: 200px">
                                 <option value="file" {{ $switchLink == true ? 'selected' : '' }}>Gambar/Video</option>
-                                <option value="youtube" {{ $switchLink == false ? 'selected' : '' }}>Youtube</option>
+                                {{-- <option value="youtube" {{ $switchLink == false ? 'selected' : '' }}>Youtube</option> --}}
                               </select>
                         </div>
                     </div>

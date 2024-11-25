@@ -63,19 +63,6 @@
             Your browser does not support the video tag.
         </video>
 
-        <iframe
-            v-else-if="promotionImages[activeImage - 1].type === 'youtube'"
-            width="100%"
-            height="100%"
-            id="player"
-            :src="`https://www.youtube.com/embed/${getYouTubeId(promotionImages[activeImage - 1].url)}?enablejsapi=1&controls=0&autoplay=1&mute=1`"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-        ></iframe>
-
         <img
             v-else-if="promotionImages[activeImage - 1].type === 'image'"
             :src="promotionImages[activeImage - 1].url"
@@ -240,24 +227,6 @@ export default {
                     });
                     this.animateImage();
                 } catch (error) {
-                    console.error(error);
-                }
-            } else if(isYouTube){
-                console.log("Current Dur Active: ",this.currentImageDuration);
-                
-                try{
-                    setTimeout(() => {
-                        this.player = new YT.Player('player', {
-                        playerVars: {
-                            'playsinline': 1
-                        },
-                        events: {
-                            'onReady': this.onPlayerReady,
-                            'onStateChange': this.onPlayerStateChange
-                        }
-                    });
-                    }, 1000);
-                }catch(error){
                     console.error(error);
                 }
             }else {

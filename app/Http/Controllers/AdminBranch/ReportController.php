@@ -79,7 +79,10 @@ class ReportController extends Controller
 
         $workstationServices = WorkstationService::whereHas('Workstation.Department', function ($query) {
             $query->whereBranchId(Auth::user()->branch_id);
-        })->get();
+        })
+        ->select('service_id') // Mengambil hanya service_id
+        ->distinct() // Menghindari duplikasi service_id
+        ->get();
 
         if ($dateDiff > 30) {
             $request->session()->flash('error', __('The maximum report selection period is limited to 30 days'));
