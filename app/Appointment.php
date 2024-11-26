@@ -2,9 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Notifications\AppointmentCreatedNotification;
 
 class Appointment extends Model
 {
@@ -65,6 +66,10 @@ class Appointment extends Model
     public function Service()
     {
         return $this->belongsTo('App\Service');
+    }
+    public static function sendNotificationWaBlast($appointment){
+        $notification = new AppointmentCreatedNotification();
+        $notification->waBlast($appointment);
     }
 
     public function Workstation()
