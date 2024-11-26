@@ -86,8 +86,7 @@ class AppointmentService
 
             // Store appointment to db
             $appointment = Appointment::create($data);
-            $branch_id = $service->branch_id;
-            $branch = Branch::find($branch_id);
+            $branch = $service->Branch;
             if(
                 $appointment->phone &&
                 $branch &&
