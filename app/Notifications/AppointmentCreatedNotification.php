@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notification;
 use App\Appointment;
 use App\Mail\CS\AppointmentCreatedMail;
 use App\Notifications\WhatsAppChannel;
+use Illuminate\Support\Facades\Http;
 
 class AppointmentCreatedNotification extends Notification implements ShouldQueue
 {

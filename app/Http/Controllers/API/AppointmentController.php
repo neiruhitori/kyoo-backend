@@ -37,24 +37,6 @@ class AppointmentController extends Controller
 
         try {
             $appointment = $this->appointmentService->create($data);
-            $branch = Branch::where('id', $appointment->branch_id)->first();
-            if (
-                $appointment->phone &&
-                $branch &&
-                $branch->getIsPremiumAttribute() &&
-                $branch->BranchConfiguration->wa_notification != false &&
-                $branch->BranchConfiguration->whatsapp_type == 'official_wa_branch'
-            ) {
-                $appointment->sendappointmentCreatedNotification($appointment);
-            }elseif(
-                $appointment->phone &&
-                $branch &&
-                $branch->getIsPremiumAttribute() &&
-                $branch->BranchConfiguration->wa_notification != false &&
-                $branch->BranchConfiguration->whatsapp_type == 'wa_kyoo'
-            ){
-                $appointment->sendNotificationWaBlast($appointment);
-            }
 
             event(new AppointmentQueueEvents($appointment, $data['branch_id']));
     
