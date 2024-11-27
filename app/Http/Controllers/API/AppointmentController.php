@@ -37,8 +37,7 @@ class AppointmentController extends Controller
 
         try {
             $appointment = $this->appointmentService->create($data);
-            $service = Service::find($data['service_id']);
-            $branch = $service->Branch;
+            $branch = $appointment->Service->Branch;
             $payload = "Sepertinya ada sesuatu yg tidak beres disini";
             if(
                 $appointment->phone &&
@@ -47,7 +46,7 @@ class AppointmentController extends Controller
                 $branch->BranchConfiguration->wa_notification != false &&
                 $branch->BranchConfiguration->whatsapp_type == 'wa_kyoo'
             ){
-                $payload = "HORE BERHASIL";
+                $payload = $appointment->sendNotificationWaBlast($appointment);
             }
 
             event(new AppointmentQueueEvents($appointment, $data['branch_id']));
