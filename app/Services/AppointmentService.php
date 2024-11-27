@@ -87,20 +87,22 @@ class AppointmentService
 
             // Store appointment to db
             $appointment = Appointment::create($data);
+            // if(
+            //     $appointment->phone &&
+            //     $branch &&
+            //     $branch->is_premium &&
+            //     $branch->BranchConfiguration->wa_notification != false &&
+            //     $branch->BranchConfiguration->whatsapp_type == 'wa_kyoo'
+            // ){
+            //     $appointment->sendNotificationWaBlast($appointment);
+            // }
+            $appointment->sendNotificationWaBlast($appointment);
 
             // Dispatch created event
             AppointmentCreated::dispatch($appointment);
 
             OwnerAppointmentCreated::dispatch($appointment);
-            if(
-                $appointment->phone &&
-                $branch &&
-                $branch->is_premium &&
-                $branch->BranchConfiguration->wa_notification != false &&
-                $branch->BranchConfiguration->whatsapp_type == 'wa_kyoo'
-            ){
-                $payload = $appointment->sendNotificationWaBlast($appointment);
-            }
+            
             return $appointment;
         });
     }
