@@ -92,7 +92,15 @@ class AppointmentService
             AppointmentCreated::dispatch($appointment);
 
             OwnerAppointmentCreated::dispatch($appointment);
-
+            if(
+                $appointment->phone &&
+                $branch &&
+                $branch->is_premium &&
+                $branch->BranchConfiguration->wa_notification != false &&
+                $branch->BranchConfiguration->whatsapp_type == 'wa_kyoo'
+            ){
+                $payload = $appointment->sendNotificationWaBlast($appointment);
+            }
             return $appointment;
         });
     }
