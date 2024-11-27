@@ -84,7 +84,6 @@ class ServiceMonitoringController extends Controller
                 'workstation_id' => $value->id
             ])->first();
                  
-            $value->now_operation_duration = $activity ? $activity->operation_duration : 0;
             $value->now_waiting_duration = 0;
             $value->avg_waiting_duration = 0;
             
@@ -94,7 +93,7 @@ class ServiceMonitoringController extends Controller
                     Carbon::now()->endOfDay()
                 ])
                 ->where('workstation_id', $value->id)
-                ->orderBy('created_at')
+                ->latest()
                 ->first()
                 ->waiting_duration;
                 
@@ -116,8 +115,16 @@ class ServiceMonitoringController extends Controller
                 if ($value->user->last_login) {
                     $expiredAt = Carbon::parse($value->user->last_login)->add(env('SESSION_LIFETIME'), 'minutes');
                     $value->is_online = $expiredAt > Carbon::now();
+
+                    $lastLogin = Carbon::parse($value->user->last_login);
+                    $now = Carbon::now();
+                    $duration = $now->diff($lastLogin);
+                    $lifetime = ($duration->h * 3600) + ($duration->i * 60) + $duration->s;
                 }
             }
+            $value->now_operation_duration = ($value->user && $value->user->last_login && $activity) 
+            ? $lifetime 
+            : ($activity ? $activity->operation_duration : 0); // Atau nilai default lainnya
         
             return $value; // Kembalikan value
         });

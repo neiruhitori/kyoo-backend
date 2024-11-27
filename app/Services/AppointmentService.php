@@ -29,6 +29,7 @@ class AppointmentService
     {
         return Cache::lock('appointments', 10)->block(5, function () use ($data) {
             $service = Service::find($data['service_id']);
+            $branch = $service->Branch;
 
             // Limit free appointments
             if ($this->isFreeAppointmentExceeded($data['branch_id'], $data['date'])) {
@@ -86,7 +87,7 @@ class AppointmentService
 
             // Store appointment to db
             $appointment = Appointment::create($data);
-            $branch = $service->Branch;
+            
             if(
                 $appointment->phone &&
                 $branch &&
