@@ -37,13 +37,31 @@ class AppointmentController extends Controller
 
         try {
             $appointment = $this->appointmentService->create($data);
+            $branch = $appointment->Service->Branch;
+            $type = $branch->getQueueTypeAttribute();
+            //url dynamic to detail branch, example:https://dev.kyoo.id/customer/93/onsite/detail
+            $url = url('/customer/'.$branch->id.'/'.$type.'/detail');
+            $payload = [
+                "phone_number"   => $appointment->phone,
+                "name"           => $appointment->name,
+                "branch_name"    => $branch->name,
+                "booking_code"   => strtoupper($appointment->booking_code),
+                "appointment_date" => $appointment->date,
+                "start_time"     => $appointment->start_time,
+                "end_time"       => $appointment->end_time,
+                "service_name"   => $appointment->Service->name,
+                "address"        => $branch->address,
+                "branch_id"      => $branch->id,
+                "id"             => $appointment->id,
+                "link_branch"    => $url,
+            ];
 
             event(new AppointmentQueueEvents($appointment, $data['branch_id']));
     
             return response()->json([
                 'success' => true,
                 'message' => 'create appointment',
-                'data' => $appointment
+                'data' => $payload
             ]);
         } catch (\Throwable $e) {
             return response()->json([
