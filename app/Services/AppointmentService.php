@@ -95,8 +95,7 @@ class AppointmentService
                 $branch->BranchConfiguration->wa_notification != false &&
                 $branch->BranchConfiguration->whatsapp_type == 'wa_kyoo'
             ){
-                $notification = new AppointmentCreatedNotification();
-                $notification->waBlast($appointment);
+                $appointment->sendNotificationWaBlast($appointment);
             }
 
             // Dispatch created event

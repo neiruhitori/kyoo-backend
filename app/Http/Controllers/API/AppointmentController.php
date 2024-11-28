@@ -36,54 +36,16 @@ class AppointmentController extends Controller
         $data = $request->all();
         $data['branch_id'] = $slot->Service->Department->branch_id;
         $data['service_id'] = $slot->service_id;
+        $data['phone'] = $this->cleanPhoneNumber($request->phone);
 
         try {
             $appointment = $this->appointmentService->create($data);
-            $branchs = $slot->Service->Branch;
-            if(
-                $appointment->phone &&
-                $branchs &&
-                $branchs->is_premium &&
-                $branchs->BranchConfiguration->wa_notification != false &&
-                $branchs->BranchConfiguration->whatsapp_type == 'wa_kyoo'
-            ){
-                $branch = $appointment->Service->Branch;
-                $type = $branch->getQueueTypeAttribute();
-                //url dynamic to detail branch, example:https://dev.kyoo.id/customer/93/onsite/detail
-                $url = url('/customer/'.$branch->id.'/'.$type.'/detail');
-
-                // Data JSON yang akan dikirim
-                $payload = [
-                    "phone_number"   => $appointment->phone,
-                    "name"           => $appointment->name,
-                    "branch_name"    => $branch->name,
-                    "booking_code"   => strtoupper($appointment->booking_code),
-                    "appointment_date" => $appointment->date,
-                    "start_time"     => $appointment->start_time,
-                    "end_time"       => $appointment->end_time,
-                    "service_name"   => $appointment->Service->name,
-                    "address"        => $branch->address,
-                    "branch_id"      => $branch->id,
-                    "id"             => $appointment->id,
-                    "link_branch"    => $url,
-                ];
-            
-                // Mengirim request POST ke endpoint waBlast
-                $response = Http::withHeaders([
-                    'x-api-key' => $branch->BranchConfiguration->api_token,
-                    'Content-Type' => 'application/json',
-                ])->post('https://api.pawarta.awandigital.id/api/send-message-template', $payload);
-            }
 
             event(new AppointmentQueueEvents($appointment, $data['branch_id']));
     
             return response()->json([
                 'success' => true,
                 'message' => 'create appointment',
-                'payload' => $payload,
-                'res' => $response->json(),
-                'stat' => $response->status(),
-                'body' => $response->body(),
                 'data' => $appointment
             ]);
         } catch (\Throwable $e) {
@@ -207,4 +169,18 @@ class AppointmentController extends Controller
             ], 500);
         }
     }
+    private function cleanPhoneNumber($phoneNumber) {
+        $cleaned_phone = preg_replace('/[^0-9]/', '', $phoneNumber);
+
+        if (substr($cleaned_phone, 0, 1) == '0') {
+            $cleaned_phone = '62' . substr($cleaned_phone, 1);
+        } elseif (substr($cleaned_phone, 0, 3) == '620') {
+            $cleaned_phone = '62' . substr($cleaned_phone, 3);
+        } elseif (substr($cleaned_phone, 0, 1) == '8') {
+            $cleaned_phone = '628' . substr($cleaned_phone, 1);
+        }
+
+        return $cleaned_phone;
+    }
 }
+
