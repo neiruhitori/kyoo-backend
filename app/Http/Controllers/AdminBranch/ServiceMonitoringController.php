@@ -21,9 +21,8 @@ class ServiceMonitoringController extends Controller
         $services = [];
 
         if (count($departments) > 0) {
-            $services = Service::where('department_id', $departments[0]->id)->get();
+            $services = Service::where('department_id', $departments[0]->id)->get()->sortBy('name');
         }
-
         return view('adminBranch.monitoring.service', [
             'departments' => $departments,
             'services' => $services
