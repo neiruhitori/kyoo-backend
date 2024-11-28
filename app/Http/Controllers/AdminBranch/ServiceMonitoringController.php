@@ -135,7 +135,7 @@ class ServiceMonitoringController extends Controller
         });
         // Urutkan berdasarkan nama petugas dan nama workstation
         $sortedWorkstations = $filteredWorkstations->sortBy(function ($workstation) {
-            return [$workstation->user->name ?? '', $workstation->name]; // Urutkan berdasarkan nama user dan nama workstation
+            return [$workstation->name ?? '', $workstation->user->name];
         });
 
         // Kembalikan hasil
