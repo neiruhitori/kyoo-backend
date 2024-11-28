@@ -4,24 +4,25 @@ namespace App\Services;
 
 use App\Slot;
 use App\Branch;
-use App\Appointment;
-use App\Models\BranchScheduleTemplateDetail;
-use App\Schedule;
 use App\Service;
+use App\Schedule;
+use App\Appointment;
 use App\Workstation;
+use App\Supports\BookingCode;
 
-use App\Events\AppointmentCanceledEvent;
-use App\Events\AppointmentCreated;
-use App\Events\OwnerAppointmentCreated;
+use Illuminate\Support\Carbon;
 use App\Events\AppointmentServed;
+use App\Events\AppointmentCreated;
+use Illuminate\Support\Facades\DB;
 use App\Events\AppointmentEndServed;
-use App\Events\QueueAppointmentStatus;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Cache;
-use App\Supports\BookingCode;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\Events\QueueAppointmentStatus;
+use App\Events\OwnerAppointmentCreated;
+use App\Events\AppointmentCanceledEvent;
+use App\Models\BranchScheduleTemplateDetail;
+use App\Notifications\AppointmentCreatedNotification;
 
 class AppointmentService
 {
@@ -94,7 +95,8 @@ class AppointmentService
                 $branch->BranchConfiguration->wa_notification != false &&
                 $branch->BranchConfiguration->whatsapp_type == 'wa_kyoo'
             ){
-                Appointment::sendNotificationWaBlast($appointment);
+                $notification = new AppointmentCreatedNotification();
+                $notification->waBlast($appointment);
             }
 
             // Dispatch created event
