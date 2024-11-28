@@ -133,9 +133,16 @@ class ServiceMonitoringController extends Controller
         $filteredWorkstations = $workstations->filter(function ($value) {
             return $value->user !== null; // Hanya ambil workstation yang memiliki user
         });
+        // Urutkan berdasarkan nama petugas dan nama workstation
+        $sortedWorkstations = $filteredWorkstations->sortBy(function ($workstation) {
+            return [$workstation->user->name ?? '', $workstation->name]; // Urutkan berdasarkan nama user dan nama workstation
+        });
+
+        // Kembalikan hasil
+        return response()->json($sortedWorkstations->values()->all());
 
         
-        return response()->json($filteredWorkstations);
+        // return response()->json($filteredWorkstations);
     }
 
     public function getServiceByDepartment($id)
