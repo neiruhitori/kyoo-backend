@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\API\StoreAppointment;
 
 use App\Http\Requests\API\FeedbackAppointment;
+use App\Notifications\AppointmentCreatedNotification;
 use App\Http\Resources\Upcomming as UpcommingCollection;
 use App\Events\AppointmentQueue as AppointmentQueueEvents;
 use App\Http\Resources\Appointment as AppointmentCollection;
@@ -37,8 +38,8 @@ class AppointmentController extends Controller
 
         try {
             $appointment = $this->appointmentService->create($data);
-            $branch = $appointment->Service->Branch;
-            $payload = "Sepertinya ada sesuatu yg tidak beres disini";
+            $branch = $slot->Service->Branch;
+            $mes = "something wrong";
             if(
                 $appointment->phone &&
                 $branch &&
@@ -46,7 +47,9 @@ class AppointmentController extends Controller
                 $branch->BranchConfiguration->wa_notification != false &&
                 $branch->BranchConfiguration->whatsapp_type == 'wa_kyoo'
             ){
-                $payload = $appointment->sendNotificationWaBlast($appointment);
+                $notification = new AppointmentCreatedNotification();
+                $notification->waBlast($appointment);
+                $mes = "successfully send whatsapp";
             }
 
             event(new AppointmentQueueEvents($appointment, $data['branch_id']));
@@ -54,7 +57,8 @@ class AppointmentController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'create appointment',
-                'data' => $payload
+                'mes' => $mes,
+                'data' => $appointment
             ]);
         } catch (\Throwable $e) {
             return response()->json([
