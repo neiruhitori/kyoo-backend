@@ -59,7 +59,11 @@ class BillingController extends Controller
     
     public function itemUpdate(Request $request, $id)
     {
-       
+            if (strpos($request->prices, '.') !== false || strpos($request->prices, ',') !== false) {
+                $request->session()->flash('error', 'Angka mengandung karakter yang tidak diizinkan');
+                return redirect()->back();
+            }
+
             $item = ItemPrices::find($id);
             if($item){
                 $item->update([
@@ -87,6 +91,16 @@ class BillingController extends Controller
     }
     public function priceUpdate(Request $request, $id)
     {
+        $request->validate([
+            'billing_types' => 'required|string',
+            'prices' => 'required|string',
+            'subscription_duration' => 'required|integer',
+        ]);
+        if (strpos($request->prices, '.') !== false || strpos($request->prices, ',') !== false) {
+            $request->session()->flash('error', 'Angka mengandung karakter yang tidak diizinkan');
+            return redirect()->back();
+        }
+
         $price = BillingPricesModel::where('id',$id)->update([
             "billing_types" => $request->billing_types,
             "prices" => $request->prices,
@@ -109,6 +123,10 @@ class BillingController extends Controller
             'prices' => 'required|numeric',
             'subscription_duration' => 'required|numeric',
         ]);
+        if (strpos($request->prices, '.') !== false || strpos($request->prices, ',') !== false) {
+            $request->session()->flash('error', 'Angka mengandung karakter yang tidak diizinkan');
+            return redirect()->back();
+        }
         $branches_number = ($request->queue_types == "onsite") ? 7 : 6;
 
         DB::beginTransaction();
