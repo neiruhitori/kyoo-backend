@@ -75,7 +75,10 @@ class ReportController extends Controller
 
         $workstationServices = WorkstationService::whereHas('Workstation.Department', function ($query) {
             $query->whereBranchId(Auth::user()->branch_id);
-        })->get();
+        })
+        ->select('service_id') // Mengambil hanya service_id
+        ->distinct() // Menghindari duplikasi service_id
+        ->get();
 
         if ($dateDiff > 30) {
             $request->session()->flash('error', __('The maximum report selection period is limited to 30 days'));
@@ -89,7 +92,7 @@ class ReportController extends Controller
             ]);
         }
 
-        $directQueue = DirectQueue::query()->whereHas('Service', function ($query) {
+        $directQueue = DirectQueue::query()->with(['WorkstationVct','WorkstationVct.user'])->whereHas('Service', function ($query) {
             $query->whereBranchId(Auth::user()->branch_id);
         })->whereDate('created_at', '>=', $start_date)
             ->whereDate('created_at', '<=', $end_date)

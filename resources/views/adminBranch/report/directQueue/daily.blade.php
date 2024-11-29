@@ -26,27 +26,6 @@
     </style>
 @endpush
 @section('content')
-    <div class="card mb-4 custom-info" data-open="open" role="alert">
-        <div class="card-body">
-            <div class="custom-info-head">
-                <h6 class="font-weight-bold my-0">
-                    <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
-                </h6>
-
-                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
-                </button>
-            </div>
-
-            <div class="custom-info-body">
-                <p>
-                    {{ __('For free license, report only available for last 3 months') }}
-                </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
-            </div>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-xl-12 col-lg-7">
@@ -93,20 +72,35 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <th>{{ __('Queue Number') }}</th>
-                                        <th>{{ __('Start Queue') }}</th>
-                                        <th>{{ __('Served') }}</th>
-                                        <th>{{ __('End Served') }}</th>
-                                        <th>{{ __('Service Time') }} ({{ __('Menit') }})</th>
+                                        <th>{{ __('Kode Unik') }}</th>
+                                        <th>{{ __('Ambil Antrian') }}</th>
+                                        <th>{{ __('Antrian Dipanggil') }}</th>
+                                        <th>{{ __('Mulai Layanan') }}</th>
+                                        <th>{{ __('Selesai Layanan ') }}</th>
+                                        <th>{{ __('Durasi Tunggu') }} </th>
+                                        <th>{{ __('Durasi Layanan (Panggil)') }} </th>
+                                        <th>{{ __('Durasi Layanan') }} </th>
                                         <th>{{ __('Workstation') }}</th>
                                         <th>{{ __('Service') }}</th>
                                         <th>{{ __('Service Transfer') }}</th>
+                                        <th>{{ __('Petugas Layanan') }}</th>
                                         <th>{{ __('Status') }}</th>
                                     </thead>
                                     <tbody>
                                         @forelse ($directQueues as $directQueue)
                                             <tr>
                                                 <td>{{ $directQueue->queue_no }}</td>
+                                                <td>{{ $directQueue->booking_code }}</td>
                                                 <td>{{ date('Y M d H:i:s', strtotime($directQueue->created_at)) }}</td>
+                                                <td>
+                                                    @if($directQueue->call_time)
+                                                        {{ date('Y M d H:i:s', strtotime($directQueue->call_time)) }}
+                                                    @elseif($directQueue->called_at)
+                                                    {{ date('Y M d H:i:s', strtotime($directQueue->called_at)) }}
+                                                    @else
+                                                    -
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @if ($directQueue->called_at)
                                                         {{ date('Y M d H:i:s', strtotime($directQueue->called_at)) }}
@@ -122,18 +116,73 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($directQueue->done_at)
-                                                        @php
-                                                            $waktuMulai = \Carbon\Carbon::parse($directQueue->called_at);
-                                                            $waktuSelesai = \Carbon\Carbon::parse($directQueue->done_at) ?: '';
-                                                            $durasiLayanan = $waktuSelesai ? $waktuSelesai->diffInMinutes($waktuMulai) : 0;
-                                                        @endphp
-                                                        {{ $durasiLayanan }}
+                                                    @if ($directQueue->called_at)
+                                                    @php
+                                                        $waktuCreate = \Carbon\Carbon::parse($directQueue->created_at);
+                                                        $cek = $directQueue->call_time ? $directQueue->call_time : $directQueue->called_at;
+                                                        $waktuPanggil = \Carbon\Carbon::parse($cek);
+                                                        $durasiTunggu = $waktuPanggil ? $waktuPanggil->diff($waktuCreate) : null;
+
+                                                        $formattedDurasiTunggu = $durasiTunggu 
+                                                            ? sprintf('%02d:%02d:%02d', $durasiTunggu->h, $durasiTunggu->i, $durasiTunggu->s) 
+                                                            : '-';
+                                                    @endphp
+                                                        {{ $formattedDurasiTunggu }} 
                                                     @else
                                                         -
                                                     @endif
                                                 </td>
-                                                <td>{{ $directQueue->WorkstationService ? $directQueue->WorkstationService->Workstation->name : '' }}
+                                                <td>
+                                                    @if ($directQueue->call_time)
+                                                    @php
+                                                        $waktuPanggil = \Carbon\Carbon::parse($directQueue->call_time) ?: '';
+                                                        $waktuSelesai = \Carbon\Carbon::parse($directQueue->done_at);
+                                                        $durasiLayanan = $waktuPanggil ? $waktuPanggil->diff($waktuSelesai) : null;
+                                                        $formattedDurasiLayanan = $durasiLayanan 
+                                                        ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
+                                                        : '-';
+                                                    @endphp
+                                                    {{ $formattedDurasiLayanan }}
+                                                    @elseif(!$directQueue->call_time && $directQueue->called_at)
+                                                        @php
+                                                            $waktuPanggil = \Carbon\Carbon::parse($directQueue->called_at);
+                                                            $waktuSelesai = \Carbon\Carbon::parse($directQueue->done_at) ?: '';
+                                                            $durasiLayanan = $waktuPanggil ? $waktuPanggil->diff($waktuSelesai) : null;
+                                                            $formattedDurasiLayanan = $durasiLayanan 
+                                                            ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
+                                                            : '-';
+                                                        @endphp
+                                                        {{ $formattedDurasiLayanan }}
+                                                @else
+                                                    -
+                                                @endif
+                                                </td>
+                                                <td>
+                                                @if ($directQueue->called_at)
+                                                    @php
+                                                    $waktuPanggil = \Carbon\Carbon::parse($directQueue->called_at);
+                                                    $waktuSelesai = \Carbon\Carbon::parse($directQueue->done_at) ?: '';
+                                                    $durasiLayanan = $waktuSelesai ? $waktuSelesai->diff($waktuPanggil) : null;
+                                                    
+                                                    if ($durasiLayanan && $durasiLayanan->h === 0 && $durasiLayanan->i === 0 && $durasiLayanan->s === 0) {
+                                                        // Jika durasinya adalah 0, gunakan call_time
+                                                        if ($directQueue->call_time) {
+                                                            $waktuPanggil = \Carbon\Carbon::parse($directQueue->call_time) ?: '';
+                                                            $waktuSelesai = \Carbon\Carbon::parse($directQueue->done_at);
+                                                            $durasiLayanan = $waktuPanggil ? $waktuPanggil->diff($waktuSelesai) : null;
+                                                        }
+                                                    }
+
+                                                    $formattedDurasiLayanan = $durasiLayanan 
+                                                        ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
+                                                        : '-';
+                                                @endphp
+                                                {{ $formattedDurasiLayanan }}
+                                                @else
+                                                    -
+                                                @endif
+                                                </td>
+                                                <td>{{ $directQueue->WorkstationService ? $directQueue->WorkstationService->Workstation->name : '-' }}
                                                 </td>
                                                 <td>{{ $directQueue->Service->name }}</td>
                                                 <td>
@@ -142,6 +191,9 @@
                                                     @else
                                                         -
                                                     @endif
+                                                </td>
+                                                
+                                                <td>{{ $directQueue->WorkstationVct ? $directQueue->WorkstationVct->user->name : '' }}
                                                 </td>
                                                 <td>{{ __(ucwords($directQueue->status)) }}</td>
                                             </tr>

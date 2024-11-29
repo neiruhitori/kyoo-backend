@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Slot;
+use App\Branch;
 use App\Service;
 use App\Appointment;
 use App\DirectQueue;
@@ -10,9 +11,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\AppointmentService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+
 use App\Http\Requests\API\StoreAppointment;
 use App\Http\Requests\API\FeedbackAppointment;
-
+use App\Notifications\AppointmentCreatedNotification;
 use App\Http\Resources\Upcomming as UpcommingCollection;
 use App\Events\AppointmentQueue as AppointmentQueueEvents;
 use App\Http\Resources\Appointment as AppointmentCollection;
@@ -33,6 +36,7 @@ class AppointmentController extends Controller
         $data = $request->all();
         $data['branch_id'] = $slot->Service->Department->branch_id;
         $data['service_id'] = $slot->service_id;
+        $data['phone'] = $this->cleanPhoneNumber($request->phone);
 
         try {
             $appointment = $this->appointmentService->create($data);
@@ -165,4 +169,18 @@ class AppointmentController extends Controller
             ], 500);
         }
     }
+    private function cleanPhoneNumber($phoneNumber) {
+        $cleaned_phone = preg_replace('/[^0-9]/', '', $phoneNumber);
+
+        if (substr($cleaned_phone, 0, 1) == '0') {
+            $cleaned_phone = '62' . substr($cleaned_phone, 1);
+        } elseif (substr($cleaned_phone, 0, 3) == '620') {
+            $cleaned_phone = '62' . substr($cleaned_phone, 3);
+        } elseif (substr($cleaned_phone, 0, 1) == '8') {
+            $cleaned_phone = '628' . substr($cleaned_phone, 1);
+        }
+
+        return $cleaned_phone;
+    }
 }
+

@@ -86,10 +86,11 @@ class DirectQueue extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function WorkstationVct(): HasOne
-    {
-        return $this->hasOne(WorkstationVct::class, 'workstation_id', 'workstation_id');
-    }
+   public function WorkstationVct(): BelongsTo
+{
+    return $this->belongsTo(WorkstationVct::class, 'workstation_id', 'workstation_id');
+}
+
 
     public function Workstation(): BelongsTo
     {

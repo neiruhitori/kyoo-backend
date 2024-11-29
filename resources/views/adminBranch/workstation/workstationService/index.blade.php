@@ -24,9 +24,6 @@
                         <li style="margin-bottom: 0.25rem;">
                             1 Meja bisa melayani 1 atau lebih jenis Layanan dengan prioritas masing-masing layanan yang bisa diatur.
                         </li>
-                        <li>
-                            Untuk versi Antrian berbayar, 1 atau lebih Meja bisa melayani 1 atau lebih Layanan dengan Prioritas masing-masing Layanan yang bisa diatur.
-                        </li>
                     </ul>
                 </p>
                 <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>

@@ -17,6 +17,7 @@
                     <div class="col-auto">
                         <label for="serviceId">Layanan</label>
                         <select class="form-control" id="serviceId" style="width: 180px;" autocomplete="off">
+                            <option value="all">All</option>
                             @foreach ($services as $service)
                                 <option value="{{ $service->id }}">{{ $service->name }}</option>
                             @endforeach
@@ -143,32 +144,48 @@
     }
 
     async function feedTable() {
-        const res = await axios.get('/admin-branch/monitoring/service/' + serviceId)
-            .then(res => res.data)
-            .catch(err => {
-                console.error(err)
-                
-                return []
-            })
-        
-        if (!res.length) {
-            $("#table tbody").html(`<tr>
-                <td colspan="9" class="text-center">Data tidak ditemukan.</td>
-            </tr>`)
-            return
-        }
-        
-        // Append response to table UI
-        $("#table tbody").html(
-            transformResponse(res)
-        )
+        try {
+                const res = await axios.get('/admin-branch/monitoring/service/' + serviceId);
+                const data = res.data;
+
+                // Cek apakah data adalah objek atau array
+                let formattedData;
+                if (Array.isArray(data)) {
+                    // Jika data adalah array (single data response)
+                    formattedData = data;
+                } else if (typeof data === 'object') {
+                    // Jika data adalah objek (all data response)
+                    formattedData = Object.values(data);
+                } else {
+                    // Tampilkan pesan jika format tidak dikenali
+                    $("#table tbody").html(`<tr>
+                        <td colspan="9" class="text-center">Format data tidak dikenali.</td>
+                    </tr>`);
+                    return;
+                }
+
+                if (!formattedData.length) {
+                    $("#table tbody").html(`<tr>
+                        <td colspan="9" class="text-center">Data tidak ditemukan.</td>
+                    </tr>`);
+                    return;
+                }
+
+                // Append response to table UI
+                $("#table tbody").html(transformResponse(formattedData));
+            } catch (err) {
+                console.error(err);
+                $("#table tbody").html(`<tr>
+                    <td colspan="9" class="text-center">Terjadi kesalahan saat mengambil data.</td>
+                </tr>`);
+            }
     }
 
     function transformResponse(data) {
-        return data.map(v => {
+            return data.map(v => {
             const badgeEl = `<span class="badge badge-${v.is_online ? 'success' : 'danger'}">
                 ${v.is_online ? 'Online' : 'Offline'}
-            </span>`
+            </span>`;
 
             return `<tr>
                 <td>${v.name}</td>
@@ -180,8 +197,8 @@
                 <td class="text-center">${formatTime(v.now_operation_duration)}</td>
                 <td class="text-center">${formatTime(v.now_waiting_duration)}</td>
                 <td class="text-center">${formatTime(v.avg_waiting_duration)}</td>
-            </tr>`
-        })
+            </tr>`;
+        }).join('');
     }
 
     function formatTime(value) {
