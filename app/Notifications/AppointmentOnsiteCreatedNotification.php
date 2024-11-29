@@ -39,6 +39,7 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
         $type = $branch->getQueueTypeAttribute();
         //url dynamic to detail branch, example:https://dev.kyoo.id/customer/93/onsite/detail
         $url = url('/customer/'.$branch->id.'/'.$type.'/detail');
+        $url_booking = url('/customer/'.$branch->id.'/'.$type.'/booking-status/'.$appointmentOnsite->id);
 
         // Data JSON yang akan dikirim
         $payload = [
@@ -51,8 +52,7 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
             "end_time"       => $appointmentOnsite->end_time,
             "service_name"   => $appointmentOnsite->Service->name,
             "address"        => $branch->address,
-            "branch_id"      => $branch->id,
-            "id"             => $appointmentOnsite->id,
+            "booking_status" => $url_booking,
             "link_branch"    => $url,
         ];
     

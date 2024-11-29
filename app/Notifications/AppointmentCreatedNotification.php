@@ -51,6 +51,8 @@ class AppointmentCreatedNotification extends Notification implements ShouldQueue
         $type = $branch->getQueueTypeAttribute();
         //url dynamic to detail branch, example:https://dev.kyoo.id/customer/93/onsite/detail
         $url = url('/customer/'.$branch->id.'/'.$type.'/detail');
+        //url dynamic booking statys, ex: https://dev.kyoo.id/customer/620/appointment/booking-status/12345
+        $url_booking = url('/customer/'.$branch->id.'/'.$type.'/booking-status/'.$appointment->id);
 
         // Data JSON yang akan dikirim
         $payload = [
@@ -63,8 +65,7 @@ class AppointmentCreatedNotification extends Notification implements ShouldQueue
             "end_time"       => $appointment->end_time,
             "service_name"   => $appointment->Service->name,
             "address"        => $branch->address,
-            "branch_id"      => $branch->id,
-            "id"             => $appointment->id,
+            "booking_status" => $url_booking,
             "link_branch"    => $url,
         ];
     
