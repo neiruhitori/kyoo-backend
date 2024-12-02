@@ -155,8 +155,8 @@
                     <div class="monitor-images-wrapper mb-3">
                         <div class="monitor-image-container">
                             <select class="custom-select" name="selectSwitch" id="selectSwitch" style="width: 200px">
-                                <option value="file" {{ $switchLink == true ? 'selected' : '' }}>Gambar/Video</option>
-                                <option value="youtube" {{ $switchLink == false ? 'selected' : '' }}>Youtube</option>
+                                <option value="file" {{ $switchLink == 'file' ? 'selected' : '' }}>Gambar/Video</option>
+                                <option value="youtube" {{ $switchLink == 'youtube' ? 'selected' : '' }}>Youtube</option>
                               </select>
                         </div>
                     </div>

@@ -73,6 +73,10 @@ class TVDisplayConfigurationController extends Controller
 
         $tv_configuration = $this->tvConfigurationRepository->GetOneConfigurationByBranchID(Auth::user()->branch_id);
         $branch_configuration = BranchConfiguration::where('branch_id', Auth::user()->branch_id)->first();
+        $switchLink = 'file';
+        $link_1 = '';
+        $link_2 = '';
+        $link_3 = '';
 
         if ($tv_configuration) {
             $link_1 =$tv_configuration->image_1 && filter_var($tv_configuration->image_1, FILTER_VALIDATE_URL)
@@ -87,10 +91,13 @@ class TVDisplayConfigurationController extends Controller
             ? $tv_configuration->image_3 // Jika image_1 adalah URL
             : null ;
 
-            if($link_1 == null || $link_2 == null || $link_3 == null){
-                $switchLink = true;
+            
+
+            // Cek jika salah satu link adalah null atau kosong
+            if (!empty($link_1) || !empty($link_2) || !empty($link_3)) {
+                $switchLink = 'youtube';
             }else{
-                $switchLink = false;
+                $switchLink = 'file';
             }
 
             
