@@ -39,7 +39,7 @@
                     @endif
                     <div class="row">
                         <div class="col-lg-4 col-md-12">
-                            <form action="" method="get">
+                                <form action="" method="get">
                                 <div class="form-group">
                                     <label for="">{{ __('Select Start Date') }}</label>
                                     <input type="date" name="start_date" id="start_date" class="form-control"
@@ -51,6 +51,11 @@
                                         value="{{ $end_date }}" />
                                 </div>
                                 <div class="form-group">
+                                    <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <div class="form-group">
                                     <label for="">{{ __('Select Service') }}</label>
                                     <select name="workstation_service_id" id="workstation_service_id" class="form-control">
                                         <option value="">{{ __('All') }}</option>
@@ -61,10 +66,18 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
+                                    <label for="">Pilih Status</label>
+                                    <select name="status" id="status" class="form-control">
+                                        <option value="all">{{ __('All') }}</option>
+                                        <option value="waiting"  {{ $status_sort == 'waiting' ? 'selected': '' }}>Menunggu</option>
+                                        <option value="served" {{ $status_sort == 'served' ? 'selected': '' }}>Dilayani</option>
+                                        <option value="end served" {{ $status_sort == 'end served' ? 'selected': '' }}>Selesai Dilayani</option>
+                                        <option value="no show" {{ $status_sort == 'no show' ? 'selected': '' }}>Tidak Hadir</option>
+                                    </select>
                                 </div>
+                               
                             </form>
-                        </div>
+                            </div>
                     </div>
                     <div class="row">
                         <div class="col">

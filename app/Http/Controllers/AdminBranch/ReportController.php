@@ -56,6 +56,8 @@ class ReportController extends Controller
     public function directQueueDaily(Request $request)
     {
         // only can see report within last two months
+        $status_sort = $request->status ?: 'all';
+
         $start_date = $request->start_date ?: date('Y-m-d');
         $end_date = $request->end_date ?: date('Y-m-d');
         if (!Auth::user()->Branch->BranchType->is_premium) {
@@ -66,6 +68,7 @@ class ReportController extends Controller
                     'directQueues' => [],
                     'start_date' => $start_date,
                     'end_date' => $end_date,
+                    'status_sort' => $status_sort,
                     'service_id' => $request->service_id,
                     'success' => false
                 ]);
@@ -90,6 +93,7 @@ class ReportController extends Controller
                 'directQueues' => [],
                 'start_date' => $start_date,
                 'end_date' => $end_date,
+                'status_sort' => $status_sort,
                 'workstation_service_id' => $request->workstation_service_id,
                 'workstationServices' => $workstationServices,
                 'success' => false
@@ -106,10 +110,15 @@ class ReportController extends Controller
             $query->whereWorkstationServiceId($request->workstation_service_id);
         });
 
+        if($status_sort !== 'all'){
+            $directQueue->where('status', $status_sort);
+        }
+        
         return view('adminBranch.report.directQueue.daily', [
             'directQueues' => $directQueue->get(),
             'start_date' => $start_date,
             'end_date' => $end_date,
+            'status_sort' => $status_sort,
             'workstation_service_id' => $request->workstation_service_id,
             'workstationServices' => $workstationServices,
             'success' => true
