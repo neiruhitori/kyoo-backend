@@ -128,7 +128,7 @@ function AppointmentOnsiteVisitorInformation() {
             helperText={validationMessage.email}
         />
         <TextField
-            label="Nomer Kontrak "
+            label="Nomor Kontrak "
             style={{ marginBottom: '1.5rem' }}
             value={contractNumber}
             onChange={(e) => setContractNumber(e.target.value)}
@@ -262,12 +262,15 @@ function AppointmentOnsiteVisitorInformation() {
                 fcm_id,
                 date: searchParams.get('date'),
                 slot_id: searchParams.get('slot'),
-                ...(branch && branch.branch_configuration.template_booking_form !== 'standard-form' && {
+                ...(branch && branch.branch_configuration.template_booking_form == 'form-medical-1' && {
                     address,
                     date_of_birth: dateOfBirth,
                     emergency_number: emergencyNumber,
                     passport_number: passportNumber,
                     reason_for_visit: reasonForVisit,
+                }),
+                ...(branch && branch.branch_configuration.template_booking_form == 'form-finance' && {
+                    contractNumber: contractNumber
                 })
             })
 
