@@ -66,7 +66,7 @@ function AppointmentOnsiteVisitorInformation() {
             reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
         }),
         ...(branch && branch.branch_configuration.template_booking_form == 'form-financing' && {
-            contractNumber: validator.message('contractNumber', contractNumber, ['required', 'minLength:10', 'maxLength:10']),
+            contractNumber: validator.message('contractNumber', contractNumber, ['required']),
         }),
     };
 
@@ -128,7 +128,7 @@ function AppointmentOnsiteVisitorInformation() {
             helperText={validationMessage.email}
         />
         <TextField
-            label="Nomer Kontrak (10 digit)"
+            label="Nomer Kontrak "
             style={{ marginBottom: '1.5rem' }}
             value={contractNumber}
             onChange={(e) => setContractNumber(e.target.value)}
