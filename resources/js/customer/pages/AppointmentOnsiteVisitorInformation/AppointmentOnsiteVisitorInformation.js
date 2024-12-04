@@ -283,7 +283,6 @@ function AppointmentOnsiteVisitorInformation() {
                 showError(booking.message)
                 return
             }
-            console.log(booking.data);
             navigate(`/customer/${branchId}/appointment-onsite/booking-status/${booking.data.id}`)
         } catch (error) {
             if(error.code === 10002) {
