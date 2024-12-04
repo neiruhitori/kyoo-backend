@@ -169,7 +169,7 @@ class AppointmentOnsiteController extends Controller
                 'success' => true,
                 'message' => 'appointment onsite created',
                 'webhook' => $webhookMessage,
-                'data' => $data,
+                'data' => $appointmentOnsite,
             ]);
         } catch (\Exception $e) {
             return response()->json([
