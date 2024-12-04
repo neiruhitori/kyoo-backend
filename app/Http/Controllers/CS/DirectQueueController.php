@@ -420,6 +420,7 @@ class DirectQueueController extends Controller
             ->where('service_id', $directQueue->service_id)
             ->first();
 
+        $directQueue->vct_id = Auth::user()->id;
         $directQueue->workstation_service_id = $workstation_service->id;
         $directQueue->workstation_id = Auth::user()->WorkstationVct->workstation_id;
         $directQueue->status = 'served';
@@ -653,6 +654,7 @@ class DirectQueueController extends Controller
         $directQueue->status = 'end served';
         $directQueue->done_at = Date('Y-m-d H:i:s');
         $directQueue->serving_duration = $request->serving_duration;
+        $directQueue->vct_id = Auth::user()->id;
         $directQueue->save();
 
         event(new QueueStatusUpdated([
