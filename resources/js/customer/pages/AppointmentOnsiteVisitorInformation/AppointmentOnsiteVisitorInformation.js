@@ -58,14 +58,14 @@ function AppointmentOnsiteVisitorInformation() {
         name: validator.message('name', name, ['required']),
         phone: validator.message('phone', phone, ['required', 'phone']),
         email: validator.message('email', email, ['required', 'email']),
-        ...(branch && branch.branch_configuration.template_booking_form !== 'standard-form' && {
+        ...(branch && branch.branch_configuration.template_booking_form === 'form-medical-1' && {
             dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
             address: validator.message('address', address, []),
             emergencyNumber: validator.message('emergencyNumber', emergencyNumber, ['phone']),
             passportNumber: validator.message('passportNumber', passportNumber, ['passportNumber']),
             reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
         }),
-        ...(branch && branch.branch_configuration.template_booking_form == 'form-financing' && {
+        ...(branch && branch.branch_configuration.template_booking_form === 'form-financing' && {
             contractNumber: validator.message('contractNumber', contractNumber, ['required','contractNumber']),
         }),
     };
@@ -262,14 +262,14 @@ function AppointmentOnsiteVisitorInformation() {
                 fcm_id,
                 date: searchParams.get('date'),
                 slot_id: searchParams.get('slot'),
-                ...(branch && branch.branch_configuration.template_booking_form == 'form-medical-1' && {
+                ...(branch && branch.branch_configuration.template_booking_form === 'form-medical-1' && {
                     address,
                     date_of_birth: dateOfBirth,
                     emergency_number: emergencyNumber,
                     passport_number: passportNumber,
                     reason_for_visit: reasonForVisit,
                 }),
-                ...(branch && branch.branch_configuration.template_booking_form == 'form-finance' && {
+                ...(branch && branch.branch_configuration.template_booking_form === 'form-finance' && {
                     contractNumber: contractNumber
                 })
             })
