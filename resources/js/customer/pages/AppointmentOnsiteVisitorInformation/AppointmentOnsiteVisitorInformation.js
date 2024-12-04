@@ -269,8 +269,8 @@ function AppointmentOnsiteVisitorInformation() {
                     passport_number: passportNumber,
                     reason_for_visit: reasonForVisit,
                 }),
-                ...(branch && branch.branch_configuration.template_booking_form === 'form-finance' && {
-                    contractNumber: contractNumber
+                ...(branch && branch.branch_configuration.template_booking_form === 'form-financing' && {
+                    contract_number: contractNumber
                 })
             })
 
