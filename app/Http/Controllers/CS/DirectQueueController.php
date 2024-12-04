@@ -309,6 +309,8 @@ class DirectQueueController extends Controller
         $directQueue->recall_count = $directQueue->recall_count > 0 ? $directQueue->recall_count + 1 : 0;
         $directQueue->called_at = null;
         $directQueue->call_time = Date('Y-m-d H:i:s');
+        $directQueue->vct_id = Auth::user()->id;
+        $directQueue->user_id = Auth::user()->id;
         $directQueue->save();
 
         event(new QueueStatusUpdated([
@@ -655,6 +657,7 @@ class DirectQueueController extends Controller
         $directQueue->done_at = Date('Y-m-d H:i:s');
         $directQueue->serving_duration = $request->serving_duration;
         $directQueue->vct_id = Auth::user()->id;
+        $directQueue->user_id = Auth::user()->id;
         $directQueue->save();
 
         event(new QueueStatusUpdated([

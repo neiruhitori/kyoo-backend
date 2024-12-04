@@ -25,6 +25,10 @@ class DirectQueue extends Model
     {
         return date('Y-m-d H:i:s', \strtotime($value));
     }
+    public function Vct()
+    {
+        return $this->belongsTo(User::class, 'vct_id', 'id');
+    }
 
     public function Branch()
     {
@@ -86,10 +90,10 @@ class DirectQueue extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-   public function WorkstationVct(): BelongsTo
-{
-    return $this->belongsTo(WorkstationVct::class, 'workstation_id', 'workstation_id');
-}
+    public function WorkstationVct(): BelongsTo
+    {
+        return $this->belongsTo(WorkstationVct::class, 'workstation_id', 'workstation_id');
+    }
 
 
     public function Workstation(): BelongsTo
