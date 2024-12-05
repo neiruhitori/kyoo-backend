@@ -359,10 +359,8 @@ class ReportController extends Controller
             if ($booking_form === 'standard-form') {
                 return !isset($appointment->date_of_birth) && !isset($appointment->contract_number);
             } elseif ($booking_form === 'form-medical-1') {
-                return isset($appointment->reason_for_visit) && 
-                        !empty($appointment->reason_for_visit) &&
-                        isset($appointment->passport_number) && 
-                        !empty($appointment->passport_number);
+                return (isset($appointment->reason_for_visit) && !empty($appointment->reason_for_visit)) ||
+                        (isset($appointment->passport_number) && !empty($appointment->passport_number));
             } elseif ($booking_form === 'form-financing') {
                 return isset($appointment->contract_number) &&
                         !empty($appointment->contract_number);
