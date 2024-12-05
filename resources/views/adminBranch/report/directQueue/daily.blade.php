@@ -51,9 +51,15 @@
                                         value="{{ $end_date }}" />
                                 </div>
                                 <div class="form-group">
+                                    <input id="formatTime" type="checkbox" name="formatTime" value="inMinutes" {{ $time_format == 'inMinutes' ? 'checked' : '' }}>
+                                    <label onclick="toggleCheckbox()" style="cursor: pointer;user-select: none;" class="mx-2" for="">Format durasi dalam satuan menit</label>
+                                </div>
+                                <div class="form-group">
                                     <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
                                 </div>
+
                             </div>
+
                             <div class="col-lg-4 col-md-12">
                                 <div class="form-group">
                                     <label for="">{{ __('Select Service') }}</label>
@@ -135,10 +141,13 @@
                                                         $cek = $directQueue->call_time ? $directQueue->call_time : $directQueue->called_at;
                                                         $waktuPanggil = \Carbon\Carbon::parse($cek);
                                                         $durasiTunggu = $waktuPanggil ? $waktuPanggil->diff($waktuCreate) : null;
-
                                                         $formattedDurasiTunggu = $durasiTunggu 
                                                             ? sprintf('%02d:%02d:%02d', $durasiTunggu->h, $durasiTunggu->i, $durasiTunggu->s) 
                                                             : '-';
+                                                        if($time_format == "inMinutes"){
+                                                            $formattedDurasiTunggu = $waktuPanggil ? $waktuPanggil->diffInMinutes($waktuCreate) : '-';
+                                                        }
+                                                        
                                                     @endphp
                                                         {{ $formattedDurasiTunggu }} 
                                                     @else
@@ -154,6 +163,9 @@
                                                         $formattedDurasiLayanan = $durasiLayanan 
                                                         ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
                                                         : '-';
+                                                        if($time_format == "inMinutes"){
+                                                            $formattedDurasiLayanan =  $waktuPanggil ? $waktuPanggil->diffInMinutes($waktuSelesai) : '-';
+                                                        }
                                                     @endphp
                                                     {{ $formattedDurasiLayanan }}
                                                     @elseif(!$directQueue->call_time && $directQueue->called_at)
@@ -164,6 +176,9 @@
                                                             $formattedDurasiLayanan = $durasiLayanan 
                                                             ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
                                                             : '-';
+                                                            if($time_format == "inMinutes"){
+                                                                $formattedDurasiLayanan =  $waktuPanggil ? $waktuPanggil->diffInMinutes($waktuSelesai) : '-';
+                                                            }
                                                         @endphp
                                                         {{ $formattedDurasiLayanan }}
                                                 @else
@@ -189,6 +204,9 @@
                                                     $formattedDurasiLayanan = $durasiLayanan 
                                                         ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
                                                         : '-';
+                                                    if($time_format == "inMinutes"){
+                                                            $formattedDurasiLayanan =  $waktuPanggil ? $waktuPanggil->diffInMinutes($waktuSelesai) : '-';
+                                                        }
                                                 @endphp
                                                 {{ $formattedDurasiLayanan }}
                                                 @else
@@ -282,5 +300,10 @@
                 }
             }
         })
+
+        function toggleCheckbox() {
+            const checkbox = document.getElementById('formatTime');
+            checkbox.checked = !checkbox.checked; // Toggle the checked state
+        }
     </script>
 @endpush

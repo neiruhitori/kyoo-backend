@@ -120,7 +120,7 @@
                                                         >
                                                             <i class="fas fa-fw fa-edit"></i>
                                                         </a>
-                                                        <form action="{{ route('admin-branch.branch-configuration.user.destroy', $user->id) }}" method="post" style="display: inline">
+                                                        {{-- <form action="{{ route('admin-branch.branch-configuration.user.destroy', $user->id) }}" method="post" style="display: inline">
                                                             @csrf
                                                             @method('DELETE')
 
@@ -135,7 +135,7 @@
                                                             >
                                                                 <i class="fas fa-fw fa-trash"></i>
                                                             </button>
-                                                        </form>
+                                                        </form> --}}
                                                     @else
                                                         <form action="{{route('admin-branch.branch-configuration.user.restore')}}" method="post" style="display: inline">
                                                             @csrf

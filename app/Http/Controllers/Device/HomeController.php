@@ -375,8 +375,8 @@ class HomeController extends Controller
             }
 
             $data = $appointment_onsite->toArray();
-            $data['user_id'] = $user->id;
-            $data['vct_id'] = $request->vct_id;
+            // $data['user_id'] = $user->id;
+            // $data['vct_id'] = $request->vct_id;
             $data['direct_queue_channel'] = 'Device';
             $data['priority'] = 1;
             $data['appointment_onsite_id'] = $appointment_onsite->id;

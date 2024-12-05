@@ -57,6 +57,7 @@ class ReportController extends Controller
     {
         // only can see report within last two months
         $status_sort = $request->status ?: 'all';
+        $timeFormat = $request->formatTime ?: 'default';
 
         $start_date = $request->start_date ?: date('Y-m-d');
         $end_date = $request->end_date ?: date('Y-m-d');
@@ -70,6 +71,7 @@ class ReportController extends Controller
                     'end_date' => $end_date,
                     'status_sort' => $status_sort,
                     'service_id' => $request->service_id,
+                    'time_format' => $timeFormat,
                     'success' => false
                 ]);
             }
@@ -96,6 +98,7 @@ class ReportController extends Controller
                 'status_sort' => $status_sort,
                 'workstation_service_id' => $request->workstation_service_id,
                 'workstationServices' => $workstationServices,
+                'time_format' => $timeFormat,
                 'success' => false
             ]);
         }
@@ -121,6 +124,7 @@ class ReportController extends Controller
             'status_sort' => $status_sort,
             'workstation_service_id' => $request->workstation_service_id,
             'workstationServices' => $workstationServices,
+            'time_format' => $timeFormat,
             'success' => true
         ]);
     }
