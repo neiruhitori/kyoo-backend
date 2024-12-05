@@ -294,7 +294,7 @@ export default {
             this.isLoading = true;
 
             this.formData["workstation_service_id"] = this.selectedWorkstation;
-            this.formData["vct_id"] = this.auth.id;
+            // this.formData["vct_id"] = this.auth.id;
 
             axios
                 .post("/device/directQueue/store", this.formData)

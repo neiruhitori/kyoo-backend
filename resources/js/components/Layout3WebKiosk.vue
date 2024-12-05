@@ -337,7 +337,7 @@ export default {
         handleCreateOnsiteQueueByBookingCode() {
             this.isLoading = true;
 
-            this.formData["vct_id"] = this.auth.id;
+            // this.formData["vct_id"] = this.auth.id;
 
             axios
                 .post("/device/directQueueByBookingCode/store", this.formData)
