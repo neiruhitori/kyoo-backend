@@ -60,6 +60,7 @@
                                     <select name="booking_form" id="booking_form" class="form-control">
                                         <option value="standard-form" {{ $booking_form == 'standard-form' ? 'selected' : '' }}>Standard Form</option>
                                         <option value="form-medical-1" {{ $booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
+                                        <option value="form-financing" {{ $booking_form == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
                                     </select>
                                 </div>
                                 <div class="form-group">

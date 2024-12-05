@@ -355,8 +355,23 @@ class ReportController extends Controller
         ->select('appointment_onsites.*')
         ->get();
 
+        $filteredAppointments = $appointment_onsites->filter(function ($appointment) use ($booking_form) {
+            if ($booking_form === 'standard-form') {
+                return !isset($appointment->date_of_birth) && !isset($appointment->contract_number);
+            } elseif ($booking_form === 'form-medical-1') {
+                return isset($appointment->reason_for_visit) && 
+                        !empty($appointment->reason_for_visit) &&
+                        isset($appointment->passport_number) && 
+                        !empty($appointment->passport_number);
+            } elseif ($booking_form === 'form-financing') {
+                return isset($appointment->contract_number) &&
+                        !empty($appointment->contract_number);
+            }
+            return true;
+        });
+
     return view('adminBranch.report.directQueue.appointmentOnsite', [
-        'appointment_onsites' => $appointment_onsites,
+        'appointment_onsites' => $filteredAppointments,
         'start_date' => $start_date,
         'end_date' => $end_date,
         'service_id' => $request->service_id,
