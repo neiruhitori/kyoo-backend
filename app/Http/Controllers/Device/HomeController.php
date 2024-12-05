@@ -295,7 +295,7 @@ class HomeController extends Controller
 
             $data = $request->all();
             $data['workstation_id'] = $workstation_service->workstation_id;
-            $data['user_id'] = $user->id;
+            // $data['user_id'] = $user->id;
             $data['service_id'] = $workstation_service->service_id;
             $data['direct_queue_channel'] = 'Device';
 
