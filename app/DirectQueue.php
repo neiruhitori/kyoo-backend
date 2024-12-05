@@ -27,7 +27,7 @@ class DirectQueue extends Model
     }
     public function Vct()
     {
-        return $this->belongsTo(User::class, 'vct_id', 'id');
+        return $this->belongsTo(User::class, 'vct_id');
     }
 
     public function Branch()

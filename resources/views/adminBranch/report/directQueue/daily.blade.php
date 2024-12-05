@@ -206,7 +206,7 @@
                                                     @endif
                                                 </td>
                                                 
-                                                <td>{{ $directQueue->WorkstationVct ? $directQueue->WorkstationVct->user->name : '' }}
+                                                <td>{{  $directQueue->Vct ? $directQueue->Vct->name : '-' }}
                                                 </td>
                                                 <td>{{ __(ucwords($directQueue->status)) }}</td>
                                             </tr>
