@@ -306,7 +306,7 @@ class ReportController extends Controller
     $start_date = $request->start_date ?: date('Y-m-d');
     $end_date = $request->end_date ?: date('Y-m-d');
     $date = $start_date;
-    $booking_form = $request->booking_form ?? 'standard-form';
+    $booking_form = $request->booking_form ?: 'standard-form';
 
     if (!Auth::user()->Branch->BranchType->is_premium) {
         $last_month = date("Y-m-d", strtotime("-3 months"));
@@ -356,17 +356,21 @@ class ReportController extends Controller
         ->get();
 
         $filteredAppointments = $appointment_onsites->filter(function ($appointment) use ($booking_form) {
-            if ($booking_form === 'standard-form') {
-                return !isset($appointment->date_of_birth) && !isset($appointment->contract_number);
-            } elseif ($booking_form === 'form-medical-1') {
-                return (isset($appointment->reason_for_visit) && !empty($appointment->reason_for_visit)) ||
-                        (isset($appointment->passport_number) && !empty($appointment->passport_number));
-            } elseif ($booking_form === 'form-financing') {
-                return isset($appointment->contract_number) &&
-                        !empty($appointment->contract_number);
+            switch ($booking_form) {
+                case 'standard-form':
+                    return true;
+        
+                case 'form-medical-1':
+                    return !empty($appointment->reason_for_visit) || !empty($appointment->passport_number);
+        
+                case 'form-financing':
+                    return !empty($appointment->contract_number);
+        
+                default:
+                    return true;
             }
-            return true;
         });
+        
 
     return view('adminBranch.report.directQueue.appointmentOnsite', [
         'appointment_onsites' => $filteredAppointments,
