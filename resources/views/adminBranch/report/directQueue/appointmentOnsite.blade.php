@@ -185,16 +185,16 @@
             "buttons": [
                 {
                     extend: 'excelHtml5',
-                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ count($appointment_onsites) > 0 ? '('.$appointment_onsites[0]->date.')' : '' }}"
+                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ count($appointment_onsites) > 0 ? '('.$appointment_onsites[0]->date.')' : '' }}"
+                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
                 },
                 {
                     extend: 'print',
                     text: 'Cetak',
-                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ count($appointment_onsites) > 0 ? '('.$appointment_onsites[0]->date.')' : '' }}"
+                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
                 }
             ],
             "language": {
