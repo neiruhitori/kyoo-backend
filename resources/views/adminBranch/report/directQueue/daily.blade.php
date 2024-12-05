@@ -213,7 +213,7 @@
                                                     -
                                                 @endif
                                                 </td>
-                                                <td>{{ $directQueue->WorkstationService ? $directQueue->WorkstationService->Workstation->name : '-' }}
+                                                <td>{{ $directQueue->Workstation ? $directQueue->Workstation->name : '-' }}
                                                 </td>
                                                 <td>{{ $directQueue->Service->name }}</td>
                                                 <td>
