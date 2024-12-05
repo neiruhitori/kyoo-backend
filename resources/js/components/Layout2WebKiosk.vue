@@ -227,7 +227,7 @@ export default {
                 name: "",
                 phone: "",
                 workstation_service_id: "",
-                vct_id: "",
+                // vct_id: "",
                 user_id: ""
             },
             responseQueue: {},
@@ -286,7 +286,7 @@ export default {
                 name: "",
                 phone: "",
                 workstation_service_id: "",
-                vct_id: "",
+                // vct_id: "",
                 user_id: this.auth.id
             }
         },
