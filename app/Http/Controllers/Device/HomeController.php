@@ -294,7 +294,7 @@ class HomeController extends Controller
             $workstation_service = WorkstationService::find($request->workstation_service_id);
 
             $data = $request->all();
-            $data['workstation_id'] = $workstation_service->workstation_id;
+            // $data['workstation_id'] = $workstation_service->workstation_id;
             // $data['user_id'] = $user->id;
             $data['service_id'] = $workstation_service->service_id;
             $data['direct_queue_channel'] = 'Device';
