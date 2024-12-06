@@ -77,8 +77,11 @@ class TVDisplayConfigurationController extends Controller
         $link_1 = '';
         $link_2 = '';
         $link_3 = '';
+        $display_duration = '5';
 
         if ($tv_configuration) {
+            $display_duration = $tv_configuration->display_duration;
+
             $link_1 =$tv_configuration->image_1 && filter_var($tv_configuration->image_1, FILTER_VALIDATE_URL)
             ? $tv_configuration->image_1 // Jika image_1 adalah URL
             : null ;
@@ -156,6 +159,7 @@ class TVDisplayConfigurationController extends Controller
             'tv_configuration' => $tv_configuration,
             'layout_configuration' => $tvConfigurationFormValue,
             'switchLink' => $switchLink,
+            'display_duration' => $display_duration,
             'link_1' => $link_1,
             'link_2' => $link_2,
             'link_3' => $link_3,
@@ -206,7 +210,8 @@ class TVDisplayConfigurationController extends Controller
     
     $data = [
         'branch_id' => $branch->id,
-        'tv_layout_id' => $request->tv_layout_id ?? $tv_layout->id
+        'tv_layout_id' => $request->tv_layout_id ?? $tv_layout->id,
+        'display_duration' => $request->display_duration 
     ];
 
     for ($i = 1; $i <= 3; $i++) {

@@ -38,6 +38,7 @@
             :features="{{$features}}"
             :workstations="{{$workstations}}"
             :custom_layout_config="{{ $customLayoutConfig }}"
+            :display_duration="{{ $display_duration }}"
         />
     </div>
     <script src="{{asset('js/app.js')}}"></script>

@@ -36,7 +36,7 @@ class Validator {
                 validate: (value) => {
                     if (!value) return true
 
-                    return this.testRegex(value, /^[0-9]{10,}$/)
+                    return this.testRegex(value, /^[0-9]{10}$/)
                 }
             },
         }

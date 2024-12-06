@@ -143,6 +143,9 @@ export default {
         custom_layout_config: {
             type: Object,
             required: true,
+        },
+        display_duration: {
+            type: Number,
         }
     },
 
@@ -159,7 +162,8 @@ export default {
             promotionImages: [],
             isAutoPlayBlocked: false,
             playQueue: [],
-            currentImageDuration: 5000,
+            displayDuration: this.display_duration,
+            currentImageDuration: this.display_duration || 5000,
             promotionMedia: [],
             callAudio: [],
             isPlaying: false,
@@ -265,7 +269,7 @@ export default {
                     console.error(error);
                 }
             }else {
-                self.currentImageDuration = 5000;
+                self.currentImageDuration = self.displayDuration;
                 this.animateImage();
             }
 
@@ -327,6 +331,7 @@ export default {
         currentFormattedDate() {
             return this.currentDate.format('DD-MM-YYYY');
         },
+
     },
 
     methods: {
@@ -406,11 +411,10 @@ export default {
                 console.error("Error loading YouTube video:", error);
             }
         } else if (firstMedia.type === 'image') {
-            this.currentImageDuration = 5000;
+            this.currentImageDuration = this.displayDuration;
             console.log("Media pertama adalah gambar. Durasi default:", this.currentImageDuration);
         }
 
-        // Setelah inisialisasi, mulai animasi
         this.animateImage();
     },
 

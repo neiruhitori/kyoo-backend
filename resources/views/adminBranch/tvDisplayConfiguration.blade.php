@@ -152,13 +152,31 @@
                     @csrf
                     @method('PUT')
 
-                    <div class="monitor-images-wrapper mb-3">
-                        <div class="monitor-image-container">
-                            <select class="custom-select" name="selectSwitch" id="selectSwitch" style="width: 200px">
-                                <option value="file" {{ $switchLink == 'file' ? 'selected' : '' }}>Gambar/Video</option>
-                                <option value="youtube" {{ $switchLink == 'youtube' ? 'selected' : '' }}>Youtube</option>
-                              </select>
+                    <div class="d-flex mb-3">
+                        <div class="monitor-images-wrapper ">
+                            <div class="mb-1">Opsi Display</div>
+                            <div class="monitor-image-container">
+                                <select class="custom-select" name="selectSwitch" id="selectSwitch" style="width: 150px">
+                                    <option value="file" {{ $switchLink == 'file' ? 'selected' : '' }}>Gambar/Video</option>
+                                    <option value="youtube" {{ $switchLink == 'youtube' ? 'selected' : '' }}>Youtube</option>
+                                  </select>
+                            </div>
+                            
                         </div>
+                        <div class="monitor-images-wrapper mx-3">
+                            <div class="mb-1">Durasi Display</div>
+                            <div class="monitor-image-container">
+                                <select class="custom-select" name="display_duration" id="display_duration" style="width: 110px">
+                                    <option value="5" {{ $display_duration == '5' ? 'selected' : '' }} >5 Detik</option>
+                                    <option value="10" {{ $display_duration == '10' ? 'selected' : '' }}>10 Detik</option>
+                                    <option value="15" {{ $display_duration == '15' ? 'selected' : '' }}>15 Detik</option>
+                                    <option value="20" {{ $display_duration == '20' ? 'selected' : '' }}>20 Detik</option>
+                                    <option value="25" {{ $display_duration == '25' ? 'selected' : '' }}>25 Detik</option>
+                                    <option value="30" {{ $display_duration == '30' ? 'selected' : '' }}>30 Detik</option>
+                                  </select>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="monitor-images-wrapper mb-3" id="linkContainer">
@@ -960,7 +978,10 @@
     document.getElementById('youtube_1').addEventListener('input', handleURLyoutube);
     document.getElementById('youtube_2').addEventListener('input', handleURLyoutube);
     document.getElementById('youtube_3').addEventListener('input', handleURLyoutube);
-
+    document.getElementById('display_duration').addEventListener('change', function () {
+        let btn = document.getElementById('submit_image');
+        btn.classList.remove("hidden")
+    });
     document.getElementById('selectSwitch').addEventListener('change', switchInput);
     switchInput();
 

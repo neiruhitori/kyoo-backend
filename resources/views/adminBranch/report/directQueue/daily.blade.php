@@ -63,7 +63,7 @@
                             <div class="col-lg-4 col-md-12">
                                 <div class="form-group">
                                     <label for="">{{ __('Select Service') }}</label>
-                                    <select name="ervice_id" id="ervice_id" class="form-control">
+                                    <select name="service_id" id="service_id" class="form-control">
                                         <option value="">{{ __('All') }}</option>
                                         @foreach ($workstationServices as $workstationService)
                                             <option value="{{ $workstationService->service_id }}">

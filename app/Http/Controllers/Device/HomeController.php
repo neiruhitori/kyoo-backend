@@ -64,6 +64,7 @@ class HomeController extends Controller
         $TVConfiguration = $branch->TVConfiguration;
         $TVToken = TVToken::where('tv_configuration_id', $TVConfiguration->id)->first();
         $customLayoutConfig = $TVConfiguration->customLayoutConfiguration2;
+        $display_duration = (int) $TVConfiguration->display_duration * 1000;
 
         if(!$TVToken) {
             $TVToken = TVToken::create([
@@ -107,6 +108,7 @@ class HomeController extends Controller
                 return view('device.signage.custom-2UI', [
                     'branch' => $branch,
                     'features' => $features,
+                    'display_duration' => $display_duration,
                     'workstations' => $workstations,
                     'customLayoutConfig' => $customLayoutConfig
                 ]);

@@ -57,7 +57,10 @@ function AppointmentOnsiteVisitorInformation() {
     const validationMessage = {
         name: validator.message('name', name, ['required']),
         phone: validator.message('phone', phone, ['required', 'phone']),
-        email: validator.message('email', email, ['required', 'email']),
+        email: branch && branch.branch_configuration.template_booking_form === 'form-financing'
+        ? validator.message('email', email, [])
+        : validator.message('email', email, ['required', 'email']),
+        
         ...(branch && branch.branch_configuration.template_booking_form === 'form-medical-1' && {
             dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
             address: validator.message('address', address, []),
