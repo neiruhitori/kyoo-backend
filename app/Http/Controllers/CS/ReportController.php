@@ -109,7 +109,9 @@ class ReportController extends Controller
         $directQueue->when($request->service_id, function ($query) use ($request) {
             $query->where('service_id',$request->service_id);
         });
-
+        if($status_sort !== 'all'){
+            $directQueue->where('status', $status_sort);
+        }
         return view('cs.report.directQueue.daily', [
             'directQueues' => $directQueue->get(),
             'start_date' => $start_date,

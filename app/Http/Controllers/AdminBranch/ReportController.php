@@ -96,7 +96,7 @@ class ReportController extends Controller
                 'start_date' => $start_date,
                 'end_date' => $end_date,
                 'status_sort' => $status_sort,
-                'workstation_service_id' => $request->workstation_service_id,
+                'service_id' => $request->service_id,
                 'workstationServices' => $workstationServices,
                 'time_format' => $timeFormat,
                 'success' => false
@@ -109,8 +109,8 @@ class ReportController extends Controller
             ->whereDate('created_at', '<=', $end_date)
             ->orderBy('created_at');
 
-        $directQueue->when($request->workstation_service_id, function ($query) use ($request) {
-            $query->whereWorkstationServiceId($request->workstation_service_id);
+        $directQueue->when($request->service_id, function ($query) use ($request) {
+            $query->where('service_id',$request->service_id);
         });
 
         if($status_sort !== 'all'){
@@ -122,7 +122,7 @@ class ReportController extends Controller
             'start_date' => $start_date,
             'end_date' => $end_date,
             'status_sort' => $status_sort,
-            'workstation_service_id' => $request->workstation_service_id,
+            'service_id' => $request->service_id,
             'workstationServices' => $workstationServices,
             'time_format' => $timeFormat,
             'success' => true

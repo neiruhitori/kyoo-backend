@@ -63,10 +63,10 @@
                             <div class="col-lg-4 col-md-12">
                                 <div class="form-group">
                                     <label for="">{{ __('Select Service') }}</label>
-                                    <select name="workstation_service_id" id="workstation_service_id" class="form-control">
+                                    <select name="ervice_id" id="ervice_id" class="form-control">
                                         <option value="">{{ __('All') }}</option>
                                         @foreach ($workstationServices as $workstationService)
-                                            <option value="{{ $workstationService->id }}">
+                                            <option value="{{ $workstationService->service_id }}">
                                                 {{ $workstationService->Service->name }}</option>
                                         @endforeach
                                     </select>
@@ -255,9 +255,9 @@
     <script src="https://cdn.datatables.net/buttons/1.6.3/js/buttons.print.min.js"></script>
     <script>
         $(document).ready(function() {
-            const workstation_service_idOldValue = '{{ $workstation_service_id }}';
+            const service_idOldValue = '{{ $service_id }}';
 
-            $('#workstation_service_id').val(workstation_service_idOldValue);
+            $('#service_id').val(service_idOldValue);
         });
         $('#dataTable').dataTable({
             "ordering": false,
