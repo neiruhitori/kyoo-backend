@@ -510,6 +510,10 @@ export default {
         async saveToLocal() {
             // Fetch Image And Video
             const fetchMedia = this.promotionImages.map(async media => {
+                if (this.isYouTube(media.url)) {
+                    console.log(`Skipping YouTube URL: ${media.url}`);
+                    return null; // Skip fetching YouTube media
+                }
                 const response = await fetch(media.url);
                 const blob = await response.blob();
 
