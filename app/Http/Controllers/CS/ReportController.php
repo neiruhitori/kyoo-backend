@@ -52,8 +52,11 @@ class ReportController extends Controller
     public function directQueueDaily(Request $request)
     {
         // only can see report within last two months
+        $timeFormat = $request->formatTime ?: 'default';
         $start_date = $request->start_date ?: date('Y-m-d');
         $end_date = $request->end_date ?: date('Y-m-d');
+        $status_sort = $request->status ?: 'all';
+
         if (!Auth::user()->Branch->BranchType->is_premium) {
             $last_month = $newdate = date("Y-m-d", strtotime("-2 months"));
             if ($request->start_date && date('Y-m-d', strtotime($request->start_date)) < $last_month) {
@@ -61,6 +64,8 @@ class ReportController extends Controller
                 return view('cs.report.directQueue.daily', [
                     'appointments' => [],
                     'start_date' => $start_date,
+                    'time_format' => $timeFormat,
+                    'status_sort' => $status_sort,
                     'end_date' => $end_date,
                     'service_id' => $request->service_id,
                     'success' => false
@@ -76,8 +81,8 @@ class ReportController extends Controller
         $workstationServices = WorkstationService::whereHas('Workstation.Department', function ($query) {
             $query->whereBranchId(Auth::user()->branch_id);
         })
-        ->select('service_id') // Mengambil hanya service_id
-        ->distinct() // Menghindari duplikasi service_id
+        ->select('service_id','id') // Mengambil hanya service_id
+        ->distinct('service_id') // Menghindari duplikasi service_id
         ->get();
 
         if ($dateDiff > 30) {
@@ -86,6 +91,8 @@ class ReportController extends Controller
                 'directQueues' => [],
                 'start_date' => $start_date,
                 'end_date' => $end_date,
+                'time_format' => $timeFormat,
+                'status_sort' => $status_sort,
                 'workstation_service_id' => $request->workstation_service_id,
                 'workstationServices' => $workstationServices,
                 'success' => false
@@ -102,11 +109,15 @@ class ReportController extends Controller
         $directQueue->when($request->workstation_service_id, function ($query) use ($request) {
             $query->whereWorkstationServiceId($request->workstation_service_id);
         });
+        $r = $directQueue->get();
+        // dd($r, $workstationServices);
 
         return view('cs.report.directQueue.daily', [
             'directQueues' => $directQueue->get(),
             'start_date' => $start_date,
             'end_date' => $end_date,
+            'time_format' => $timeFormat,
+            'status_sort' => $status_sort,
             'workstation_service_id' => $request->workstation_service_id,
             'workstationServices' => $workstationServices,
             'success' => true

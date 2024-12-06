@@ -39,7 +39,7 @@
                     @endif
                     <div class="row">
                         <div class="col-lg-4 col-md-12">
-                            <form action="" method="get">
+                                <form action="" method="get">
                                 <div class="form-group">
                                     <label for="">{{ __('Select Start Date') }}</label>
                                     <input type="date" name="start_date" id="start_date" class="form-control"
@@ -51,6 +51,17 @@
                                         value="{{ $end_date }}" />
                                 </div>
                                 <div class="form-group">
+                                    <input id="formatTime" type="checkbox" name="formatTime" value="inMinutes" {{ $time_format == 'inMinutes' ? 'checked' : '' }}>
+                                    <label onclick="toggleCheckbox()" style="cursor: pointer;user-select: none;" class="mx-2" for="">Format durasi dalam satuan menit</label>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-4 col-md-12">
+                                <div class="form-group">
                                     <label for="">{{ __('Select Service') }}</label>
                                     <select name="workstation_service_id" id="workstation_service_id" class="form-control">
                                         <option value="">{{ __('All') }}</option>
@@ -61,10 +72,18 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
+                                    <label for="">Pilih Status</label>
+                                    <select name="status" id="status" class="form-control">
+                                        <option value="all">{{ __('All') }}</option>
+                                        <option value="waiting"  {{ $status_sort == 'waiting' ? 'selected': '' }}>Menunggu</option>
+                                        <option value="served" {{ $status_sort == 'served' ? 'selected': '' }}>Dilayani</option>
+                                        <option value="end served" {{ $status_sort == 'end served' ? 'selected': '' }}>Selesai Dilayani</option>
+                                        <option value="no show" {{ $status_sort == 'no show' ? 'selected': '' }}>Tidak Hadir</option>
+                                    </select>
                                 </div>
+                               
                             </form>
-                        </div>
+                            </div>
                     </div>
                     <div class="row">
                         <div class="col">
@@ -122,10 +141,13 @@
                                                         $cek = $directQueue->call_time ? $directQueue->call_time : $directQueue->called_at;
                                                         $waktuPanggil = \Carbon\Carbon::parse($cek);
                                                         $durasiTunggu = $waktuPanggil ? $waktuPanggil->diff($waktuCreate) : null;
-
                                                         $formattedDurasiTunggu = $durasiTunggu 
                                                             ? sprintf('%02d:%02d:%02d', $durasiTunggu->h, $durasiTunggu->i, $durasiTunggu->s) 
                                                             : '-';
+                                                        if($time_format == "inMinutes"){
+                                                            $formattedDurasiTunggu = $waktuPanggil ? $waktuPanggil->diffInMinutes($waktuCreate) : '-';
+                                                        }
+                                                        
                                                     @endphp
                                                         {{ $formattedDurasiTunggu }} 
                                                     @else
@@ -141,6 +163,9 @@
                                                         $formattedDurasiLayanan = $durasiLayanan 
                                                         ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
                                                         : '-';
+                                                        if($time_format == "inMinutes"){
+                                                            $formattedDurasiLayanan =  $waktuPanggil ? $waktuPanggil->diffInMinutes($waktuSelesai) : '-';
+                                                        }
                                                     @endphp
                                                     {{ $formattedDurasiLayanan }}
                                                     @elseif(!$directQueue->call_time && $directQueue->called_at)
@@ -151,6 +176,9 @@
                                                             $formattedDurasiLayanan = $durasiLayanan 
                                                             ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
                                                             : '-';
+                                                            if($time_format == "inMinutes"){
+                                                                $formattedDurasiLayanan =  $waktuPanggil ? $waktuPanggil->diffInMinutes($waktuSelesai) : '-';
+                                                            }
                                                         @endphp
                                                         {{ $formattedDurasiLayanan }}
                                                 @else
@@ -176,13 +204,16 @@
                                                     $formattedDurasiLayanan = $durasiLayanan 
                                                         ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
                                                         : '-';
+                                                    if($time_format == "inMinutes"){
+                                                            $formattedDurasiLayanan =  $waktuPanggil ? $waktuPanggil->diffInMinutes($waktuSelesai) : '-';
+                                                        }
                                                 @endphp
                                                 {{ $formattedDurasiLayanan }}
                                                 @else
                                                     -
                                                 @endif
                                                 </td>
-                                                <td>{{ $directQueue->WorkstationService ? $directQueue->WorkstationService->Workstation->name : '-' }}
+                                                <td>{{ $directQueue->Workstation ? $directQueue->Workstation->name : '-' }}
                                                 </td>
                                                 <td>{{ $directQueue->Service->name }}</td>
                                                 <td>
@@ -193,7 +224,7 @@
                                                     @endif
                                                 </td>
                                                 
-                                                <td>{{ $directQueue->WorkstationVct ? $directQueue->WorkstationVct->user->name : '' }}
+                                                <td>{{  $directQueue->Vct ? $directQueue->Vct->name : '-' }}
                                                 </td>
                                                 <td>{{ __(ucwords($directQueue->status)) }}</td>
                                             </tr>
@@ -269,5 +300,10 @@
                 }
             }
         })
+
+        function toggleCheckbox() {
+            const checkbox = document.getElementById('formatTime');
+            checkbox.checked = !checkbox.checked; // Toggle the checked state
+        }
     </script>
 @endpush

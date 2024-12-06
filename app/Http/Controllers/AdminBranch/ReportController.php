@@ -85,8 +85,8 @@ class ReportController extends Controller
         $workstationServices = WorkstationService::whereHas('Workstation.Department', function ($query) {
             $query->whereBranchId(Auth::user()->branch_id);
         })
-        ->select('service_id') // Mengambil hanya service_id
-        ->distinct() // Menghindari duplikasi service_id
+        ->select('service_id','id') // Mengambil hanya service_id
+        ->distinct('service_id') // Menghindari duplikasi service_id
         ->get();
 
         if ($dateDiff > 30) {
