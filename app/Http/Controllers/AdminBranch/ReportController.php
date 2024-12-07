@@ -56,6 +56,9 @@ class ReportController extends Controller
     public function directQueueDaily(Request $request)
     {
         // only can see report within last two months
+        $status_sort = $request->status ?: 'all';
+        $timeFormat = $request->formatTime ?: 'default';
+
         $start_date = $request->start_date ?: date('Y-m-d');
         $end_date = $request->end_date ?: date('Y-m-d');
         if (!Auth::user()->Branch->BranchType->is_premium) {
@@ -66,7 +69,9 @@ class ReportController extends Controller
                     'directQueues' => [],
                     'start_date' => $start_date,
                     'end_date' => $end_date,
+                    'status_sort' => $status_sort,
                     'service_id' => $request->service_id,
+                    'time_format' => $timeFormat,
                     'success' => false
                 ]);
             }
@@ -80,8 +85,8 @@ class ReportController extends Controller
         $workstationServices = WorkstationService::whereHas('Workstation.Department', function ($query) {
             $query->whereBranchId(Auth::user()->branch_id);
         })
-        ->select('service_id') // Mengambil hanya service_id
-        ->distinct() // Menghindari duplikasi service_id
+        ->select('service_id','id') // Mengambil hanya service_id
+        ->distinct('service_id') // Menghindari duplikasi service_id
         ->get();
 
         if ($dateDiff > 30) {
@@ -90,28 +95,36 @@ class ReportController extends Controller
                 'directQueues' => [],
                 'start_date' => $start_date,
                 'end_date' => $end_date,
-                'workstation_service_id' => $request->workstation_service_id,
+                'status_sort' => $status_sort,
+                'service_id' => $request->service_id,
                 'workstationServices' => $workstationServices,
+                'time_format' => $timeFormat,
                 'success' => false
             ]);
         }
 
-        $directQueue = DirectQueue::query()->with(['WorkstationVct','WorkstationVct.user'])->whereHas('Service', function ($query) {
+        $directQueue = DirectQueue::query()->with(['WorkstationVct','WorkstationVct.user','Vct'])->whereHas('Service', function ($query) {
             $query->whereBranchId(Auth::user()->branch_id);
         })->whereDate('created_at', '>=', $start_date)
             ->whereDate('created_at', '<=', $end_date)
             ->orderBy('created_at');
 
-        $directQueue->when($request->workstation_service_id, function ($query) use ($request) {
-            $query->whereWorkstationServiceId($request->workstation_service_id);
+        $directQueue->when($request->service_id, function ($query) use ($request) {
+            $query->where('service_id',$request->service_id);
         });
 
+        if($status_sort !== 'all'){
+            $directQueue->where('status', $status_sort);
+        }
+        
         return view('adminBranch.report.directQueue.daily', [
             'directQueues' => $directQueue->get(),
             'start_date' => $start_date,
             'end_date' => $end_date,
-            'workstation_service_id' => $request->workstation_service_id,
+            'status_sort' => $status_sort,
+            'service_id' => $request->service_id,
             'workstationServices' => $workstationServices,
+            'time_format' => $timeFormat,
             'success' => true
         ]);
     }
@@ -293,7 +306,7 @@ class ReportController extends Controller
     $start_date = $request->start_date ?: date('Y-m-d');
     $end_date = $request->end_date ?: date('Y-m-d');
     $date = $start_date;
-    $booking_form = $request->booking_form ?? 'standard-form';
+    $booking_form = $request->booking_form ?: 'standard-form';
 
     if (!Auth::user()->Branch->BranchType->is_premium) {
         $last_month = date("Y-m-d", strtotime("-3 months"));
@@ -342,8 +355,25 @@ class ReportController extends Controller
         ->select('appointment_onsites.*')
         ->get();
 
+        $filteredAppointments = $appointment_onsites->filter(function ($appointment) use ($booking_form) {
+            switch ($booking_form) {
+                case 'standard-form':
+                    return true;
+        
+                case 'form-medical-1':
+                    return !empty($appointment->reason_for_visit) || !empty($appointment->passport_number);
+        
+                case 'form-financing':
+                    return !empty($appointment->contract_number);
+        
+                default:
+                    return true;
+            }
+        });
+        
+
     return view('adminBranch.report.directQueue.appointmentOnsite', [
-        'appointment_onsites' => $appointment_onsites,
+        'appointment_onsites' => $filteredAppointments,
         'start_date' => $start_date,
         'end_date' => $end_date,
         'service_id' => $request->service_id,

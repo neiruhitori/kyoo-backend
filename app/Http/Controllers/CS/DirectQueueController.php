@@ -309,6 +309,8 @@ class DirectQueueController extends Controller
         $directQueue->recall_count = $directQueue->recall_count > 0 ? $directQueue->recall_count + 1 : 0;
         $directQueue->called_at = null;
         $directQueue->call_time = Date('Y-m-d H:i:s');
+        $directQueue->vct_id = Auth::user()->id;
+        $directQueue->user_id = Auth::user()->id;
         $directQueue->save();
 
         event(new QueueStatusUpdated([
@@ -420,6 +422,7 @@ class DirectQueueController extends Controller
             ->where('service_id', $directQueue->service_id)
             ->first();
 
+        $directQueue->vct_id = Auth::user()->id;
         $directQueue->workstation_service_id = $workstation_service->id;
         $directQueue->workstation_id = Auth::user()->WorkstationVct->workstation_id;
         $directQueue->status = 'served';
@@ -653,6 +656,8 @@ class DirectQueueController extends Controller
         $directQueue->status = 'end served';
         $directQueue->done_at = Date('Y-m-d H:i:s');
         $directQueue->serving_duration = $request->serving_duration;
+        $directQueue->vct_id = Auth::user()->id;
+        $directQueue->user_id = Auth::user()->id;
         $directQueue->save();
 
         event(new QueueStatusUpdated([
@@ -782,7 +787,7 @@ class DirectQueueController extends Controller
         $data = $request->all();
         $data['name'] = $oldDirectQueue->name;
         $data['phone'] = $oldDirectQueue->phone;
-        $data['workstation_id'] = $workstation_service->workstation_id;
+        // $data['workstation_id'] = $workstation_service->workstation_id;
         $data['user_id'] = Auth::id();
         $data['service_id'] = $workstation_service->service_id;
         $data['old_service_id'] = $oldDirectQueue->service_id;

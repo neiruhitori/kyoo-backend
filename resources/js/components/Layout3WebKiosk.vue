@@ -261,7 +261,7 @@ export default {
                 name: "",
                 phone: "",
                 workstation_service_id: "",
-                vct_id: "",
+                // vct_id: "",
                 booking_code: "",
                 user_id: ""
             },
@@ -329,7 +329,7 @@ export default {
                 name: "",
                 phone: "",
                 workstation_service_id: "",
-                vct_id: "",
+                // vct_id: "",
                 booking_code: "",
                 user_id: this.auth.id
             }
@@ -337,7 +337,7 @@ export default {
         handleCreateOnsiteQueueByBookingCode() {
             this.isLoading = true;
 
-            this.formData["vct_id"] = this.auth.id;
+            // this.formData["vct_id"] = this.auth.id;
 
             axios
                 .post("/device/directQueueByBookingCode/store", this.formData)
@@ -363,7 +363,7 @@ export default {
             this.isLoading = true;
 
             this.formData["workstation_service_id"] = this.selectedWorkstation;
-            this.formData["vct_id"] = this.auth.id;
+            // this.formData["vct_id"] = this.auth.id;
 
             axios
                 .post("/device/directQueue/store", this.formData)

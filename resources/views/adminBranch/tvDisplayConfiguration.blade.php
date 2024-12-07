@@ -152,13 +152,31 @@
                     @csrf
                     @method('PUT')
 
-                    <div class="monitor-images-wrapper mb-3">
-                        <div class="monitor-image-container">
-                            <select class="custom-select" name="selectSwitch" id="selectSwitch" style="width: 200px">
-                                <option value="file" {{ $switchLink == true ? 'selected' : '' }}>Gambar/Video</option>
-                                {{-- <option value="youtube" {{ $switchLink == false ? 'selected' : '' }}>Youtube</option> --}}
-                              </select>
+                    <div class="d-flex mb-3">
+                        <div class="monitor-images-wrapper ">
+                            <div class="mb-1">Opsi Display</div>
+                            <div class="monitor-image-container">
+                                <select class="custom-select" name="selectSwitch" id="selectSwitch" style="width: 150px">
+                                    <option value="file" {{ $switchLink == 'file' ? 'selected' : '' }}>Gambar/Video</option>
+                                    <option value="youtube" {{ $switchLink == 'youtube' ? 'selected' : '' }}>Youtube</option>
+                                  </select>
+                            </div>
+                            
                         </div>
+                        <div class="monitor-images-wrapper mx-3">
+                            <div class="mb-1">Durasi Display</div>
+                            <div class="monitor-image-container">
+                                <select class="custom-select" name="display_duration" id="display_duration" style="width: 110px">
+                                    <option value="5" {{ $display_duration == '5' ? 'selected' : '' }} >5 Detik</option>
+                                    <option value="10" {{ $display_duration == '10' ? 'selected' : '' }}>10 Detik</option>
+                                    <option value="15" {{ $display_duration == '15' ? 'selected' : '' }}>15 Detik</option>
+                                    <option value="20" {{ $display_duration == '20' ? 'selected' : '' }}>20 Detik</option>
+                                    <option value="25" {{ $display_duration == '25' ? 'selected' : '' }}>25 Detik</option>
+                                    <option value="30" {{ $display_duration == '30' ? 'selected' : '' }}>30 Detik</option>
+                                  </select>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="monitor-images-wrapper mb-3" id="linkContainer">
@@ -191,24 +209,23 @@
                         <div class="monitor-image-container" id="monitor_image1">
                             <label for="image_1">
                                 <div class="monitor-image-upload">
-                                    {{-- <img src="{{ asset($image_1) }}" id="preview_image_1"> --}}
                                     @if (pathinfo($image_1, PATHINFO_EXTENSION) === 'mp4')
-                                        <video width="100%" height="100%" id="preview_media" autoplay muted>
+                                        <video width="100%" height="100%" id="preview_media_1" autoplay muted>
                                             <source src="{{ asset($image_1) }}" type="video/mp4">
                                         </video>
                                     @else
-                                        <img {{ $image_1 != null ? "src=" .asset($image_1). "" : ''  }} id="preview_media">
+                                        <img src="{{ $image_1 != null ? asset($image_1) : '' }}" id="preview_media_1">
                                     @endif
-
+                        
                                     <input type="file" accept="image/*, video/mp4" name="image_1" id="image_1"
                                         onchange="previewMedia(this, 1)" hidden>
-
+                        
                                     <span class="monitor-image-label">
                                         <span class="fas fa-upload"></span>
                                     </span>
                                 </div>
                             </label>
-
+                        
                             <div>
                                 <div class="mb-1">Gambar / Video Iklan 1</div>
                                 <div>
@@ -219,29 +236,33 @@
                                     </button>
                                 </div>
                             </div>
-
-                            
                         </div>
                         
-
-
                         <div class="monitor-image-container" id="monitor_image2">
                             <label for="image_2">
                                 <div class="monitor-image-upload">
-                                    <img {{ $image_2 != null ? "src=" .asset($image_2). "" : ''  }} id="preview_image_2">
-
-                                <input type="file" accept="image/*" name="image_2" id="image_2" onchange="previewImage(this, 2)" hidden>
-
+                                    @if (pathinfo($image_2, PATHINFO_EXTENSION) === 'mp4')
+                                        <video width="100%" height="100%" id="preview_media_2" autoplay muted>
+                                            <source src="{{ asset($image_2) }}" type="video/mp4">
+                                        </video>
+                                    @else
+                                        <img src="{{ $image_2 != null ? asset($image_2) : '' }}" id="preview_media_2">
+                                    @endif
+                        
+                                    <input type="file" accept="image/*, video/mp4" name="image_2" id="image_2"
+                                        onchange="previewMedia(this, 2)" hidden>
+                        
                                     <span class="monitor-image-label">
                                         <span class="fas fa-upload"></span>
                                     </span>
                                 </div>
                             </label>
-
+                        
                             <div>
-                                <div class="mb-1">Gambar Iklan 2</div>
+                                <div class="mb-1">Gambar / Video Iklan 2</div>
                                 <div>
-                                    <button type="button" class="delete-image-button hidden" id="delete_button_2" onclick="deleteImage(2)">
+                                    <button type="button" class="delete-image-button hidden" id="delete_button_2"
+                                        onclick="deleteMedia(2)">
                                         <span class="fas fa-times mr-1"></span>
                                         Hapus
                                     </button>
@@ -249,23 +270,31 @@
                             </div>
                         </div>
                         
-
                         <div class="monitor-image-container" id="monitor_image3">
                             <label for="image_3">
                                 <div class="monitor-image-upload">
-                                    <img {{ $image_3 != null ? "src=" .asset($image_3). "" : ''  }} id="preview_image_3">
-
-                                <input type="file" accept="image/*" name="image_3" id="image_3" onchange="previewImage(this, 3)" hidden>
-
+                                    @if (pathinfo($image_3, PATHINFO_EXTENSION) === 'mp4')
+                                        <video width="100%" height="100%" id="preview_media_3" autoplay muted>
+                                            <source src="{{ asset($image_3) }}" type="video/mp4">
+                                        </video>
+                                    @else
+                                        <img src="{{ $image_3 != null ? asset($image_3) : '' }}" id="preview_media_3">
+                                    @endif
+                        
+                                    <input type="file" accept="image/*, video/mp4" name="image_3" id="image_3"
+                                        onchange="previewMedia(this, 3)" hidden>
+                        
                                     <span class="monitor-image-label">
                                         <span class="fas fa-upload"></span>
                                     </span>
                                 </div>
                             </label>
+                        
                             <div>
-                                <div class="mb-1">Gambar Iklan 3</div>
+                                <div class="mb-1">Gambar / Video Iklan 3</div>
                                 <div>
-                                    <button type="button" class="delete-image-button hidden" id="delete_button_3" onclick="deleteImage(3)">
+                                    <button type="button" class="delete-image-button hidden" id="delete_button_3"
+                                        onclick="deleteMedia(3)">
                                         <span class="fas fa-times mr-1"></span>
                                         Hapus
                                     </button>
@@ -949,7 +978,10 @@
     document.getElementById('youtube_1').addEventListener('input', handleURLyoutube);
     document.getElementById('youtube_2').addEventListener('input', handleURLyoutube);
     document.getElementById('youtube_3').addEventListener('input', handleURLyoutube);
-
+    document.getElementById('display_duration').addEventListener('change', function () {
+        let btn = document.getElementById('submit_image');
+        btn.classList.remove("hidden")
+    });
     document.getElementById('selectSwitch').addEventListener('change', switchInput);
     switchInput();
 
@@ -1009,31 +1041,51 @@
     }
 
     function previewMedia(input, mediaNo) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if (input.files[0].type.startsWith('image/')) {
-                    $('#image_' + mediaNo).prevAll().remove();
-                    $('#image_' + mediaNo).before(
-                        `<img src="${e.target.result}" id="preview_media">`
-                    );
-                } else if (input.files[0].type === 'video/mp4') {
-                    $('#image_' + mediaNo).prevAll().remove();
-                    $('#image_' + mediaNo).before(`
-                    <video width="100%" height="100%" id="preview_media" autoplay muted>
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Hapus preview sebelumnya
+            $('#image_' + mediaNo).prevAll('img, video').remove();
+
+            if (input.files[0].type.startsWith('image/')) {
+                $('#image_' + mediaNo).before(
+                    `<img src="${e.target.result}" id="preview_media_${mediaNo}" style="object-fit: cover;">`
+                );
+            } else if (input.files[0].type === 'video/mp4') {
+                $('#image_' + mediaNo).before(`
+                    <video width="100%" height="100%" id="preview_media_${mediaNo}" autoplay muted>
                         <source src="${e.target.result}" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 `);
-                }
+            }
 
-                $('#delete_button_' + mediaNo).removeClass('hidden');
-                $('#submit_image').removeClass('hidden');
-            };
+            $('#delete_button_' + mediaNo).removeClass('hidden');
+            $('#submit_image').removeClass('hidden');
+        };
 
-            reader.readAsDataURL(input.files[0]);
-        }
+        reader.readAsDataURL(input.files[0]);
     }
+}
+
+function deleteMedia(mediaNo) {
+    let mediaImg = mediaSrc.includes("tv_images");
+
+    // Hapus preview dan reset input
+    $('#image_' + mediaNo).prevAll().remove();
+    if (mediaSrc) {
+        $('#image_' + mediaNo).before(mediaImg ?
+            `<img src="${mediaSrc}" id="preview_media_${mediaNo}" style="object-fit: cover;">` :
+            `<video width="100%" height="100%" id="preview_media_${mediaNo}" autoplay muted>
+                <source src="${mediaSrc}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>`
+        );
+    }
+
+    $('#image_' + mediaNo).val(null);
+    $('#delete_button_' + mediaNo).addClass('hidden');
+}
 
     function previewImage(input, imageNo) {
         if (input.files && input.files[0]) {
@@ -1048,27 +1100,27 @@
         }
     }
 
-    function deleteMedia(mediaNo) {
-        let mediaSrc = '{{ asset($image_1) }}';
-        let mediaImg = mediaSrc.includes("tv_images");
+    // function deleteMedia(mediaNo) {
+    //     let mediaSrc = '{{ asset($image_1) }}';
+    //     let mediaImg = mediaSrc.includes("tv_images");
 
-        if (mediaSrc) {
-            $('#image_' + mediaNo).prevAll().remove();
-            $('#image_' + mediaNo).before(mediaImg ?
-                `<img src="${mediaSrc}" id="preview_media" style="object-fit: cover;">` :
-                `<video width="100%" height="100%" id="preview_media" autoplay muted>
-                <source src="${mediaSrc}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>`
-            );
-        } else {
-            $('#image_' + mediaNo).prevAll().remove();
-            $('#image_' + mediaNo).before('');
-        }
+    //     if (mediaSrc) {
+    //         $('#image_' + mediaNo).prevAll().remove();
+    //         $('#image_' + mediaNo).before(mediaImg ?
+    //             `<img src="${mediaSrc}" id="preview_media" style="object-fit: cover;">` :
+    //             `<video width="100%" height="100%" id="preview_media" autoplay muted>
+    //             <source src="${mediaSrc}" type="video/mp4">
+    //             Your browser does not support the video tag.
+    //         </video>`
+    //         );
+    //     } else {
+    //         $('#image_' + mediaNo).prevAll().remove();
+    //         $('#image_' + mediaNo).before('');
+    //     }
 
-        $('#image_' + mediaNo).val(null);
-        $('#delete_button_' + mediaNo).addClass('hidden');
-    }
+    //     $('#image_' + mediaNo).val(null);
+    //     $('#delete_button_' + mediaNo).addClass('hidden');
+    // }
 
     function deleteImage(imageNo) {
         let imageSrc = ''

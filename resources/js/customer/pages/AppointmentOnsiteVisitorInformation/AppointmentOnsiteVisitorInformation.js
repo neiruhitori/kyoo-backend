@@ -40,6 +40,7 @@ function AppointmentOnsiteVisitorInformation() {
     const [emergencyNumber, setEmergencyNumber] = useState('')
     const [passportNumber, setPassportNumber] = useState('')
     const [email, setEmail] = useState('')
+    const [contractNumber, setContractNumber] = useState('')
     const [reasonForVisit, setReasonForVisit] = useState('')
     const [headerErrorMessage, setHeaderErrorMessage] = useState('Gagal membuat antrian')
     const [errorMessage, setErrorMessage] = useState('')
@@ -57,16 +58,190 @@ function AppointmentOnsiteVisitorInformation() {
         name: validator.message('name', name, ['required']),
         phone: validator.message('phone', phone, ['required', 'phone']),
         email: validator.message('email', email, ['required', 'email']),
-        ...(branch && branch.branch_configuration.template_booking_form !== 'standard-form' && {
+        
+        ...(branch && branch.branch_configuration.template_booking_form === 'form-medical-1' && {
             dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
             address: validator.message('address', address, []),
             emergencyNumber: validator.message('emergencyNumber', emergencyNumber, ['phone']),
             passportNumber: validator.message('passportNumber', passportNumber, ['passportNumber']),
             reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
         }),
+        ...(branch && branch.branch_configuration.template_booking_form === 'form-financing' && {
+            contractNumber: validator.message('contractNumber', contractNumber, ['required','contractNumber']),
+        }),
     };
 
     const bookingMutation = useMutation('booking', (data) => createAppointmentOnsite(data))
+
+    const renderStandardUI = () => (
+           <div style={{ flex: '1 1 0%' }}>
+                        <TextField
+                            label="Nama Lengkap"
+                            style={{ marginBottom: '1.5rem' }}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Ch. John Doe"
+                            error={!!validationMessage.name}
+                            helperText={validationMessage.name}
+                        />
+                        <TextField
+                            label="Email"
+                            type="email"
+                            style={{ marginBottom: '1.5rem' }}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Ch. john@mail.com"
+                            error={!!validationMessage.email}
+                            helperText={validationMessage.email}
+                        />
+                        <TextField
+                            label="No. Telepon"
+                            type="tel"
+                            style={{ marginBottom: '1.5rem' }}
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="+62"
+                            error={!!validationMessage.phone}
+                            helperText={validationMessage.phone}
+                        />
+            </div>
+    );
+
+    const renderFinanceUI = () => (
+    <div style={{ flex: '1 1 0%' }}>
+        <TextField
+            label="Nama/Name"
+            style={{ marginBottom: '1.5rem' }}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Ch. John Doe"
+            error={!!validationMessage.name}
+            helperText={validationMessage.name}
+        />
+        <TextField
+            label="Email"
+            type="email"
+            style={{ marginBottom: '1.5rem' }}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Ch. john@mail.com"
+            error={!!validationMessage.email}
+            helperText={validationMessage.email}
+        />
+        <TextField
+            label="No. Kontrak/Contract Number"
+            style={{ marginBottom: '1.5rem' }}
+            value={contractNumber}
+            onChange={(e) => setContractNumber(e.target.value)}
+            placeholder="1234567890"
+            error={!!validationMessage.contractNumber}
+            helperText={validationMessage.contractNumber}
+        />
+        <TextField
+            label="No. Telepon/Phone Number"
+            type="tel"
+            style={{ marginBottom: '1.5rem' }}
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="+62"
+            error={!!validationMessage.phone}
+            helperText={validationMessage.phone}
+        />
+    </div>
+    );
+
+    const renderMedicalUI = () => (
+        <div style={{ flex: '1 1 0%' }}>
+                <TextField
+                    label="Nama/Name"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ch. John Doe"
+                    error={!!validationMessage.name}
+                    helperText={validationMessage.name}
+                />
+                <TextField
+                    label="Tanggal lahir/DOB"
+                    type="date"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    error={!!validationMessage.dateOfBirth}
+                    helperText={validationMessage.dateOfBirth}
+                />
+                <TextField
+                    label="Alamat/Address"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Ch. Jln Merdeka"
+                    error={!!validationMessage.address}
+                    helperText={validationMessage.address}
+                />
+                <TextField
+                    label="No. Telepon/Phone number"
+                    type="tel"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+62"
+                    error={!!validationMessage.phone}
+                    helperText={validationMessage.phone}
+                />
+                <TextField
+                    label="Nomer cadangan/Emergency Number"
+                    type="tel"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={emergencyNumber}
+                    onChange={(e) => setEmergencyNumber(e.target.value)}
+                    placeholder="+62"
+                    error={!!validationMessage.emergencyNumber}
+                    helperText={validationMessage.emergencyNumber}
+                />
+                <TextField
+                    label="NIK/Passport Number"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={passportNumber}
+                    onChange={(e) => setPassportNumber(e.target.value)}
+                    placeholder="NIK"
+                    error={!!validationMessage.passportNumber}
+                    helperText={validationMessage.passportNumber}
+                />
+                <TextField
+                    label="Email"
+                    type="email"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Ch. john@mail.com"
+                    error={!!validationMessage.email}
+                    helperText={validationMessage.email}
+                />
+                <TextField
+                    label="Alasan Kunjungan/Reason for visit"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={reasonForVisit}
+                    onChange={(e) => setReasonForVisit(e.target.value)}
+                    placeholder="Ch. CheckUp"
+                    error={!!validationMessage.reasonForVisit}
+                    helperText={validationMessage.reasonForVisit}
+                />
+            </div>
+    );
+
+    const renderForm = () => {
+        switch (branch?.branch_configuration.template_booking_form) {
+            case 'standard-form':
+                return renderStandardUI();
+            case 'form-medical-1':
+                return renderMedicalUI();
+            case 'form-financing':
+                return renderFinanceUI();
+            default:
+                return null;
+        }
+    };
 
     async function handleFormSubmit(e) {
         e.preventDefault()
@@ -88,12 +263,15 @@ function AppointmentOnsiteVisitorInformation() {
                 fcm_id,
                 date: searchParams.get('date'),
                 slot_id: searchParams.get('slot'),
-                ...(branch && branch.branch_configuration.template_booking_form !== 'standard-form' && {
+                ...(branch && branch.branch_configuration.template_booking_form === 'form-medical-1' && {
                     address,
                     date_of_birth: dateOfBirth,
                     emergency_number: emergencyNumber,
                     passport_number: passportNumber,
                     reason_for_visit: reasonForVisit,
+                }),
+                ...(branch && branch.branch_configuration.template_booking_form === 'form-financing' && {
+                    contract_number: contractNumber
                 })
             })
 
@@ -106,7 +284,6 @@ function AppointmentOnsiteVisitorInformation() {
                 showError(booking.message)
                 return
             }
-
             navigate(`/customer/${branchId}/appointment-onsite/booking-status/${booking.data.id}`)
         } catch (error) {
             if(error.code === 10002) {
@@ -171,153 +348,8 @@ function AppointmentOnsiteVisitorInformation() {
                     </p>
                 </DangerAlert>}
 
-
-                {branch?.branch_configuration.template_booking_form === 'standard-form' ?
-                    <div style={{
-                        flex: '1 1 0%'
-                    }}>
-                        <TextField
-                            label="Nama Lengkap"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Ch. John Doe"
-                            error={!!validationMessage.name}
-                            helperText={validationMessage.name}
-                        />
-
-                        <TextField
-                            label="Email"
-                            type="email"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Ch. john@mail.com"
-                            error={!!validationMessage.email}
-                            helperText={validationMessage.email}
-                        />
-
-                        <TextField
-                            label="No. Telepon"
-                            type="tel"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            placeholder="+62"
-                            error={!!validationMessage.phone}
-                            helperText={validationMessage.phone}
-                        />
-                    </div>
-                :
-                <div style={{
-                        flex: '1 1 0%'
-                    }}>
-                        <TextField
-                            label="Nama/Name"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Ch. John Doe"
-                            error={!!validationMessage.name}
-                            helperText={validationMessage.name}
-                        />
-
-                        <TextField
-                            label="Tanggal lahir/DOB"
-                            type="date"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={dateOfBirth}
-                            onChange={(e) => setDateOfBirth(e.target.value)}
-                            error={!!validationMessage.dateOfBirth}
-                            helperText={validationMessage.dateOfBirth}
-                        />
-
-                        <TextField
-                            label="Alamat/Address"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                            placeholder="Ch. Jln Merdeka"
-                            error={!!validationMessage.address}
-                            helperText={validationMessage.address}
-                        />
-
-                        <TextField
-                            label="No. Telepon/Phone number"
-                            type="tel"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            placeholder="+62"
-                            error={!!validationMessage.phone}
-                            helperText={validationMessage.phone}
-                        />
-
-                        <TextField
-                            label="Nomer cadangan/Emergency Number"
-                            type="tel"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={emergencyNumber}
-                            onChange={(e) => setEmergencyNumber(e.target.value)}
-                            placeholder="+62"
-                            error={!!validationMessage.emergencyNumber}
-                            helperText={validationMessage.emergencyNumber}
-                        />
-
-                        <TextField
-                            label="NIK/Passport Number"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={passportNumber}
-                            onChange={(e) => setPassportNumber(e.target.value)}
-                            placeholder="NIK"
-                            error={!!validationMessage.passportNumber}
-                            helperText={validationMessage.passportNumber}
-                        />
-
-                        <TextField
-                            label="Email"
-                            type="email"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Ch. john@mail.com"
-                            error={!!validationMessage.email}
-                            helperText={validationMessage.email}
-                        />
-
-                        <TextField
-                            label="Alasan Kunjungan/Reason for visit"
-                            style={{
-                                marginBottom: '1.5rem'
-                            }}
-                            value={reasonForVisit}
-                            onChange={(e) => setReasonForVisit(e.target.value)}
-                            placeholder="Ch. CheckUp"
-                            error={!!validationMessage.reasonForVisit}
-                            helperText={validationMessage.reasonForVisit}
-                        />
-                    </div>
-                }
+                {renderForm()}
+                
             </MainContent>
 
             <div style={{

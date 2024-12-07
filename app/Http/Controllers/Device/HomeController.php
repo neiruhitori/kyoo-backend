@@ -64,6 +64,7 @@ class HomeController extends Controller
         $TVConfiguration = $branch->TVConfiguration;
         $TVToken = TVToken::where('tv_configuration_id', $TVConfiguration->id)->first();
         $customLayoutConfig = $TVConfiguration->customLayoutConfiguration2;
+        $display_duration = (int) $TVConfiguration->display_duration * 1000;
 
         if(!$TVToken) {
             $TVToken = TVToken::create([
@@ -107,6 +108,7 @@ class HomeController extends Controller
                 return view('device.signage.custom-2UI', [
                     'branch' => $branch,
                     'features' => $features,
+                    'display_duration' => $display_duration,
                     'workstations' => $workstations,
                     'customLayoutConfig' => $customLayoutConfig
                 ]);
@@ -294,8 +296,8 @@ class HomeController extends Controller
             $workstation_service = WorkstationService::find($request->workstation_service_id);
 
             $data = $request->all();
-            $data['workstation_id'] = $workstation_service->workstation_id;
-            $data['user_id'] = $user->id;
+            // $data['workstation_id'] = $workstation_service->workstation_id;
+            // $data['user_id'] = $user->id;
             $data['service_id'] = $workstation_service->service_id;
             $data['direct_queue_channel'] = 'Device';
 
@@ -375,8 +377,8 @@ class HomeController extends Controller
             }
 
             $data = $appointment_onsite->toArray();
-            $data['user_id'] = $user->id;
-            $data['vct_id'] = $request->vct_id;
+            // $data['user_id'] = $user->id;
+            // $data['vct_id'] = $request->vct_id;
             $data['direct_queue_channel'] = 'Device';
             $data['priority'] = 1;
             $data['appointment_onsite_id'] = $appointment_onsite->id;

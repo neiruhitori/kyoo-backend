@@ -60,6 +60,7 @@
                                     <select name="booking_form" id="booking_form" class="form-control">
                                         <option value="standard-form" {{ $booking_form == 'standard-form' ? 'selected' : '' }}>Standard Form</option>
                                         <option value="form-medical-1" {{ $booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
+                                        <option value="form-financing" {{ $booking_form == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -106,7 +107,44 @@
                                             @endforelse
                                         </tbody>
                                     </table>
-                                @else
+                                @elseif ($booking_form == 'form-financing')
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <th>{{ __('Order Date') }}</th>
+                                        <th>{{ __('Reservation Date') }}</th>
+                                        <th>{{ __('Kode Unik') }}</th>
+                                        <th>{{ __('Queue No') }}</th>
+                                        <th>{{ __('Name') }}</th>
+                                        <th>{{ __('Email') }}</th>
+                                        <th>{{ __('Mobile Phone') }}</th>
+                                        <th>{{ __('No. Kontrak') }}</th>
+                                        <th>{{ __('Service') }}</th>
+                                        <th>{{ __('Slot') }}</th>
+                                        <th>{{ __('Status') }}</th>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($appointment_onsites as $appointment_onsite)
+                                            <tr>
+                                                <td>{{ $appointment_onsite->created_at->formatLocalized('%d-%b-%Y') }}</td>
+                                                <td>{{ date('d-M-Y', strtotime($appointment_onsite->date)) }}</td>
+                                                <td>{{ strtoupper($appointment_onsite->booking_code) }}</td>
+                                                <td>{{ $appointment_onsite->DirectQueue->queue_no ?? '-' }}</td>
+                                                <td>{{ $appointment_onsite->name }}</td>
+                                                <td>{{ $appointment_onsite->email }}</td>
+                                                <td>{{ $appointment_onsite->phone }}</td>
+                                                <td>{{ $appointment_onsite->contract_number }}</td>
+                                                <td>{{ $appointment_onsite->Service->name }}</td>
+                                                <td>{{ $appointment_onsite->Slot->start_time }} - {{ $appointment_onsite->Slot->end_time }}</td>
+                                                <td>{{ $appointment_onsite->is_used ? 'Check-In' : 'Belum Check-In' }}</td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center">{{ __('No data') }}</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                                @elseif ($booking_form == 'form-medical-1')
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <th>{{ __('Order Date') }}</th>
@@ -184,16 +222,16 @@
             "buttons": [
                 {
                     extend: 'excelHtml5',
-                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ count($appointment_onsites) > 0 ? '('.$appointment_onsites[0]->date.')' : '' }}"
+                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ count($appointment_onsites) > 0 ? '('.$appointment_onsites[0]->date.')' : '' }}"
+                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
                 },
                 {
                     extend: 'print',
                     text: 'Cetak',
-                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ count($appointment_onsites) > 0 ? '('.$appointment_onsites[0]->date.')' : '' }}"
+                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
                 }
             ],
             "language": {

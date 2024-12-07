@@ -52,16 +52,32 @@
                 </div>
 
                 <div class="monitor-main-content">
-                   <template v-if="promotionImages.length">
+        <template v-if="promotionImages.length">
+            <div class="video-container">
         <video
-            v-if="activeImage === 1 && promotionImages[0].type === 'video'"
+            v-if="promotionImages[activeImage - 1].type === 'video'"
             width="100%"
             height="100%"
             autoplay
+            :key="activeImage"
         >
-            <source :src="promotionImages[0].url" type="video/mp4" />
+            <source :src="promotionImages[activeImage - 1].url" type="video/mp4" />
             Your browser does not support the video tag.
         </video>
+
+        <iframe
+            v-if="promotionImages[activeImage - 1].type === 'youtube'"
+            width="100%"
+            height="100%"
+            id="player"
+            :key="activeImage"
+            :src="`https://www.youtube.com/embed/${getYouTubeId(promotionImages[activeImage - 1].url)}?enablejsapi=1&controls=0&autoplay=1&mute=1`"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+        ></iframe>
 
         <img
             v-else-if="promotionImages[activeImage - 1].type === 'image'"
@@ -70,6 +86,8 @@
             width="100%"
             height="100%"
         />
+        <div class="iframe-overlay"></div>
+    </div>
     </template>
                 </div>
             </div>
@@ -128,6 +146,9 @@ export default {
         custom_layout_config: {
             type: Object,
             required: true,
+        },
+        display_duration: {
+            type: Number,
         }
     },
 
@@ -144,7 +165,8 @@ export default {
             promotionImages: [],
             isAutoPlayBlocked: false,
             playQueue: [],
-            currentImageDuration: 5000,
+            displayDuration: this.display_duration,
+            currentImageDuration: this.display_duration || 5000,
             promotionMedia: [],
             callAudio: [],
             isPlaying: false,
@@ -210,6 +232,8 @@ export default {
 
             if (isVideo) {
                 try {
+                    console.log(this.currentImageDuration);
+                    
                     const response = await fetch(
                         self.promotionImages[newValue - 1].url
                     );
@@ -229,8 +253,26 @@ export default {
                 } catch (error) {
                     console.error(error);
                 }
+            } else if(isYouTube){
+                console.log("Current Dur Active: ",this.currentImageDuration);
+                
+                try{
+                    setTimeout(() => {
+                        this.player = new YT.Player('player', {
+                        playerVars: {
+                            'playsinline': 1
+                        },
+                        events: {
+                            'onReady': this.onPlayerReady,
+                            'onStateChange': this.onPlayerStateChange
+                        }
+                    });
+                    }, 1000);
+                }catch(error){
+                    console.error(error);
+                }
             }else {
-                self.currentImageDuration = 5000;
+                self.currentImageDuration = self.displayDuration;
                 this.animateImage();
             }
 
@@ -270,7 +312,7 @@ export default {
         this.initCurrentDate();
         this.getQueues();
         await this.getDisplayImage();
-        await this.onYouTubeIframeAPIReady();
+        await this.initMedia();
 
         this.animateImage();
         this.updateCurrentDate();
@@ -292,6 +334,7 @@ export default {
         currentFormattedDate() {
             return this.currentDate.format('DD-MM-YYYY');
         },
+
     },
 
     methods: {
@@ -332,23 +375,58 @@ export default {
                     .catch(() => (this.isAutoPlayBlocked = true));
             }
         },
-    async onYouTubeIframeAPIReady() {
-        this.player = await new YT.Player('player', {
-          playerVars: {
-            'playsinline': 1
-          },
-          events: {
-            'onReady': this.onPlayerReady,
-            'onStateChange': this.onPlayerStateChange
-          }
-        });
-        },
+        async initMedia() {
+        const firstMedia = this.promotionImages[0]; // Ambil media pertama
+
+        if (firstMedia.type === 'video') {
+            // Video lokal
+            try {
+                const response = await fetch(firstMedia.url);
+                const blob = await response.blob();
+                const video = document.createElement("video");
+                video.src = URL.createObjectURL(blob);
+
+                await new Promise((resolve) => {
+                    video.onloadedmetadata = () => {
+                        this.currentImageDuration = video.duration * 1000; // Durasi dalam milidetik
+                        resolve();
+                    };
+                });
+
+                console.log(`Durasi video pertama: ${this.currentImageDuration} ms`);
+            } catch (error) {
+                console.error("Error loading video:", error);
+            }
+        } else if (firstMedia.type === 'youtube') {
+            // Video YouTube
+            try {
+                this.player = await new YT.Player('player', {
+                playerVars: {
+                    'playsinline': 1
+                },
+                events: {
+                    'onReady': this.onPlayerReady,
+                    'onStateChange': this.onPlayerStateChange
+                }
+                });
+        
+            } catch (error) {
+                console.error("Error loading YouTube video:", error);
+            }
+        } else if (firstMedia.type === 'image') {
+            this.currentImageDuration = this.displayDuration;
+            console.log("Media pertama adalah gambar. Durasi default:", this.currentImageDuration);
+        }
+
+        this.animateImage();
+    },
+
         onPlayerReady(event) {
             event.target.playVideo();
         },
         onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.PLAYING) {
-                const ytduration = event.target.getDuration() * 1000; // Durasi video dalam milidetik
+                const ytduration = event.target.getDuration() * 1000 - 1000; // Durasi video dalam milidetik
                 console.log("Video Playing - Duration:", ytduration);
                 
                 // Set durasi hanya jika belum ditetapkan
@@ -431,9 +509,14 @@ export default {
                 }
             }, this.currentImageDuration || 5000);
         },
+        
         async saveToLocal() {
             // Fetch Image And Video
             const fetchMedia = this.promotionImages.map(async media => {
+                if (this.isYouTube(media.url)) {
+                    console.log(`Skipping YouTube URL: ${media.url}`);
+                    return null; // Skip fetching YouTube media
+                }
                 const response = await fetch(media.url);
                 const blob = await response.blob();
 
@@ -651,6 +734,21 @@ export default {
 </script>
 
 <style scoped>
+.iframe-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0); /* Transparan */
+    z-index: 1; /* Pastikan overlay di atas elemen lain */
+}
+
+.video-container {
+    position: relative; /* Untuk membungkus overlay */
+    width: 100%;
+    height: 100%;
+}
     .workstation-list {
         display: flex;
         gap: 0.5rem;

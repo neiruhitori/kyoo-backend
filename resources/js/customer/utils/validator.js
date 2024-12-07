@@ -31,6 +31,14 @@ class Validator {
                     return this.testRegex(value, /^[0-9]+$/)
                 }
             },
+            contractNumber: {
+                message: 'Nomor Kontrak tidak valid',
+                validate: (value) => {
+                    if (!value) return true
+
+                    return this.testRegex(value, /^[0-9]{10}$/)
+                }
+            },
         }
     }
 

@@ -73,8 +73,15 @@ class TVDisplayConfigurationController extends Controller
 
         $tv_configuration = $this->tvConfigurationRepository->GetOneConfigurationByBranchID(Auth::user()->branch_id);
         $branch_configuration = BranchConfiguration::where('branch_id', Auth::user()->branch_id)->first();
+        $switchLink = 'file';
+        $link_1 = '';
+        $link_2 = '';
+        $link_3 = '';
+        $display_duration = '5';
 
         if ($tv_configuration) {
+            $display_duration = $tv_configuration->display_duration;
+
             $link_1 =$tv_configuration->image_1 && filter_var($tv_configuration->image_1, FILTER_VALIDATE_URL)
             ? $tv_configuration->image_1 // Jika image_1 adalah URL
             : null ;
@@ -87,10 +94,13 @@ class TVDisplayConfigurationController extends Controller
             ? $tv_configuration->image_3 // Jika image_1 adalah URL
             : null ;
 
-            if($link_1 == null || $link_2 == null || $link_3 == null){
-                $switchLink = true;
+            
+
+            // Cek jika salah satu link adalah null atau kosong
+            if (!empty($link_1) || !empty($link_2) || !empty($link_3)) {
+                $switchLink = 'youtube';
             }else{
-                $switchLink = false;
+                $switchLink = 'file';
             }
 
             
@@ -149,6 +159,7 @@ class TVDisplayConfigurationController extends Controller
             'tv_configuration' => $tv_configuration,
             'layout_configuration' => $tvConfigurationFormValue,
             'switchLink' => $switchLink,
+            'display_duration' => $display_duration,
             'link_1' => $link_1,
             'link_2' => $link_2,
             'link_3' => $link_3,
@@ -184,109 +195,54 @@ class TVDisplayConfigurationController extends Controller
     }
 
     public function update(Branch $branch, Request $request)
-    {
-        
-        $STORAGE_FOLDER_IMAGES = 'tv_images';
-        $STORAGE_FOLDER_VIDEOS = 'tv_videos';
+{
+    $request->validate([
+        'image_1' => 'nullable|file|max:10000|mimes:jpeg,png,jpg,gif,svg,mp4',
+        'image_2' => 'nullable|file|max:10000|mimes:jpeg,png,jpg,gif,svg,mp4',
+        'image_3' => 'nullable|file|max:10000|mimes:jpeg,png,jpg,gif,svg,mp4',
+        'url_1' => 'nullable|url',
+        'url_2' => 'nullable|url',
+        'url_3' => 'nullable|url',
+    ]);
 
-        if($request->selectSwitch == 'file'){
-            if ($request->file('image_1') && $request->file('image_1')->getClientOriginalExtension() === 'mp4') {
-                $request->validate([
-                    'image_1' => 'nullable|mimetypes:video/mp4|max:10000',
-                    'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                    'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                    'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                    'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                    'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
-                ], [], [
-                    'image_1' => 'Video',
-                ]);
-            } else {
-                $request->validate([
-                    'image_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,mp4|max:1000',
-                    'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                    'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                    'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                    'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                    'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
-                ]);
+    $tv_layout = TVLayout::first();
+    $tv_configuration = TVConfiguration::where('branch_id', $branch->id)->first();
+    
+    $data = [
+        'branch_id' => $branch->id,
+        'tv_layout_id' => $request->tv_layout_id ?? $tv_layout->id,
+        'display_duration' => $request->display_duration 
+    ];
+
+    for ($i = 1; $i <= 3; $i++) {
+        if ($request->file("image_$i")) {
+            // Hapus file lama jika ada
+            if ($tv_configuration && $tv_configuration->{"image_$i"}) {
+                Storage::disk('public')->delete($tv_configuration->{"image_$i"});
             }
-            
-        }else{
-            //jika pake link youtube
-            $request->validate([
-                'url_1' => 'nullable|url', 
-                'url_2' => 'nullable|url',
-                'url_3' => 'nullable|url',
-                'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
-                'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000'
-            ]);
+
+            $file = $request->file("image_$i");
+            $extension = $file->getClientOriginalExtension();
+            $folder = $extension === 'mp4' ? 'tv_videos' : 'tv_images';
+            $data["image_$i"] = Storage::disk('public')->put($folder, $file);
+        } elseif ($request->input("url_$i")) {
+            $data["image_$i"] = $request->input("url_$i"); // Simpan URL jika ada
         }
-        
-
-        $tv_layout = TVLayout::first();
-        $tv_configuration = TVConfiguration::where('branch_id', $branch->id)->first();
-      
-        $data = [
-            'branch_id' => $branch->id,
-            'tv_layout_id' => $request->tv_layout_id ?? $tv_layout->id
-        ];
-
-
-        if($request->selectSwitch == 'file'){
-            for ($i = 1; $i <= 6; $i++) {
-                if ($request->file("image_$i")) {
-                    $imageType = $request->file("image_$i")->getClientOriginalExtension();
-                    $STORAGE_FOLDER = $imageType === 'mp4' ? $STORAGE_FOLDER_VIDEOS : $STORAGE_FOLDER_IMAGES;
-                    $data["image_$i"] = Storage::disk('public')->put($STORAGE_FOLDER, $request->file("image_$i"));
-                }
-            }
-        }else{
-            if ($tv_configuration) {
-                if ($request->url_1) {
-                    $data['image_1'] = $request->url_1; // Update jika ada URL baru
-                }
-                if ($request->url_2) {
-                    $data['image_2'] = $request->url_2; // Update jika ada URL baru
-                }
-                if ($request->url_3) {
-                    $data['image_3'] = $request->url_3; // Update jika ada URL baru
-                }
-            } else {
-                $data['image_1'] = $request->url_1;
-                $data['image_2'] = $request->url_2;
-                $data['image_3'] = $request->url_3;
-            }
-            for ($i = 4; $i <= 6; $i++) {
-                if ($request->file("image_$i")) {
-                    $data["image_$i"] = Storage::disk('public')->put($STORAGE_FOLDER_IMAGES, $request->file("image_$i"));
-                }
-            }
-        }
-        // dd($data);
-
-
-        if ($tv_configuration) {
-            for ($i = 1; $i <= 6; $i++) {
-                if ($request->file("image_$i") && $tv_configuration->{"image_$i"}) {
-                    Storage::disk('public')->delete($tv_configuration->{"image_$i"});
-                }
-            }
-
-            TVConfiguration::where('id', $tv_configuration->id)->update($data);
-        } else {
-            $tv_config = TVConfiguration::create($data);
-            TVToken::create([
-                'tv_configuration_id' => $tv_config->id,
-                'token' => Str::random(12)
-            ]);
-        }
-
-        return redirect()
-            ->route('admin-branch.branch-configuration.queue-monitor')
-            ->with('success', 'Konfigurasi display TV berhasil diperbarui.');
     }
+
+    if ($tv_configuration) {
+        TVConfiguration::where('id', $tv_configuration->id)->update($data);
+    } else {
+        $tv_config = TVConfiguration::create($data);
+        TVToken::create([
+            'tv_configuration_id' => $tv_config->id,
+            'token' => Str::random(12)
+        ]);
+    }
+
+    return redirect()->route('admin-branch.branch-configuration.queue-monitor')
+        ->with('success', 'Konfigurasi display TV berhasil diperbarui.');
+}
 
     public function updateLayout(Branch $branch, Request $request) {
         $branch->BranchConfiguration->template_signage = $request->template_signage;

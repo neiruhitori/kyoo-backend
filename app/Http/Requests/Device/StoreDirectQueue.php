@@ -24,7 +24,7 @@ class StoreDirectQueue extends FormRequest
     public function rules()
     {
         return [
-            'vct_id' => 'required|exists:users,id',
+            'vct_id' => 'nullable',
             'workstation_service_id' => 'required|exists:workstation_services,id',
             'name' => 'nullable|string|max:100',
             'phone' => 'nullable'
