@@ -53,6 +53,7 @@
 
                 <div class="monitor-main-content">
         <template v-if="promotionImages.length">
+            <div class="video-container">
         <video
             v-if="promotionImages[activeImage - 1].type === 'video'"
             width="100%"
@@ -85,6 +86,8 @@
             width="100%"
             height="100%"
         />
+        <div class="iframe-overlay"></div>
+    </div>
     </template>
                 </div>
             </div>
@@ -731,6 +734,21 @@ export default {
 </script>
 
 <style scoped>
+.iframe-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0); /* Transparan */
+    z-index: 1; /* Pastikan overlay di atas elemen lain */
+}
+
+.video-container {
+    position: relative; /* Untuk membungkus overlay */
+    width: 100%;
+    height: 100%;
+}
     .workstation-list {
         display: flex;
         gap: 0.5rem;
