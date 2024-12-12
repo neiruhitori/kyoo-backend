@@ -119,8 +119,6 @@
 
 @include('layouts.alert')
 
-
-
     <div class="mb-3 mx-3">
         <h5 class="font-weight-bold text-primary mb-0">
             Menu Billing

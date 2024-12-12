@@ -47,6 +47,9 @@ class TVConfigurationRepository implements TVConfigurationRepositoryInterface
                     'running_text' => $request->running_text,
                     'running_text_color' => $request->running_text_color,
                     'running_text_speed' => $request->running_text_speed,
+                    'running_text_size' => $request->running_text_size,
+                    'text_time_size' => $request->text_time_size,
+                    'logo_size' => $request->logo_size,
                 ];
             } else {
                 $newTVCustomLayoutConfiguration = [

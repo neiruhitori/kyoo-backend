@@ -176,6 +176,9 @@ class BillingController extends Controller
         if(Auth::user()->Branch->is_premium){
             return redirect(route('admin-branch.billing'));
         }
+        if(Auth::user()->Branch->BranchType->is_exhibition){
+            return back();
+        }
 
            $type=Auth::user()->Branch->branch_type_id;
            $branchType = BranchType::where('id',$type)->first();

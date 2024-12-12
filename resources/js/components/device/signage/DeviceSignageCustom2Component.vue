@@ -6,10 +6,11 @@
                     <img
                         v-if="!!branch.logo"
                         :src="`/storage/${branch.logo}`"
+                        :style="{ height: `${custom_layout_config.logo_size || 2.3}rem` }"
                     />
                 </div>
                 <div class="monitor-time-container" v-bind:style="[dateTime]">
-                    <div class="monitor-date">
+                    <div class="monitor-date" v-bind:style="[monitorDate]">
                         <span>{{ currentDay }}</span>
                         <span>{{ currentFormattedDate }}</span>
                     </div>
@@ -185,7 +186,11 @@ export default {
                 color: this.custom_layout_config.datetime_color || "#FFFFFF"
             },
             lineHour: {
-                "border-left": `2px solid ${this.custom_layout_config.datetime_color || "#FFFFFF"}`
+                "border-left": `2px solid ${this.custom_layout_config.datetime_color || "#FFFFFF"}`,
+                "font-size": `${this.custom_layout_config.text_time_size ? parseFloat(this.custom_layout_config.text_time_size) + 0.5 : 1.5}rem`,
+            },
+            monitorDate: {
+                "font-size": `${this.custom_layout_config.text_time_size || 1}rem`,
             },
             sidebarSubtitle: {
                 color: this.custom_layout_config.sidebar_subtitle_color || "#FFFFFF",
@@ -210,6 +215,7 @@ export default {
             },
             runningText: {
                 color: this.custom_layout_config.running_text_color || "#FFFFFF",
+                "font-size": `${this.custom_layout_config.running_text_size || 1.625}rem` ,
                 animation: `running-text-animate ${this.custom_layout_config.running_text_speed || 10}s linear infinite`
             },
             lineContainer: {
@@ -883,12 +889,12 @@ export default {
     .monitor-date {
         text-align: right;
         display: grid;
-        font-size: 1.5rem;
+        /* font-size: 1.5rem; */
     }
     .monitor-hour {
         padding: 0.4rem 0.5rem;
         font-weight: 700;
-        font-size: 3.5rem;
+        /* font-size: 2.5rem; */
     }
     .monitor-main-content {
         width: 100%;
@@ -917,7 +923,7 @@ export default {
         overflow: hidden;
         padding-top: 0.9rem;
         padding-bottom: 0.9rem;
-        font-size: 1.625rem;
+        /* font-size: 1.625rem; */
     }
     .permission-wrapper {
         position: fixed;
@@ -989,7 +995,7 @@ export default {
         .running-text {
             padding-top: 0.8rem;
             padding-bottom: 0.8rem;
-            font-size: 1rem;
+            /* font-size: 1rem; */
         }
     }
 </style>

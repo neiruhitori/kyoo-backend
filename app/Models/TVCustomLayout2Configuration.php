@@ -27,5 +27,8 @@ class TVCustomLayout2Configuration extends Model
         'running_text',
         'running_text_color',
         'running_text_speed',
+        'running_text_size',
+        'text_time_size',
+        'logo_size',
     ];
 }
