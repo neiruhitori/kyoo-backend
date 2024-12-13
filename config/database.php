@@ -74,7 +74,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            'schema' => 'public',
+            'schema' => 'dev_kyoo',
             'sslmode' => 'prefer',
             'options' => [
                 'connections' => [
@@ -88,7 +88,7 @@ return [
                         'password' => env('DB_PASSWORD', ''),
                         'charset' => 'utf8',
                         'prefix' => '',
-                        'schema' => 'public',
+                        'schema' => 'dev_kyoo',
                         'sslmode' => 'prefer',
                         'max_connections' => 10,
                         'idle_timeout' => 30,

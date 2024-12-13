@@ -163,7 +163,7 @@
         })
     }
 
-    function formatTime(value) {
+    function formatTime(value) { 
         let hours = Math.floor(value / 3600),
             minutes = Math.floor((value % 3600) / 60),
             seconds = Math.floor(value % 3600 % 60)
