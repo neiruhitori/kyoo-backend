@@ -28,7 +28,9 @@ class AddNewColumnLogoSizeToTvCustomLayout2Configuration extends Migration
     public function down()
     {
         Schema::table('tv_custom_layout_2_configuration', function (Blueprint $table) {
-            //
+            $table->dropColumn('logo_size');
+            $table->dropColumn('text_time_size');
+            $table->dropColumn('running_text_size');
         });
     }
 }

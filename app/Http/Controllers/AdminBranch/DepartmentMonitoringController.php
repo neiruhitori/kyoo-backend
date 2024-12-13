@@ -164,7 +164,6 @@ class DepartmentMonitoringController extends Controller
             ->where('service_id', $value->id)
             ->avg('serving_duration');
     }
-
     public function maxWait($service_id)
     {
         $data = DirectQueue::whereBetween('created_at', [
@@ -172,8 +171,8 @@ class DepartmentMonitoringController extends Controller
             Carbon::now()->endOfDay()
         ])
         ->where('service_id', $service_id)
-        ->orderBy('waiting_duration', 'desc') 
-        ->first(); 
+        ->orderBy('waiting_duration', 'desc')
+        ->get(); 
         //  dd($data);
          return view('adminBranch.monitoring.detail', ["data" => $data]);
     }
@@ -184,8 +183,8 @@ class DepartmentMonitoringController extends Controller
             Carbon::now()->endOfDay()
         ])
         ->where('service_id', $service_id)
-        ->orderBy('serving_duration', 'desc') 
-        ->first();
+        ->orderBy('serving_duration', 'desc')
+        ->get();
         //  dd($data);
          return view('adminBranch.monitoring.detail', ["data" => $data]);
     }

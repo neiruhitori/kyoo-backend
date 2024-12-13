@@ -39,38 +39,39 @@
                             </thead>
     
                             <tbody>
+                                @forelse($data as $d)
                                 <tr>
-                                    <td>{{ $data->queue_no }}</td>
-                                    <td>{{ $data->booking_code }}</td>
-                                    <td>{{ date('Y M d H:i:s', strtotime($data->created_at)) }}</td>
+                                    <td>{{ $d->queue_no }}</td>
+                                    <td>{{ $d->booking_code }}</td>
+                                    <td>{{ date('Y M d H:i:s', strtotime($d->created_at)) }}</td>
                                     <td>
-                                        @if($data->call_time)
-                                            {{ date('Y M d H:i:s', strtotime($data->call_time)) }}
-                                        @elseif($data->called_at)
-                                        {{ date('Y M d H:i:s', strtotime($data->called_at)) }}
+                                        @if($d->call_time)
+                                            {{ date('Y M d H:i:s', strtotime($d->call_time)) }}
+                                        @elseif($d->called_at)
+                                        {{ date('Y M d H:i:s', strtotime($d->called_at)) }}
                                         @else
                                         -
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($data->called_at)
-                                            {{ date('Y M d H:i:s', strtotime($data->called_at)) }}
+                                        @if ($d->called_at)
+                                            {{ date('Y M d H:i:s', strtotime($d->called_at)) }}
                                         @else
                                             -
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($data->done_at)
-                                            {{ date('Y M d H:i:s', strtotime($data->done_at)) }}
+                                        @if ($d->done_at)
+                                            {{ date('Y M d H:i:s', strtotime($d->done_at)) }}
                                         @else
                                             -
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($data->called_at)
+                                        @if ($d->called_at)
                                         @php
-                                            $waktuCreate = \Carbon\Carbon::parse($data->created_at);
-                                            $cek = $data->call_time ? $data->call_time : $data->called_at;
+                                            $waktuCreate = \Carbon\Carbon::parse($d->created_at);
+                                            $cek = $d->call_time ? $d->call_time : $d->called_at;
                                             $waktuPanggil = \Carbon\Carbon::parse($cek);
                                             $durasiTunggu = $waktuPanggil ? $waktuPanggil->diff($waktuCreate) : null;
                                             $formattedDurasiTunggu = $durasiTunggu 
@@ -83,20 +84,20 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($data->call_time)
+                                        @if ($d->call_time)
                                         @php
-                                            $waktuPanggil = \Carbon\Carbon::parse($data->call_time) ?: '';
-                                            $waktuSelesai = \Carbon\Carbon::parse($data->done_at);
+                                            $waktuPanggil = \Carbon\Carbon::parse($d->call_time) ?: '';
+                                            $waktuSelesai = \Carbon\Carbon::parse($d->done_at);
                                             $durasiLayanan = $waktuPanggil ? $waktuPanggil->diff($waktuSelesai) : null;
                                             $formattedDurasiLayanan = $durasiLayanan 
                                             ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
                                             : '-';
                                         @endphp
                                         {{ $formattedDurasiLayanan }}
-                                        @elseif(!$data->call_time && $data->called_at)
+                                        @elseif(!$d->call_time && $d->called_at)
                                             @php
-                                                $waktuPanggil = \Carbon\Carbon::parse($data->called_at);
-                                                $waktuSelesai = \Carbon\Carbon::parse($data->done_at) ?: '';
+                                                $waktuPanggil = \Carbon\Carbon::parse($d->called_at);
+                                                $waktuSelesai = \Carbon\Carbon::parse($d->done_at) ?: '';
                                                 $durasiLayanan = $waktuPanggil ? $waktuPanggil->diff($waktuSelesai) : null;
                                                 $formattedDurasiLayanan = $durasiLayanan 
                                                 ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
@@ -108,17 +109,17 @@
                                     @endif
                                     </td>
                                     <td>
-                                    @if ($data->called_at)
+                                    @if ($d->called_at)
                                         @php
-                                        $waktuPanggil = \Carbon\Carbon::parse($data->called_at);
-                                        $waktuSelesai = \Carbon\Carbon::parse($data->done_at) ?: '';
+                                        $waktuPanggil = \Carbon\Carbon::parse($d->called_at);
+                                        $waktuSelesai = \Carbon\Carbon::parse($d->done_at) ?: '';
                                         $durasiLayanan = $waktuSelesai ? $waktuSelesai->diff($waktuPanggil) : null;
                                         
                                         if ($durasiLayanan && $durasiLayanan->h === 0 && $durasiLayanan->i === 0 && $durasiLayanan->s === 0) {
                                             // Jika durasinya adalah 0, gunakan call_time
-                                            if ($data->call_time) {
-                                                $waktuPanggil = \Carbon\Carbon::parse($data->call_time) ?: '';
-                                                $waktuSelesai = \Carbon\Carbon::parse($data->done_at);
+                                            if ($d->call_time) {
+                                                $waktuPanggil = \Carbon\Carbon::parse($d->call_time) ?: '';
+                                                $waktuSelesai = \Carbon\Carbon::parse($d->done_at);
                                                 $durasiLayanan = $waktuPanggil ? $waktuPanggil->diff($waktuSelesai) : null;
                                             }
                                         }
@@ -132,24 +133,25 @@
                                         -
                                     @endif
                                     </td>
-                                    <td>{{ $data->Workstation ? $data->Workstation->name : '-' }}
+                                    <td>{{ $d->Workstation ? $d->Workstation->name : '-' }}
                                     </td>
-                                    <td>{{ $data->Service->name }}</td>
+                                    <td>{{ $d->Service->name }}</td>
                                     <td>
-                                        @if ($data->NewService)
-                                            {{ $data->NewService->name }}
+                                        @if ($d->NewService)
+                                            {{ $d->NewService->name }}
                                         @else
                                             -
                                         @endif
                                     </td>
-                                    
-                                    <td>{{  $data->Vct ? $data->Vct->name : '-' }}
+                                    <td>{{  $d->Vct ? $d->Vct->name : '-' }}
                                     </td>
-                                    <td>{{ __(ucwords($data->status)) }}</td>
+                                    <td>{{ __(ucwords($d->status)) }}</td>
                                 </tr>
-                                {{-- <tr>
+                                @empty
+                                <tr>
                                     <td colspan="14" class="text-center">Data tidak ditemukan.</td>
-                                </tr> --}}
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

@@ -66,7 +66,6 @@
                                     <th class="text-center">Terlama</th>
                                 </tr>
                             </thead>
-
                             <tbody>
                                 <tr>
                                     <td colspan="10" class="text-center">Data tidak ditemukan.</td>
@@ -155,10 +154,11 @@
                 <td class="text-right">${v.total_no_show}</td>
                 <td class="text-center">${formatTime(v.now_waiting_duration)}</td>
                 <td class="text-center">${formatTime(v.avg_waiting_duration)}</td>
-                 <td class="text-center"><a href="/admin-branch/monitoring/department-detail/${v.id}/max-wait">${formatTime(v.max_waiting_duration)}</a></td>
-                 <td class="text-center">${formatTime(v.now_served_duration)}</td>
-                 <td class="text-center">${formatTime(v.avg_served_duration)}</td>
-                 <td class="text-center"><a href="/admin-branch/monitoring/department-detail/${v.id}/max-service">${formatTime(v.max_served_duration)}</a></td>
+                <td class="text-center"><a href="/admin-branch/monitoring/department-detail/${v.id}/max-wait">${formatTime(v.max_waiting_duration)}</a></td>
+                <td class="text-center">${formatTime(v.now_served_duration)}</td>
+                <td class="text-center">${formatTime(v.avg_served_duration)}</td>
+                <td class="text-center"><a href="/admin-branch/monitoring/department-detail/${v.id}/max-service">${formatTime(v.max_served_duration)}</a></td>
+
             </tr>`
         })
     }

@@ -143,8 +143,8 @@ class TVDisplayConfigurationController extends Controller
                     'running_text_color' => $customLayoutConfiguration->running_text_color,
                     'running_text_speed' => $customLayoutConfiguration->running_text_speed,
                     'running_text_size' => $customLayoutConfiguration->running_text_size,
-                    'text_time_size' => $customLayoutConfiguration->text_time_size,
                     'logo_size' => $customLayoutConfiguration->logo_size,
+                    'text_time_size' => $customLayoutConfiguration->text_time_size,
                 );
             }
         }
@@ -163,6 +163,8 @@ class TVDisplayConfigurationController extends Controller
             'layout_configuration' => $tvConfigurationFormValue,
             'switchLink' => $switchLink,
             'display_duration' => $display_duration,
+            'logo_size' => $customLayoutConfiguration->logo_size,
+            'text_time_size' => $customLayoutConfiguration->text_time_size,
             'link_1' => $link_1,
             'link_2' => $link_2,
             'link_3' => $link_3,
@@ -295,8 +297,8 @@ class TVDisplayConfigurationController extends Controller
                 'running_text_color' => 'required|string',
                 'running_text_speed' => 'required|string',
                 'running_text_size' => 'required|string',
-                'text_time_size' => 'required|string',
                 'logo_size' => 'required|string',
+                'text_time_size' => 'required|string',
             ]);
         } else {
             $request->validate([

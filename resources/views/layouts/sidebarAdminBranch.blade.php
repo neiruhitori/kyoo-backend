@@ -406,15 +406,13 @@
             </div>
         </div>
     </li>
-  
-    @if ( !Auth::user()->Branch->BranchType->is_exhibition)
+    @if(!Auth::user()->Branch->BranchType->is_exhibition)
     <li class="nav-item {{ !request()->is('admin-branch/billing') ?: 'active' }}">
         <a class="nav-link" href="{{ route('admin-branch.billing') }}">
             <i class="fas fa-fw fa-credit-card"></i>
             <span>{{ __('Billing') }}</span></a>
     </li>
-    @endif
-
+@endif
     <!-- Divider -->
     <hr class="sidebar-divider">
 
