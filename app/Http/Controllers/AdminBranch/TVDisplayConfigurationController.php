@@ -163,8 +163,6 @@ class TVDisplayConfigurationController extends Controller
             'layout_configuration' => $tvConfigurationFormValue,
             'switchLink' => $switchLink,
             'display_duration' => $display_duration,
-            'logo_size' => $customLayoutConfiguration->logo_size,
-            'text_time_size' => $customLayoutConfiguration->text_time_size,
             'link_1' => $link_1,
             'link_2' => $link_2,
             'link_3' => $link_3,
