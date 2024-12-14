@@ -683,11 +683,11 @@
                                             <div class="form-group">
                                                 <label for="running_text_size">{{ __('Size') }}</label>
                                                 <select class="custom-select" name="running_text_size" id="running_text_size">
-                                                    <option value="1" {{$layout_configuration->running_text_size == "1" ? 'selected' : ''}}>Default</option>
-                                                    <option value="1.5"{{$layout_configuration->running_text_size == "1.5" ? 'selected' : ''}}>+2 Size</option>
-                                                    <option value="2"{{$layout_configuration->running_text_size == "2" ? 'selected' : ''}}>+4 Size</option>
-                                                    <option value="2.5"{{$layout_configuration->running_text_size == "2.5" ? 'selected' : ''}}>+6 Size</option>
-                                                    <option value="3"{{$layout_configuration->running_text_size == "3" ? 'selected' : ''}}>+8 Size</option>
+                                                    <option value="1" {{ ($layout_configuration->running_text_size ?? '') == "1" ? 'selected' : '' }}>Default</option>
+                                                    <option value="1.5" {{ ($layout_configuration->running_text_size ?? '') == "1.5" ? 'selected' : '' }}>+2 Size</option>
+                                                    <option value="2" {{ ($layout_configuration->running_text_size ?? '') == "2" ? 'selected' : '' }}>+4 Size</option>
+                                                    <option value="2.5" {{ ($layout_configuration->running_text_size ?? '') == "2.5" ? 'selected' : '' }}>+6 Size</option>
+                                                    <option value="3" {{ ($layout_configuration->running_text_size ?? '') == "3" ? 'selected' : '' }}>+8 Size</option>
                                                   </select>
                                             </div>
                                         </div>
@@ -701,11 +701,11 @@
                                             <div class="form-group">
                                                 <label for="logo_size">{{ __('Size') }}</label>
                                                 <select class="custom-select" name="logo_size">
-                                                    <option value="2.3" {{$layout_configuration->logo_size == "2.3" ? 'selected' : ''}}>Default</option>
-                                                    <option value="3.3"{{$layout_configuration->logo_size == "3.3" ? 'selected' : ''}}>+2 Size</option>
-                                                    <option value="4.3"{{$layout_configuration->logo_size == "4.3" ? 'selected' : ''}}>+4 Size</option>
-                                                    <option value="5.3"{{$layout_configuration->logo_size == "5.3" ? 'selected' : ''}}>+6 Size</option>
-                                                    <option value="6.3"{{$layout_configuration->logo_size == "6.3" ? 'selected' : ''}}>+8 Size</option>
+                                                    <option value="2.3" {{ ($layout_configuration->logo_size ?? '') == "2.3" ? 'selected' : ''}}>Default</option>
+                                                    <option value="3.3"{{($layout_configuration->logo_size ?? '') == "3.3" ? 'selected' : ''}}>+2 Size</option>
+                                                    <option value="4.3"{{($layout_configuration->logo_size ?? '') == "4.3" ? 'selected' : ''}}>+4 Size</option>
+                                                    <option value="5.3"{{($layout_configuration->logo_size ?? '') == "5.3" ? 'selected' : ''}}>+6 Size</option>
+                                                    <option value="6.3"{{($layout_configuration->logo_size ?? '') == "6.3" ? 'selected' : ''}}>+8 Size</option>
                                                   </select>
                                             </div>
                                         </div>
@@ -719,11 +719,11 @@
                                             <div class="form-group">
                                                 <label for="logo_size">{{ __('Size') }}</label>
                                                 <select class="custom-select" name="text_time_size">
-                                                    <option value="1" {{$layout_configuration->text_time_size == "1" ? 'selected' : ''}}>Default</option>
-                                                    <option value="1.2"{{$layout_configuration->text_time_size == "1.2" ? 'selected' : ''}}>+2 Size</option>
-                                                    <option value="1.4"{{$layout_configuration->text_time_size == "1.4" ? 'selected' : ''}}>+4 Size</option>
-                                                    <option value="1.6"{{$layout_configuration->text_time_size == "1.6" ? 'selected' : ''}}>+6 Size</option>
-                                                    <option value="2"{{$layout_configuration->text_time_size == "2" ? 'selected' : ''}}>+8 Size</option>
+                                                    <option value="1" {{($layout_configuration->text_time_size ?? '') == "1" ? 'selected' : ''}}>Default</option>
+                                                    <option value="1.2"{{($layout_configuration->text_time_size ?? '') == "1.2" ? 'selected' : ''}}>+2 Size</option>
+                                                    <option value="1.4"{{($layout_configuration->text_time_size ?? '') == "1.4" ? 'selected' : ''}}>+4 Size</option>
+                                                    <option value="1.6"{{($layout_configuration->text_time_size ?? '') == "1.6" ? 'selected' : ''}}>+6 Size</option>
+                                                    <option value="2"{{($layout_configuration->text_time_size ?? '') == "2" ? 'selected' : ''}}>+8 Size</option>
                                                   </select>
                                             </div>
                                         </div>
