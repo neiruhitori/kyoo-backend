@@ -201,10 +201,14 @@ class TVDisplayConfigurationController extends Controller
 
     public function update(Branch $branch, Request $request)
 {
+    // dd($request->all());
     $request->validate([
         'image_1' => 'nullable|file|max:10000|mimes:jpeg,png,jpg,gif,svg,mp4',
         'image_2' => 'nullable|file|max:10000|mimes:jpeg,png,jpg,gif,svg,mp4',
         'image_3' => 'nullable|file|max:10000|mimes:jpeg,png,jpg,gif,svg,mp4',
+        'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+        'image_5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
+        'image_6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1000',
         'url_1' => 'nullable|url',
         'url_2' => 'nullable|url',
         'url_3' => 'nullable|url',
@@ -218,8 +222,8 @@ class TVDisplayConfigurationController extends Controller
         'tv_layout_id' => $request->tv_layout_id ?? $tv_layout->id,
         'display_duration' => $request->display_duration 
     ];
-
-    for ($i = 1; $i <= 3; $i++) {
+   
+    for ($i = 1; $i <= 6; $i++) {
         if ($request->file("image_$i")) {
             // Hapus file lama jika ada
             if ($tv_configuration && $tv_configuration->{"image_$i"}) {
@@ -231,6 +235,9 @@ class TVDisplayConfigurationController extends Controller
             $folder = $extension === 'mp4' ? 'tv_videos' : 'tv_images';
             $data["image_$i"] = Storage::disk('public')->put($folder, $file);
         } elseif ($request->input("url_$i")) {
+            if ($tv_configuration && $tv_configuration->{"image_$i"}) {
+                Storage::disk('public')->delete($tv_configuration->{"image_$i"});
+            }
             $data["image_$i"] = $request->input("url_$i"); // Simpan URL jika ada
         }
     }
