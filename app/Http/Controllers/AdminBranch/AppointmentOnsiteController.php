@@ -148,7 +148,7 @@ class AppointmentOnsiteController extends Controller
                     ]
             ];
             $webhookUpdatedData = (object) $webhookData;
-            dd($webhookUpdatedData);
+            
            $this->sendWebhook($client, $webhookUpdatedData);
             
         }else{
