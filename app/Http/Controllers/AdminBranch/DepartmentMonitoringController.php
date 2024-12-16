@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\AdminBranch;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\DirectQueue;
+use DB;
 use Auth;
 use App\Service;
-use DB;
-use Illuminate\Support\Carbon;
 use App\Department;
+use App\DirectQueue;
+use App\WorkstationService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Http\Controllers\Controller;
 
 class DepartmentMonitoringController extends Controller
 {
@@ -162,5 +163,29 @@ class DepartmentMonitoringController extends Controller
             ])
             ->where('service_id', $value->id)
             ->avg('serving_duration');
+    }
+    public function maxWait($service_id)
+    {
+        $data = DirectQueue::whereBetween('created_at', [
+            Carbon::now()->startOfDay(),
+            Carbon::now()->endOfDay()
+        ])
+        ->where('service_id', $service_id)
+        ->orderBy('waiting_duration', 'desc')
+        ->get(); 
+        //  dd($data);
+         return view('adminBranch.monitoring.detail', ["data" => $data]);
+    }
+    public function maxService($service_id)
+    {
+        $data = DirectQueue::whereBetween('created_at', [
+            Carbon::now()->startOfDay(),
+            Carbon::now()->endOfDay()
+        ])
+        ->where('service_id', $service_id)
+        ->orderBy('serving_duration', 'desc')
+        ->get();
+        //  dd($data);
+         return view('adminBranch.monitoring.detail', ["data" => $data]);
     }
 }

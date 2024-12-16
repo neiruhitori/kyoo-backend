@@ -358,6 +358,7 @@ import "vue-loading-overlay/dist/vue-loading.css";
 // Toast component
 import VueToast from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
+import moment from 'moment';
 
 Vue.use(VueToast);
 
@@ -625,7 +626,8 @@ export default {
           service_id: selected_queue.service_id,
           is_skip: this.manualInput,
           workstation_id: this.workstation.id,
-          waiting_duration: Math.floor(moment().diff(moment(selected_queue.created_at)) / 1000)
+          waiting_duration: Math.floor(moment().diff(moment(selected_queue.created_at)) / 1000),
+selected_queue: selected_queue.created_at
         });
 
         this.onServedQueue = queue.data.data;

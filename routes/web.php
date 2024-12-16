@@ -176,6 +176,8 @@ Route::namespace('AdminBranch')
         Route::prefix('/monitoring')->name('monitoring.')->group(function () {
             Route::get('/department', 'DepartmentMonitoringController@index')->name('department');
             Route::get('/department/{id}', 'DepartmentMonitoringController@getData')->name('department.show');
+            Route::get('/department-detail/{id}/max-wait', 'DepartmentMonitoringController@maxWait');
+            Route::get('/department-detail/{id}/max-service', 'DepartmentMonitoringController@maxService');
 
             Route::get('/department/{id}/service', 'ServiceMonitoringController@getServiceByDepartment')->name('department.service');
             Route::get('/service', 'ServiceMonitoringController@index')->name('service');

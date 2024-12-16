@@ -15,7 +15,7 @@
                   
                     @break
                 @case('admin_branch')
-                        @if(!Auth::user()->Branch->is_premium )
+                        @if(!Auth::user()->Branch->is_premium && !Auth::user()->Branch->BranchType->is_exhibition)
                         <li class="nav-item no-arrow mx-1">
                             <div class="mt-3 input-group rounded">
                                 <p class="form-control text-white bg-primary mx-3 rounded">You're using Trial License, upgrade your license to access more features!</p>
