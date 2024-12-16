@@ -112,27 +112,40 @@ class AppointmentOnsiteController extends Controller
                 'event_type' => 'onsite_modify_booking',
 
                 'user' => (object)[
-                    'appointment_id' => $appointmentOnsite->id,
-                    'service_id' => $appointmentOnsite->service_id,
-                    'name' => $appointmentOnsite->name,
-                    'phone' => $appointmentOnsite->phone,
-                    'email' => $appointmentOnsite->email,
-                    'created_at' => $appointmentOnsite->created_at,
-                ],
-                'queue' => (object)[
-                    'id' => $appointmentOnsite->id,
-                    'service_id' => $appointmentOnsite->service_id,
-                    'service_name' => $appointmentOnsite->service->name,
-                    'service_type' => 'Appointment Onsite Queue',
-                    'appointment_date' => $appointmentOnsite->date,
-                    'timezone' => $timezone,
-                    'start_time' => $startTime,
-                    'end_time' => $endTime,
-                    'created_at' => $appointmentOnsite->created_at,
-                    'booking_code' =>  strtoupper($appointmentOnsite->booking_code),
-                    'branch_id' => $branchID,
-                    'branch_name' => $branch->name,
-                ]
+                        'queue_id' => $appointmentOnsite->id,
+                        'service_id' => $appointmentOnsite->service_id,
+                        'name' => $appointmentOnsite->name,
+                        'phone' => $appointmentOnsite->phone,
+                        'email' => $appointmentOnsite->email,
+                        'address' => $appointmentOnsite->address,
+                        'customer_id' => $appointmentOnsite->passport_number,
+                        'emergency_contact' => $appointmentOnsite->emergency_number,
+                        'reason_for_visit' => $appointmentOnsite->reason_for_visit,
+                        'date_of_birth' => $appointmentOnsite->date_of_birth,
+                        'created_at' => $appointmentOnsite->created_at,
+                    ],
+                    'queue' => (object)[
+                        'id' => $appointmentOnsite->id,
+                        'service_id' => $appointmentOnsite->service_id,
+                        'branch_id' =>  $branchID,
+                        'booking_code' =>  strtoupper($appointmentOnsite->booking_code),
+                        'service_type' => 'Appointment Onsite Queue',
+                        'queue_date' => $appointmentOnsite->date,
+                        'timezone' => $timezone,
+                        'start_time' => $startTime,
+                        'end_time' => $endTime,
+                        'created_at' => $appointmentOnsite->created_at,
+                    ],
+                    'branch' => (object)[
+                        'id' =>  $branchID,
+                        'name' => $branch->name,
+                    ],
+                    'service' => (object)[
+                        'id' => $appointmentOnsite->service_id,
+                        'name' => $appointmentOnsite->service->name,
+                        'branch_id' => $appointmentOnsite->service->Branch->id,
+                        'branch_name' => $appointmentOnsite->service->Branch->name,
+                    ]
             ];
             $webhookUpdatedData = (object) $webhookData;
 

@@ -146,6 +146,7 @@ class AppointmentOnsiteController extends Controller
                         'id' => $appointmentOnsite->id,
                         'service_id' => $appointmentOnsite->service_id,
                         'branch_id' =>  $branchID,
+                        'booking_code' =>  strtoupper($appointmentOnsite->booking_code),
                         'service_type' => 'Appointment Onsite Queue',
                         'queue_date' => $appointmentOnsite->date,
                         'timezone' => $timezone,
