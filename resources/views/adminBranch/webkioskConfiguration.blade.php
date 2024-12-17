@@ -355,6 +355,20 @@
                                                         </button>
                                                     </div>
                                                 </div>
+
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-group">
+                                                <label for="logo_size">{{ __('Size') }}</label>
+                                                <select class="custom-select" name="logo_size">
+                                                    <option value="60" {{($webkiosConfiguration->logo_size ?? '') == "60" ? 'selected' : ''}}>Default</option>
+                                                    <option value="70" {{($webkiosConfiguration->logo_size ?? '') == "70" ? 'selected' : ''}}>+2 Size</option>
+                                                    <option value="80" {{($webkiosConfiguration->logo_size ?? '') == "80" ? 'selected' : ''}}>+4 Size</option>
+                                                    <option value="90" {{($webkiosConfiguration->logo_size ?? '') == "90" ? 'selected' : ''}}>+6 Size</option>
+                                                    <option value="100" {{($webkiosConfiguration->logo_size ?? '') == "100" ? 'selected' : ''}}>+8 Size</option>
+                                                  </select>
+                                            </div>
+                                        </div>
+
                                             </div>
                                         </div>
                                     </div>
