@@ -56,7 +56,8 @@
                             </form>
                         </div>
                         <div class="powered-by mb-3">
-                            <img v-bind:src="webkiosk_logo" alt="logo-kyoo" height="60"/>
+                            <img v-bind:src="webkiosk_logo" alt="logo-kyoo"
+                            :style="{ height: `${this.layout_config.logo_size || 60}px` }"/>
                         </div>
                     </div>
 

@@ -286,16 +286,16 @@
                                     </div>
                                 </div>
 
-                                <div id="logoWrapper" class="wrapper-group-action {{ $webkiosConfiguration->layout == '4' ?: 'display-none'}}">
-                                    <b>{{ __('Logo') }}</b>
+                                <div id="webkioskLogo" class="wrapper-group-action {{ $webkiosConfiguration->layout == '4' ?: 'display-none'}}">
+                                    <b>{{ __('Webkiosk Logo') }}</b>
                                     <hr>
                                     <div class="row">
                                         <div class="col-12 col-md-6">
                                             <div class="monitor-image-container">
                                                 <div class="col-12 col-md-6">
+
                                                     <div class="form-group">
                                                         <label for="logo">{{ __('Webkiosk Logo') }}</label>
-
                                                         <label for="logo">
                                                             <div class="monitor-image-upload">
                                                                 <img src="{{ asset($webkiosConfiguration->logo) }}" id="preview_logo">
@@ -315,7 +315,7 @@
                                                             </div>
                                                         </label>
                                                     </div>
-
+                                                    
                                                     <div>
                                                         <button type="button" class="delete-image-button display-none" id="delete_button_logo" onclick="deleteLogo()">
                                                             <span class="fas fa-times mr-1"></span>
@@ -323,6 +323,31 @@
                                                         </button>
                                                     </div>
                                                 </div>
+
+                                                    <div class="col-12 col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="logo_size">{{ __('Size') }}</label>
+                                                            <select class="custom-select" name="logo_size">
+                                                                <option value="60" {{($webkiosConfiguration->logo_size ?? '') == "60" ? 'selected' : ''}}>Default</option>
+                                                                <option value="70" {{($webkiosConfiguration->logo_size ?? '') == "70" ? 'selected' : ''}}>+2 Size</option>
+                                                                <option value="80" {{($webkiosConfiguration->logo_size ?? '') == "80" ? 'selected' : ''}}>+4 Size</option>
+                                                                <option value="90" {{($webkiosConfiguration->logo_size ?? '') == "90" ? 'selected' : ''}}>+6 Size</option>
+                                                                <option value="100" {{($webkiosConfiguration->logo_size ?? '') == "100" ? 'selected' : ''}}>+8 Size</option>
+                                                              </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="logoWrapper" class="wrapper-group-action {{ $webkiosConfiguration->layout == '4' ?: 'display-none'}}">
+                                    <b>{{ __('Ticket Logo') }}</b>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="monitor-image-container">
+                                                
 
                                                 <div class="col-12 col-md-6">
                                                     <div class="form-group">
@@ -355,6 +380,7 @@
                                                         </button>
                                                     </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -522,11 +548,13 @@
                 document.getElementById("secondaryBackground").classList.add("display-none")
                 document.getElementById("buttonCheckin").classList.remove("display-none")
                 document.getElementById("logoWrapper").classList.remove("display-none")
+                document.getElementById("webkioskLogo").classList.remove("display-none")
             } else {
                 document.getElementById("secondaryBackground").classList.remove("display-none")
                 document.getElementById("secondary_background_image_wrapper").classList.add("display-none")
                 document.getElementById("buttonCheckin").classList.add("display-none")
                 document.getElementById("logoWrapper").classList.add("display-none")
+                document.getElementById("webkioskLogo").classList.add("display-none")
             }
 
             const { image, name } = layouts.find((obj) => obj.id == value);

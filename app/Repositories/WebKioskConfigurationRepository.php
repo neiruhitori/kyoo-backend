@@ -112,8 +112,9 @@ class WebKioskConfigurationRepository implements WebKioskConfigurationRepository
                             'button_checkin_background_color' => $request->button_checkin_background_color,
                             'button_checkin_border_color' => $request->button_checkin_border_color,
                             'font_checkin_color' => $request->font_checkin_color,
+                            'logo_size' => $request->logo_size,
                         ];
-
+                        
                         $webkioskLayout4Configuration = WebkioskLayout4Configuration::firstOrNew(['webkios_configuration_id' => $webkiosConfiguration->id]);
 
                         if($request->primary_background_type == 'image' && $request->primary_background_image) {

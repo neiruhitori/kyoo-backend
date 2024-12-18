@@ -84,6 +84,7 @@ class WebkioskConfigurationController extends Controller
                     'button_checkin_border_color' => $layoutConfiguration->button_checkin_border_color,
                     'font_checkin_color' => $layoutConfiguration->font_checkin_color,
                     'logo' => $layoutConfiguration->logo ? 'storage/' . $layoutConfiguration->logo : self::DEFAULT_IMAGE,
+                    'logo_size' => $layoutConfiguration->logo_size ? $layoutConfiguration->logo_size : "60",
                     'ticket_logo' => $layoutConfiguration->ticket_logo ? 'storage/' . $layoutConfiguration->ticket_logo : self::DEFAULT_IMAGE,
                 );
             }
@@ -114,8 +115,8 @@ class WebkioskConfigurationController extends Controller
             'button_background_color' => 'required_if:layout,=,2|string',
             'botton_border_color' => 'required_if:layout,=,2|string',
             'font_color' => 'required_if:layout,=,2|string',
+            'logo_size' => 'nullable|string',
         ]);
-
         $configuration = $this->webKioskConfigurationRepository->Upsert($branch->id, $request);
 
         return redirect()
