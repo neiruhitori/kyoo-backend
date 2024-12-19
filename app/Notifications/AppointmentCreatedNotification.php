@@ -57,6 +57,7 @@ class AppointmentCreatedNotification extends Notification implements ShouldQueue
         // Data JSON yang akan dikirim
         $payload = [
             "phone_number"   => $appointment->phone,
+            "queue_number"   => $appointment->number,
             "name"           => $appointment->name,
             "branch_name"    => $branch->name,
             "booking_code"   => strtoupper($appointment->booking_code),
