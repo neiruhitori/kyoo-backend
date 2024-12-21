@@ -206,11 +206,24 @@
                             </option>
                         </select>
                     </div>
+                    @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_appointment)
+                    <div class="col-md" id="formBookingAppointment">
+                        <div class="form-group">
+                            <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
+                            <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror" style="width: 240px">
+                                <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
+                                <option value="form-medical-child" {{ $branchConfiguration->template_booking_form == 'form-medical-child' ? 'selected' : '' }}>Form Medical Dr Anak</option>
+                            </select>
+                            @include('layouts.inputError', ['errorName' => 'template_booking_form'])
+                        </div>
+                    </div>
+                    @endif
+
                     @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
                     <div class="col-md" id="formBooking">
                         <div class="form-group">
                             <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
-                            <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror">
+                            <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror" >
                                 <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
                                 <option value="form-medical-1" {{ $branchConfiguration->template_booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
                                 <option value="form-financing" {{ $branchConfiguration->template_booking_form == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
