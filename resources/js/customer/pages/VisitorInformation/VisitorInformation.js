@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useSearchParams, useParams, useNavigate, Link } from 'react-router-dom'
 import Validator from '../../utils/validator'
+import { useMutation, useQuery } from 'react-query'
 
 import Header from '../../components/Header'
 import ProgressStep from '../../components/ProgressStep'
 import MainContent from '../../components/MainContent'
 import TextField from '../../components/TextField'
 import Button from '../../components/Button'
+import { fetchBranch } from '../../api/branch'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 
@@ -24,6 +26,13 @@ function VisitorInformation() {
     const { queueType, branchId, serviceId } = useParams()
     const navigate = useNavigate()
 
+    let branch = null
+    const branchQuery = useQuery(['branch', branchId], () => fetchBranch(branchId))
+    
+        if (branchQuery.status === 'success') {
+            branch = branchQuery.data
+        }
+
     const [name, setName] = useState('')
     const [phone, setPhone] = useState('')
     const [email, setEmail] = useState('')
@@ -34,6 +43,129 @@ function VisitorInformation() {
         phone: validator.message('phone', phone, ['required', 'phone']),
         email: validator.message('email', email, ['required', 'email']),
     }
+    
+    const renderStandardUI = () => (
+        <div style={{
+            flex: '1 1 0%'
+        }}>
+            <TextField
+                label="Nama Lengkap"
+                style={{
+                    marginBottom: '1.5rem'
+                }}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Ch. John Doe"
+                error={!!validationMessage.name}
+                helperText={validationMessage.name}
+            />
+
+            <TextField
+                label="Email"
+                type="email"
+                style={{
+                    marginBottom: '1.5rem'
+                }}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Ch. john@mail.com"
+                error={!!validationMessage.email}
+                helperText={validationMessage.email}
+            />
+
+            <TextField
+                label="No. Telepon"
+                type="tel"
+                style={{
+                    marginBottom: '1.5rem'
+                }}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+62"
+                error={!!validationMessage.phone}
+                helperText={validationMessage.phone}
+            />
+
+            <TextField
+                label="Catatan"
+                style={{
+                    marginBottom: '1.5rem'
+                }}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Opsional"
+            />
+        </div>
+ );
+    const renderMedicalChildUI = () => (
+        <div style={{
+            flex: '1 1 0%'
+        }}>
+            <TextField
+                label="Nama Lengkap"
+                style={{
+                    marginBottom: '1.5rem'
+                }}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Isi Nama Lengkap Ananda"
+                error={!!validationMessage.name}
+                helperText={validationMessage.name}
+            />
+
+            <TextField
+                label="Email"
+                type="email"
+                style={{
+                    marginBottom: '1.5rem'
+                }}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Isi Email Orang Tua atau Pendamping"
+                error={!!validationMessage.email}
+                helperText={validationMessage.email}
+            />
+
+            <TextField
+                label="No. Telepon"
+                type="tel"
+                style={{
+                    marginBottom: '1.5rem'
+                }}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+62"
+                error={!!validationMessage.phone}
+                helperText={validationMessage.phone}
+            />
+
+            <TextField
+                label="Catatan"
+                style={{
+                    marginBottom: '1.5rem'
+                }}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Opsional"
+            />
+        </div>
+ );
+
+ const renderForm = () => {
+    let templateForm = branch?.branch_configuration.template_booking_form;
+    if(!templateForm){
+        return null
+    }
+    
+    switch (templateForm) {
+        case 'standard-form':
+            return renderStandardUI();
+        case 'form-medical-child':
+            return renderMedicalChildUI();
+        default:
+            return renderStandardUI();
+    }
+};
 
     function handleFormSubmit(e) {
         e.preventDefault()
@@ -93,57 +225,7 @@ function VisitorInformation() {
                 flex: '1 1 0%',
                 height: '100%',
             }}>
-                <div style={{
-                    flex: '1 1 0%'
-                }}>
-                    <TextField
-                        label="Nama Lengkap"
-                        style={{
-                            marginBottom: '1.5rem'
-                        }}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Ch. John Doe"
-                        error={!!validationMessage.name}
-                        helperText={validationMessage.name}
-                    />
-
-                    <TextField
-                        label="Email"
-                        type="email"
-                        style={{
-                            marginBottom: '1.5rem'
-                        }}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Ch. john@mail.com"
-                        error={!!validationMessage.email}
-                        helperText={validationMessage.email}
-                    />
-
-                    <TextField
-                        label="No. Telepon"
-                        type="tel"
-                        style={{
-                            marginBottom: '1.5rem'
-                        }}
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="+62"
-                        error={!!validationMessage.phone}
-                        helperText={validationMessage.phone}
-                    />
-
-                    <TextField
-                        label="Catatan"
-                        style={{
-                            marginBottom: '1.5rem'
-                        }}
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                        placeholder="Opsional"
-                    />
-                </div>
+              {renderForm()}
             </MainContent>
 
             <div style={{
