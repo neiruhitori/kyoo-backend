@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\AdminBranch;
 
-use App\Department;
-use App\Service;
 use App\Log;
-use App\Http\Controllers\Controller;
+use App\Service;
+use App\Department;
+use App\Models\SubService;
 use Illuminate\Http\Request;
+use App\Models\ServiceCategory;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AdminBranch\StoreDepartment;
 use App\Http\Requests\AdminBranch\UpdateDepartment;
-use App\Models\ServiceCategory;
-use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
 {
@@ -24,11 +25,13 @@ class DepartmentController extends Controller
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         $service_categories = ServiceCategory::whereBranchId(Auth::user()->branch_id)->get();
         $services = Service::whereBranchId(Auth::user()->branch_id)->get();
+        $sub_services = SubService::whereBranchId(Auth::user()->branch_id)->get();
 
         return view('adminBranch.department.index', [
             'departments' => $departments,
             'service_categories' => $service_categories,
-            'services' => $services
+            'services' => $services,
+            'sub_services' => $sub_services,
         ]);
     }
 

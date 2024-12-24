@@ -55,7 +55,7 @@
 
               <b class="text-primary">Pemanggil Antrian Onsite</b>
               <hr class="mt-2 mb-2">
-              <div class="row">
+              <div class="row mb-3">
                 <div class="col-md-12" v-if="!isOnTransfer">
                   <div class="form-group">
                     <label for="search-by">Masukkan No. Antrian</label>
@@ -130,7 +130,7 @@
                   <template v-else>
                       <div class="col-md-6">
                         <button
-                          class="btn btn-info fullwidth mb-2"
+                          class="btn btn-info fullwidth mb-3"
                           @click="onRecall"
                         >
                           Panggil Ulang
@@ -138,16 +138,16 @@
                       </div>
                       <div class="col-md-6">
                         <button
-                          class="btn btn-success fullwidth mb-2"
+                          class="btn btn-success fullwidth mb-3"
                           @click="onEndServed"
                           :disabled="recallCounter > max_recall"
                         >
-                          Layanan Berakhir
+                         Selesai
                         </button>
                       </div>
                       <div class="col-md-6">
                         <button
-                          class="btn btn-secondary fullwidth mb-2"
+                          class="btn btn-secondary fullwidth mb-3"
                           @click="onRequeue"
                           :disabled="
                             onServedQueue &&
@@ -159,7 +159,7 @@
                       </div>
                       <div class="col-md-6">
                         <button
-                          class="btn btn-danger fullwidth mb-2"
+                          class="btn btn-danger fullwidth mb-3"
                           @click="onNoShow"
                         >
                           Tidak Hadir
@@ -167,23 +167,37 @@
                       </div>
                       <div :class="{'col-md-12': isServed(), 'col-md-6': !isServed()}">
                         <button
-                          class="btn btn-warning fullwidth mb-2"
+                          class="btn btn-warning fullwidth mb-3"
                           @click="onTransfer"
                           :disabled="!allow_transfer"
                         >
-                          Transfer Antrian
+                          Transfer
                         </button>
                       </div>
                       <div class="col-md-6" :class="{'d-none': isServed()}">
                         <button
-                          class="btn btn-primary fullwidth mb-2"
+                          class="btn btn-primary fullwidth mb-3"
                           @click="onServed()"
                         >
-                          Mulai Layanan
+                          Mulai
                         </button>
                       </div>
                     </template>
                 </template>
+              </div>
+              <div :class="{'d-none': !isServed()}">
+                <b class="text-primary mt-5">Sub Layanan</b>
+                <hr class="mt-2 mb-2">
+                <div class="row">
+                  <div class="col-md-12" >
+                    <select class="custom-select">
+                      <option selected value="">--PILIH SUB LAYANAN--</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
             <!-- END DIRECT QUEUE CALLER -->
