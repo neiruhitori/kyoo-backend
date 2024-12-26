@@ -68,6 +68,7 @@ function AppointmentOnsiteVisitorInformation() {
         }),
         ...(branch && branch.branch_configuration.template_booking_form === 'form-financing' && {
             contractNumber: validator.message('contractNumber', contractNumber, ['required','contractNumber']),
+            email: validator.message('email', email, ['nullable', 'email']),
         }),
     };
 
