@@ -23,4 +23,8 @@ class SubService extends Model
         return $this->belongsToMany(Service::class, 'service_sub_service')
                         ->withPivot('created_at', 'updated_at');
     }
+    public function directQueues()
+    {
+        return $this->hasMany('App\DirectQueue', 'sub_service_id', 'id');
+    }
 }

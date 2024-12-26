@@ -10,6 +10,7 @@
             :auth="{{ Auth::user() }}"
             :accessible_features="{{ Auth::user()->Branch->getFeatures() }}"
             :workstation="{{ Auth::user()->WorkstationVct->Workstation }}"
+            :sub_services="{{ $sub_services }}"
         />
     </div>
 @endsection

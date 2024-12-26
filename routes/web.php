@@ -416,7 +416,6 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS', 'setTimeZone
     Route::get('qr', 'HomeController@qr')->name('qr');
     Route::get('workstation', 'HomeController@workstation')->name('workstation');
     Route::put('update-workstation/{user}', 'HomeController@updateWorkstation')->name('updateWorkstation');
-
     // Appointment Monitor
     Route::middleware('checkAppointmentQueue')->group(function () {
         Route::get('appointments/monitor', 'AppointmentMonitorController@index')->name('appointments.monitor');

@@ -185,16 +185,17 @@
                     </template>
                 </template>
               </div>
-              <div :class="{'d-none': !isServed()}">
+              <div v-if="accessible_features.includes('CRM Interaction')" :class="{'d-none': !isServed()}">
+                <!-- <div v-if="accessible_features.includes('CRM Interaction')"> -->
                 <b class="text-primary mt-5">Sub Layanan</b>
                 <hr class="mt-2 mb-2">
                 <div class="row">
                   <div class="col-md-12" >
-                    <select class="custom-select">
+                    <select class="custom-select" v-model="selected_sub_service">
                       <option selected value="">--PILIH SUB LAYANAN--</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                      <option v-for="subService in sub_services" :key="subService.id" :value="subService.id">
+                        {{ subService.name }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -406,6 +407,9 @@ export default {
       type: Array,
       required: true
     },
+    sub_services: {
+      type: Array,
+    },
     workstation: {
       type: Object,
       required: true
@@ -420,6 +424,7 @@ export default {
       recallCounter: 0,
       queues: [],
       selected_queue: "",
+      selected_sub_service: "",
       isOnServed: false,
       onServedQueue: {},
       isOnTransfer: false,
@@ -551,7 +556,7 @@ export default {
       this.isLoading = true;
       const data = await axios.get(`/cs/directQueue?keyword=${this.keyword}`);
       this.queues = data.data.data;
-
+      this.selected_sub_service = '';
       this.isLoading = false;
 
       let selected_queue = this.queues.find(v => v.status === 'served');
@@ -713,6 +718,7 @@ selected_queue: selected_queue.created_at
         const queue = await axios.post("/cs/directQueue/onEndServed", {
           queue_no: this.selected_queue,
           service_id: selected_queue.service_id,
+          sub_service_id: this.selected_sub_service,
           serving_duration: selected_queue.called_at ? Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000) : 0
         });
 
