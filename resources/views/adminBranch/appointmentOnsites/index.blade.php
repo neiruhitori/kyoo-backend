@@ -71,7 +71,7 @@
                                                 <td>{{ date('d-M-Y', strtotime($appointment_onsite->date)) }}</td>
                                                 <td>{{ strtoupper($appointment_onsite->booking_code) }}</td>
                                                 <td>{{ $appointment_onsite->name }}</td>
-                                                <td>{{ $appointment_onsite->email }}</td>
+                                                <td>{{ $appointment_onsite->email ?? '-' }}</td>
                                                 <td>{{ $appointment_onsite->phone }}</td>
                                                 <td>{{ $appointment_onsite->Service->name }}</td>
                                                 <td>

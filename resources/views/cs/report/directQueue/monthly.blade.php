@@ -109,13 +109,19 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <th>{{ __('Queue Number') }}</th>
-                                        <th>{{ __('Start Queue') }}</th>
-                                        <th>{{ __('Served') }}</th>
-                                        <th>{{ __('End Served') }}</th>
-                                        <th>{{ __('Service Time') }} ({{ __('Menit') }})</th>
+                                        <th>{{ __('Booking Code') }}</th>
+                                        <th>{{ __('Ambil Antrian') }}</th>
+                                        <th>{{ __('Antrian Dipanggil') }}</th>
+                                        <th>{{ __('Mulai Layanan') }}</th>
+                                        <th>{{ __('Selesai Layanan ') }}</th>
+                                        <th>{{ __('Durasi Tunggu') }} </th>
+                                        <th>{{ __('Durasi Layanan (Panggil)') }} </th>
+                                        <th>{{ __('Durasi Layanan') }} </th>
                                         <th>{{ __('Workstation') }}</th>
                                         <th>{{ __('Service') }}</th>
+                                        <th>{{ __('Sub Layanan') }}</th>
                                         <th>{{ __('Service Transfer') }}</th>
+                                        <th>{{ __('Petugas Layanan') }}</th>
                                         <th>{{ __('Status') }}</th>
                                     </thead>
                                     <tbody>
@@ -159,13 +165,19 @@
             },
             columns: [
                 { data: 'queue_no' },
+                { data: 'booking_code' },
                 { data: 'created_at' },
+                { data: 'call_time' },
                 { data: 'called_at' },
                 { data: 'done_at' },
+                { data: 'waiting_time' },
+                { data: 'service_time_called' },
                 { data: 'service_time' },
                 { data: 'workstation' },
                 { data: 'service' },
+                { data: 'sub_service' },
                 { data: 'service_transfer' },
+                { data: 'customer_service' },
                 { data: 'status' }
             ],
             "ordering": false,

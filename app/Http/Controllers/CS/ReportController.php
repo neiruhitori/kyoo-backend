@@ -196,15 +196,52 @@ class ReportController extends Controller
         $query->skip($request->start)->take($request->length);
 
         $data = $query->get()->map(function ($directQueue) {
+            $waktuCreate = \Carbon\Carbon::parse($directQueue->created_at);
+            $cekTunggu = $directQueue->call_time ?: $directQueue->called_at;
+            $waktuPanggil = $cekTunggu ? \Carbon\Carbon::parse($cekTunggu) : null;
+
+            $waktuDipanggil = $directQueue->called_at ? Carbon::parse($directQueue->called_at) : null;
+            $waktuSelesai = $directQueue->done_at ? Carbon::parse($directQueue->done_at) : null;
+
+            $waktuDilayaniPanggil = $directQueue->call_time ? Carbon::parse($directQueue->call_time) : $waktuDipanggil;
+            $durasiLayaniPanggil = $waktuDilayaniPanggil && $waktuSelesai ? $waktuDilayaniPanggil->diff($waktuSelesai) : null;
+            
+            //Hitung durasi Layanan (panggil)
+            $formattedDurasiLayananPanggil  = $durasiLayaniPanggil 
+            ? sprintf('%02d:%02d:%02d', $durasiLayaniPanggil->h, $durasiLayaniPanggil->i, $durasiLayaniPanggil->s) 
+            : '-';
+
+            //Hitung durasi Layanan 
+            $durasiLayanan = $waktuDipanggil && $waktuSelesai ? $waktuDipanggil->diff($waktuSelesai) : null;
+            $formattedDurasiLayanan= $durasiLayanan 
+                ? sprintf('%02d:%02d:%02d', $durasiLayanan->h, $durasiLayanan->i, $durasiLayanan->s) 
+                : '-';
+
+            // Hitung durasi tunggu
+            $durasiTunggu = $waktuPanggil ? $waktuPanggil->diff($waktuCreate) : null;
+            $formattedDurasiTunggu = $durasiTunggu 
+                ? sprintf('%02d:%02d:%02d', $durasiTunggu->h, $durasiTunggu->i, $durasiTunggu->s) 
+                : '-';
+
             return [
                 'queue_no' => $directQueue->queue_no,
+                'booking_code' => $directQueue->booking_code,
                 'created_at' => date('Y M d H:i:s', strtotime($directQueue->created_at)),
+                'call_time' => $directQueue->call_time 
+                                ? date('Y M d H:i:s', strtotime($directQueue->call_time)) 
+                                : ($directQueue->called_at 
+                                    ? date('Y M d H:i:s', strtotime($directQueue->called_at)) 
+                                    : '-'),
                 'called_at' => $directQueue->called_at ? date('Y M d H:i:s', strtotime($directQueue->called_at)) : '-',
                 'done_at' => $directQueue->done_at ? date('Y M d H:i:s', strtotime($directQueue->done_at)) : '-',
-                'service_time' => $directQueue->done_at ? \Carbon\Carbon::parse($directQueue->done_at)->diffInMinutes(\Carbon\Carbon::parse($directQueue->called_at)) : '-',
+                'waiting_time' => $formattedDurasiTunggu,
+                'service_time' => $formattedDurasiLayanan,
+                'service_time_called' => $formattedDurasiLayananPanggil,
                 'workstation' => $directQueue->WorkstationService ? $directQueue->WorkstationService->Workstation->name : '',
                 'service' => $directQueue->Service->name,
+                'sub_service' => $directQueue->subService->name ?? '-' ,
                 'service_transfer' => $directQueue->NewService ? $directQueue->NewService->name : '-',
+                'customer_service' => $directQueue->Vct ? $directQueue->Vct->name : '-',
                 'status' => __(ucwords($directQueue->status)),
             ];
         });
