@@ -739,7 +739,8 @@ class DirectQueueController extends Controller
         $rules = [
             'queue_no' => 'required|alpha_num|min:1|exists:direct_queues',
             'workstation_service_id' => 'required|integer|min:1|exists:workstation_services,id',
-            'service_id' => 'required|integer|exists:services,id'
+            'service_id' => 'required|integer|exists:services,id',
+            'sub_service_id' => 'nullable'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -779,6 +780,7 @@ class DirectQueueController extends Controller
         $oldDirectQueue->status = 'end served';
         $oldDirectQueue->done_at = Date('Y-m-d H:i:s');
         $oldDirectQueue->serving_duration = $request->serving_duration;
+        $oldDirectQueue->sub_service_id = $request->sub_service_id ?? null;
         $oldDirectQueue->save();
 
         event(new QueueStatusUpdated([
