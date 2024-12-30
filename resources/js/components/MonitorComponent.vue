@@ -825,7 +825,8 @@ selected_queue: selected_queue.created_at
           queue_no: e.target.queue_no.value,
           workstation_service_id: e.target.workstation_service_id.value,
           service_id: selected_queue[0].service_id,
-          serving_duration: selected_queue.called_at ? Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000) : 0
+          serving_duration: selected_queue.called_at ? Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000) : 0,
+          sub_service_id: this.selected_sub_service,
         };
         await axios.post("/cs/directQueue/onTransfer", data);
         this.isOnServed = false;
