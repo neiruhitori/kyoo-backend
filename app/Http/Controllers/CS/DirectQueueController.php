@@ -757,6 +757,7 @@ class DirectQueueController extends Controller
             ->where('service_id', $workstation_service->service_id)
             ->whereDate('created_at', Date('Y-m-d'))
             ->first();
+
         if(!empty($directQueue)) {
             return response()->json([
                 'success' => true,
@@ -781,6 +782,7 @@ class DirectQueueController extends Controller
         $oldDirectQueue->done_at = Date('Y-m-d H:i:s');
         $oldDirectQueue->serving_duration = $request->serving_duration;
         $oldDirectQueue->sub_service_id = $request->sub_service_id ?? null;
+        $oldDirectQueue->new_service_id = $workstation_service->service_id;
         $oldDirectQueue->save();
 
         event(new QueueStatusUpdated([
@@ -803,10 +805,10 @@ class DirectQueueController extends Controller
         $data['old_service_id'] = $oldDirectQueue->service_id;
         $data['direct_queue_channel'] = 'Web';
         $data['appointment_onsite_id'] = $oldDirectQueue->appointment_onsite_id;
+        $data['sub_service_id'] = null;
 
         $directQueue = $this->onsite_repository->transfer($data);
-        $oldDirectQueue->new_service_id = $directQueue->service_id;
-        $oldDirectQueue->save();
+        
 
         event(new VCTDirectQueueEvent($directQueue, Auth::user()->branch_id));
         event(new DirectQueueEvent($directQueue, Auth::user()->branch_id));

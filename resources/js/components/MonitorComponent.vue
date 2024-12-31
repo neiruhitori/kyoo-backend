@@ -193,7 +193,7 @@
                   <div class="col-md-12" >
                     <select class="custom-select" v-model="selected_sub_service">
                       <option selected value="">--PILIH SUB LAYANAN--</option>
-                      <option v-for="subService in sub_services" :key="subService.id" :value="subService.id">
+                      <option v-for="subService in filteredSubServices" :key="subService.id" :value="subService.id">
                         {{ subService.name }}
                       </option>
                     </select>
@@ -425,6 +425,7 @@ export default {
       queues: [],
       selected_queue: "",
       selected_sub_service: "",
+      filteredSubServices: [],
       isOnServed: false,
       onServedQueue: {},
       isOnTransfer: false,
@@ -454,7 +455,6 @@ export default {
 
   async mounted () {
     await this.getQueues();
-
     const [selected_queue] = this.queues.filter(v => v.status === 'served');
     if (selected_queue) {
       this.selectQueue(selected_queue.queue_no);
@@ -651,6 +651,12 @@ selected_queue: selected_queue.created_at
 
         this.onServedQueue = queue.data.data;
         this.isOnServed = true;
+
+      const filteredSubServices = this.sub_services.filter(
+        (subService) => subService.pivot.service_id === selected_queue.service_id
+      );
+
+      this.filteredSubServices = filteredSubServices;
 
         this.getQueues();
 
