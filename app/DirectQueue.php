@@ -2,14 +2,15 @@
 
 namespace App;
 
+use App\Models\SubService;
 use App\Models\AppointmentOnsite;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DirectQueue extends Model
 {
-    protected $fillable = ['queue_no', 'email', 'user_id', 'vct_id', 'workstation_service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count', 'rating', 'is_liked', 'service_id', 'workstation_id', 'booking_code', 'client_id', 'fcm_id', 'waiting_duration', 'serving_duration', 'branch_id', 'old_service_id', 'priority', 'new_service_id', 'call_time', 'appointment_onsite_id'];
+    protected $fillable = ['queue_no', 'email', 'user_id', 'vct_id', 'workstation_service_id', 'name', 'phone', 'direct_queue_channel', 'status', 'called_at', 'done_at', 'recall_count', 'requeue_count', 'rating', 'is_liked', 'service_id', 'workstation_id', 'booking_code', 'client_id', 'fcm_id', 'waiting_duration', 'serving_duration', 'branch_id', 'old_service_id', 'priority', 'new_service_id', 'call_time', 'appointment_onsite_id','sub_service_id'];
 
     protected $cast = [
         'waiting_duration' => 'integer',
@@ -129,5 +130,9 @@ class DirectQueue extends Model
     public function isService($serviceId)
     {
         return $this->service_id && $this->service_id == $serviceId;
+    }
+    public function subService()
+    {
+        return $this->belongsTo(SubService::class, 'sub_service_id', 'id');
     }
 }

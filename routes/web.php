@@ -87,6 +87,19 @@ Route::namespace('AdminBranch')
 
             Route::resource('service', 'ServiceController');
             Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
+            
+            Route::get('service/{id}/assign', 'SubServiceController@assign')->name('service.assign');
+            Route::get('service/{id}/add/sub-service', 'SubServiceController@add')->name('service.add.sub-service');
+            Route::get('service/{id}/edit/sub-service', 'SubServiceController@editSubService')->name('service.edit.sub-service');
+            Route::put('service/{id}/edit/sub-service', 'SubServiceController@syncSubService');
+            Route::post('service/{id}/add/sub-service', 'SubServiceController@submitAdd');
+            Route::delete('service/{id}/remove-sub', 'SubServiceController@removeSubService')->name('service.remove.sub-service');
+            
+            Route::get('sub-service/create', 'SubServiceController@create')->name('sub-service.create');
+            Route::get('sub-service/{id}/edit', 'SubServiceController@edit')->name('sub-service.edit');
+            Route::post('sub-service/store', 'SubServiceController@store')->name('sub-service.store');
+            Route::put('sub-service/{id}/update', 'SubServiceController@update')->name('sub-service.update');
+            Route::delete('sub-service/{id}/kill', 'SubServiceController@destroy')->name('sub-service.destroy');
 
             Route::get('holiday/template', 'HolidayController@template')->name('holiday.template.create');
             Route::post('holiday/template', 'HolidayController@storeAll')->name('holiday.template.store');
@@ -403,7 +416,6 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS', 'setTimeZone
     Route::get('qr', 'HomeController@qr')->name('qr');
     Route::get('workstation', 'HomeController@workstation')->name('workstation');
     Route::put('update-workstation/{user}', 'HomeController@updateWorkstation')->name('updateWorkstation');
-
     // Appointment Monitor
     Route::middleware('checkAppointmentQueue')->group(function () {
         Route::get('appointments/monitor', 'AppointmentMonitorController@index')->name('appointments.monitor');

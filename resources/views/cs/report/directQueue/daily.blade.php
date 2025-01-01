@@ -101,6 +101,7 @@
                                         <th>{{ __('Durasi Layanan') }} </th>
                                         <th>{{ __('Workstation') }}</th>
                                         <th>{{ __('Service') }}</th>
+                                        <th>{{ __('Sub Layanan') }}</th>
                                         <th>{{ __('Service Transfer') }}</th>
                                         <th>{{ __('Petugas Layanan') }}</th>
                                         <th>{{ __('Status') }}</th>
@@ -216,6 +217,7 @@
                                                 <td>{{ $directQueue->Workstation ? $directQueue->Workstation->name : '-' }}
                                                 </td>
                                                 <td>{{ $directQueue->Service->name }}</td>
+                                                <td>{{ $directQueue->subService->name ?? '-' }}</td>
                                                 <td>
                                                     @if ($directQueue->NewService)
                                                         {{ $directQueue->NewService->name }}

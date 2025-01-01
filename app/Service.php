@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\SubService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -50,5 +51,10 @@ class Service extends Model
     public function WorkstationService(): HasMany
     {
         return $this->hasMany(WorkstationService::class);
+    }
+    public function subServices()
+    {
+        return $this->belongsToMany(SubService::class, 'service_sub_service')
+                    ->withPivot('created_at', 'updated_at','id');
     }
 }

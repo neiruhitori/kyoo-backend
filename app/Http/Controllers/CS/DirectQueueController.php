@@ -195,7 +195,13 @@ class DirectQueueController extends Controller
 
     public function monitor()
     {
-        return view('cs.directQueue.monitor');
+        $user = Auth::user()->WorkstationVct->Workstation->WorkstationService;
+
+        $subServices = $user->flatMap(function ($workstationService) {
+            $service = $workstationService->Service;
+            return $service ? $service->SubServices : collect();
+        })->unique('id');
+        return view('cs.directQueue.monitor', ['sub_services' => $subServices]);
     }
 
     private function checkPreviousQueue($directQueue, $isSkip = false)
@@ -628,7 +634,8 @@ class DirectQueueController extends Controller
     {
         $rules = [
             'queue_no' => 'required|alpha_num|min:1|exists:direct_queues',
-            'service_id' => 'required|integer|exists:services,id'
+            'service_id' => 'required|integer|exists:services,id',
+            'sub_service_id' => 'nullable'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -658,6 +665,7 @@ class DirectQueueController extends Controller
         $directQueue->serving_duration = $request->serving_duration;
         $directQueue->vct_id = Auth::user()->id;
         $directQueue->user_id = Auth::user()->id;
+        $directQueue->sub_service_id = $request->sub_service_id ?? null;
         $directQueue->save();
 
         event(new QueueStatusUpdated([
@@ -674,7 +682,7 @@ class DirectQueueController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Direct Queue on End Served',
-            'data' => $directQueue
+            'data' => $directQueue,
         ]);
     }
 
@@ -731,7 +739,8 @@ class DirectQueueController extends Controller
         $rules = [
             'queue_no' => 'required|alpha_num|min:1|exists:direct_queues',
             'workstation_service_id' => 'required|integer|min:1|exists:workstation_services,id',
-            'service_id' => 'required|integer|exists:services,id'
+            'service_id' => 'required|integer|exists:services,id',
+            'sub_service_id' => 'nullable'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -748,6 +757,7 @@ class DirectQueueController extends Controller
             ->where('service_id', $workstation_service->service_id)
             ->whereDate('created_at', Date('Y-m-d'))
             ->first();
+
         if(!empty($directQueue)) {
             return response()->json([
                 'success' => true,
@@ -771,6 +781,8 @@ class DirectQueueController extends Controller
         $oldDirectQueue->status = 'end served';
         $oldDirectQueue->done_at = Date('Y-m-d H:i:s');
         $oldDirectQueue->serving_duration = $request->serving_duration;
+        $oldDirectQueue->sub_service_id = $request->sub_service_id ?? null;
+        $oldDirectQueue->new_service_id = $workstation_service->service_id;
         $oldDirectQueue->save();
 
         event(new QueueStatusUpdated([
@@ -793,10 +805,10 @@ class DirectQueueController extends Controller
         $data['old_service_id'] = $oldDirectQueue->service_id;
         $data['direct_queue_channel'] = 'Web';
         $data['appointment_onsite_id'] = $oldDirectQueue->appointment_onsite_id;
+        $data['sub_service_id'] = null;
 
         $directQueue = $this->onsite_repository->transfer($data);
-        $oldDirectQueue->new_service_id = $directQueue->service_id;
-        $oldDirectQueue->save();
+        
 
         event(new VCTDirectQueueEvent($directQueue, Auth::user()->branch_id));
         event(new DirectQueueEvent($directQueue, Auth::user()->branch_id));

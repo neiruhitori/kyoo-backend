@@ -55,7 +55,7 @@
 
               <b class="text-primary">Pemanggil Antrian Onsite</b>
               <hr class="mt-2 mb-2">
-              <div class="row">
+              <div class="row mb-3">
                 <div class="col-md-12" v-if="!isOnTransfer">
                   <div class="form-group">
                     <label for="search-by">Masukkan No. Antrian</label>
@@ -130,7 +130,7 @@
                   <template v-else>
                       <div class="col-md-6">
                         <button
-                          class="btn btn-info fullwidth mb-2"
+                          class="btn btn-info fullwidth mb-3"
                           @click="onRecall"
                         >
                           Panggil Ulang
@@ -138,16 +138,16 @@
                       </div>
                       <div class="col-md-6">
                         <button
-                          class="btn btn-success fullwidth mb-2"
+                          class="btn btn-success fullwidth mb-3"
                           @click="onEndServed"
                           :disabled="recallCounter > max_recall"
                         >
-                          Layanan Berakhir
+                         Selesai
                         </button>
                       </div>
                       <div class="col-md-6">
                         <button
-                          class="btn btn-secondary fullwidth mb-2"
+                          class="btn btn-secondary fullwidth mb-3"
                           @click="onRequeue"
                           :disabled="
                             onServedQueue &&
@@ -159,7 +159,7 @@
                       </div>
                       <div class="col-md-6">
                         <button
-                          class="btn btn-danger fullwidth mb-2"
+                          class="btn btn-danger fullwidth mb-3"
                           @click="onNoShow"
                         >
                           Tidak Hadir
@@ -167,23 +167,38 @@
                       </div>
                       <div :class="{'col-md-12': isServed(), 'col-md-6': !isServed()}">
                         <button
-                          class="btn btn-warning fullwidth mb-2"
+                          class="btn btn-warning fullwidth mb-3"
                           @click="onTransfer"
                           :disabled="!allow_transfer"
                         >
-                          Transfer Antrian
+                          Transfer
                         </button>
                       </div>
                       <div class="col-md-6" :class="{'d-none': isServed()}">
                         <button
-                          class="btn btn-primary fullwidth mb-2"
+                          class="btn btn-primary fullwidth mb-3"
                           @click="onServed()"
                         >
-                          Mulai Layanan
+                          Mulai
                         </button>
                       </div>
                     </template>
                 </template>
+              </div>
+              <div v-if="accessible_features.includes('CRM Interaction')" :class="{'d-none': !isServed()}">
+                <!-- <div v-if="accessible_features.includes('CRM Interaction')"> -->
+                <b class="text-primary mt-5">Sub Layanan</b>
+                <hr class="mt-2 mb-2">
+                <div class="row">
+                  <div class="col-md-12" >
+                    <select class="custom-select" v-model="selected_sub_service">
+                      <option selected value="">--PILIH SUB LAYANAN--</option>
+                      <option v-for="subService in filteredSubServices" :key="subService.id" :value="subService.id">
+                        {{ subService.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
             <!-- END DIRECT QUEUE CALLER -->
@@ -392,6 +407,9 @@ export default {
       type: Array,
       required: true
     },
+    sub_services: {
+      type: Array,
+    },
     workstation: {
       type: Object,
       required: true
@@ -406,6 +424,8 @@ export default {
       recallCounter: 0,
       queues: [],
       selected_queue: "",
+      selected_sub_service: "",
+      filteredSubServices: [],
       isOnServed: false,
       onServedQueue: {},
       isOnTransfer: false,
@@ -435,7 +455,6 @@ export default {
 
   async mounted () {
     await this.getQueues();
-
     const [selected_queue] = this.queues.filter(v => v.status === 'served');
     if (selected_queue) {
       this.selectQueue(selected_queue.queue_no);
@@ -537,7 +556,7 @@ export default {
       this.isLoading = true;
       const data = await axios.get(`/cs/directQueue?keyword=${this.keyword}`);
       this.queues = data.data.data;
-
+      this.selected_sub_service = '';
       this.isLoading = false;
 
       let selected_queue = this.queues.find(v => v.status === 'served');
@@ -633,6 +652,12 @@ selected_queue: selected_queue.created_at
         this.onServedQueue = queue.data.data;
         this.isOnServed = true;
 
+      const filteredSubServices = this.sub_services.filter(
+        (subService) => subService.pivot.service_id === selected_queue.service_id
+      );
+
+      this.filteredSubServices = filteredSubServices;
+
         this.getQueues();
 
         if (
@@ -699,6 +724,7 @@ selected_queue: selected_queue.created_at
         const queue = await axios.post("/cs/directQueue/onEndServed", {
           queue_no: this.selected_queue,
           service_id: selected_queue.service_id,
+          sub_service_id: this.selected_sub_service,
           serving_duration: selected_queue.called_at ? Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000) : 0
         });
 
@@ -805,7 +831,8 @@ selected_queue: selected_queue.created_at
           queue_no: e.target.queue_no.value,
           workstation_service_id: e.target.workstation_service_id.value,
           service_id: selected_queue[0].service_id,
-          serving_duration: selected_queue.called_at ? Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000) : 0
+          serving_duration: selected_queue.called_at ? Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000) : 0,
+          sub_service_id: this.selected_sub_service,
         };
         await axios.post("/cs/directQueue/onTransfer", data);
         this.isOnServed = false;

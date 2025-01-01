@@ -199,7 +199,7 @@
                  
                     <div class="form-group ml-3 col-md-5" style="width: 250px;">
                         <label for="select-template">Pilih layout yang sesuai</label>
-                        <select name="layer" id="select" class="form-control" onchange="changeLayout(this)">
+                        <select name="layer" id="selectLayer" class="form-control" onchange="changeLayout(this)">
                             <option value="1" >Portal Standard 1 Layer</option>
                             <option value="2" {{ $branchConfiguration->layer == 2 ? 'selected' : '' }}>
                                 {{ Auth::user()->Branch->BranchType->is_direct_queue ? 'Portal Hybrid Onsite-Appointment 2 Layer' : '2 Layer' }}
@@ -267,7 +267,7 @@
    
 </div>
 
-@if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+@if(Auth::user()->Branch->BranchType->is_premium)
     <script>
            
         const oneLayer = document.getElementById('one-layer');
@@ -275,6 +275,10 @@
         const oneDesc = document.getElementById('desc-1layer');
         const twoDesc = document.getElementById('desc-2layer');
         const formBooking = document.getElementById('formBooking');
+        oneDesc.style.display = 'none';
+        twoDesc.style.display = 'none';
+        oneLayer.style.display = 'none';
+        twoLayer.style.display = 'none';
         
             function changeLayout(input) {
 
@@ -294,9 +298,9 @@
                     }
                 }
                 window.onload = function() {
-                    var selectTemplate = document.getElementById('select');
-                    
-                    changeLayout(selectTemplate);
+                    var selectTemplate = document.getElementById('selectLayer');
+                    let temVal = selectTemplate.value;
+                    changeLayout(temVal);
                 };
         document.addEventListener("DOMContentLoaded", function() {
            

@@ -111,6 +111,9 @@
             @endif
 
             @include('adminBranch.service.index', ['services' => $services])
+            @if (Auth::user()->Branch->FeatureSubscription->contains('feature_id', 9))
+            @include('adminBranch.service.sub_service.index', ['sub_services' => $sub_services])
+            @endif
         </div>
     </div>
 @endsection

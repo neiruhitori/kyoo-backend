@@ -77,6 +77,20 @@
                                             <i class="fas fa-fw fa-edit"></i>
                                         </a>
 
+                                    @if (Auth::user()->Branch->FeatureSubscription->contains('feature_id', 9))    
+                                        <a
+                                            href="{{route('admin-branch.branch-configuration.service.assign', $service->id)}}"
+                                            class="btn btn-secondary"
+                                            data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="{{
+                                                    __('edit.module', ['module' => __('Sub Layanan')])
+                                                    }}"
+                                            >
+                                            <i class="fas fa-fw fa-server"></i>
+                                        </a>
+                                    @endif
+
                                         <form action="{{route('admin-branch.branch-configuration.service.destroy', $service->id)}}" method="post" style="display: inline">
                                             @csrf
                                             @method('DELETE')
