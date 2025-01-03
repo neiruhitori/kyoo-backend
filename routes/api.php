@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//iMIN Route API
+Route::post('kiosk/login', 'API\KioskController@login');
+Route::post('kiosk/logout', 'API\KioskController@logout')->middleware(['auth:api']);
+Route::middleware(['auth:api'])->prefix('kiosk')->group(function () {
+    Route::middleware(['checkDevice'])->group(function () {
+        Route::get('layout-ui', 'API\KioskController@getWebkioskUI');
+        Route::get('get-service', 'API\KioskController@getService');
+    });
+    
+});
+
 // region routes
 Route::get('allProvince', 'API\RegionController@allProvince');
 Route::get('allRegency', 'API\RegionController@allRegency');
@@ -102,8 +113,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     // corporate routes
     Route::get('corporates/{id}/branches', 'API\CorporateController@getCorporateBranches');
-    
-    
+
 });
 
 // guest can be get the data
@@ -120,7 +130,6 @@ Route::post('/subscription/callback','AdminBranch\BillingController@callbackInvo
 Route::namespace('API\External')->prefix('external')->middleware('external.checkBranchToken')->group(function () {
     Route::get('service', 'ServiceController@index');
     Route::get('service/{service}/slot', 'ServiceController@slot');
-
     Route::post('direct-queue', 'DirectQueueController@store');
 
     Route::post('appointment', 'AppointmentController@store');
