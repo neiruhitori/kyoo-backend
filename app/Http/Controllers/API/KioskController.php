@@ -63,20 +63,30 @@ class KioskController extends Controller
     {
         $branch_id = Auth::user()->branch_id;
         $configuration = WebkioskConfiguration::where('branch_id', $branch_id)
-                        ->with('layoutConfiguration2')
-                        ->with('layoutConfiguration3')
-                        ->with('layoutConfiguration4')
-                        ->with('layout')
-                        ->first();
-        $branch = Branch::findOrFail($branch_id);
-        $WebkioskConfigurationID = $branch->WebkioskConfiguration->id;
-        $WebKioskToken = WebkioskToken::where('webkiosk_configuration_id', $WebkioskConfigurationID)->first();
+        ->with('layout') 
+        ->first();
+
+         if (!$configuration) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Configuration not found',
+                'data' => null,
+            ], 404);
+        }
+
+        $layoutId = $configuration->layout_id;
+        $customConfig = null;
+        if($layoutId > 1){
+            $configuration->load("layoutConfiguration{$layoutId}");
+            $customConfig = $configuration->{"layoutConfiguration{$layoutId}"};
+        }
 
        return response()->json([
             'user' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'config' => $configuration,
-            'webkiosk_token' => $WebKioskToken,
+            'layout_used' => $configuration->layout,
+            'configuration' => $customConfig,
+            'active_menus' => $configuration->active_menus,
        ]);
     }
 
