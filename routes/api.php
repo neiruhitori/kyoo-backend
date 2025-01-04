@@ -21,6 +21,8 @@ Route::middleware(['auth:api'])->prefix('kiosk')->group(function () {
     Route::middleware(['checkDevice'])->group(function () {
         Route::get('layout-ui', 'API\KioskController@getWebkioskUI');
         Route::get('get-service', 'API\KioskController@getService');
+        Route::post('onsite/create', 'API\KioskController@store');
+        Route::post('check-in', 'API\KioskController@checkIn');
     });
     
 });
