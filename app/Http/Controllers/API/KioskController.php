@@ -34,15 +34,9 @@ class KioskController extends Controller
     }
     public function login(Request $request)
     {
-        $user = null;
-
-        if ($request->username) {
             $user = User::where('username', $request->username)
                     ->where('role','device')
                     ->first();
-        } else if ($request->email) {
-            $user = User::where('email', $request->email)->first();
-        }
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
