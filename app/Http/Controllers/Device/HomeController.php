@@ -11,14 +11,16 @@ use App\Workstation;
 use App\Models\TVToken;
 use App\WorkstationService;
 use Illuminate\Support\Str;
+use App\BranchConfiguration;
+use App\Models\SecretKeyAPi;
 use Illuminate\Http\Request;
 use App\Models\WebkioskToken;
 use App\Models\AppointmentOnsite;
 use App\Events\OnsiteQueueUpdated;
 use App\Models\FeatureSubscription;
+
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Support\Facades\Crypt;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Requests\Device\StoreDirectQueue;
@@ -400,9 +402,87 @@ class HomeController extends Controller
                 'is_used' => true
             ]);
 
+            $branchID = $user->branch->id;
+            $client = BranchConfiguration::where('branch_id',$branchID)->first();
+            $tokenAPI = SecretKeyAPi::where('branch_id', $branchID)->first();
+            $webhookMessage = "You need an Webhook Url or Activate the feature!";
+
+            if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
+                $webhookMessage = "Webhook Send!";
+                $startTime = $appointment_onsite->start_time;
+                $endTime = $appointment_onsite->end_time;
+    
+                if (strlen($startTime) === 5) { // Jika dalam format H:i
+                    $startTime = Carbon::createFromFormat('H:i', $startTime)->format('H:i:s');
+                } else {
+                    $startTime = Carbon::createFromFormat('H:i:s', $startTime)->format('H:i:s');
+                }
+                
+                if (strlen($endTime) === 5) { // Jika dalam format H:i
+                    $endTime = Carbon::createFromFormat('H:i', $endTime)->format('H:i:s');
+                } else {
+                    $endTime = Carbon::createFromFormat('H:i:s', $endTime)->format('H:i:s');
+                }
+    
+                
+                $timezone = null;
+                if($user->branch && $user->branch->timezone){
+                    if($user->branch && $user->branch->timezone) {
+                        switch($user->branch->timezone) {
+                            case 'WIB':
+                                $timezone = 'GMT+7';
+                                break;
+                            case 'WITA':
+                                $timezone = 'GMT+8';
+                                break;
+                            case 'WIT':
+                                $timezone = 'GMT+9';
+                                break;
+                            default:
+                                $timezone = null;
+                                break;
+                        }
+                    }
+                }
+    
+                $webhookData = [
+                    'event_type' => 'onsite_checkin_booking',
+    
+                    'queue' => (object)[
+                            'id' => $appointment_onsite->id,
+                            'service_id' => $appointment_onsite->service_id,
+                            'branch_id' =>  $branchID,
+                            'booking_code' =>  strtoupper($appointment_onsite->booking_code),
+                            'service_type' => 'Appointment Onsite Queue',
+                            'check_in_status' => $appointment_onsite->is_used,
+                            'check_in_date' => $appointment_onsite->updated_at,
+                            'created_at' => $appointment_onsite->created_at,
+                        ],
+                        'branch' => (object)[
+                            'id' =>  $branchID,
+                            'name' => $user->branch->name,
+                        ],
+                        'service' => (object)[
+                            'id' => $appointment_onsite->service_id,
+                            'name' => $appointment_onsite->service->name,
+                            'branch_id' => $appointment_onsite->service->Branch->id,
+                            'branch_name' => $appointment_onsite->service->Branch->name,
+                        ]
+                ];
+                $webhookUpdatedData = (object) $webhookData;
+                
+               $this->sendWebhook($client, $webhookUpdatedData);
+                
+            }else{
+                $webhookMessage = "There's no Webhook Url or The feature was inactive";
+            }
+
+
             return response()->json([
                 'success' => true,
-                'data' => $direct_queue
+                'data' => $direct_queue,
+                'webhook' => $webhookMessage,
+                'debug' => $webhookData
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -421,5 +501,34 @@ class HomeController extends Controller
           }
         }
         return array_values($new_array);
+    }
+    protected function sendWebhook($client, $webhookUpdatedData)
+    {
+        $guzzle = new \GuzzleHttp\Client();  
+        $tokenAPI = SecretKeyAPi::where('branch_id', $client->branch_id)->first();
+        try {
+
+            $response = $guzzle->post($client->webhook_url, [
+                'headers' => [
+                    'x-secret-token' => $tokenAPI->secret_token,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $webhookUpdatedData
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                throw new \Exception('Webhook failed with status: ' . $response->getStatusCode());
+            }
+
+            return response()->json([
+                'status' => 'success',
+               ]);
+
+        } catch (\Exception $e) {
+           return response()->json([
+            'status' => 'error',
+            'message' =>  $e->getMessage()
+           ]);
+        }
     }
 }
