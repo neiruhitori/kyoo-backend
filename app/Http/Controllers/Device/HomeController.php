@@ -308,17 +308,78 @@ class HomeController extends Controller
                                                         ->whereStatus('waiting')
                                                         ->whereDate('created_at', date('Y-m-d'))
                                                         ->count();
-
+            
             event(new VCTDirectQueueEvent($direct_queue, $user->branch_id));
             event(new DirectQueueEvent($direct_queue, $user->branch_id));
 
             if ($direct_queue->client_id) {
                 event(new OnsiteQueueUpdated($direct_queue));
             }
+            $branchID = $user->branch->id;
+            $client = BranchConfiguration::where('branch_id',$branchID)->first();
+            $tokenAPI = SecretKeyAPi::where('branch_id', $branchID)->first();
+            $webhookMessage = "You need an Webhook Url or Activate the feature!";
+
+            if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
+                $webhookMessage = "Webhook Send!";
+
+                $timezone = null;
+                if($user->branch && $user->branch->timezone){
+                    if($user->branch && $user->branch->timezone) {
+                        switch($user->branch->timezone) {
+                            case 'WIB':
+                                $timezone = 'GMT+7';
+                                break;
+                            case 'WITA':
+                                $timezone = 'GMT+8';
+                                break;
+                            case 'WIT':
+                                $timezone = 'GMT+9';
+                                break;
+                            default:
+                                $timezone = null;
+                                break;
+                        }
+                    }
+                }
+    
+                $webhookData = [
+                    'event_type' => 'onsite_checkin_booking',
+    
+                    'queue' => (object)[
+                            'id' => $direct_queue->id,
+                            'service_id' => $direct_queue->service_id,
+                            'branch_id' =>  $branchID,
+                            'booking_code' =>  strtoupper($direct_queue->booking_code),
+                            'service_type' => 'Onsite Queue',
+                            'check_in_status' => true,
+                            'check_in_date' => $direct_queue->created_at,
+                            'created_at' => $direct_queue->created_at,
+                        ],
+                        'branch' => (object)[
+                            'id' =>  $branchID,
+                            'name' => $user->branch->name,
+                        ],
+                        'service' => (object)[
+                            'id' => $direct_queue->service_id,
+                            'name' => $direct_queue->service->name,
+                            'branch_id' => $direct_queue->service->Branch->id,
+                            'branch_name' => $direct_queue->service->Branch->name,
+                        ]
+                ];
+                $webhookUpdatedData = (object) $webhookData;
+                
+               $this->sendWebhook($client, $webhookUpdatedData);
+                
+            }else{
+                $webhookMessage = "There's no Webhook Url or The feature was inactive";
+            }
 
             return response()->json([
                 'success' => true,
-                'data' => $direct_queue
+                'data' => $direct_queue,
+                'debug_mes' => $webhookMessage,
+                'debug' => $webhookData
             ]);
         } catch (\Exception $e) {
             return response()->json([
