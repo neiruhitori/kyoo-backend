@@ -378,8 +378,6 @@ class HomeController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $direct_queue,
-                'debug_mes' => $webhookMessage,
-                'debug' => $webhookData
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -542,8 +540,6 @@ class HomeController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $direct_queue,
-                'webhook' => $webhookMessage,
-                'debug' => $webhookData
             ]);
         } catch (\Exception $e) {
             return response()->json([
