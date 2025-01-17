@@ -100,7 +100,10 @@ class KioskController extends Controller
                     ->where('branch_id', $branch_id)
                     ->whereIn('role', ['cs', 'spv']);
             });
-        })->with('Service')->get();
+        })->with(['Service' => function ($query) {
+            $query->where('is_show_webkiosk', true);
+        }])->get();
+        
         
         // Hilangkan duplikasi berdasarkan `service_id`
         $uniqueServices = collect($workstationServices)->unique('service_id')->values();
