@@ -72,7 +72,7 @@
             height="100%"
             id="player"
             :key="activeImage"
-            :src="`https://www.youtube.com/embed/${getYouTubeId(promotionImages[activeImage - 1].url)}?enablejsapi=1&controls=0&autoplay=1&mute=1`"
+            :src="`https://www.youtube.com/embed/${getYouTubeId(promotionImages[activeImage - 1].url)}?enablejsapi=1&controls=0&autoplay=1`"
             title="YouTube video player"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -429,6 +429,7 @@ export default {
 
         onPlayerReady(event) {
             event.target.playVideo();
+            this.player = event.target;
         },
         onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.PLAYING) {
@@ -705,6 +706,10 @@ export default {
                 }
             });
 
+             if (this.player && this.player.setVolume) {
+                this.player.setVolume(20); // Set volume ke 20%
+            }
+
             for (const audioData of playlist) {
                 if (audioEl.paused) {
                     audioEl.src = audioData;
@@ -723,6 +728,9 @@ export default {
                 const nextMessage = this.playQueue.shift();
                 await this.getQueueCallAudio(nextMessage);
             }
+            if (this.player && this.player.setVolume) {
+                this.player.setVolume(100); // Set volume kembali ke 100%
+            }
 
             const videoEl = document.querySelector('video');
             if (!videoEl) {
@@ -730,7 +738,7 @@ export default {
             }
             const originalVolume = videoEl.volume;
             videoEl.volume = 0.2;
-
+            
             audioEl.onended = function() {
                 videoEl.volume = originalVolume;
             };
