@@ -435,7 +435,10 @@ export default {
             if (event.data == YT.PlayerState.PLAYING) {
                 const ytduration = event.target.getDuration() * 1000 - 1000; // Durasi video dalam milidetik
                 console.log("Video Playing - Duration:", ytduration);
-                
+            if (this.isPlaying && this.player && this.player.setVolume) {
+                console.log("Audio signage is active, setting YouTube volume to 0%");
+                this.player.setVolume(0); // Paksa volume ke 0%
+            }
                 // Set durasi hanya jika belum ditetapkan
                 if (!this.currentImageDuration || this.currentImageDuration !== ytduration) {
                     this.currentImageDuration = ytduration;
@@ -707,7 +710,7 @@ export default {
             });
 
              if (this.player && this.player.setVolume) {
-                this.player.setVolume(20); // Set volume ke 20%
+                this.player.setVolume(0); // Set volume ke 0%
             }
 
             for (const audioData of playlist) {
