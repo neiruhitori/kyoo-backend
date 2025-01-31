@@ -24,7 +24,7 @@
                     </li>
                 </ul>
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert"> {{ __('Information') }}</button>
+                <button class="btn btn-warning float-right" data-toggle="alert"> {{ __('Hide') }}</button>
             </div>
         </div>
     </div>
