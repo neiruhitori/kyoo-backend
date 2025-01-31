@@ -32,17 +32,17 @@
 
             @if (Auth::user()->role == 'admin_branch' && Auth::user()->Branch->BranchType->is_appointment)      
             <!-- Nav Item - User Information -->
-            <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ strtoupper(app()->getLocale()) }}</span>
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+            <span class="mr-2 d-none d-lg-inline text-gray-600 small"> <span class="fi fi-{{ app()->getLocale() == 'en' ? 'gb' : 'id'}} fib border"></span> {{ strtoupper(app()->getLocale()) }}</span>
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
                     <a class="dropdown-item" href="{{ route('change.locale', 'en') }}">
-                        English
+                        <span class="fi fi-gb fib border"></span> English
                     </a>
                     <a class="dropdown-item" href="{{ route('change.locale', 'id') }}">
-                        Indonesia
+                        <span class="fi fi-id fib border"></span> Indonesia
                     </a>
                 </div>
             </li>
