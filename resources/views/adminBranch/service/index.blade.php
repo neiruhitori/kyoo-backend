@@ -24,7 +24,7 @@
                                     Auth::user()->Branch->BranchType->is_appointment ||
                                     Auth::user()->Branch->BranchType->is_exhibition
                                 )
-                                    <th>Total Slot Waktu</th>
+                                    <th>{{ __('Total Slot Time') }}</th>
                                 @endif
                                 <th>{{ __('Action') }}</th>
                             </tr>
