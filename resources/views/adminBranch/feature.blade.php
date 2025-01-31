@@ -6,11 +6,11 @@
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
                     <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
+                    {{ __('Information') }}
                 </h6>
 
                 <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
+                    {{ __('Show') }}
                 </button>
             </div>
 
@@ -18,15 +18,13 @@
                 <p>
                 <ul style="padding-left: 2rem;">
                     <li style="margin-bottom: 0.25rem;">
-                        Ini adalah konfigurasi fitur yang bisa anda sesuaikan dengan kebutuhan.
-                    </li>
+                        {{ __('infobox.features1') }}                    </li>
                     <li>
-                        Untuk API Antrian KYOO hanya akan tampil Ketika cabang sudah memiliki license API.
-                        API KYOO dapat di-integrasikan ke berbagai channel layanan anda seperti WA, Telegram dll.
+                        {{ __('infobox.features2') }} 
                     </li>
                 </ul>
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                <button class="btn btn-warning float-right" data-toggle="alert"> {{ __('Information') }}</button>
             </div>
         </div>
     </div>

@@ -20,19 +20,19 @@
         <div class="custom-info-head">
             <h6 class="font-weight-bold my-0">
                 <span class="fas fa-info-circle text-primary mr-1"></span>
-                Informasi
+                {{ __('Information') }}
             </h6>
 
             <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                Tampilkan
+                {{ __('Show') }}
             </button>
         </div>
 
         <div class="custom-info-body">
             <p>
-                Informasi tampilan cabang akan terhubung dengan tampilan informasi di Mobile Apps dan Web Antrian.
+                {{ __('infobox.profile') }}
             </p>
-            <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
         </div>
     </div>
 </div>

@@ -10,19 +10,19 @@
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
                     <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
+                    {{ __('Information') }}
                 </h6>
 
                 <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
+                    {{ __('Show') }}
                 </button>
             </div>
 
             <div class="custom-info-body">
                 <p>
-                    Jadwal hari kerja merupakan jadwal buka tutup kantor cabang Anda setiap hari. Anda juga dapat menambahkan informasi hari pengecualian dimana kantor cabang anda tutup karena mengikuti hari Libur Nasional.
+                    {{ __('infobox.schedule') }} 
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
             </div>
         </div>
     </div>

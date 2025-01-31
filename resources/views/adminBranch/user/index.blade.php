@@ -10,11 +10,11 @@
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
                     <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
+                    {{ __('Information') }}
                 </h6>
 
                 <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
+                    {{ __('Show') }}
                 </button>
             </div>
 
@@ -22,17 +22,15 @@
                 <p>
                     <ul style="padding-left: 2rem;">
                         <li style="margin-bottom: 0.25rem;">
-                            Berikut adalah halaman untuk melihat dan mengatur petugas layanan di antrian kantor Cabang Anda.
+                            {{ __('infobox.virtualcounter1') }}
                         </li>
                         <li style="margin-bottom: 0.25rem;">
-                           Untuk penggunaan pertama kali, perlu disetting password user petugas agar dapat login sebagai petugas layanan.
-                        </li>
+                            {{ __('infobox.virtualcounter2') }}                        </li>
                         <li>
-                            Jika lupa password user petugas, dapat menekan tombol reset password dibawah dan akan dikirimkan link melalui email admin cabang untuk melakukan proses reset password.
-                        </li>
+                            {{ __('infobox.virtualcounter3') }}                        </li>
                     </ul>
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
             </div>
         </div>
     </div>

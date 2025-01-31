@@ -1,0 +1,23 @@
+<?php 
+
+return [
+    'profile' => 'Informasi tampilan cabang akan terhubung dengan tampilan informasi di Mobile Apps dan Web Antrian.',
+    'location' => 'Informasi lokasi cabang akan terhubung dengan tampilan informasi di Mobile Apps dan Web Antrian.',
+    'department1' => 'Departement merupakan hierarki atau unit paling tinggi di antrian KYOO. Dibawah Departemen akan terdapat beberapa jenis layanan.',
+    'department2' => 'Kategori Layanan adalah suatu pengelompokan yang digunakan untuk mengklasifikasikan layanan-layanan berdasarkan fungsi sebuah layanan.',
+    'department3' => 'Daftar layanan adalah jenis layanan yang Kantor Cabang anda berikan kepada pelanggan.',
+    'department4' => 'Daftar layanan ini yang akan terlihat di Web Portal, Web Kiosk dan Apps Antrian',
+    'schedule' => 'Jadwal hari kerja merupakan jadwal buka tutup kantor cabang Anda setiap hari. Anda juga dapat menambahkan informasi hari pengecualian dimana kantor cabang anda tutup karena mengikuti hari Libur Nasional.',
+    'workstation1' => 'Meja merupakan loket/counter tempat petugas akan melayani pelanggan.',
+    'workstation2' => 'Meja akan melekat ke Layanan di kantor Cabang Anda.',
+    'virtualcounter1' => 'Berikut adalah halaman untuk melihat dan mengatur petugas layanan di antrian kantor Cabang Anda.',
+    'virtualcounter2' => 'Untuk penggunaan pertama kali, perlu disetting password user petugas agar dapat login sebagai petugas layanan.',
+    'virtualcounter3' => 'Jika lupa password user petugas, dapat menekan tombol reset password dibawah dan akan dikirimkan link melalui email admin cabang untuk melakukan proses reset password.',
+    'menuportal1' => 'Disini konfigurasi web portal antrian untuk menampilkan jenis layanan kepada pelanggan.',
+    'menuportal2' => 'Pilih konfigurasi layout web portal yang sesuai dengan scenario proses antrian Anda.',
+    'device1' => 'Akun perangkat digunakan untuk mengakses web display signage antrian dan Webkiosk antrian',
+    'device2' => 'Halaman login akun perangkat sama dengan halaman login user admin dan user petugas layanan',
+    'features1' => 'Ini adalah konfigurasi fitur yang bisa anda sesuaikan dengan kebutuhan.',
+    'features2' => 'Untuk API Antrian KYOO hanya akan tampil Ketika cabang sudah memiliki license API. API KYOO dapat di-integrasikan ke berbagai channel layanan anda seperti WA, Telegram dll.',
+    'termsandcondition' => 'Informasikan syarat dan ketentuan di portal anda ketika akan menggunakan antrian di kantor anda dan menggunakan support layanan Anda.',
+];

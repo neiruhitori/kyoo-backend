@@ -123,11 +123,11 @@
         <div class="custom-info-head">
             <h6 class="font-weight-bold my-0">
                 <span class="fas fa-info-circle text-primary mr-1"></span>
-                Informasi
+                {{ __('Information') }}
             </h6>
 
             <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                Tampilkan
+                {{ __('Show') }}
             </button>
         </div>
 
@@ -135,13 +135,12 @@
             <p>
                 <ul style="padding-left: 2rem;">
                     <li style="margin-bottom: 0.25rem;">
-                        Disini konfigurasi web portal antrian untuk menampilkan jenis layanan kepada pelanggan.
-                    </li>
+                        {{ __('infobox.menuportal1') }}                    </li>
                     <li style="margin-bottom: 0.25rem;">
-                        Pilih konfigurasi layout web portal yang sesuai dengan scenario proses antrian Anda.
+                        {{ __('infobox.menuportal2') }}
                 </ul>
             </p>
-            <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
         </div>
     </div>
 </div>

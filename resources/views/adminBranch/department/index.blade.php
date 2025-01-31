@@ -10,11 +10,11 @@
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
                     <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
+                    {{ __('Information') }}
                 </h6>
 
                 <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
+                    {{ __('Show') }}
                 </button>
             </div>
 
@@ -22,22 +22,21 @@
                 <p>
                     <ul style="padding-left: 2rem;">
                         <li style="margin-bottom: 0.25rem;">
-                            Departement merupakan hierarki atau unit paling tinggi di antrian KYOO. Dibawah Departemen akan terdapat beberapa jenis layanan.
+                            {{ __('infobox.department1') }}
                         </li>
                         @if(Auth::user()->Branch->BranchType->is_appointment)
                             <li style="margin-bottom: 0.25rem;">
-                                Kategori Layanan adalah suatu pengelompokan yang digunakan untuk mengklasifikasikan layanan-layanan berdasarkan fungsi sebuah layanan.
+                                {{ __('infobox.department2') }}
                             </li>
                         @endif
                         <li>
-                            Daftar layanan adalah jenis layanan yang Kantor Cabang anda berikan kepada pelanggan.
+                            {{ __('infobox.department3') }}
                         </li>
                         <li>
-                            Daftar layanan ini yang akan terlihat di Web 
-                            Portal, Web Kiosk dan Apps Antrian                        </li>
+                            {{ __('infobox.department4') }}                        </li>
                     </ul>
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                <button class="btn btn-warning float-right" data-toggle="alert"> {{ __('Hide') }}</button>
             </div>
         </div>
     </div>

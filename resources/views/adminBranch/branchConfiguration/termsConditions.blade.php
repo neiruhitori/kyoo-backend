@@ -10,11 +10,11 @@
       <div class="custom-info-head">
           <h6 class="font-weight-bold my-0">
               <span class="fas fa-info-circle text-primary mr-1"></span>
-              Informasi
+              {{ __('Information') }}
           </h6>
 
           <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-              Tampilkan
+            {{ __('Show') }}
           </button>
       </div>
 
@@ -22,11 +22,10 @@
           <p>
               <ul style="padding-left: 2rem;">
                   <li style="margin-bottom: 0.25rem;">
-                    Informasikan syarat dan ketentuan di portal anda ketika akan menggunakan 
-                    antrian di kantor anda dan menggunakan support layanan Anda. 
+                    {{ __('infobox.termsandcondition') }} 
                   </li>
           </p>
-          <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+          <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
       </div>
   </div>
 </div>
