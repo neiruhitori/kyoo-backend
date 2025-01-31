@@ -32,8 +32,8 @@
 
       <div style="padding: 3rem 0 3rem 0;">
         <div style="margin-bottom: 1.5rem;">
-          <h1 class="page-title" style="margin-bottom: 1rem;">Registrasi Cabang</h1>
-          <p class="text-gray">Daftarkan Cabangmu Sekarang Juga!</p>
+          <h1 class="page-title" style="margin-bottom: 1rem;">{{ __('Branch Registration') }}</h1>
+          <p class="text-gray">{{ __('Register Your Branch Now!') }}</p>
         </div>
 
         @if (Session::get('error'))
@@ -46,14 +46,14 @@
           @csrf
 
           <div style="margin-bottom: 1rem;">
-            <label class="font-weight-bold" for="name">Nama Cabang</label>
+            <label class="font-weight-bold" for="name">{{ __('Branch Name') }}</label>
 
             <div class="k-input">
               <div>
                 <x-icon icon="home" class="k-icon" />
               </div>
 
-              <input type="text" name="name" id="name" placeholder="Nama Cabang" value="{{ old('name') }}" required>
+              <input type="text" name="name" id="name" placeholder="{{ __('Branch Name') }}" value="{{ old('name') }}" required>
             </div>
 
             @error('name')
@@ -62,7 +62,7 @@
           </div>
 
           <div style="margin-bottom: 1rem;">
-            <label class="font-weight-bold" for="industry_category_id">Kategori Industri</label>
+            <label class="font-weight-bold" for="industry_category_id">{{ __('Industry Category') }}</label>
 
             <div class="k-input">
               <div>
@@ -70,7 +70,7 @@
               </div>
 
               <select name="industry_category_id" id="industry_category_id" required>
-                <option disabled selected>Pilih Kategori</option>
+                <option disabled selected>{{ __('Select Category') }}</option>
                 @foreach ($categories as $category)
                 <option value="{{$category->id}}" {{ old('industry_category_id')==$category->id ? 'selected' : '' }}>
                   {{$category->name}}
@@ -85,7 +85,7 @@
           </div>
 
           <div style="margin-bottom: 1rem;">
-            <label class="font-weight-bold" for="queue_type">Jenis Antrian</label>
+            <label class="font-weight-bold" for="queue_type">{{ __('Queue Type') }}</label>
 
             <div class="k-input">
               <div>
@@ -93,7 +93,7 @@
               </div>
 
               <select name="queue_type" id="queue_type" required>
-                <option disabled selected>Pilih Jenis Antrian</option>
+                <option disabled selected>{{ __('Select Queue Type') }}</option>
                 <option value="direct_queue" {{ old('queue_type')=='direct_queue' ? 'selected' : '' }}>
                   Antrian Onsite
                 </option>
@@ -113,34 +113,32 @@
 
           <div class="k-alert" style="margin-bottom: 1rem;">
             <div style="margin-bottom: 1.125rem;">
-              <h6 class="font-weight-bold" style="margin-bottom: 0.25rem;">Antrian Onsite atau Kunjungan di Lokasi</h6>
+              <h6 class="font-weight-bold" style="margin-bottom: 0.25rem;">{{ __('register.onsite') }}</h6>
               <p style="margin-bottom: 0.25rem;">
-                Antri langsung di lokasi cabang, tidak perlu janji temu untuk mendapatkan layanan.
+                {{ __('register.onsite_desc') }}
               </p>
-              <small>Contoh: Antrian di kantor Telekomunikasi dll</small>
+              <small>{{ __('register.onsite_ex') }}</small>
             </div>
 
             <div style="margin-bottom: 1.125rem;">
-              <h6 class="font-weight-bold" style="margin-bottom: 0.25rem;">Antrian Appointment atau Janji Temu</h6>
+              <h6 class="font-weight-bold" style="margin-bottom: 0.25rem;">{{ __('register.appointment') }}</h6>
               <p style="margin-bottom: 0.25rem;">
-                Diperlukan janji temu atau booking waktu terlebih dahulu untuk mendapatkan layanan. Antrian jenis ini
-                memiliki pengaturan kuota.
+                {{ __('register.appointment_desc') }}
               </p>
-              <small>Contoh: Antrian di Rumah Sakit dll</small>
+              <small>{{ __('register.appointment_ex') }}</small>
             </div>
 
             <div>
-              <h6 class="font-weight-bold" style="margin-bottom: 0.25rem;">Antrian Exhibition</h6>
+              <h6 class="font-weight-bold" style="margin-bottom: 0.25rem;">{{ __('register.exhibition') }}</h6>
               <p style="margin-bottom: 0.25rem;">
-                Diperlukan booking slot terlebih dahulu dan kemudian check-in di lokasi. Antrian jenis ini memiliki
-                pengaturan kuota.
+                {{ __('register.exhibition_desc') }}
               </p>
-              <small>Contoh: Konser Musik, Pameran Seni dll</small>
+              <small>{{ __('register.exhibition_ex') }}</small>
             </div>
           </div>
 
           <div style="margin-bottom: 1rem;">
-            <label class="font-weight-bold" for="email">Email</label>
+            <label class="font-weight-bold" for="email">{{ __('Email') }}</label>
 
             <div class="k-input">
               <div>
@@ -156,14 +154,14 @@
           </div>
 
           <div style="margin-bottom: 1rem;">
-            <label class="font-weight-bold" for="password">Password</label>
+            <label class="font-weight-bold" for="password">{{ __('Password') }}</label>
 
             <div class="k-input">
               <div>
                 <x-icon icon="key" class="k-icon" />
               </div>
 
-              <input type="password" name="password" id="password" placeholder="Masukkan Password" required>
+              <input type="password" name="password" id="password" placeholder="Password" required>
 
               <div>
                 <button type="button" class="k-button-text is-password-visible">
@@ -178,7 +176,7 @@
           </div>
 
           <div style="margin-bottom: 1rem;">
-            <label class="font-weight-bold" for="password_confirmation">Konfirmasi Password</label>
+            <label class="font-weight-bold" for="password_confirmation">{{ __('Password Confirmation') }}</label>
 
             <div class="k-input">
               <div>
@@ -186,7 +184,7 @@
               </div>
 
               <input type="password" name="password_confirmation" id="password_confirmation"
-                placeholder="Ketik Ulang Password" reuqired>
+                placeholder="{{ __('Password Confirmation') }}" reuqired>
 
               <div>
                 <button type="button" class="k-button-text is-password-visible">
@@ -201,7 +199,7 @@
           </div>
 
           <div style="margin-bottom: 1rem;">
-            <label class="font-weight-bold" for="country">Negara</label>
+            <label class="font-weight-bold" for="country">{{ __('Country') }}</label>
 
             <div class="k-input">
               <div>
@@ -209,7 +207,7 @@
               </div>
 
               <select name="country" id="country" required>
-                <option disabled selected>Pilih Negara</option>
+                <option disabled selected>{{ __('Select Country') }}</option>
                 @foreach ($countries as $country)
                 <option value="{{$country}}" {{ old('country')==$country ? 'selected' : '' }}>
                   {{$country}}
@@ -224,7 +222,7 @@
           </div>
 
           <div style="margin-bottom: 1rem;">
-            <label class="font-weight-bold" for="phone">Telepon</label>
+            <label class="font-weight-bold" for="phone">{{ __('Phone') }}</label>
 
             <div class="k-input">
               <div>
@@ -241,7 +239,7 @@
 
           <div class="inline" style="margin-bottom: 1rem; margin-left: -1rem;">
             <div style="margin-left: 1rem;">
-              <label class="font-weight-bold" for="province_id">Provinsi</label>
+              <label class="font-weight-bold" for="province_id">{{ __('Province') }}</label>
 
               <div class="k-input">
                 <div>
@@ -249,7 +247,7 @@
                 </div>
 
                 <select name="province_id" id="province_id" required>
-                  <option disabled selected>Pilih Provinsi</option>
+                  <option disabled selected>{{ __('Select Province') }}</option>
                   @foreach ($provinces as $province)
                   <option value="{{ $province->id }}" {{ old('province_id')==$province->id ? 'selected' : '' }}>
                     {{$province->name}}
@@ -264,7 +262,7 @@
             </div>
 
             <div style="margin-left: 1rem">
-              <label class="font-weight-bold" for="regency_id">Kota</label>
+              <label class="font-weight-bold" for="regency_id">{{ __('City') }}</label>
 
               <div class="k-input">
                 <div>
@@ -272,7 +270,7 @@
                 </div>
 
                 <select name="regency_id" id="regency_id" required>
-                  <option disabled selected>Pilih Kota</option>
+                  <option disabled selected>{{ __('Select City') }}</option>
                 </select>
               </div>
 
@@ -283,10 +281,10 @@
           </div>
 
           <div style="margin-bottom: 1rem">
-            <label class="font-weight-bold" for="address">Alamat</label>
+            <label class="font-weight-bold" for="address">{{ __('Address') }}</label>
 
             <div class="k-input">
-              <textarea name="address" id="address" placeholder="Tulis alamat" required>{{ old('address') }}</textarea>
+              <textarea name="address" id="address" placeholder="{{ __('Address') }}" required>{{ old('address') }}</textarea>
             </div>
 
             @error('address')
@@ -298,7 +296,7 @@
             <div class="k-checkbox">
               <input type="checkbox" name="accept_term_condition" id="accept_term_condition">
               <label for="accept_term_condition">
-                Saya menyetujui <a href="https://kyoo.id/termsandconditions">Syarat dan Ketentuan yang Berlaku</a>
+                {{ __('I agree to the') }} <a href="https://kyoo.id/termsandconditions">{{ __('Terms and Conditions') }}</a>
               </label>
             </div>
 
@@ -307,11 +305,11 @@
             @enderror
           </div>
 
-          <button type="submit" class="k-button">Daftar Sekarang</button>
+          <button type="submit" class="k-button">{{ __('Register Now') }}</button>
         </form>
 
         <p class="text-gray">
-          Sudah punya akun? <a href="{{ route('login') }}">Login</a>
+          {{ __('Already have an account?') }} <a href="{{ route('login') }}">Login</a>
         </p>
       </div>
     </div>

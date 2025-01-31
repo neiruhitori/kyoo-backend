@@ -29,6 +29,24 @@
                 @default
                     
             @endswitch
+
+            @if (Auth::user()->Branch->BranchType->is_appointment)      
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ strtoupper(app()->getLocale()) }}</span>
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                    <a class="dropdown-item" href="{{ route('change.locale', 'en') }}">
+                        English
+                    </a>
+                    <a class="dropdown-item" href="{{ route('change.locale', 'id') }}">
+                        Indonesia
+                    </a>
+                </div>
+            </li>
+            @endif
         
         <div class="topbar-divider d-none d-sm-block"></div>
 

@@ -2,28 +2,28 @@
 
 @section('content')
   <div style="max-width: 800px; margin: 0 auto;">
-    <h3 class="mb-3">Konten Promosi</h3>
+    <h3 class="mb-3">{{ __('Promotion Content') }}</h3>
 
     @include('layouts.alert')
 
     <div class="mb-5">
-      <h6 class="font-weight-bold">Tambah Promosi</h6>
+      <h6 class="font-weight-bold">{{ __('create.module',['module' => __('Promotion')]) }}</h6>
 
       <div>
         <a href="{{ route('admin-branch.branch-configuration.promotions.image.create') }}" class="btn btn-secondary mr-1">
           <span class="fas fa-image mr-1"></span>
-          Gambar
+          Image
         </a>
 
         <a href="{{ route('admin-branch.branch-configuration.promotions.text.create') }}" class="btn btn-secondary">
           <span class="fas fa-font mr-1"></span>
-          Teks
+          Text
         </a>
       </div>
     </div>
 
     <div>
-      <h6 class="font-weight-bold">Daftar Promosi</h6>
+      <h6 class="font-weight-bold">{{ __('list.module',['module' => __('Promotion')]) }}</h6>
 
       <div class="row">
         @forelse ($promotions as $promotion)
@@ -79,8 +79,8 @@
                 </div>
       
                 <div style="max-width: 380px; margin: 0 auto;">
-                  <h4 class="text-center">Tidak ada konten</h4>
-                  <p class="text-center">Tambahkan promosi dengan memilih tombol diatas</p>
+                  <h4 class="text-center">{{ __('No Content') }}</h4>
+                  <p class="text-center">{{ __('Add promotion by selecting the button above') }}</p>
                 </div>
               </div>
             </div>

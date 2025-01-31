@@ -6,7 +6,7 @@
 
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Monitoring Departemen</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Monitoring {{ __('Department') }}</h6>
                 </div>
 
                 <div class="card-body">
@@ -16,25 +16,25 @@
                         <table class="table table-bordered table-striped mb-4" id="table">
                             <thead>
                                 <tr>
-                                    <th rowspan="2" class="align-middle">Nomor Antrian</th>
-                                    <th rowspan="2" class="align-middle text-right">Kode Unik</th>
-                                    <th rowspan="2" class="align-middle text-right">Ambil Antrian</th>
-                                    <th rowspan="2" class="align-middle text-right">Antrian Dipanggil</th>
-                                    <th rowspan="2" class="align-middle text-right">Mulai Layanan</th>
-                                    <th rowspan="2" class="align-middle text-right">Layanan Selesai</th>
-                                    <th colspan="3" class="text-center">Durasi Antrian</th>
-                                    <th rowspan="2" class="align-middle text-right">Meja</th>
-                                    <th rowspan="2" class="align-middle text-right">Layanan</th>
-                                    <th rowspan="2" class="align-middle text-right">Layanan Tujuan Transfer</th>
-                                    <th rowspan="2" class="align-middle text-right">Petugas Layanan</th>
-                                    <th rowspan="2" class="align-middle text-right">Status</th>
+                                    <th rowspan="2" class="align-middle">{{ __('Queue Number') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Booking Code') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Queue Taken') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Queue Called') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Start Service') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Finish Service') }}</th>
+                                    <th colspan="3" class="text-center">{{ __('Queue Duration') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Workstation') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Service') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Service Transfer') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Virtual Counter') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Status') }}</th>
                                 </tr>
     
                                 <tr>
                                     {{-- Waktu Tunggu Child Header --}}
-                                    <th class="text-center">Durasi Tunggu</th>
-                                    <th class="text-center">Durasi Layanan (Panggil)</th>
-                                    <th class="text-center">Durasi Layanan</th>
+                                    <th class="text-center">{{ __('Waiting Duration') }} </th>
+                                    <th class="text-center">{{ __('Service Duration (Call)') }} </th>
+                                    <th class="text-center">{{ __('Service Duration') }} </th>
                                 </tr>
                             </thead>
     

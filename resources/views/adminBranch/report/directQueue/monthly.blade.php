@@ -109,19 +109,19 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <th>{{ __('Queue Number') }}</th>
-                                        <th>{{ __('Kode Unik') }}</th>
-                                        <th>{{ __('Ambil Antrian') }}</th>
-                                        <th>{{ __('Antrian Dipanggil') }}</th>
-                                        <th>{{ __('Mulai Layanan') }}</th>
-                                        <th>{{ __('Selesai Layanan ') }}</th>
-                                        <th>{{ __('Durasi Tunggu') }} </th>
-                                        <th>{{ __('Durasi Layanan (Panggil)') }} </th>
-                                        <th>{{ __('Durasi Layanan') }} </th>
+                                        <th>{{ __('Booking Code') }}</th>
+                                        <th>{{ __('Queue Taken') }}</th>
+                                        <th>{{ __('Queue Called') }}</th>
+                                        <th>{{ __('Start Service') }}</th>
+                                        <th>{{ __('Finish Service') }}</th>
+                                        <th>{{ __('Waiting Duration') }} </th>
+                                        <th>{{ __('Service Duration (Call)') }} </th>
+                                        <th>{{ __('Service Duration') }} </th>
                                         <th>{{ __('Workstation') }}</th>
                                         <th>{{ __('Service') }}</th>
-                                        <th>{{ __('Sub Layanan') }}</th>
+                                        <th>{{ __('Sub Service') }}</th>
                                         <th>{{ __('Service Transfer') }}</th>
-                                        <th>{{ __('Petugas Layanan') }}</th>
+                                        <th>{{ __('Virtual Counter') }}</th>
                                         <th>{{ __('Status') }}</th>
                                     </thead>
                                     <tbody>

@@ -40,6 +40,9 @@
     window.addEventListener('load', function () {
         const canvas = document.getElementById('qr-poster');
         const ctx = canvas.getContext('2d');
+        const currentLocale = "{{ app()->getLocale() }}" || 'en'; //ambil locale
+        // console.log(currentLocale);
+        
 
         if (canvas.getContext) draw(canvas)
     })
@@ -58,12 +61,21 @@
         ctx.fillStyle = '#114077'
         ctx.font = `700 ${36}px 'Inter', sans-serif`
         ctx.textBaseline = 'top'
-        ctx.fillText('Scan Disini', 197, 42)
+        ctx.fillText("{{ __('Scan Here') }}", 197, 42)
 
         // Poster description
         ctx.font = `normal ${16}px 'Inter', sans-serif`
-        ctx.fillText('Untuk mengambil antrian ataupun check-in,', 134, 94)
-        ctx.fillText('scan Kode QR di-bawah', 209, 118)
+        // Teks pertama
+        let text1 = "{{ __('To take a queue or check-in,') }}";
+        let text1Width = ctx.measureText(text1).width;
+        let x1 = (canvas.width - text1Width) / 2; // Posisi x di tengah
+        ctx.fillText(text1, x1, 94);
+
+        // Teks kedua
+        let text2 = "{{ __('scan the QR Code below') }}";
+        let text2Width = ctx.measureText(text2).width;
+        let x2 = (canvas.width - text2Width) / 2; // Posisi x di tengah
+        ctx.fillText(text2, x2, 118);
 
         ctx.resetTransform()
 
@@ -145,7 +157,7 @@
         ctx.fillStyle = '#114077'
         ctx.font = '700 18px \'Inter\', sans-serif'
 
-        ctx.fillText('CARA SCAN KODE QR', 199, 562)
+        ctx.fillText("{{ __('HOW TO SCAN QR CODE') }}", 199, 562)
 
         // Bullet
         ctx.beginPath();
@@ -167,20 +179,20 @@
         ctx.fillStyle = '#114077'
         ctx.font = '16px \'Inter\', sans-serif'
 
-        ctx.fillText('Gunakan aplikasi', 42, 676)
-        ctx.fillText('kamera handphone', 42, 700)
-        ctx.fillText('Anda atau akses', 42, 724)
+        ctx.fillText("{{ __('Use your phone') }}", 42, 676)
+        ctx.fillText("{{ __('camera app') }}", 42, 700)
+        ctx.fillText("{{ __('or visit') }}", 42, 724)
 
         ctx.font = '700 16px \'Inter\', sans-serif'
         ctx.fillText('scan.kyoo.id', 42, 748)
 
         ctx.font = '16px \'Inter\', sans-serif'
 
-        ctx.fillText('Arahkan kamera ke', 226, 676)
-        ctx.fillText('kode QR diatas', 226, 700)
+        ctx.fillText("{{ __('Point your camera at') }}", 226, 676)
+        ctx.fillText("{{ __('the QR Code above') }}", 226, 700)
 
-        ctx.fillText('Pilih jenis layanan', 411, 676)
-        ctx.fillText('antrian', 411, 700)
+        ctx.fillText("{{ __('Select the queue') }}", 411, 676)
+        ctx.fillText("{{ __('service type') }}", 411, 700)
     }
 
     function downloadPoster() {

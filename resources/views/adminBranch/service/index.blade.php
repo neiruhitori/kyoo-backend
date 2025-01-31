@@ -18,15 +18,15 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Nama</th>
-                                <th>Departemen</th>
+                                <th>{{ __('Name') }}</th>
+                                <th>{{ __('Department') }}</th>
                                 @if (
                                     Auth::user()->Branch->BranchType->is_appointment ||
                                     Auth::user()->Branch->BranchType->is_exhibition
                                 )
                                     <th>Total Slot Waktu</th>
                                 @endif
-                                <th>Aksi</th>
+                                <th>{{ __('Action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -84,7 +84,7 @@
                                             data-toggle="tooltip"
                                             data-placement="bottom"
                                             title="{{
-                                                    __('edit.module', ['module' => __('Sub Layanan')])
+                                                    __('edit.module', ['module' => __('Sub Service')])
                                                     }}"
                                             >
                                             <i class="fas fa-fw fa-server"></i>

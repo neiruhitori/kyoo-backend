@@ -24,7 +24,7 @@
                 v-for="dayName in dayNames"
                 :key="dayName"
             >
-                {{ dayName }}
+                {{ t(dayName) }}
             </div>
         </div>
 
@@ -106,6 +106,8 @@
 
 <script>
     import { getVisibleDays } from '../utils/date'
+    import ID from "../../lang/id.json";
+    import EN from "../../lang/en.json";
 
     export default {
         props: {
@@ -114,11 +116,14 @@
             holidays: Array,
             schedules: Array,
             appointmentSlots: Array,
+            lang: String,
         },
 
         mounted() {
             const days = getVisibleDays(this.selectedDate)
             this.weeks = this.chunk(days, 7)
+            // console.log(this.lang);
+            
         },
 
         watch: {
@@ -132,35 +137,47 @@
             return {
                 selectedDate: this.date,
                 dayNames: [
-                    'Minggu',
-                    'Senin',
-                    'Selasa',
-                    'Rabu',
-                    'Kamis',
-                    'Jum\'at',
-                    'Sabtu'
+                    'Sunday',
+                    'Monday',
+                    'Tuesday',
+                    'Wednesday',
+                    'Thursday',
+                    'Friday',
+                    'Saturday'
                 ],
                 monthNames: [
-                    'Januari',
-                    'Februari',
-                    'Maret',
+                    'January',
+                    'February',
+                    'March',
                     'April',
-                    'Mei',
-                    'Juni',
-                    'Juli',
-                    'Agustus',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
                     'September',
-                    'Oktober',
+                    'October',
                     'November',
-                    'Desember'
+                    'December'
                 ],
                 weeks: [],
                 isShowModal: false,
                 selectedAppointment: null,
+                messages: {
+                    en: EN,
+                    id: ID,
+                    },
             }
         },
 
         methods: {
+            t(key, params = {}) {
+              const translation = this.messages[this.lang] && this.messages[this.lang][key];
+                if (translation) {
+                    return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+                } else {
+                    return key;
+                }
+            },
             getSelectedSlots(currentDate) {
                 return this.slots.filter(v => {
                     return v.day === moment(currentDate).format('dddd').toLowerCase()
@@ -179,14 +196,14 @@
                 })
 
                 if (typeof appointmentSlot === 'undefined') {
-                    return `${slot.max_slots} slot tersedia`
+                    return `${slot.max_slots} ${this.t('slots available')}`;
                 }
 
                 if (slot.max_slots - appointmentSlot.filled_slots === 0) {
-                    return 'Slot penuh'
+                    return this.t('Slot Full')
                 }
 
-                return `${appointmentSlot.filled_slots}/${slot.max_slots} slot terisi`
+                return `${appointmentSlot.filled_slots}/${slot.max_slots} ${this.t('slots occupied')}`
             },
 
             getHolidayName(currentDate) {
@@ -196,7 +213,7 @@
             },
 
             getMonth() {
-                return this.monthNames[moment(this.selectedDate).format('M') - 1]
+                return this.t(this.monthNames[moment(this.selectedDate).format('M') - 1])
             },
 
             getYear() {

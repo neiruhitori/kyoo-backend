@@ -61,7 +61,7 @@
             <input type="hidden" name="id" value="{{$branch->id}}">
 
             <div class="form-group">
-                <label for="name">{{ __('name.module', ['module' => __('Branch')]) }}</label>
+                <label for="name">{{ __('Branch Name') }}</label>
                 <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: $branch->name}}" readonly>
                 @include('layouts.inputError', ['errorName' => 'name'])
             </div>

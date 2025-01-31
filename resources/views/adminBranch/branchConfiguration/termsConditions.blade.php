@@ -32,7 +32,9 @@
 </div>
 
 <div id="app">
-  <terms-conditions-component />
+  <terms-conditions-component 
+    locale = "{{ app()->getLocale() }}"
+  />
 </div>
 @endsection
 

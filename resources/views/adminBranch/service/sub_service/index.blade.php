@@ -1,14 +1,14 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">
-            {{ __('list.module', ['module' => __('Sub Layanan')]) }}
+            {{ __('list.module', ['module' => __('Sub Service')]) }}
         </h6>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-12 text-right">
                 <a href="{{route('admin-branch.branch-configuration.sub-service.create')}}" class="btn btn-primary"">
-                    {{ __('create.module', ['module' => __('Sub Layanan')]) }}
+                    {{ __('create.module', ['module' => __('Sub Service')]) }}
                 </a>
             </div>
         </div>
@@ -18,8 +18,8 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Nama</th>
-                                <th>Aksi</th>
+                                <th>{{ __('Name') }}</th>
+                                <th>{{ __('Action') }}</th>
                             </tr>
                         </thead>
                         <tbody>

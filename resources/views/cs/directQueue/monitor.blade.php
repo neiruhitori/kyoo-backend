@@ -11,6 +11,7 @@
             :accessible_features="{{ Auth::user()->Branch->getFeatures() }}"
             :workstation="{{ Auth::user()->WorkstationVct->Workstation }}"
             :sub_services="{{ $sub_services }}"
+            lang={{ app()->getLocale() }}
         />
     </div>
 @endsection

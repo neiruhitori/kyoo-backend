@@ -8,6 +8,23 @@ Route::get('/', function () {
     return redirect(route('dashboard'));
 });
 
+Route::get('/change-locale/{locale}', function ($locale) {
+    if (!in_array($locale, ['en', 'id'])) {
+        abort(400, 'Bahasa tidak didukung');
+    }
+
+    session()->put('locale', $locale);
+    app()->setLocale($locale);
+
+    return redirect()->back();
+})->name('change.locale');
+
+//where method prevent conflict from page customer
+Route::middleware('localization')
+->where(['locale' => 'id|en'])
+->group(function(){
+
+
 Route::get('/unauthorized', function () {
     return 'Unauthorized';
 })->name('unauthorized');
@@ -189,8 +206,8 @@ Route::namespace('AdminBranch')
         Route::prefix('/monitoring')->name('monitoring.')->group(function () {
             Route::get('/department', 'DepartmentMonitoringController@index')->name('department');
             Route::get('/department/{id}', 'DepartmentMonitoringController@getData')->name('department.show');
-            Route::get('/department-detail/{id}/max-wait', 'DepartmentMonitoringController@maxWait');
-            Route::get('/department-detail/{id}/max-service', 'DepartmentMonitoringController@maxService');
+            Route::get('/department-detail/{id}/max-wait', 'DepartmentMonitoringController@maxWait')->name('department.maxwait');
+            Route::get('/department-detail/{id}/max-service', 'DepartmentMonitoringController@maxService')->name('department.maxservice');
 
             Route::get('/department/{id}/service', 'ServiceMonitoringController@getServiceByDepartment')->name('department.service');
             Route::get('/service', 'ServiceMonitoringController@index')->name('service');
@@ -491,5 +508,21 @@ Route::get('search', 'SearchQueueController@index')->name('search.index');
 Route::post('search', 'SearchQueueController@search')->name('search.search');
 
 Route::get('scan', 'QRScannerController@index')->name('scan.index');
+// Route::get('DEBUG', function(){
+//     $locale = substr(request()->server('HTTP_ACCEPT_LANGUAGE'), 0, 2); 
+//     foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key){
+//         if (array_key_exists($key, $_SERVER) === true){
+//             foreach (explode(',', $_SERVER[$key]) as $ip){
+//                 $ip = trim($ip); // just to be safe
+//                 if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false){
+//                     dd($ip) ;
+//                 }
+//             }
+//         }
+//     }
+//     dd(request()->ip()) ; 
+// });
+}); //end of locale prefix
+
 
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');

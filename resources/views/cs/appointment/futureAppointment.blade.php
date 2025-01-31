@@ -5,6 +5,7 @@
         <future-appointments-component
             :slots="{{ $slots }}"
             :schedules="{{ $schedules }}"
+            lang= {{ app()->getLocale() }}
         />
     </div>
 @endsection

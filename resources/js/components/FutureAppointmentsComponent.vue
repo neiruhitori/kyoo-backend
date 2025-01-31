@@ -19,7 +19,7 @@
         <div class="card mb-4" v-if="selectedView === 'table'">
             <div class="card-header">
                 <h6 class="m-0 font-weight-bold text-primary">
-                    Appointment yang Akan Datang
+                    {{ t('Upcoming Appointment') }}
                 </h6>
             </div>
 
@@ -27,7 +27,7 @@
                 <form id="filterForm" class="mb-4" @submit.prevent="handleFilterSubmit">
                     <div class="form-row align-items-end">
                         <div class="col-auto">
-                            <label for="deparmentId">Tanggal</label>
+                            <label for="deparmentId">{{ t('Date') }}</label>
                             <input
                                 type="date"
                                 class="form-control"
@@ -45,11 +45,11 @@
                 <table class="table table-bordered table-striped mb-0">
                     <thead>
                         <tr>
-                            <th>Nomor Antrian</th>
-                            <th>Kode Booking</th>
-                            <th>Status</th>
-                            <th>Customer</th>
-                            <th class="text-center">Waktu</th>
+                            <th>{{ t('Queue Number') }}</th>
+                            <th>{{ t('Booking Code') }}</th>
+                            <th>{{ t('Status') }}</th>
+                            <th>{{ t('Customer Name') }}</th>
+                            <th class="text-center">{{ t('Time') }}</th>
                         </tr>
                     </thead>
 
@@ -61,19 +61,19 @@
                             <td>{{ appointment.number }}</td>
                             <td>{{ appointment.booking_code }}</td>
                             <td>
-                                <span class="badge badge-primary" v-if="appointment.status === 'book'">Dibooking</span>
+                                <span class="badge badge-primary" v-if="appointment.status === 'book'">{{ t('Book') }}</span>
                                 <span class="badge badge-primary" v-if="appointment.status === 'check in'">Check In</span>
-                                <span class="badge badge-secondary" v-if="appointment.status === 'no show'">Tidak Hadir</span>
-                                <span class="badge badge-warning" v-if="appointment.status === 'served'">Dilayani</span>
-                                <span class="badge badge-success" v-if="appointment.status === 'end served'">Selesai</span>
-                                <span class="badge badge-danger" v-if="appointment.status === 'canceled'">Dibatalkan</span>
+                                <span class="badge badge-secondary" v-if="appointment.status === 'no show'">{{ t('No Show') }}</span>
+                                <span class="badge badge-warning" v-if="appointment.status === 'served'">{{ t('Serve') }}</span>
+                                <span class="badge badge-success" v-if="appointment.status === 'end served'">{{ t('End Served') }}</span>
+                                <span class="badge badge-danger" v-if="appointment.status === 'canceled'">{{ t('Cancelled') }}</span>
                             </td>
                             <td>{{ appointment.name }}</td>
                             <td class="text-center">{{ `${appointment.slot.start_time} - ${appointment.slot.end_time}` }}</td>
                         </tr>
 
                         <tr v-if="!appointments.length">
-                            <td colspan="5" class="text-center">Tidak ada data</td>
+                            <td colspan="5" class="text-center">{{ t('No data') }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -83,7 +83,7 @@
         <div class="card mb-4" v-if="selectedView === 'grid'">
             <div class="card-header">
                 <h6 class="m-0 font-weight-bold text-primary">
-                    Daftar Appointment
+                    {{ t('Appointment List') }}
                 </h6>
             </div>
 
@@ -94,6 +94,7 @@
                     :holidays="holidays"
                     :slots="serviceSlots"
                     :appointmentSlots="appointmentSlots"
+                    :lang="currentLocale"
                     @navigate="handleDateRangeChange"
                 />
             </div>
@@ -104,11 +105,16 @@
 <script>
 import CalendarComponent from './CalendarComponent'
 import { getFirstVisibleDay, getEndVisibleDay } from '../utils/date'
+import ID from "../../lang/id.json";
+import EN from "../../lang/en.json";
 
 export default {
     props: {
         schedules: Array,
         slots: Array,
+        lang: {
+            type: String,
+        }
     },
 
     components: {
@@ -128,17 +134,29 @@ export default {
             serviceSlots: [],
             appointmentSlots: [],
             holidays: [],
+            messages: {
+                    en: EN,
+                    id: ID,
+                    },
+            currentLocale: this.lang || "en",
         }
     },
 
     mounted () {
         this.setFutureAppointmentsByDate(this.selectedDate)
         this.handleDateRangeChange(this.selectedDate)
-
         this.serviceSlots = this.groupSlots(this.slots)
     },
 
     methods: {
+        t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
         async getFutureAppointmentsByDate(date) {
             try {
                 const { data: appointments } = await axios.get('/cs/appointment/future/get', {

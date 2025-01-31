@@ -32,7 +32,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header">
-            <h6 class="m-0 font-weight-bold text-primary">Aktivasi Menu Tambahan</h6>
+            <h6 class="m-0 font-weight-bold text-primary">{{ __('Activation of Additional Menu') }}</h6>
         </div>
 
         <div class="card-body">
@@ -56,7 +56,7 @@
                     </div>
                 @endforeach
 
-                <button type="submit" class="btn btn-warning float-right">Simpan</button>
+                <button type="submit" class="btn btn-warning float-right">{{ __('Save') }}</button>
             </form>
         </div>
     </div>

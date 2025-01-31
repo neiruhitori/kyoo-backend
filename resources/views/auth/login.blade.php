@@ -33,7 +33,7 @@
       <div style="padding: 3rem 0 3rem 0;">
         <div style="margin-bottom: 1.5rem;">
           <h1 class="page-title" style="margin-bottom: 1rem;">Login</h1>
-          <p class="text-gray">Selamat datang kembali di KYOO</p>
+          <p class="text-gray">{{ __('Welcome back to KYOO') }}</p>
         </div>
 
         @if (Session::get('error'))
@@ -46,7 +46,7 @@
           @csrf
 
           <div style="margin-bottom: 1rem;">
-            <label class="font-weight-bold" for="email">Email</label>
+            <label class="font-weight-bold" for="email">{{ __('Email') }}</label>
 
             <div class="k-input">
               <div>
@@ -94,11 +94,11 @@
           <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
             <div class="k-checkbox">
               <input type="checkbox" name="remember_me" id="remember_me">
-              <label for="remember_me">Ingat saya</label>
+              <label for="remember_me">{{ __('Remember Me') }}</label>
             </div>
 
             <div>
-              <a href="{{ route('password.request') }}">Lupa password?</a>
+              <a href="{{ route('password.request') }}">{{ __('Forgot password?') }}</a>
             </div>
           </div>
 
@@ -106,7 +106,7 @@
         </form>
 
         <p class="text-gray">
-          Belum punya akun? <a href="{{ route('register') }}">Daftarkan layanan Anda di KYOO</a>
+        {{__('Don\'t have an account yet?')}} <a href="{{ route('register') }}">{{ __('Register your service on KYOO') }}</a>
         </p>
       </div>
     </div>

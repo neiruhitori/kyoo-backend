@@ -106,7 +106,7 @@
 <div class="card shadow mb-4">
     <div class="card-header">
         <h6 class="font-weight-bold text-primary mb-0">
-            Manajemen Webkiosk UI
+            {{ __('Webkiosk UI Management') }}
         </h6>
     </div>
 
@@ -122,7 +122,7 @@
                         <div class="col-md-4">
                             <div class="mb-4">
                                 <h5 class="font-weight-bold">Layout Display</h5>
-                                <p class="text-caption">Pilih jenis layout yang sesuai dengan bisnis Anda</p>
+                                <p class="text-caption">{{ __('Choose a layout type that suits your business') }}</p>
                             </div>
 
                             <div>
@@ -144,21 +144,21 @@
                                 @if (!Auth::user()->Branch->WebkioskConfiguration)
                                 <div class="mb-4">
                                     <h5 class="font-weight-bold">Generate Token</h5>
-                                    <p class="text-caption">Konfigurasi dan Simpan Layout Terlebih dahulu</p>
+                                    <p class="text-caption">{{ __('Configure and Save Layout First') }}</p>
                                     <button type="button" onclick="" disabled class="btn btn-primary">Generate Token</button>
                                 </div>
                                 @elseif(!Auth::user()->Branch->WebkioskConfiguration->WebkioskToken) 
                                 <div class="mb-4">
                                     <h5 class="font-weight-bold">Generate Token</h5>
-                                    <p class="text-caption">Generate token untuk menggunakan Kiosk</p>
+                                    <p class="text-caption">{{ __('Generate token to use the Kiosk') }}</p>
                                     <button type="button" onclick="submitUpdateToken()" class="btn btn-primary">Generate Token</button>
                                 </div>
                                 @else     
                                 <div class="mb-4">
-                                    <h5 class="font-weight-bold">Perbarui Token</h5>
-                                    <p class="text-caption">Perbarui Token Kiosk Web</p>
+                                    <h5 class="font-weight-bold">{{ __('Update Token') }}</h5>
+                                    <p class="text-caption">{{ __('Update Web Kiosk Token') }}</p>
                                 </div>
-                                <button type="button" onclick="submitUpdateToken()" class="btn btn-primary">Perbarui</button>
+                                <button type="button" onclick="submitUpdateToken()" class="btn btn-primary">{{ __('Update') }}</button>
                                 @endif
 
                             </div>
@@ -167,8 +167,8 @@
 
                         <div id='layoutConfig' class="col-md-8 {{ $webkiosConfiguration->layout != '1' ?: 'display-none'}}">
                             <div class="mb-4">
-                                <h5 class="font-weight-bold">Konfigurasi Layout Display</h5>
-                                <p class="text-caption">Atur tampilan yang akan di tampilkan pada monitor antrian</p>
+                                <h5 class="font-weight-bold">{{ __('Configure Layout Display') }}</h5>
+                                <p class="text-caption">{{ __('Manage the display to be shown on the webkiosk') }}</p>
                             </div>
 
                             <div>
@@ -470,7 +470,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 wrapper-form-footer">
-                            <button type="submit" id="submit_image" class="btn btn-warning hidden">Simpan</submit>
+                            <button type="submit" id="submit_image" class="btn btn-warning hidden">{{ __('Save') }}</submit>
                         </div>
                     </div>
                 </form>
@@ -516,7 +516,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 wrapper-form-footer">
-                            <button type="submit" id="submit_image" class="btn btn-warning hidden">Simpan</submit>
+                            <button type="submit" id="submit_image" class="btn btn-warning hidden">{{ __('Save') }}</submit>
                         </div>
                     </div>
                 </form>

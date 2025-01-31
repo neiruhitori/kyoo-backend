@@ -34,17 +34,17 @@
  
                 <div class="card-body">
                     <p class="mb-5">
-                        Berikut merupakan tahapan yang anda dapat lakukan sebagai admin cabang agar Anda dan Pelanggan Anda dapat menggunakan platform Antrian KYOO.
+                        {{ __('Here are the steps you can take as a branch admin to ensure you and your customers can use the KYOO Queue platform') }}
                     </p>
                     
                     <div class="mb-4">
-                        <h5 class="font-weight-bold mb-4">Konfigurasi Utama Antrian</h5>
+                        <h5 class="font-weight-bold mb-4">{{ __('The Main Queue Configuration') }}</h5>
 
                         <div class="number-list">
                             <span class="number-indicator bg-primary mr-3">1</span>
 
                             <p>
-                                <strong>Langkah 1</strong>, Anda perlu mengubah informasi tentang kantor Cabang anda di <a href="{{ route('admin-branch.branch-information.profile') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Informasi Profil Cabang</a>
+                                <strong>{{ __('Step :no', ['no' => 1]) }}</strong>, {{ __('You can change') }} {{ __('Information about your branch office in') }}<a href="{{ route('admin-branch.branch-information.profile') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Branch Profile') }}</a>
                             </p>
                         </div>
 
@@ -52,7 +52,7 @@
                             <span class="number-indicator bg-primary mr-3">2</span>
 
                             <p>
-                                <strong>Langkah 2</strong>, Anda perlu mengupdate lokasi kantor cabang anda di <a href="{{ route('admin-branch.branch-information.location') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Informasi Lokasi Cabang</a>
+                                <strong>{{ __('Step :no', ['no' => 2]) }} </strong>, {{ __('You can change') }}  {{ __('Information about your branch location in') }} <a href="{{ route('admin-branch.branch-information.location') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Branch Location') }}</a>
                             </p>
                         </div>
 
@@ -60,7 +60,7 @@
                             <span class="number-indicator bg-primary mr-3">3</span>
 
                             <p>
-                                <strong>Langkah 3</strong>, Anda perlu mengupdate jenis dan nama layanan kepada pelanggan di <a href="{{ route('admin-branch.branch-configuration.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Jenis Layanan</a>
+                                <strong>{{ __('Step :no', ['no' => 3]) }} </strong>, {{ __('You can change') }} {{ __('the type and services name to customers at') }} <a href="{{ route('admin-branch.branch-configuration.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Service Type') }}</a>
                             </p>
                         </div>
 
@@ -68,7 +68,7 @@
                             <span class="number-indicator bg-primary mr-3">4</span>
 
                             <p>
-                                <strong>Langkah 4</strong>, Anda perlu mengupdate jadwal Buka dan Tutup Layanan Anda di <a href="{{ route('admin-branch.branch-configuration.schedule.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Jadwal Layanan</a>
+                                <strong>{{ __('Step :no', ['no' => 4]) }} </strong>, {{ __('You can change') }} {{ __('Your service opening and closing hours at') }} <a href="{{ route('admin-branch.branch-configuration.schedule.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2"> {{ __('Service Schedule') }}</a>
                             </p>
                         </div>
 
@@ -76,21 +76,21 @@
                             <span class="number-indicator bg-primary mr-3">5</span>
 
                             <p>
-                                <strong>Langkah 5</strong>, Anda perlu mengupdate akses Petugas Layanan di <a href="{{ route('admin-branch.branch-configuration.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Petugas Layanan</a>
+                                <strong>{{ __('Step :no', ['no' => 5]) }} </strong>, {{ __('You can change') }} {{ __('the access to Service Officers at') }}<a href="{{ route('admin-branch.branch-configuration.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Virtual Counter') }}</a>
                             </p>
                         </div>
                     </div>
                     
                     <div>
-                        <h5 class="font-weight-bold mb-4">Konfigurasi Opsional</h5>
+                        <h5 class="font-weight-bold mb-4">{{ __('Optional Configuration') }}</h5>
 
-                        <p>Anda juga dapat merubah:</p>
+                        <p>{{ __('You can also change') }}</p>
 
                         <div class="number-list">
                             <span class="number-indicator bg-primary mr-3">1</span>
 
                             <p>
-                                Nama Departemen dari menu <a href="{{ route('admin-branch.branch-configuration.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Departemen</a>
+                                {{ __('Department name from') }} <a href="{{ route('admin-branch.branch-configuration.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Department') }}</a>
                             </p>
                         </div>
 
@@ -98,7 +98,7 @@
                             <span class="number-indicator bg-primary mr-3">2</span>
 
                             <p>
-                                Nama Layanan dari menu <a href="{{ route('admin-branch.branch-configuration.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Departemen</a>
+                                {{ __('Service name from') }} <a href="{{ route('admin-branch.branch-configuration.department.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Department') }}</a>
                             </p>
                         </div>
 
@@ -106,7 +106,7 @@
                             <span class="number-indicator bg-primary mr-3">3</span>
 
                             <p>
-                                Nama Meja dari menu <a href="{{ route('admin-branch.branch-configuration.workstation.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Meja</a>
+                                {{ __('Workstation name from') }} <a href="{{ route('admin-branch.branch-configuration.workstation.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Workstation') }}</a>
                             </p>
                         </div>
 
@@ -114,7 +114,7 @@
                             <span class="number-indicator bg-primary mr-3">4</span>
 
                             <p>
-                                Nama user petugas layanan dari menu <a href="{{ route('admin-branch.branch-configuration.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">Petugas Layanan</a>
+                                {{ __('Virtual Counter name from') }} <a href="{{ route('admin-branch.branch-configuration.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Virtual Counter') }}</a>
                             </p>
                         </div>
                     </div>

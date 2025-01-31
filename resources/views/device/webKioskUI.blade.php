@@ -72,6 +72,7 @@
             :layout_config="{{ $layoutConfig }}"
             :is_allow_wa={{ json_encode($isAllowWA) }}
             :active_menus={{ $activeMenus }}
+            lang={{ app()->getLocale() }}
         />
         @endif
     </div>

@@ -35,7 +35,7 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Daftar Sub Layanan di ') }} {{ $service->name }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Sub-Service list in :serv', ['serv' => $service->name]) }}</h6>
                 </div>
                 <div class="card-body">
                     @include('layouts.alert')
@@ -54,8 +54,8 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('Nama Layanan') }}</th>
-                                            <th>{{ __('Sub Layanan') }}</th>
+                                            <th>{{ __('Service Name') }}</th>
+                                            <th>{{ __('Sub Service') }}</th>
                                             <th>{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
@@ -67,7 +67,7 @@
                                                 <td>{{ $subService->name ?? '' }}</td>
                                                 <td>
                                                     <a href="{{ route('admin-branch.branch-configuration.service.edit.sub-service', $subService->pivot->id) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
-                                                       title="{{ __('edit.module', ['module' => __('Workstation Service')]) }}">
+                                                       title="{{ __('edit.module', ['module' => __('Sub Service')]) }}">
                                                         <i class="fas fa-fw fa-edit"></i>
                                                     </a>
                                 
@@ -76,7 +76,7 @@
                                                         @method('DELETE')
                                 
                                                         <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom"
-                                                                title="{{ __('remove.module', ['module' => __('Sub Layanan')]) }}">
+                                                                title="{{ __('remove.module', ['module' => __('Sub Service')]) }}">
                                                             <i class="fas fa-fw fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -85,7 +85,7 @@
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="3" class="text-center">Tidak ada sub layanan</td>
+                                            <td colspan="3" class="text-center">{{ __('Sub Service Not Found') }}</td>
                                         </tr>
                                     @endif
                                     </tbody>

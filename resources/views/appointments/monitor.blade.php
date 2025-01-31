@@ -34,6 +34,7 @@
             signature="{{$signature}}"
             :features="{{$features}}"
             :config="{{$config}}"
+            lang={{ app()->getLocale() }}
         />
     </div>
 

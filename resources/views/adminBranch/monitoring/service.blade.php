@@ -6,7 +6,7 @@
             <form id="filterForm" class="mb-4">
                 <div class="form-row align-items-end">
                     <div class="col-auto">
-                        <label for="deparmentId">Departemen</label>
+                        <label for="deparmentId">{{ __('Department') }}</label>
                         <select class="form-control" id="departmentId" style="width: 180px;" autocomplete="off">
                             @foreach ($departments as $department)
                                 <option value="{{ $department->id }}">{{ $department->name }}</option>
@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="col-auto">
-                        <label for="serviceId">Layanan</label>
+                        <label for="serviceId">{{ __('Service') }}</label>
                         <select class="form-control" id="serviceId" style="width: 180px;" autocomplete="off">
                             <option value="all">All</option>
                             @foreach ($services as $service)
@@ -32,13 +32,13 @@
 
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Monitoring Departemen</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Monitoring {{ __('Service') }}</h6>
                 </div>
 
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="d-flex align-items-center">
-                            <label for="refreshInterval" class="mr-3 mb-0" style="white-space: nowrap;">Refresh / menit</label>
+                            <label for="refreshInterval" class="mr-3 mb-0" style="white-space: nowrap;">Refresh / {{ __('Minutes') }}</label>
                             <select class="form-control" autocomplete="off" id="refreshInterval" style="max-width: 70px">
                                 <option value="5" selected>5</option>
                                 <option value="10">10</option>
@@ -56,25 +56,25 @@
                         <table class="table table-bordered table-striped mb-4" id="table">
                             <thead>
                                 <tr>
-                                    <th rowspan="2" class="align-middle">Meja</th>
-                                    <th rowspan="2" class="align-middle">Status</th>
-                                    <th rowspan="2" class="align-middle">Petugas</th>
-                                    <th rowspan="2" class="align-middle text-right">Menunggu</th>
-                                    <th rowspan="2" class="align-middle text-right">Dilayani</th>
-                                    <th rowspan="2" class="align-middle text-right">Tidak Hadir</th>
-                                    <th rowspan="2" class="align-middle text-center">Waktu Operasional</th>
-                                    <th colspan="2" class="text-center">Waktu Melayani</th>
+                                    <th rowspan="2" class="align-middle">{{ __('Workstation') }}</th>
+                                    <th rowspan="2" class="align-middle">{{ __('Status') }}</th>
+                                    <th rowspan="2" class="align-middle">{{ __('Virtual Counter') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Waiting') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Serve') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('No Show') }}</th>
+                                    <th rowspan="2" class="align-middle text-center">{{ __('Operational Hours') }}</th>
+                                    <th colspan="2" class="text-center">{{ __('Service Time') }}</th>
                                 </tr>
     
                                 <tr>
-                                    <th class="text-center">Saat Ini</th>
-                                    <th class="text-center">Rata-Rata</th>
+                                    <th class="text-center">{{ __('Currently') }}</th>
+                                    <th class="text-center">{{ __('Average') }}</th>
                                 </tr>
                             </thead>
     
                             <tbody>
                                 <tr>
-                                    <td colspan="10" class="text-center">Data tidak ditemukan.</td>
+                                    <td colspan="10" class="text-center">{{ __('Data not Found') }}</td>
                                 </tr>
                             </tbody>
                         </table>

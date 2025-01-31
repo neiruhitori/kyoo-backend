@@ -109,7 +109,7 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Hari Libur</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Holiday') }}</h6>
                 </div>
 
                 <div class="card-body">
@@ -120,14 +120,14 @@
                                     href="{{ route('admin-branch.branch-configuration.holiday.create') }}"
                                     class="btn btn-primary"
                                 >
-                                    Tambah Hari Libur
+                                   {{ __('create.module',['module' => __('Holiday')])}}
                                 </a>
 
                                 <a
                                     href="{{ route('admin-branch.branch-configuration.holiday.template.create') }}"
                                     class="btn btn-primary"
                                 >
-                                    Pilih Template Hari Libur
+                                    {{ __('Select Holiday Template') }}
                                 </a>
                             </div>
 
@@ -135,9 +135,9 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">Tanggal</th>
-                                            <th>Deskripsi</th>
-                                            <th class="text-center">Aksi</th>
+                                            <th class="text-center">{{ ('Date') }}</th>
+                                            <th>{{ __('Description') }}</th>
+                                            <th class="text-center">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -158,7 +158,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="3" class="text-center">Data tidak ditemukan</td>
+                                                <td colspan="3" class="text-center">{{ __('Data not Found') }}</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
