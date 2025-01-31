@@ -6,6 +6,7 @@
             :branch="{{ Auth::user()->Branch }}"
             :vct="{{ Auth::user() }}"
             :workstation="{{ Auth::user()->WorkstationVct->Workstation }}"
+            lang={{ app()->getLocale() }}
         />
     </div>
 @endsection

@@ -12,7 +12,7 @@
         <div class="card-header py-3">
           <div class="d-flex justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">
-                Monitor Antrian Onsite
+                {{ this.t('Onsite Queue Monitor') }}
             </h6>
             <h6 class="m-0 font-weight-bold text-primary">
                 {{ workstation.name }}
@@ -26,7 +26,7 @@
                 href="/cs/directQueue/create"
                 class="btn btn-primary"
               >
-                Daftar Antrian Onsite
+                {{ this.t('Onsite Queue List') }}
               </a>
             </div>
           </div>
@@ -34,31 +34,31 @@
             <!-- START DIRECT QUEUE CALLER -->
             <div class="col-md-4">
               <div class="mb-5" v-if="auth.branch.branch_type.is_premium">
-                <p class="text-primary font-weight-bold mb-0">Waktu Layanan</p>
+                <p class="text-primary font-weight-bold mb-0">{{ this.t('Service Duration') }}</p>
                 <hr class="mt-2 mb-2">
 
                 <div class="d-flex justify-content-between" style="max-width: 160px; gap: 8px;">
                   <div class="text-center">
                     <h4 class="h3 font-weight-bold mb-0 text-dark" ref="coundownHours">{{ clock.hours || '00' }}</h4>
-                    <span>Jam</span>
+                    <span>{{ this.t('Hour') }}</span>
                   </div>
                   <div class="text-center">
                     <h4 class="h3 font-weight-bold mb-0 text-dark" ref="coundownMinutes">{{ clock.minutes || '00' }}</h4>
-                    <span>Menit</span>
+                    <span>{{ this.t('Minutes') }}</span>
                   </div>
                   <div class="text-center">
                     <h4 class="h3 font-weight-bold mb-0 text-dark" ref="coundownSeconds">{{ clock.seconds || '00' }}</h4>
-                    <span>Detik</span>
+                    <span>{{ this.t('Seconds') }}</span>
                   </div>
                 </div>
               </div>
 
-              <b class="text-primary">Pemanggil Antrian Onsite</b>
+              <b class="text-primary">{{ this.t('Onsite Queue Caller') }}</b>
               <hr class="mt-2 mb-2">
               <div class="row mb-3">
                 <div class="col-md-12" v-if="!isOnTransfer">
                   <div class="form-group">
-                    <label for="search-by">Masukkan No. Antrian</label>
+                    <label for="search-by">{{ this.t('Enter Queue Number') }}</label>
                     <input
                       type="text"
                       class="form-control"
@@ -69,7 +69,7 @@
                   </div>
                 </div>
                 <div class="col-md-12" v-else>
-                  <h5>Transfer Antrian: {{ selected_queue }}</h5>
+                  <h5>{{ t('Transfer Queue') }}: {{ selected_queue }}</h5>
                   <form @submit.prevent="onSubmitTransfer">
                     <input
                       type="hidden"
@@ -77,7 +77,7 @@
                       v-model="selected_queue"
                     />
                     <div class="form-group">
-                      <label for="services">Pilih Layanan di Meja</label>
+                      <label for="services">{{ t('Select Service at the Counter') }}</label>
                       <select
                         name="workstation_service_id"
                         id="workstation_service_id"
@@ -100,7 +100,7 @@
                             type="button"
                             @click="isOnTransfer = false"
                           >
-                            Batal
+                          {{ t('Cancel') }}
                           </button>
                         </div>
                         <div class="col-md-6">
@@ -109,7 +109,7 @@
                             type="submit"
                             :disabled="isLoading"
                           >
-                            Simpan
+                          {{ t('Save') }}
                           </button>
                         </div>
                       </div>
@@ -123,7 +123,7 @@
                       @click="serving_directly ? onServed() : onCall()"
                       :disabled="!selected_queue || selected_queue.status"
                     >
-                       Panggil Antrian
+                       {{ this.t('Call Queue') }}
                     </button>
                   </div>
 
@@ -133,7 +133,7 @@
                           class="btn btn-info fullwidth mb-3"
                           @click="onRecall"
                         >
-                          Panggil Ulang
+                          {{ t('Recall') }}
                         </button>
                       </div>
                       <div class="col-md-6">
@@ -142,7 +142,7 @@
                           @click="onEndServed"
                           :disabled="recallCounter > max_recall"
                         >
-                         Selesai
+                        {{ t('End Serve') }}
                         </button>
                       </div>
                       <div class="col-md-6">
@@ -154,7 +154,7 @@
                             onServedQueue.requeue_count >= max_requeue
                           "
                         >
-                          Antri Ulang
+                        {{ t('Requeue') }}
                         </button>
                       </div>
                       <div class="col-md-6">
@@ -162,7 +162,7 @@
                           class="btn btn-danger fullwidth mb-3"
                           @click="onNoShow"
                         >
-                          Tidak Hadir
+                        {{ t('No Show') }}
                         </button>
                       </div>
                       <div :class="{'col-md-12': isServed(), 'col-md-6': !isServed()}">
@@ -171,7 +171,7 @@
                           @click="onTransfer"
                           :disabled="!allow_transfer"
                         >
-                          Transfer
+                        {{ t('Transfer') }}
                         </button>
                       </div>
                       <div class="col-md-6" :class="{'d-none': isServed()}">
@@ -179,7 +179,7 @@
                           class="btn btn-primary fullwidth mb-3"
                           @click="onServed()"
                         >
-                          Mulai
+                        {{ t('Start') }}
                         </button>
                       </div>
                     </template>
@@ -187,12 +187,12 @@
               </div>
               <div v-if="accessible_features.includes('CRM Interaction')" :class="{'d-none': !isServed()}">
                 <!-- <div v-if="accessible_features.includes('CRM Interaction')"> -->
-                <b class="text-primary mt-5">Sub Layanan</b>
+                <b class="text-primary mt-5"> {{ t('Sub Service') }}</b>
                 <hr class="mt-2 mb-2">
                 <div class="row">
                   <div class="col-md-12" >
                     <select class="custom-select" v-model="selected_sub_service">
-                      <option selected value="">--PILIH SUB LAYANAN--</option>
+                      <option selected value="">--{{ t('SELECT SUB SERVICE') }}--</option>
                       <option v-for="subService in filteredSubServices" :key="subService.id" :value="subService.id">
                         {{ subService.name }}
                       </option>
@@ -204,7 +204,7 @@
             <!-- END DIRECT QUEUE CALLER -->
             <!-- START DIRECT QUEUE LIST -->
             <div class="col-md-8">
-              <b class="text-primary">Daftar Antrian Onsite</b>
+              <b class="text-primary">{{ this.t('Onsite Queue List') }}</b>
               <hr class="mt-2 mb-2">
               <div class="row">
                 <div class="col-md-12">
@@ -214,14 +214,14 @@
                         <label
                           for="search-by"
                         >
-                          Cari menggunakan No. Antrian atau Nama
+                        {{ this.t('Search using Queue Number or Name') }}
                         </label>
                       </div>
                       <div class="col-md-4">
                         <input
                           type="text"
                           class="form-control"
-                          placeholder="Cari"
+                          placeholder="Search.."
                           @input="debounceSearch"
                         />
                       </div>
@@ -233,11 +233,11 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th>No. Antrian</th>
-                      <th>Kode Unik</th>
-                      <th>Nama</th>
-                      <th>Nama Layanan</th>
-                      <th>Status</th>
+                      <th>{{ this.t('Queue Number') }}</th>
+                      <th>{{ this.t('Booking Code') }}</th>
+                      <th>{{ this.t('Name') }}</th>
+                      <th>{{ this.t('Service Name') }}</th>
+                      <th>{{ this.t('Status') }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -267,34 +267,34 @@
                           <span
                             class="badge badge-secondary"
                             v-show="queue.status == 'waiting'"
-                            >Menunggu</span
+                            >{{ t('Waiting') }}</span
                           >
                           <span
                             class="badge badge-info"
                             v-show="queue.status == 'served'"
-                            >Sedang Dilayani</span
+                            >{{ t('Being Served') }}</span
                           >
                           <span
                             class="badge badge-warning"
                             v-show="queue.status == 'requeue'"
-                            >Antri Ulang</span
+                            >{{ t('Requeue') }}</span
                           >
                           <span
                             class="badge badge-danger"
                             v-show="queue.status == 'no show'"
-                            >Tidak Hadir</span
+                            >{{ t('No Show') }}</span
                           >
                           <span
                             class="badge badge-success"
                             v-show="queue.status == 'end served'"
-                            >Layanan Selesai</span
+                            >{{ t('End Served') }}</span
                           >
                         </td>
                       </tr>
                     </template>
                     <tr v-else>
                       <td colspan="4">
-                        <p class="text-center">Tidak Ada Data</p>
+                        <p class="text-center">{{ t('No Data') }}</p>
                       </td>
                     </tr>
                   </tbody>
@@ -312,7 +312,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Detail Pelanggan</h5>
+                        <h5 class="modal-title">{{ t('Customer Details') }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="isShowCustomer = false">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -320,43 +320,43 @@
 
                     <div class="modal-body">
                         <div class="row mb-2">
-                            <div class="col-md-4">Nama</div>
+                            <div class="col-md-4">{{ t('Name') }}</div>
                             <div class="text-dark">{{ customerDetail.name }}</div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-md-4">Email</div>
+                            <div class="col-md-4">{{ t('Email') }}</div>
                             <div class="text-dark">{{ customerDetail.email }}</div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-md-4">No. Telepon</div>
+                            <div class="col-md-4">{{ t('Phone Number') }}</div>
                             <div class="text-dark">{{ customerDetail.phone }}</div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-md-4">Tanggal Lahir</div>
+                            <div class="col-md-4">{{ t('Date of Birth') }}</div>
                             <div class="text-dark">{{ customerDetail.dateOfBirth || '-' }}</div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-md-4">Alamat</div>
+                            <div class="col-md-4">{{ t('Address') }}</div>
                             <div class="text-dark">{{ customerDetail.address || '-' }}</div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-md-4">Kode Booking</div>
+                            <div class="col-md-4">{{ t('Booking Code') }}</div>
                             <div class="text-dark">{{ customerDetail.bookingCode }}</div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-md-4">Alasan Kunjungan</div>
+                            <div class="col-md-4">{{ t('Reason for Visit') }}</div>
                             <div class="text-dark">{{ customerDetail.reasonForVisit }}</div>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="isShowCustomer = false">Tutup</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="isShowCustomer = false">{{ t('Close') }}</button>
                     </div>
                 </div>
             </div>
@@ -374,6 +374,8 @@ import "vue-loading-overlay/dist/vue-loading.css";
 import VueToast from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
 import moment from 'moment';
+import ID from "../../lang/id.json";
+import EN from "../../lang/en.json";
 
 Vue.use(VueToast);
 
@@ -413,6 +415,9 @@ export default {
     workstation: {
       type: Object,
       required: true
+    },
+    lang:{
+      type: String,
     }
   },
 
@@ -420,6 +425,11 @@ export default {
     return {
       isLoading: true,
       keyword: "",
+      currentLocale: this.lang || "en",
+      messages: {
+              en: EN,
+              id: ID
+      },
       debounce: null,
       recallCounter: 0,
       queues: [],
@@ -487,6 +497,14 @@ export default {
   },
 
   methods: {
+    t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
     async initVoiceRecorder() {
       const media = await navigator.mediaDevices.getUserMedia({
         audio: true,

@@ -304,6 +304,7 @@ export default {
       });
     },
     mounted() {
+    console.log(this.lang)
         this.getQueues()
         Echo.channel(`event_appointment_queue_general.${this.branch.id}`)
         .listen("AppointmentQueue", () => {

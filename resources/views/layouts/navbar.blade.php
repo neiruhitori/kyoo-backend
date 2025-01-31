@@ -30,7 +30,10 @@
                     
             @endswitch
 
-            @if (Auth::user()->role == 'admin_branch' && Auth::user()->Branch->BranchType->is_appointment)      
+            @if (
+                Auth::user()->role != 'admin_kyoo' &&
+                Auth::user()->Branch->BranchType->is_appointment
+            )      
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
