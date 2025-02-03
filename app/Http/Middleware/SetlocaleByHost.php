@@ -17,14 +17,14 @@ class SetlocaleByHost
     public function handle(Request $request, Closure $next)
     {
 
-        $domainLocaleMap = [
-            'www.dev.kyoo.id' => 'id',
-            'www.worldwide.kyoo.id' => 'en',
-        ];
+        // $domainLocaleMap = [
+        //     'www.dev.kyoo.id' => 'id',
+        //     'www.worldwide.kyoo.id' => 'en',
+        // ];
 
         $host = $request->getHost();
-         $locale = $domainLocaleMap[$host];
-         dd($locale);
+        // $locale = $domainLocaleMap[$host];
+         dd($host);
 
         // // Jika domain tidak ada di daftar, redirect ke domain default
         // if (!array_key_exists($host, $domainLocaleMap)) {
