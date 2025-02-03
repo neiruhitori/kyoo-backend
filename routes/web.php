@@ -8,6 +8,12 @@ Route::get('/', function () {
     return redirect(route('dashboard'));
 });
 
+Route::group(['middleware' => ['localization','setlocaleIP']], function(){
+
+Auth::routes();
+
+});
+
 Route::get('/change-locale/{locale}', function ($locale) {
     if (!in_array($locale, ['en', 'id'])) {
         abort(400, 'Bahasa tidak didukung');
@@ -302,7 +308,7 @@ Route::put('/vct/reset-password/{user_id}', 'AdminBranch\UserController@updatePa
 Route::get('/device-account/reset-password/{user_id}', 'AdminBranch\DeviceAccountController@reset')->name('adminBranch.device-account.reset');
 Route::put('/device-account/reset-password/{user_id}', 'AdminBranch\DeviceAccountController@updatePassword')->name('adminBranch.device-account.password.update');
 
-Auth::routes();
+// Auth::routes();
 
 // Appointment Status
 Route::get('/appointment/status/{id}', 'AppointmentController@status')->name('appointment.status');
@@ -508,14 +514,13 @@ Route::get('search', 'SearchQueueController@index')->name('search.index');
 Route::post('search', 'SearchQueueController@search')->name('search.search');
 
 Route::get('scan', 'QRScannerController@index')->name('scan.index');
-    // Route::get('DEBUG', function(){
-    //     return view('afterRegister');
-    // });
+
 }); //end of locale prefix
 
 Route::get('DEBUG', function(){
-    $ip = request()->getClientIp();
-    dd($ip);
+    $browserLang = request()->getPreferredLanguage();
+    $country = strpos($browserLang, 'id') !== false ? 'ID' : 'EN';
+    dd($country);
 });
 // Route::get('DEBUG', function(){
 //     return view('register');
