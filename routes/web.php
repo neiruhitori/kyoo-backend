@@ -508,21 +508,13 @@ Route::get('search', 'SearchQueueController@index')->name('search.index');
 Route::post('search', 'SearchQueueController@search')->name('search.search');
 
 Route::get('scan', 'QRScannerController@index')->name('scan.index');
-// Route::get('DEBUG', function(){
-//     $locale = substr(request()->server('HTTP_ACCEPT_LANGUAGE'), 0, 2); 
-//     foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key){
-//         if (array_key_exists($key, $_SERVER) === true){
-//             foreach (explode(',', $_SERVER[$key]) as $ip){
-//                 $ip = trim($ip); // just to be safe
-//                 if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false){
-//                     dd($ip) ;
-//                 }
-//             }
-//         }
-//     }
-//     dd(request()->ip()) ; 
-// });
+    // Route::get('DEBUG', function(){
+    //     return view('afterRegister');
+    // });
 }); //end of locale prefix
 
+Route::get('DEBUG', function(){
+    return view('register');
+})->middleware('setlocaledomain');
 
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');

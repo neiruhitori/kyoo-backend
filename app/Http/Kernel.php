@@ -36,6 +36,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\SetlocaleByHost::class
         ],
 
         'api' => [
@@ -76,5 +77,6 @@ class Kernel extends HttpKernel
         'access' => \App\Http\Middleware\EnsureUserHasAccess::class,
         'setTimeZone' => \App\Http\Middleware\SetTimeZone::class,
         'localization' => \App\Http\Middleware\SetLocale::class,
+        'setlocaledomain' => \App\Http\Middleware\SetlocaleByHost::class,
     ];
 }
