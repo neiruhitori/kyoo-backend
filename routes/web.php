@@ -514,7 +514,11 @@ Route::get('scan', 'QRScannerController@index')->name('scan.index');
 }); //end of locale prefix
 
 Route::get('DEBUG', function(){
-    return view('register');
-})->middleware('setlocaledomain');
+    $ip = request()->getClientIp();
+    dd($ip);
+});
+// Route::get('DEBUG', function(){
+//     return view('register');
+// })->middleware('setlocaledomain');
 
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');
