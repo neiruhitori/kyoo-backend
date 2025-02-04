@@ -8,22 +8,14 @@ Route::get('/', function () {
     return redirect(route('dashboard'));
 });
 
+//to differ visitor
 Route::group(['middleware' => ['localization','setlocaleIP']], function(){
 
 Auth::routes();
 
 });
 
-Route::get('/change-locale/{locale}', function ($locale) {
-    if (!in_array($locale, ['en', 'id'])) {
-        abort(400, 'Bahasa tidak didukung');
-    }
-
-    session()->put('locale', $locale);
-    app()->setLocale($locale);
-
-    return redirect()->back();
-})->name('change.locale');
+Route::get('/change-locale/{locale}','LocalizationController@setLang')->name('change.locale');
 
 //where method prevent conflict from page customer
 Route::middleware('localization')

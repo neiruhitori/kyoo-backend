@@ -11,11 +11,16 @@
   <title>Kyoo Admin</title>
   <link rel="icon" href="{{ asset('img/favico.png') }}" type="image/icon type">
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
   <!-- Inter Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
-
+  <!-- Bootstrap core JavaScript-->
+  <script type="text/javascript" src="{{asset('admin/vendor/jquery/jquery.min.js')}}"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js" integrity="sha512-k6/Bkb8Fxf/c1Tkyl39yJwcOZ1P4cRrJu77p83zJjN2Z55prbFHxPs9vN7q3l3+tSMGPDdoH51AEU8Vgo1cgAA==" crossorigin="anonymous"></script>
+  <script src="{{asset('admin/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
   <!-- Template CSS -->
   <link href="{{ asset('admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
   <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
@@ -26,8 +31,24 @@
 <body style="display: flex; align-items: stretch;">
   <div class="page-container">
     <div class="content-container">
-      <div class="page-header">
+      <div class="page-header d-flex justify-content-between">
         <img src="{{ asset('img/logo-color.svg') }}" class="app-icon" />
+
+        <div class="dropdown align-self-center lang">
+          <button class="btn dropdown-toggle " type="button" data-toggle="dropdown">
+            <span class="fi fi-{{ app()->getLocale() == 'en' ? 'gb' : 'id'}} fib border"></span>
+             {{-- below is lang  --}}
+            {{ strtoupper(app()->getLocale()) }}
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="{{ route('change.locale', 'en') }}">
+              <span class="fi fi-gb fib border"></span> English
+          </a>
+          <a class="dropdown-item" href="{{ route('change.locale', 'id') }}">
+              <span class="fi fi-id fib border"></span> Bahasa
+          </a>
+          </div>
+        </div>
       </div>
 
       <div style="padding: 3rem 0 3rem 0;">
@@ -296,7 +317,9 @@
             <div class="k-checkbox">
               <input type="checkbox" name="accept_term_condition" id="accept_term_condition">
               <label for="accept_term_condition">
-                {{ __('I agree to the') }} <a href="https://kyoo.id/termsandconditions">{{ __('Terms and Conditions') }}</a>
+                {{ __('I agree to the') }} 
+                <a href="{{ app()->getLocale() == 'en' ? 'https://worldwide.kyoo.id/term_condition.html' : 'https://kyoo.id/termsandconditions' }}">
+                  {{ __('Terms and Conditions') }}</a>
               </label>
             </div>
 
@@ -315,6 +338,26 @@
     </div>
   </div>
   <div class="image-container">
+    <div class="dropdown position-absolute" style="
+    top: 55px;
+    right: 135px;
+    z-index: 4;
+">
+      <button class="btn dropdown-toggle " type="button" data-toggle="dropdown">
+        <span class="fi fi-{{ app()->getLocale() == 'en' ? 'gb' : 'id'}} fib border"></span>
+         {{-- below is lang  --}}
+        {{ strtoupper(app()->getLocale()) }}
+      </button>
+      <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" href="{{ route('change.locale', 'en') }}">
+          <span class="fi fi-gb fib border"></span> English
+      </a>
+      <a class="dropdown-item" href="{{ route('change.locale', 'id') }}">
+          <span class="fi fi-id fib border"></span> Bahasa
+      </a>
+      </div>
+    </div>
+
     <img class="page-illustration" src="{{ asset('img/illustrations/registration.svg') }}">
   </div>
 

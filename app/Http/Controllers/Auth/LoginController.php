@@ -97,6 +97,13 @@ class LoginController extends Controller
         $createdAt = Carbon::parse($loggedUser->created_at);
         $fourMonthsAgo = Carbon::now()->subMonths(4);
 
+        if ((Auth::user()->Branch && Auth::user()->Branch->country == 'Indonesia') || Auth::user()->role == 'admin_kyoo') {
+            session()->put('locale', 'id');
+        } else {
+            session()->put('locale', 'en'); // Default ke EN jika Branch tidak ada
+        }
+        session()->save();
+
         if ($loggedUser->role == 'admin_branch' && $createdAt->lessThan($fourMonthsAgo)) {
             return redirect()->route('admin-branch.dashboard');
         } elseif($loggedUser->role == 'admin_branch') {
@@ -109,7 +116,7 @@ class LoginController extends Controller
         if(Auth::user()->Branch && Auth::user()->Branch->BranchType->is_direct_queue && ($loggedUser->role == 'cs' || $loggedUser->role == 'spv') && $active_menus) {
             return redirect()->route('cs.workstation');
         }
-
+        
         return redirect()->route('dashboard');
     }
 
@@ -124,6 +131,7 @@ class LoginController extends Controller
         $this->guard()->logout();
 
         $request->session()->invalidate();
+        $request->session()->flush();
 
         $request->session()->regenerateToken();
 

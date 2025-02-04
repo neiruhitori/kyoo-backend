@@ -20,6 +20,10 @@ class SetlocaleByIP
     public function handle(Request $request, Closure $next)
     {
 
+        if(session()->has('locale')){
+            return $next($request);
+        }
+
         $ip = $request->getClientIp();
          //handle local env
          if ($ip == '127.0.0.1' || $ip == '::1') {
