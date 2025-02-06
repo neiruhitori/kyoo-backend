@@ -97,8 +97,12 @@ class TVDisplayConfigurationController extends Controller
             
 
             // Cek jika salah satu link adalah null atau kosong
-            if (!empty($link_1) || !empty($link_2) || !empty($link_3)) {
-                $switchLink = 'youtube';
+            if(Auth::user()->Branch->BranchConfiguration->template_signage == 'custom-layout-2'){
+                if (!empty($link_1) || !empty($link_2) || !empty($link_3)) {
+                    $switchLink = 'youtube';
+                }else{
+                    $switchLink = 'file';
+                }
             }else{
                 $switchLink = 'file';
             }
@@ -145,6 +149,7 @@ class TVDisplayConfigurationController extends Controller
                     'running_text_size' => $customLayoutConfiguration->running_text_size,
                     'logo_size' => $customLayoutConfiguration->logo_size,
                     'text_time_size' => $customLayoutConfiguration->text_time_size,
+                    'youtube_volume' => $customLayoutConfiguration->youtube_volume,
                 );
             }
         }
@@ -255,7 +260,10 @@ class TVDisplayConfigurationController extends Controller
 }
 
     public function updateLayout(Branch $branch, Request $request) {
+        dd($request->all());
         $branch->BranchConfiguration->template_signage = $request->template_signage;
+        // if($)
+
         $branch->BranchConfiguration->save();
         return redirect()
             ->route('admin-branch.branch-configuration.queue-monitor')
@@ -304,6 +312,7 @@ class TVDisplayConfigurationController extends Controller
                 'running_text_size' => 'required|string',
                 'logo_size' => 'required|string',
                 'text_time_size' => 'required|string',
+                'youtube_volume' => 'required|string',
             ]);
         } else {
             $request->validate([
@@ -320,6 +329,7 @@ class TVDisplayConfigurationController extends Controller
                 'running_text_speed' => 'required|string',
             ]);
         }
+        // dd($request);
 
         $configuration = $this->tvConfigurationRepository->Upsert($branch->id, $request);
 
