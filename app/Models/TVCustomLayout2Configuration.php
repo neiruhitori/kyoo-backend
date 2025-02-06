@@ -30,5 +30,6 @@ class TVCustomLayout2Configuration extends Model
         'running_text_size',
         'logo_size',
         'text_time_size',
+        'youtube_volume',
     ];
 }

@@ -50,6 +50,7 @@ class TVConfigurationRepository implements TVConfigurationRepositoryInterface
                     'running_text_size' => $request->running_text_size,
                     'logo_size' => $request->logo_size,
                     'text_time_size' => $request->text_time_size,
+                    'youtube_volume' => $request->youtube_volume,
                 ];
             } else {
                 $newTVCustomLayoutConfiguration = [

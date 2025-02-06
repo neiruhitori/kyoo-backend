@@ -107,11 +107,10 @@
             <div class="permission-wrapper" v-if="isAutoPlayBlocked">
                 <div class="permission-body">
                     <p>
-                        Browser Anda memblokir audio autoplay. Tekan tombol dibawah
-                        untuk mengaktifkan autoplay.
+                      Your browser is blocking audio autoplay. Press the button below to enable autoplay.
                     </p>
                     <button class="active-button" @click="isAutoPlayBlocked = false">
-                        Aktifkan Suara Notifikasi
+                        Enable Notification Sound
                     </button>
                 </div>
             </div>
@@ -129,6 +128,8 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import moment from 'moment';
 import 'moment-timezone';
+// import ID from "../../../../lang/id.json";
+// import EN from "../../../../lang/en.json";
 
 const audioEl = new Audio();
 
@@ -150,7 +151,10 @@ export default {
         },
         display_duration: {
             type: Number,
-        }
+        },
+        // lang:{
+        //     type: String,
+        // }
     },
 
     data() {
@@ -160,6 +164,9 @@ export default {
             config: this.branch.branch_configuration,
             isLoading: false,
             waitingQueue: [],
+            // currentLocale: this.lang || 'en',
+            // messages:{ en: EN,
+            //            id: ID,} ,
             servingQueue: servingQueue,
             activeImage: 1,
             currentDate: moment.tz('Asia/Jakarta'),
@@ -220,7 +227,8 @@ export default {
             },
             lineContainer: {
                 "border-top": `2px solid ${this.custom_layout_config.running_text_color || "#FFFFFF"}`
-            }
+            },
+            volumeYT: this.custom_layout_config.youtube_volume
         };
     },
 
@@ -315,6 +323,8 @@ export default {
     },
 
     async mounted() {
+        // console.log(this.volumeYT);
+        
         this.initCurrentDate();
         this.getQueues();
         await this.getDisplayImage();
@@ -344,6 +354,14 @@ export default {
     },
 
     methods: {
+        // t(key, params = {}) {
+        //  const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+        //     if (translation) {
+        //          return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+        //     } else {
+        //          return key;
+        //     }
+        // },
         initCurrentDate() {
             let currentDate = moment.tz('Asia/Jakarta');
             const branchTimeZone = this.branch.timezone;
@@ -428,6 +446,7 @@ export default {
     },
 
         onPlayerReady(event) {
+            this.player.setVolume(this.volumeYT);
             event.target.playVideo();
             this.player = event.target;
         },
@@ -435,10 +454,11 @@ export default {
             if (event.data == YT.PlayerState.PLAYING) {
                 const ytduration = event.target.getDuration() * 1000 - 1000; // Durasi video dalam milidetik
                 console.log("Video Playing - Duration:", ytduration);
-            if (this.isPlaying && this.player && this.player.setVolume) {
+            // Cek apakah audio signage masih berjalan sebelum mengubah volume
+            if (this.isPlaying) {
                 console.log("Audio signage is active, setting YouTube volume to 0%");
-                this.player.setVolume(0); // Paksa volume ke 0%
-            }
+                this.player.setVolume(0); // Set volume ke 0% saat audio signage berjalan
+            } 
                 // Set durasi hanya jika belum ditetapkan
                 if (!this.currentImageDuration || this.currentImageDuration !== ytduration) {
                     this.currentImageDuration = ytduration;
@@ -711,7 +731,8 @@ export default {
 
              if (this.player && this.player.setVolume) {
                 this.player.setVolume(0); // Set volume ke 0%
-            }
+                }
+                await new Promise(wait => setTimeout(wait, 1000));
 
             for (const audioData of playlist) {
                 if (audioEl.paused) {
@@ -731,9 +752,11 @@ export default {
                 const nextMessage = this.playQueue.shift();
                 await this.getQueueCallAudio(nextMessage);
             }
+            await new Promise(wait => setTimeout(wait, 1000));
+
             if (this.player && this.player.setVolume) {
-                this.player.setVolume(100); // Set volume kembali ke 100%
-            }
+                    this.player.setVolume(this.volumeYT); // Kembalikan volume YouTube
+                }
 
             const videoEl = document.querySelector('video');
             if (!videoEl) {
