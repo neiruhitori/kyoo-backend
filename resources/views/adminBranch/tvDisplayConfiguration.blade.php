@@ -153,7 +153,7 @@
                     @method('PUT')
 
                     <div class="d-flex mb-3">
-                        <div class="monitor-images-wrapper ">
+                        <div class="monitor-images-wrapper {{ $template_signage != 'custom-layout-2' ? 'd-none' : '' }}" id="selectSwitchContainer">
                             <div class="mb-1">{{ __('Display Option') }}</div>
                             <div class="monitor-image-container">
                                 <select class="custom-select" name="selectSwitch" id="selectSwitch" style="width: 150px">
@@ -303,7 +303,7 @@
                         </div>
                        
 
-                        <div class="monitor-image-container" id="monitor-container-image-4">
+                        <div class="monitor-image-container {{ ($template_signage != 'custom-layout-2' && $template_signage != 'custom-layout-3') ? 'd-none' : '' }}" id="monitor-container-image-4">
                             <label for="image_4">
                                 <div class="monitor-image-upload">
                                     <img src="{{ asset($image_4) }}" id="preview_image_4">
@@ -325,7 +325,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="monitor-image-container" id="monitor-container-image-5">
+                        <div class="monitor-image-container {{ ($template_signage != 'custom-layout-2' && $template_signage != 'custom-layout-3') ? 'd-none' : '' }}" id="monitor-container-image-5">
                             <label for="image_5">
                                 <div class="monitor-image-upload">
                                     <img src="{{ asset($image_5) }}" id="preview_image_5">
@@ -347,7 +347,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="monitor-image-container" id="monitor-container-image-6">
+                        <div class="monitor-image-container {{ ($template_signage != 'custom-layout-2' && $template_signage != 'custom-layout-3') ? 'd-none' : '' }}" id="monitor-container-image-6">
                             <label for="image_6">
                                 <div class="monitor-image-upload">
                                     <img src="{{ asset($image_6) }}" id="preview_image_6">
@@ -729,6 +729,21 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="wrapper-group-action col-md-5">
+                                    <b>{{ __('Youtube Volume') }}</b>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-12 col-md-12">
+                                            <div class="form-group">
+                                                <label for="youtube_volume">{{ __('Volume') }}</label>
+                                                <div class="d-flex">
+                                                    <input class="mr-3" type="range" id="youtube_volume" name="youtube_volume" min="1" max="100" value="{{ $layout_configuration->youtube_volume }}" >
+                                                    <small id="volumePercent"></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="wrapper-submit mt-3">
                                 <button type="submit" class="btn btn-warning">{{ __('Save') }}</submit>
@@ -987,6 +1002,13 @@
 
     const imageLayouts = @json($image_layouts);
 
+    let slider = document.getElementById('youtube_volume');
+    let percentageVol = document.getElementById('volumePercent');
+    percentageVol.innerHTML = slider.value;
+    slider.oninput = function(){
+        percentageVol.innerHTML = this.value;
+    }
+
     function switchInput(){
         let switchInput = document.getElementById('selectSwitch');
 
@@ -1039,9 +1061,17 @@
         const { image } = imageLayouts.find((obj) => obj.key == value);
 
         if (value == 'custom-layout-2') {
+            // layout_2
             document.getElementById("layoutConfig2").classList.remove("d-none")
+            document.getElementById("selectSwitchContainer").classList.remove("d-none")
+            document.getElementById("display_durationContainer").classList.remove("d-none")
+            switchInput()
         } else {
+            document.getElementById("selectSwitch").value = 'file'
             document.getElementById("layoutConfig2").classList.add("d-none")
+            document.getElementById("selectSwitchContainer").classList.add("d-none")
+            document.getElementById("display_durationContainer").classList.add("d-none")
+            switchInput()
         }
 
         if (value == 'custom-layout-3') {
