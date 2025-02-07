@@ -257,7 +257,7 @@
                
 
                 <div class="col-md-7 ml-2 mb-3">
-                    <button type="submit" class="btn btn-warning ml-1 ">Simpan</submit>
+                    <button type="submit" class="btn btn-warning ml-1 ">{{ __('Save') }}</submit>
                 </div>
             </div>
         </form>

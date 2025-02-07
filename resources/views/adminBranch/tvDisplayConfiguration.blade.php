@@ -163,7 +163,7 @@
                             </div>
                             
                         </div>
-                        <div class="monitor-images-wrapper mx-3">
+                        <div class="monitor-images-wrapper mx-3 {{ $template_signage != 'custom-layout-2' ? 'd-none' : '' }}"">
                             <div class="mb-1">{{ __('Display Duration') }}</div>
                             <div class="monitor-image-container">
                                 <select class="custom-select" name="display_duration" id="display_duration" style="width: 110px">

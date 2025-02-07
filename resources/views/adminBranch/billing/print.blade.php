@@ -52,7 +52,7 @@
             <div class="col-md-12 py-5 mb-3">
                 <h3>Invoiced To:</h3>
             </div>
-            <div class="col-md-4 mb-5" style="color:black">
+            <div class="col-md-12 mb-5" style="color:black; overflow-wrap: break-word; white-space: normal;">
                 <h3><b>{{ $print->branch->name }}</b></h3>
                 <h5>{{ $print->branch->address }}</h5>
             </div>
@@ -66,23 +66,23 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th>Berlangganan 
+                        <th>{{ __('Subscribe to') }} 
                         @if($subs->license_type == 'onsite')
-                            Antrian Onsite
+                            {{ __('Onsite Queue') }}
                         @elseif($subs->license_type == 'appointment')
-                            Antrian Appointment
+                            {{ __('Appointment Queue') }}
                         @else
                             Antrian Exhibition
                         @endif
-                         - Lisensi 
+                         - 
                             @if($subs->package == 'premium')
-                            Premium
+                            {{ __('Premium License') }} 
                             @elseif($subs->package == 'custom')
-                                Custom
+                            {{ __('Custom License') }} 
                             @else
-                                Lite
+                            {{ __('Lite License') }} 
                             @endif
-                            Selama {{ $subs->subs_duration }} Bulan 
+                            {{ __('For :num Months',['num' => $subs->subs_duration]) }}
                             ({{ \Carbon\Carbon::parse($print->created_at)->translatedFormat('d/m/Y') }} - {{ \Carbon\Carbon::parse($print->created_at)->addMonths($subs->subs_duration)->translatedFormat('d/m/Y') }})</th>
                         <td class="text-left"> Rp. {{ number_format($subTotal, 0, ',', '.') }}</td>
                       </tr>
@@ -98,7 +98,7 @@
                       </tr>
                       <tr class="text-right font-weight-bolder">
                         <td>
-                            PPN 11% : 
+                            {{ __('VAT 11%') }} : 
                         </td>
                         <td>
                             <div class="text-left">

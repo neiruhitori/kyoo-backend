@@ -6,7 +6,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        Tambah Hari Libur
+                        {{ __('Add Holiday') }}
                     </h6>
                 </div>
 
@@ -18,7 +18,7 @@
                                 @csrf
 
                                 <div class="form-group">
-                                    <label for="date">Tanggal</label>
+                                    <label for="date">{{ __('Date') }}</label>
 
                                     <input type="date" name="date" id="date" class="form-control">
 
@@ -26,14 +26,14 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="name">Nama Hari Libur</label>
+                                    <label for="name">{{ __('Holiday Name') }}</label>
 
                                     <input type="text" name="name" id="name" class="form-control">
 
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
 
-                                <button class="btn btn-primary">Simpan</button>
+                                <button class="btn btn-primary">{{ __('Save') }}</button>
                             </form>
                         </div>
                     </div>
