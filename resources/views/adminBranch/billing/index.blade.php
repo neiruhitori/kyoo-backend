@@ -208,15 +208,17 @@
                               </tr>
                             </thead>
                             <tbody>
-                                @if ($invoice->isEmpty())
+                                @if ($invoices->isEmpty())
                                 <tr>
                                     <td colspan="5" class="text-center">{{ __('No Invoice') }}.</td>
                                 </tr>    
                                 @else
-                                @foreach ($invoice as $inv)
+                                @foreach ($invoices as $inv)
                                 <tr>
                                     <th>{{ \Carbon\Carbon::parse($inv->created_at)->translatedFormat('d F Y') }}</th>
-                                    <td>{{ $inv->description }}</td>
+                                    <td class="invoice-description">
+                                        {{ app()->getLocale() == 'en' ? ($inv->description_en ?? $inv->description) : $inv->description }}
+                                    </td>
                                     <td>Rp. {{ number_format($inv->amount, 2, ',', '.') }}</td>
                                     <td>
                                         @if ($inv->status == "PAID")

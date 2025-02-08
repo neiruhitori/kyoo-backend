@@ -22,12 +22,15 @@ class BillingController extends Controller
 {
     public function index()
     {
+        if(Auth::user()->Branch->BranchType->is_exhibition){
+            abort(404);
+        }
         $branch_id = Auth::user()->branch->id;
         $features = FeatureSubscription::with('AdditionalFeature')
         ->where('branch_id',$branch_id)->get();
-        $invoice = Invoice::where('branch_id',$branch_id)->orderBy('created_at','desc')->get();
+        $invoices = Invoice::where('branch_id',$branch_id)->orderBy('created_at','desc')->get();
 
-        return view('adminBranch.billing.index',compact('features','invoice'));
+        return view('adminBranch.billing.index',compact('features','invoices'));
     }
 
     public function no_transaksi()
@@ -39,6 +42,7 @@ class BillingController extends Controller
     public function generateDesc($dataDesc,$branch){
         if(!$dataDesc && !$branch){
             return false;
+            // dd('tidak ada data diberikan');
         }
         $branchModel = Branch::where('id',$branch)->first();
         $branchType = null;
@@ -63,7 +67,7 @@ class BillingController extends Controller
         $startDate = Carbon::now();
         $endDate = $startDate->copy()->addMonths($duration);
 
-        $desc = sprintf(
+        $descIndo = sprintf(
             "Berlangganan Antrian %s - Lisensi %s Selama %d Bulan (%s - %s). Jenis Antrian %s, %d Bulan Langganan, Max %d Antrian, Max Petugas Layanan %d User, %d Meja",
             $branchType,
             $license,
@@ -78,20 +82,50 @@ class BillingController extends Controller
         );
 
         if ($signage > 0) {
-            $desc .= sprintf(
+            $descIndo .= sprintf(
                 ", Web Signage %d Perangkat",
                 $signage,
             );
         }
         if ($kiosk > 0) {
-            $desc .= sprintf(
+            $descIndo .= sprintf(
                 ", Web Kiosk %d Perangkat",
+                $kiosk
+            );
+        }
+
+        $descEn = sprintf(
+            "%s Queue Subscription - %s license for %d Months (%s - %s). %s Queue Type, %d Months Subscription, Max %d Queues, Max Service Staff %d User, %d Workstation",
+            $branchType,
+            $license,
+            $duration,
+            $startDate->format('d/m/Y'),
+            $endDate->format('d/m/Y'),
+            $branchType,
+            $duration,
+            $queue,
+            $services,
+            $table,
+        );
+
+        if ($signage > 0) {
+            $descEn .= sprintf(
+                ", Web Signage %d Device",
+                $signage,
+            );
+        }
+        if ($kiosk > 0) {
+            $descEn .= sprintf(
+                ", Web Kiosk %d Device",
                 $kiosk
             );
         }
         
 
-        return $desc;
+        return [
+            'desc_indo' => $descIndo,
+            'desc_en' => $descEn,
+        ];
  
     }
 
@@ -100,14 +134,19 @@ class BillingController extends Controller
         $credentials = base64_encode(config('app.xendit_api_key'));
         $client = new \GuzzleHttp\Client();
 
+        if(Auth::user()->Branch->BranchType->is_exhibition){
+            abort(404);
+        }
+
         try{
 
             $user= Auth::user()->id;
             $branch= Auth::user()->Branch->id;
             $invoice_number = $this->no_transaksi();
-            $invoice_duration = Carbon::now()->addDays(3)->diffInSeconds() + 1; //tepat 14 hari
+            $invoice_duration = Carbon::now()->addDays(3)->diffInSeconds() + 1; //tepat 3 hari
             // $invoice_duration = 5*60;
             $description = $this->generateDesc($request->all(),$branch);
+            // dd($description['desc_indo']);
             $amount = (int) $request->amount; //terkadang value nya desimal, jadi dibulatkan kebawah
     
             $response = $client->post('https://api.xendit.co/v2/invoices',
@@ -130,7 +169,8 @@ class BillingController extends Controller
                 'invoice_url' => $data['invoice_url'],
                 'expiry_date' =>Carbon::parse($data['expiry_date'])->setTimezone('Asia/Jakarta'),
                 'status' => $data['status'],
-                'description' => $description,
+                'description' => $description['desc_indo'],
+                'description_en' => $description['desc_en'],
                 'invoice_number' => $invoice_number,
                 'user_id' => $user,
                 'branch_id' => $branch,

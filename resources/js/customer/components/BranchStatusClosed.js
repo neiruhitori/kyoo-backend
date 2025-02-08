@@ -8,8 +8,8 @@ const OpenStatus = styled.span(() => ({
     alignItems: 'center',
     color: '#D21C1C'
 }))
-
 function BranchStatusClosed(props) {
+    const closedText = typeof props.t === 'function' ? props.t('CLOSED') : 'TUTUP';
     return <BranchStatus style={props.style}>
         <OpenStatus>
             <BulletIcon color="#D21C1C" style={{
@@ -17,7 +17,7 @@ function BranchStatusClosed(props) {
                 height: '0.5rem',
                 marginRight: '0.375rem'
             }} />
-            TUTUP
+            {closedText}
         </OpenStatus>
     </BranchStatus>
 }

@@ -30,13 +30,17 @@ import useBranchServicesCategories from '../../hooks/useBranchServiceCategories'
 import styled from 'styled-components'
 import Card from '../../components/Card'
 
+import useLocalization from '../../hooks/useLocalization'
+
 function ServiceCategories() {
     const { branchId } = useParams()
     const [searchParams] = useSearchParams()
     const isAllowback = searchParams.get("is_allow_back")
     const navigate = useNavigate()
 
-    const PAGE_TITLE = 'Antrian Appointment'
+    const { t } = useLocalization(); 
+
+    const PAGE_TITLE = t('Appointment Queue')
 
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [isCalendarShow, setIsCalendarShow] = useState(false)
@@ -137,7 +141,7 @@ function ServiceCategories() {
                         }}>
                             <span style={{
                                 padding: '0 0.75rem'
-                            }}>Lihat Detail</span>
+                            }}>{t('See Details')}</span>
 
                             <AngleRightIcon color="#FFFFFF" />
                         </div>
@@ -157,8 +161,10 @@ function ServiceCategories() {
                         style={{
                             marginTop: '1rem'
                         }}
+                        t={t}
                     />
                     : <BranchStatusClosed
+                        t={t}
                         style={{
                             marginTop: '1rem'
                         }}
@@ -178,7 +184,7 @@ function ServiceCategories() {
             <h4 style={{
                 fontSize: '1rem',
                 marginBottom: '1.125rem'
-            }}>Kategori Layanan</h4>
+            }}>{t('Service Category')}</h4>
 
             {branchServicesCategoryQuery.isLoading && <ServiceItemSkeleton />}
 

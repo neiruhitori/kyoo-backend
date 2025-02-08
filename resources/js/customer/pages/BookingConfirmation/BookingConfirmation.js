@@ -16,11 +16,13 @@ import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import { fetchBranch } from '../../api/branch'
 import { fetchServiceById } from '../../api/services'
 import { createBooking } from '../../api/booking'
+import useLocalization from '../../hooks/useLocalization'
 
 function BookingConfirmation() {
+    const{t, locale} = useLocalization();
     const { branchId, serviceId, queueType } = useParams()
     const [searchParams] = useSearchParams()
-    const PAGE_TITLE = `Konfirmasi Antrian`
+    const PAGE_TITLE = t(`Queue Confirmation`)
 
     const branchRes = useQuery('branch', () => fetchBranch(branchId))
     const serviceRes = useQuery('service', () => fetchServiceById(serviceId, {
@@ -107,7 +109,7 @@ function BookingConfirmation() {
                         fontSize: '1rem',
                         marginBottom: '.375rem',
                         textTransform: 'capitalize'
-                    }}>Gagal membuat antrian</h4>
+                    }}>{t('Failed to Create Queue')}</h4>
 
                     <p style={{
                         lineHeight: '1.5',
@@ -122,7 +124,7 @@ function BookingConfirmation() {
                             marginBottom: '1rem',
                             lineHeight: '1.5'
                         }}>
-                            Antrian Anda sudah tersimpan dan sudah dikirimkan ke Email Anda sebagai bukti antrian telah dibooking
+                            {t('Your queue has been saved and sent to your email as proof that the queue has been booked')}
                         </p>
 
                         <Link to={`/customer/${branchId}/${queueType}/booking-status/${booking.id}`} style={{
@@ -134,7 +136,7 @@ function BookingConfirmation() {
                             borderRadius: '6px',
                             fontWeight: '500'
                         }}>
-                            Lihat Status Antrian
+                            {t('View Queue Status')}
                         </Link>
                     </TooltipContent>
                 </Tooltip>}
@@ -144,7 +146,7 @@ function BookingConfirmation() {
                 }}>
                     <h4 style={{
                         marginBottom: '1.625rem'
-                    }}>Detail Booking</h4>
+                    }}>{t('Booking Details')}</h4>
 
                     {branchRes.status === 'success' && serviceRes.status === 'success' && <div>
                         <div style={{
@@ -155,14 +157,14 @@ function BookingConfirmation() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>Tanggal Booking</div>
+                            }}>{t('Booking Date')}</div>
 
                             <div style={{
                                 flex: '1',
                                 color: '#103C7C',
                                 fontWeight: '600'
                             }}>
-                                {format(formatBrowser(searchParams.get('date')))}
+                                {format(formatBrowser(searchParams.get('date')),locale)}
                             </div>
                         </div>
 
@@ -174,7 +176,7 @@ function BookingConfirmation() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>Nama Cabang</div>
+                            }}>{t('Branch Name')}</div>
 
                             <div style={{
                                 flex: '1',
@@ -193,7 +195,7 @@ function BookingConfirmation() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>Layanan</div>
+                            }}>{t('Service')}</div>
 
                             <div style={{
                                 flex: '1',
@@ -212,7 +214,7 @@ function BookingConfirmation() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>Waktu</div>
+                            }}>{t('Time')}</div>
 
                             <div style={{
                                 flex: '1',
@@ -228,7 +230,7 @@ function BookingConfirmation() {
                 <Card>
                     <h4 style={{
                         marginBottom: '1.625rem'
-                    }}>Detail User</h4>
+                    }}>{t('Customer Details')}</h4>
 
                     {serviceRes.status === 'success' && <div>
                         <div style={{
@@ -239,7 +241,7 @@ function BookingConfirmation() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>Nama Lengkap</div>
+                            }}>{t('Full Name')}</div>
 
                             <div style={{
                                 flex: '1',
@@ -277,7 +279,7 @@ function BookingConfirmation() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>No. Telepon</div>
+                            }}>{t('Phone Number')}</div>
 
                             <div style={{
                                 flex: '1',
@@ -296,7 +298,7 @@ function BookingConfirmation() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>Catatan</div>
+                            }}>{t('Notes')}</div>
 
                             <div style={{
                                 flex: '1',
@@ -319,7 +321,7 @@ function BookingConfirmation() {
             <Button color="primary" onClick={handleClick} style={{
                 width: '100%',
                 fontSize: '1rem'
-            }}>Booking Sekarang</Button>
+            }}>{t('Book Now')}</Button>
         </div>
     </>
 }

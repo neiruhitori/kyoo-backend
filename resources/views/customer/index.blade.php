@@ -55,7 +55,7 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <div id="root" locale="{{ app()->getLocale() }}"></div>
+    <div id="root" locale="{{ $country->country }}"></div>
   </body>
 
   <script src="{{ mix('js/customer/app.js') }}"></script>

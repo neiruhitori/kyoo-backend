@@ -4,6 +4,8 @@ import { format, formatBrowser, getMonthNames, getDayIndex, getDayName, getFullD
 import { useQuery } from 'react-query'
 import { fetchBranch } from '../../api/branch'
 import { fetchServiceById } from '../../api/services'
+import id from 'date-fns/locale/id'
+import en from 'date-fns/locale/en-US'
 
 import DayPicker from 'react-day-picker';
 import Header from '../../components/Header'
@@ -22,9 +24,15 @@ import UserIcon from '../../icons/UserIcon'
 import BoxOpenIcon from '../../icons/BoxOpenIcon'
 import SkeletonItem from '../../components/SkeletonItem'
 import ProgressStep from '../../components/ProgressStep'
+import useLocalization from '../../hooks/useLocalization'
+import { locale } from 'moment'
 
 function TimeSlotList() {
-    const PAGE_TITLE = 'Slot Waktu'
+    const {t, locale} = useLocalization();
+    const dateLocale = locale == "id" ? id : en;
+
+    
+    const PAGE_TITLE = t('Time Slot')
     const { branchId, serviceId, queueType } = useParams()
     const [searchParams] = useSearchParams()
     const date = searchParams.get('date') ? formatBrowser(searchParams.get('date')) : new Date()
@@ -69,6 +77,7 @@ function TimeSlotList() {
             return getDayIndex(val.day)
         }) : []
     }
+    
 
     return <>
         <Header>
@@ -103,7 +112,7 @@ function TimeSlotList() {
             {showCalendar && <CalendarWrapper onClick={() => setShowCalendar(false)}>
                 <DayPicker
                     onDayClick={handleDayClick}
-                    months={getMonthNames()}
+                    months={getMonthNames(locale)}
                     modifiers={{
                         selected: selectedDate,
                         disabled: [
@@ -121,11 +130,11 @@ function TimeSlotList() {
             </CalendarWrapper>}
 
             <TextField
-                label="Tanggal"
+                label={t("Date")}
                 style={{
                     marginBottom: '1.5rem'
                 }}
-                value={format(selectedDate)}
+                value={format(selectedDate, locale)}
                 readOnly
                 endAdornment={
                     <IconButton
@@ -167,8 +176,8 @@ function TimeSlotList() {
                     <span>
                         {
                             slots.length
-                                ? slots.length + ' Sesi Waktu Tersedia'
-                                : 'Tidak Ada Sesi Waktu Tersedia'
+                                ? slots.length + ` ${t('Time Sessions Available')}`
+                                        : t('No Time Sessions Available')
                         }
                     </span>
                     <span style={{
@@ -197,11 +206,11 @@ function TimeSlotList() {
                     <h4 style={{
                         fontSize: '1rem',
                         marginBottom: '0.5rem'
-                    }}>Layanan</h4>
+                    }}>{t('Service')}</h4>
                     <p style={{
                         fontSize: '0.875rem',
                         color: '#A5A5A5'
-                    }}>Berikut adalah sesi waktu yang tersedia</p>
+                    }}>{t('Here are the available time sessions')}</p>
                 </div>
 
                 {serviceRes.status === 'loading' && <Card style={{
@@ -233,7 +242,7 @@ function TimeSlotList() {
                     }}>
                         <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
                     </div>
-                    <h4>Sesi waktu kosong</h4>
+                    <h4>{t('Empty time sessions')}</h4>
                     <p style={{
                         textAlign: 'center',
                         width: '280px',
@@ -241,7 +250,7 @@ function TimeSlotList() {
                         color: '#A5A5A5',
                         fontSize: '.875rem'
                     }}>
-                        Pilih tanggal lain untuk menemukan sesi waktu yang tersedia
+                        {t('Select another date to find available time slots')}
                     </p>
                 </div>}
 

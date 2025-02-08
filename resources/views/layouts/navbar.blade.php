@@ -18,9 +18,17 @@
                         @if(!Auth::user()->Branch->is_premium && !Auth::user()->Branch->BranchType->is_exhibition)
                         <li class="nav-item no-arrow mx-1">
                             <div class="mt-3 input-group rounded">
-                                <p class="form-control text-white bg-primary mx-3 rounded">You're using Trial License, upgrade your license to access more features!</p>
+                                <div class="btn-group btn-group-toggle textpromotion" >
+                                    <label class="btn btn-primary" style="pointer-events: none;">
+                                      <small class="text-white">You're using Trial License, upgrade now to access other features!</small>
+                                    </label>
+                                    <label class="btn btn-warning">
+                                        <a class="text-decoration-none text-white" href="{{ route('admin-branch.subscription') }}"><small>Upgrade NOW!</small></a>
+                                    </label>
+                                  </div>
+                                {{-- <p class="form-control text-white bg-primary rounded-start">You're using Trial License, upgrade now to access other features!</p>--}}
                             
-                                <a class="btn btn-warning " href="{{ route('admin-branch.subscription') }}">Upgrade KYOO</a>
+                                <a class="btn btn-warning rounded-end textupgrade" href="{{ route('admin-branch.subscription') }}">Upgrade NOW!</a> 
                             
                             </div>
                         </li>
@@ -94,4 +102,19 @@
         </ul>
 
     </nav>
+    {{-- @push('css') --}}
+        <style>
+            .textupgrade{
+                display: none
+            }
+            @media screen and (max-width:1054px){
+                .textpromotion{
+                    display: none;
+                }
+                .textupgrade{
+                display: block
+            }
+            }
+        </style>
+    {{-- @endpush --}}
     <!-- End of Topbar -->

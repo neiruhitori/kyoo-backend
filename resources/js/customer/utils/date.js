@@ -111,8 +111,8 @@ export function getFullDate(date) {
     return date.getFullYear() + '-' + month + '-' + day
 }
 
-export function getAbrvDate(date) {
-    return `${date.getDate()} ${MONTHS_ABBR[defaultLocale][date.getMonth()]} ${date.getFullYear()}`
+export function getAbrvDate(date, locale = defaultLocale) {
+    return `${date.getDate()} ${MONTHS_ABBR[locale][date.getMonth()]} ${date.getFullYear()}`
 }
 
 export function formatBrowser(date) {
