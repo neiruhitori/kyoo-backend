@@ -19,7 +19,7 @@ class ReportingServiceController extends Controller
     public function __construct(ReportingServiceRepositoryInterface $reportingServiceRepo)
     {
         $this->reportingService = $reportingServiceRepo;
-        $this->months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $this->months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     }
 
     public function index()
@@ -96,8 +96,8 @@ class ReportingServiceController extends Controller
         $date = date('n') . '-' . date('Y');
 
         if ($request->month) {
-            $date = $this->months[(int) $request->month - 1] . '-' . $request->year;
-            $reportTime = $this->months[(int) $request->month - 1] . ' ' . $request->year;
+            $date = __($this->months[(int) $request->month - 1]) . '-' . $request->year;
+            $reportTime = __($this->months[(int) $request->month - 1]) . ' ' . $request->year;
         }
 
         if ($request->date) {
@@ -108,15 +108,15 @@ class ReportingServiceController extends Controller
         $data = $this->getExportData($request);
 
         $pdf = Pdf::loadView('exports.report.service', [
-            'title' => 'Laporan Layanan',
+            'title' => __('Service Report'),
             'branch' => Auth::user()->Branch,
-            'reportTime' => $reportTime,
+            'reportTime' => __($reportTime),
             'department' => Department::find($request->department_id),
             'data' => $data
         ])
             ->setPaper('a4', 'potrait');
 
-        return $pdf->download('Laporan_Layanan_' . $date . '.pdf');
+        return $pdf->download( __('Service Report') .'_' . $date . '.pdf');
     }
 
     public function exportToExcel(Request $request)
@@ -126,7 +126,7 @@ class ReportingServiceController extends Controller
         $date = date('n') . '-' . date('Y');
 
         if ($request->month) {
-            $date = $this->months[(int) $request->month - 1] . '-' . $request->year;
+            $date = __($this->months[(int) $request->month - 1]) . '-' . $request->year;
         }
 
         if ($request->date) {
@@ -135,7 +135,7 @@ class ReportingServiceController extends Controller
 
         return Excel::download(
             new ReportingServiceExport($request, $this->reportingService),
-            'Laporan_Layanan_' . $date . '.xlsx'
+            __('Service Report') . '_' . $date . '.xlsx'
         );
     }
 }

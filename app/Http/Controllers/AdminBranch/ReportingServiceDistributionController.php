@@ -19,7 +19,7 @@ class ReportingServiceDistributionController extends Controller
     public function __construct(ReportingServiceDistributionRepositoryInterface $reportingServiceDistributionRepo)
     {
         $this->reportingServiceDistribution = $reportingServiceDistributionRepo;
-        $this->months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $this->months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     }
 
     public function index()
@@ -100,8 +100,8 @@ class ReportingServiceDistributionController extends Controller
         $date = date('n') . '-' . date('Y');
 
         if ($request->month) {
-            $date = $this->months[(int) $request->month - 1] . '-' . $request->year;
-            $reportTime = $this->months[(int) $request->month - 1] . ' ' . $request->year;
+            $date = __($this->months[(int) $request->month - 1]) . '-' . $request->year;
+            $reportTime = __($this->months[(int) $request->month - 1]) . ' ' . $request->year;
         }
 
         if ($request->date) {
@@ -112,15 +112,15 @@ class ReportingServiceDistributionController extends Controller
         $data = $this->getExportData($request);
 
         $pdf = Pdf::loadView('exports.report.serviceDistribution', [
-            'title' => 'Laporan Distribusi Tunggu Layanan',
+            'title' => __('Waiting Service Distribution Report'),
             'branch' => Auth::user()->Branch,
-            'reportTime' => $reportTime,
+            'reportTime' => __($reportTime),
             'department' => Department::find($request->department_id),
             'data' => $data
         ])
             ->setPaper('a4', 'potrait');
 
-        return $pdf->download('Laporan_Distribusi_Tunggu_Layanan_' . $date . '.pdf');
+        return $pdf->download(__('Waiting Service Distribution Report').'_' . $date . '.pdf');
     }
 
     public function exportToExcel(Request $request)
@@ -130,7 +130,7 @@ class ReportingServiceDistributionController extends Controller
         $date = date('n') . '-' . date('Y');
 
         if ($request->month) {
-            $date = $this->months[(int) $request->month - 1] . '-' . $request->year;
+            $date = __($this->months[(int) $request->month - 1]) . '-' . $request->year;
         }
 
         if ($request->date) {
@@ -139,7 +139,7 @@ class ReportingServiceDistributionController extends Controller
 
         return Excel::download(
             new ReportingServiceDistributionExport($request, $this->reportingServiceDistribution),
-            'Laporan_Distribusi_Tunggu_Layanan_' . $date . '.xlsx'
+            __('Waiting Service Distribution Report').'_' . $date . '.xlsx'
         );
     }
 }

@@ -28,9 +28,11 @@ Route::middleware(['auth:api'])->prefix('kiosk')->group(function () {
 });
 
 // region routes
-Route::get('allProvince', 'API\RegionController@allProvince');
+Route::get('allProvince/', 'API\RegionController@allProvince');
+Route::get('allProvince/{country}', 'API\RegionController@provinceByCountry');
 Route::get('allRegency', 'API\RegionController@allRegency');
-Route::get('regency/{province}', 'API\RegionController@regencyByProvince');
+// Route::get('regency/{province}', 'API\RegionController@regencyByProvince');
+Route::get('regency/{country}/{province}', 'API\RegionController@regencyByProvince');
 Route::get('regency/city/{id}', 'API\RegionController@regencyById');
 
 // user routes

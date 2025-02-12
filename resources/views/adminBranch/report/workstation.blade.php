@@ -213,7 +213,7 @@
         
         if (!res.length) {
             $("#table tbody").html(`<tr>
-                <td colspan="15" class="text-center">Data tidak ditemukan.</td>
+                <td colspan="15" class="text-center">{{ __('Data not Found') }}</td>
             </tr>`)
             return
         }

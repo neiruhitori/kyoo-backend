@@ -266,15 +266,19 @@
                 <div>
                   <x-icon icon="chat" class="k-icon" />
                 </div>
-
+                
                 <select name="province_id" id="province_id" required>
+                  <option disabled selected>{{ __('Select Province') }}</option>
+                </select>
+                
+                {{-- <select name="province_id" id="province_id" required>
                   <option disabled selected>{{ __('Select Province') }}</option>
                   @foreach ($provinces as $province)
                   <option value="{{ $province->id }}" {{ old('province_id')==$province->id ? 'selected' : '' }}>
                     {{$province->name}}
                   </option>
                   @endforeach
-                </select>
+                </select> --}}
               </div>
 
               @error('province_id')
@@ -361,9 +365,10 @@
     <img class="page-illustration" src="{{ asset('img/illustrations/registration.svg') }}">
   </div>
 
+
   <script>
     $(document).ready(function() {
-      $('#country').val('Indonesia')
+      // $('#country').val('ID')
 
       if ('{{ old('province_id') }}') {
         fetchRegencies('{{ old('province_id') }}')
@@ -371,7 +376,16 @@
 
       $('#province_id').change(() => {
         let provinceId = $('#province_id').val()
-        fetchRegencies(provinceId)
+        let country = $('#country').val()
+        $('#regency_id').html('<option disabled selected>{{ __("Select City") }}</option>');
+        fetchRegencies(country,provinceId)
+      })
+
+      $('#country').change(() => {
+        let country = $('#country').val()
+        $('#province_id').html('<option disabled selected>{{ __("Select Province") }}</option>');
+        $('#regency_id').html('<option disabled selected>{{ __("Select City") }}</option>');
+        fetchProvinces(country)
       })
 
       $('.is-password-visible').click(function () {
@@ -383,10 +397,27 @@
       })
     })
 
-    function fetchRegencies(provinceId) {
+    function fetchProvinces(country){
+      fetch(`/api/allProvince/${country}`)
+        .then(res => res.json())
+        .then(data => {
+          $('#province_id option:not(:disabled)').remove()
+          data.data.forEach(province => {
+            const provinceSelect = $('#province_id')
+
+            provinceSelect.append($("<option></option>")
+              .attr("value", province.id)
+              .text(province.name));
+          });
+        })
+        .catch(err => console.log(err))
+    }
+
+    function fetchRegencies(country,provinceId) {
+      // console.log(provinceId);
       const oldRegency = '{{ old('regency_id') }}'
 
-      fetch(`/api/regency/${provinceId}`)
+      fetch(`/api/regency/${country}/${provinceId}`)
         .then(res => res.json())
         .then(data => {
           $('#regency_id option:not(:disabled)').remove()

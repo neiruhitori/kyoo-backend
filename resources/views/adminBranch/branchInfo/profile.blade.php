@@ -99,13 +99,26 @@
                 @include('layouts.inputError', ['errorName' => 'email'])
             </div>
 
+
             <div class="form-group">
-                <label for="timezone">{{ __('Indonesia Timezone') }}</label>
+                <label for="timezone">{{ __('Select Timezone') }}</label>
                 <select name="timezone" id="timezone" class="form-control @error('timezone') is-invalid @enderror" disabled>
                     <option value="" selected disabled>{{ __('Select Timezone') }}</option>
-                    <option value="WIB">{{ __('WIB') }}</option>
-                    <option value="WITA">{{ __('WITA') }}</option>
-                    <option value="WIT">{{ __('WIT') }}</option>
+                    @switch($branch->country)
+                        @case('Indonesia')
+                        <option value="WIB">{{ __('WIB') }}</option>
+                        <option value="WITA">{{ __('WITA') }}</option>
+                        <option value="WIT">{{ __('WIT') }}</option>
+                            @break
+                        @case('Singapore')
+                        <option value="SGT">{{ __('SGT') }}</option>
+                            @break
+                        @case('Vietnam')
+                        <option value="SGT">{{ __('ICT') }}</option>
+                            @break
+                        @default
+                            
+                    @endswitch
                 </select>
                 @include('layouts.inputError', ['errorName' => 'country'])
             </div>
