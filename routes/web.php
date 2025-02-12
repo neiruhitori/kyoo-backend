@@ -509,13 +509,192 @@ Route::get('scan', 'QRScannerController@index')->name('scan.index');
 
 }); //end of locale prefix
 
-Route::get('DEBUG', function(){
-    $browserLang = request()->getPreferredLanguage();
-    $country = strpos($browserLang, 'id') !== false ? 'ID' : 'EN';
-    dd($country);
+
+Route::get('sgProvinceinputDB', function(){
+    $provinces = [
+        ['name' => 'Central Region'],
+        ['name' => 'East Region'],
+        ['name' => 'North Region'],
+        ['name' => 'North-East Region'],
+        ['name' => 'West Region']
+    ];
+
+    $data = App\Models\SGProvince::insert($provinces);
+
+    return response()->json([
+        'success' => true,
+        'data' => $data
+    ]);
 });
-// Route::get('DEBUG', function(){
-//     return view('register');
-// })->middleware('setlocaledomain');
+Route::get('sgRegenciesinputDB', function(){
+    $regenciesData = [
+        'Central Region' => ['Orchard', 'Marina Bay', 'Novena', 'Newton', 'Bukit Merah'],
+        'East Region' => ['Tampines', 'Bedok', 'Changi', 'Pasir Ris'],
+        'North Region' => ['Woodlands', 'Yishun', 'Sembawang'],
+        'North-East Region' => ['Serangoon', 'Hougang', 'Punggol', 'Sengkang'],
+        'West Region' => ['Jurong', 'Bukit Batok', 'Clementi', 'Boon Lay']
+    ];
+
+    $provinces = App\Models\SGProvince::whereIn('name', array_keys($regenciesData))->get()->keyBy('name');
+
+    $regencies = [];
+    foreach ($regenciesData as $provinceName => $regencyNames) {
+        if (isset($provinces[$provinceName])) {
+            $provinceId = $provinces[$provinceName]->id;
+            foreach ($regencyNames as $regencyName) {
+                $regencies[] = [
+                    'province_id' => $provinceId,
+                    'name' => $regencyName
+                ];
+            }
+        }
+    }
+
+    $data=App\Models\SGRegencies::insert($regencies);
+
+    return response()->json([
+        'success' => true,
+        'data' => $data
+    ]);
+});
+Route::get('vnProvinceinputDB', function(){
+    $provinces = [
+        'An Giang',
+        'Ba Ria - Vung Tau',
+        'Bac Giang',
+        'Bac Kan',
+        'Bac Lieu',
+        'Bac Ninh',
+        'Ben Tre',
+        'Binh Dinh',
+        'Binh Duong',
+        'Binh Phuoc',
+        'Binh Thuan',
+        'Ca Mau',
+        'Can Tho',
+        'Da Nang',
+        'Dak Lak',
+        'Dak Nong',
+        'Dien Bien',
+        'Dong Nai',
+        'Dong Thap',
+        'Gia Lai',
+        'Ha Giang',
+        'Ha Nam',
+        'Ha Tinh',
+        'Hai Phong',
+        'Hanoi',
+        'Ho Chi Minh City',
+        'Hoa Binh',
+        'Hung Yen',
+        'Khanh Hoa',
+        'Kien Giang',
+        'Kon Tum',
+        'Lai Chau',
+        'Lam Dong',
+        'Lang Son',
+        'Lao Cai',
+        'Long An',
+        'Nam Dinh',
+        'Nghe An',
+        'Ninh Binh',
+        'Ninh Thuan',
+        'Phu Tho',
+        'Phu Yen',
+        'Quang Binh',
+        'Quang Nam',
+        'Quang Ngai',
+        'Quang Ninh',
+        'Quang Tri'
+    ];
+
+    $data = [];
+    foreach ($provinces as $province) {
+        $data[] = ['name' => $province];
+    }
+
+    $res = App\Models\VNProvinces::insert($provinces);
+
+    return response()->json([
+        'success' => true,
+        'data' => $res
+    ]);
+});
+Route::get('vnRegenciesinputDB', function(){
+    $regenciesData = [
+        'An Giang' => ['Long Xuyen', 'Chau Doc'],
+        'Ba Ria - Vung Tau' => ['Vung Tau', 'Ba Ria'],
+        'Bac Giang' => ['Bac Giang City'],
+        'Bac Kan' => ['Bac Kan City'],
+        'Bac Lieu' => ['Bac Lieu City'],
+        'Bac Ninh' => ['Bac Ninh City'],
+        'Ben Tre' => ['Ben Tre City'],
+        'Binh Dinh' => ['Quy Nhon'],
+        'Binh Duong' => ['Thu Dau Mot'],
+        'Binh Phuoc' => ['Dong Xoai'],
+        'Binh Thuan' => ['Phan Thiet'],
+        'Ca Mau' => ['Ca Mau City'],
+        'Can Tho' => ['Can Tho'],
+        'Da Nang' => ['Da Nang'],
+        'Dak Lak' => ['Buon Ma Thuot'],
+        'Dak Nong' => ['Gia Nghia'],
+        'Dien Bien' => ['Dien Bien Phu'],
+        'Dong Nai' => ['Bien Hoa'],
+        'Dong Thap' => ['Cao Lanh'],
+        'Gia Lai' => ['Pleiku'],
+        'Ha Giang' => ['Ha Giang City'],
+        'Ha Nam' => ['Phu Ly'],
+        'Ha Tinh' => ['Ha Tinh City'],
+        'Hai Phong' => ['Hai Phong'],
+        'Hanoi' => ['Hanoi'],
+        'Ho Chi Minh City' => ['Ho Chi Minh City'],
+        'Hoa Binh' => ['Hoa Binh City'],
+        'Hung Yen' => ['Hung Yen City'],
+        'Khanh Hoa' => ['Nha Trang'],
+        'Kien Giang' => ['Rach Gia', 'Ha Tien'],
+        'Kon Tum' => ['Kon Tum City'],
+        'Lai Chau' => ['Lai Chau City'],
+        'Lam Dong' => ['Da Lat', 'Bao Loc'],
+        'Lang Son' => ['Lang Son City'],
+        'Lao Cai' => ['Lao Cai City'],
+        'Long An' => ['Tan An'],
+        'Nam Dinh' => ['Nam Dinh City'],
+        'Nghe An' => ['Vinh City'],
+        'Ninh Binh' => ['Ninh Binh City'],
+        'Ninh Thuan' => ['Phan Rang - Thap Cham'],
+        'Phu Tho' => ['Viet Tri'],
+        'Phu Yen' => ['Tuy Hoa'],
+        'Quang Binh' => ['Dong Hoi'],
+        'Quang Nam' => ['Tam Ky', 'Hoi An'],
+        'Quang Ngai' => ['Quang Ngai City'],
+        'Quang Ninh' => ['Ha Long', 'Cam Pha', 'Mong Cai', 'Uong Bi'],
+        'Quang Tri' => ['Dong Ha']
+    ];
+
+    // Ambil data provinsi yang sudah ada di database
+    $provinces = App\Models\VNProvinces::whereIn('name', array_keys($regenciesData))->get()->keyBy('name');
+
+    $regencies = [];
+    foreach ($regenciesData as $provinceName => $regencyNames) {
+        if (isset($provinces[$provinceName])) {
+            $provinceId = $provinces[$provinceName]->id;
+            foreach ($regencyNames as $regencyName) {
+                $regencies[] = [
+                    'province_id' => $provinceId,
+                    'name' => $regencyName
+                ];
+            }
+        }
+    }
+
+    // Insert data ke tabel vnregion_regencies
+    $res = App\Models\VNRegencies::insert($regencies);
+
+
+    return response()->json([
+        'success' => true,
+        'data' => $res
+    ]);
+});
 
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');
