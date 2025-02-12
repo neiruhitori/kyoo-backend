@@ -121,14 +121,14 @@
                     </tr>
                 </thead>
                 <tbody id="tbody_id" class="text-center">
-                    {{-- @foreach ($recordings as $recording)
+                    @foreach ($recordings as $recording)
                         <tr>
                             <td>{{ $recording['filename'] }}</td>
                             <td>{{ $recording['customer_name'] }}</td>
                             <td>{{ $recording['formatted']['created_at'] }}</td>
                             <td>{{ $recording['formatted']['duration'] }}</td>
                         </tr>
-                    @endforeach --}}
+                    @endforeach
                 </tbody>
             </table>
         </div>
