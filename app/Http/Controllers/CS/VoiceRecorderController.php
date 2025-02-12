@@ -73,7 +73,7 @@ class VoiceRecorderController extends Controller
     private function transformResponse(&$recording) {
         $recording['formatted'] = [
             'created_at' => Carbon::parse($recording['created_at'])
-                    ->locale('id')
+                    ->locale(app()->getLocale())
                     ->isoFormat('DD MMMM YYYY HH:mm:ss'),
             'duration' => $this->formatDuration($recording['duration'])
         ];
@@ -88,15 +88,15 @@ class VoiceRecorderController extends Controller
         $seconds = $duration % 3600 % 60;
 
         if ($hours > 0) {
-            $formattedDuration .= $hours . ' Jam';
+            $formattedDuration .= $hours . " " . __('Hour') ;
         }
 
         if ($minutes > 0) {
-            $formattedDuration .= ($hours > 0 ? ' ' : '') . $minutes . ' Menit';
+            $formattedDuration .= ($hours > 0 ? ' ' : '') . $minutes . " " . __('Minutes') ;
         }
 
         if ($seconds > 0) {
-            $formattedDuration .= ($minutes > 0 ? ' ' : '') . $seconds . ' Detik';
+            $formattedDuration .= ($minutes > 0 ? ' ' : '') . $seconds . " " . __('Seconds') ;
         }
 
         return $formattedDuration;
