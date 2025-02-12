@@ -509,54 +509,54 @@ Route::get('scan', 'QRScannerController@index')->name('scan.index');
 
 }); //end of locale prefix
 
+// Still need for prod CAREFUL!
+// Route::get('sgProvinceinputDB', function(){
+//     $provinces = [
+//         ['name' => 'Central Region'],
+//         ['name' => 'East Region'],
+//         ['name' => 'North Region'],
+//         ['name' => 'North-East Region'],
+//         ['name' => 'West Region']
+//     ];
 
-Route::get('sgProvinceinputDB', function(){
-    $provinces = [
-        ['name' => 'Central Region'],
-        ['name' => 'East Region'],
-        ['name' => 'North Region'],
-        ['name' => 'North-East Region'],
-        ['name' => 'West Region']
-    ];
+//     $data = App\Models\SGProvince::insert($provinces);
 
-    $data = App\Models\SGProvince::insert($provinces);
+//     return response()->json([
+//         'success' => true,
+//         'data' => $data
+//     ]);
+// });
+// Route::get('sgRegenciesinputDB', function(){
+//     $regenciesData = [
+//         'Central Region' => ['Orchard', 'Marina Bay', 'Novena', 'Newton', 'Bukit Merah'],
+//         'East Region' => ['Tampines', 'Bedok', 'Changi', 'Pasir Ris'],
+//         'North Region' => ['Woodlands', 'Yishun', 'Sembawang'],
+//         'North-East Region' => ['Serangoon', 'Hougang', 'Punggol', 'Sengkang'],
+//         'West Region' => ['Jurong', 'Bukit Batok', 'Clementi', 'Boon Lay']
+//     ];
 
-    return response()->json([
-        'success' => true,
-        'data' => $data
-    ]);
-});
-Route::get('sgRegenciesinputDB', function(){
-    $regenciesData = [
-        'Central Region' => ['Orchard', 'Marina Bay', 'Novena', 'Newton', 'Bukit Merah'],
-        'East Region' => ['Tampines', 'Bedok', 'Changi', 'Pasir Ris'],
-        'North Region' => ['Woodlands', 'Yishun', 'Sembawang'],
-        'North-East Region' => ['Serangoon', 'Hougang', 'Punggol', 'Sengkang'],
-        'West Region' => ['Jurong', 'Bukit Batok', 'Clementi', 'Boon Lay']
-    ];
+//     $provinces = App\Models\SGProvince::whereIn('name', array_keys($regenciesData))->get()->keyBy('name');
 
-    $provinces = App\Models\SGProvince::whereIn('name', array_keys($regenciesData))->get()->keyBy('name');
+//     $regencies = [];
+//     foreach ($regenciesData as $provinceName => $regencyNames) {
+//         if (isset($provinces[$provinceName])) {
+//             $provinceId = $provinces[$provinceName]->id;
+//             foreach ($regencyNames as $regencyName) {
+//                 $regencies[] = [
+//                     'province_id' => $provinceId,
+//                     'name' => $regencyName
+//                 ];
+//             }
+//         }
+//     }
 
-    $regencies = [];
-    foreach ($regenciesData as $provinceName => $regencyNames) {
-        if (isset($provinces[$provinceName])) {
-            $provinceId = $provinces[$provinceName]->id;
-            foreach ($regencyNames as $regencyName) {
-                $regencies[] = [
-                    'province_id' => $provinceId,
-                    'name' => $regencyName
-                ];
-            }
-        }
-    }
+//     $data=App\Models\SGRegencies::insert($regencies);
 
-    $data=App\Models\SGRegencies::insert($regencies);
-
-    return response()->json([
-        'success' => true,
-        'data' => $data
-    ]);
-});
+//     return response()->json([
+//         'success' => true,
+//         'data' => $data
+//     ]);
+// });
 Route::get('vnProvinceinputDB', function(){
     $provinces = [
         'An Giang',
@@ -613,7 +613,7 @@ Route::get('vnProvinceinputDB', function(){
         $data[] = ['name' => $province];
     }
 
-    $res = App\Models\VNProvinces::insert($provinces);
+    $res = App\Models\VNProvinces::insert($data);
 
     return response()->json([
         'success' => true,
