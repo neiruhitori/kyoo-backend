@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\AdminBranch;
 
+use Auth;
+use App\Log;
+use Storage;
+use Countries;
 use App\Branch;
 use App\BranchType;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Province;
 use App\IndustryCategory;
 use App\ScheduleTemplate;
-use App\Log;
-use Countries;
-use App\Models\Province;
+use App\Models\SGProvince;
+use App\Models\VNProvinces;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminBranch\UpdateBranch;
-use Auth;
-use Storage;
 
 class BranchController extends Controller
 {
@@ -96,9 +98,28 @@ class BranchController extends Controller
 
     public function location()
     {
+        $country = Auth::user()->Branch->country;
+
+        switch ($country) {
+            case 'Indonesia':
+                $provinces = Province::all();
+                break;
+
+            case 'Singapore':
+                $provinces = SGProvince::all();
+                break;
+
+            case 'Vietnam':
+                $provinces = VNProvinces::all();
+                break;
+            
+            default:
+                 $provinces = Province::all();
+                break;
+            }
         $data = [
             'branch' => Branch::find(Auth::user()->branch_id),
-            'provinces' => Province::all()
+            'provinces' => $provinces
         ];
 
         return view('adminBranch.branchInfo.location', $data);

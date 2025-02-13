@@ -9,5 +9,7 @@ class VNProvinces extends Model
 {
     use HasFactory;
     protected $table = 'vnregion_provincies';
+
+    public $timestamps = false;
     protected $fillable = ['name'];
 }

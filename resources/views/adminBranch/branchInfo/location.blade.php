@@ -189,7 +189,8 @@
 
             $('#province_id').change(() => {
                 let provinceId = $('#province_id').val()
-                fetch(`/api/regency/${provinceId}`)
+                let country = "{{ $branch->country }}"
+                fetch(`/api/regency/${country}/${provinceId}`)
                     .then(res => res.json())
                     .then(data => {
                         $('#regency_id option').remove()

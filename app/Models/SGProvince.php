@@ -10,5 +10,6 @@ class SGProvince extends Model
     use HasFactory;
 
     protected $table = 'sgregion_provinces';
-    protected $fillable = ['name'];
+    public $timestamps = false;
+    protected $fillable = ['name','timezone'];
 }

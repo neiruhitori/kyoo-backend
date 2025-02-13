@@ -147,7 +147,21 @@ class Branch extends Model
 
     public function Regency()
     {
-        return $this->belongsTo('App\Models\Regency');
+        $country = Auth::user()->Branch->country;
+        switch ($country) {
+            case 'Indonesia':
+                return $this->belongsTo('App\Models\Regency');
+
+            case 'Singapore':
+                return $this->belongsTo('App\Models\SGRegencies');
+
+            case 'Vietnam':
+                return $this->belongsTo('App\Models\VNRegencies');
+            
+            default:
+                return $this->belongsTo('App\Models\Regency');
+        }
+       
     }
 
     public function Admin()
