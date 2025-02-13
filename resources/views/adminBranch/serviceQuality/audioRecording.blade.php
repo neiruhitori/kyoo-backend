@@ -131,6 +131,7 @@
             return fetch('/admin-branch/service-quality/audio-recording/all?' + query).then(res => {
                 if (res.status === 200) {
                     return res.json().then(json => {
+                        
                         document.getElementById("tbody_id").innerHTML = ''
 
                         json.forEach(data => {
@@ -149,9 +150,12 @@
                                     month: 'long',
                                     year: 'numeric'
                                 };
+                                let locale = "{{ app()->getLocale() }}"
+                                let lang = locale == "id" ? 'id-ID' : 'en-US'; 
 
                                 // console.log(d.toLocaleDateString('en-ZA', options));
-                                let newDate = d.toLocaleDateString('id-ID', options);
+                                // let newDate = d.toLocaleDateString('id-ID', options);
+                                let newDate = d.toLocaleDateString(lang, options);
 
                                 //add data to table
                                 let table_body = document.getElementById("tbody_id");
@@ -178,7 +182,7 @@
                                     second = data.duration % 60
                                     cell5.innerHTML = minute + ":" + second;
                                 } else {
-                                    cell5.innerHTML = data.duration + ' seconds';
+                                    cell5.innerHTML = data.duration + " {{ __('Seconds') }}";
                                 }
 
                                 // savedAudioMessagesContainer.append(audioElement);
