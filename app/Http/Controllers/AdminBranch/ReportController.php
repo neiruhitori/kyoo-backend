@@ -308,6 +308,52 @@ class ReportController extends Controller
     $date = $start_date;
     $booking_form = $request->booking_form ?: 'standard-form';
 
+    if($request->has('sort') && $request->sort == 'reserve_date'){
+        $reserve_date = $request->reservation_date;
+        $appointment_onsites = AppointmentOnsite::query()
+        ->whereHas('Slot.Service', function ($query) use ($request) {
+            if ($request->service_id) {
+                $query->where('id', $request->service_id);
+            } else {
+                $query->where('branch_id', Auth::user()->branch_id);
+            }
+        })
+        ->whereDate('appointment_onsites.date', '>=', $reserve_date)
+        ->join('services', 'appointment_onsites.service_id', '=', 'services.id')
+        ->orderBy('services.name')
+        ->orderBy('start_time')
+        ->select('appointment_onsites.*')
+        ->get();
+
+        $filteredAppointments = $appointment_onsites->filter(function ($appointment) use ($booking_form) {
+            switch ($booking_form) {
+                case 'standard-form':
+                    return true;
+        
+                case 'form-medical-1':
+                    return !empty($appointment->reason_for_visit) || !empty($appointment->passport_number);
+        
+                case 'form-financing':
+                    return !empty($appointment->contract_number);
+        
+                default:
+                    return true;
+            }
+        });
+        // dd($filteredAppointments);
+
+            return view('adminBranch.report.directQueue.appointmentOnsite', [
+                'appointment_onsites' => $filteredAppointments,
+                'start_date' => $start_date,
+                'reserve_date' => $reserve_date,
+                'end_date' => $end_date,
+                'service_id' => $request->service_id,
+                'booking_form' => $booking_form,
+                'success' => true
+            ]);
+        }
+
+
     if (!Auth::user()->Branch->BranchType->is_premium) {
         $last_month = date("Y-m-d", strtotime("-3 months"));
         if ($start_date < $last_month) {
@@ -370,7 +416,7 @@ class ReportController extends Controller
                     return true;
             }
         });
-        
+        // dd($filteredAppointments);
 
     return view('adminBranch.report.directQueue.appointmentOnsite', [
         'appointment_onsites' => $filteredAppointments,
