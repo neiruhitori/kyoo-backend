@@ -106,15 +106,15 @@
                     <option value="" selected disabled>{{ __('Select Timezone') }}</option>
                     @switch($branch->country)
                         @case('Indonesia')
-                        <option value="WIB" {{ $branch->timezone == 'WIB' ? 'selected' : '' }}>{{ __('WIB') }}</option>
-                        <option value="WITA" {{ $branch->timezone == 'WITA' ? 'selected' : '' }}>{{ __('WITA') }}</option>
-                        <option value="WIT" {{ $branch->timezone == 'WIT' ? 'selected' : '' }}>{{ __('WIT') }}</option>
+                        <option value="WIB" {{ $branch->timezone == 'WIB' ? 'selected' : '' }}>Indonesia {{ __('WIB') }} (GMT +7)</option>
+                        <option value="WITA" {{ $branch->timezone == 'WITA' ? 'selected' : '' }}>Indonesia {{ __('WITA') }} (GMT +8)</option>
+                        <option value="WIT" {{ $branch->timezone == 'WIT' ? 'selected' : '' }}>Indonesia {{ __('WIT') }} (GMT +9)</option>
                             @break
                         @case('Singapore')
-                        <option value="SGT" selected>{{ __('SGT') }}</option>
+                        <option value="SGT" selected>Singapore {{ __('SGT') }} (GMT+7)</option>
                             @break
                         @case('Vietnam')
-                        <option value="ICT" selected>{{ __('ICT') }}</option>
+                        <option value="ICT" selected>Vietnam {{ __('ICT') }} (GMT+7)</option>
                             @break
                         @default
                             
