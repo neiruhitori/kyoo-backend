@@ -38,13 +38,30 @@
                     <div class="row">
                         <div class="col-lg-4 col-md-12">
                             <form action="" method="get">
-                                <div class="form-group">
+                                <div class="form-group d-none" id="reservation_date">
+                                    <label for="">{{ __('Select Reservation Date') }}</label>
+                                    <input type="date" name="reservation_date" class="form-control" value="{{ $reserve_date ?? $start_date }}" />
+                                </div>
+                                <div class="form-group" id="start_date">
                                     <label for="">{{ __('Select Start Date') }}</label>
                                     <input type="date" name="start_date" class="form-control" value="{{ $start_date }}" />
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" id="end_date">
                                     <label for="">{{ __('Select End Date') }}</label>
                                     <input type="date" name="end_date" class="form-control" value="{{ $end_date }}" />
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
+                                </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-12">
+                                <div class="form-group">
+                                    <label for="">{{ __('Sort') }}</label>
+                                    <select name="sort" id="sort" class="form-control">
+                                        <option value="order_date">Order Date</option>
+                                        <option value="reserve_date" {{ isset($reserve_date) && $reserve_date ? 'selected' : '' }}>Reservation Date</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="">{{ __('Select Service') }}</label>
@@ -55,6 +72,9 @@
                                         @endforeach
                                     </select>
                                 </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                
                                 <div class="form-group">
                                     <label for="">{{ __('Booking Form') }}</label>
                                     <select name="booking_form" id="booking_form" class="form-control">
@@ -63,11 +83,8 @@
                                         <option value="form-financing" {{ $booking_form == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                     <div class="row">
                         <div class="col">
@@ -199,6 +216,29 @@
             </div>
         </div>
     </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {    
+    const sortOpt = document.getElementById('sort');
+    
+    function updateDisplay() {
+        if (sortOpt.value == 'reserve_date') {
+            document.getElementById('reservation_date').classList.remove('d-none');
+            document.getElementById('start_date').classList.add('d-none');
+            document.getElementById('end_date').classList.add('d-none');
+        } else {
+            document.getElementById('reservation_date').classList.add('d-none');
+            document.getElementById('start_date').classList.remove('d-none');
+            document.getElementById('end_date').classList.remove('d-none');
+        }
+    }
+
+    updateDisplay();
+
+    sortOpt.addEventListener('change', updateDisplay);
+});
+
+    </script>
 @endsection
 @push('js')
     <script src="{{asset('admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
