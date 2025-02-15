@@ -58,7 +58,7 @@
                                                 </td>
                                                 <td>{{$branch->IndustryCategory->name}}</td>
                                                 <td>{{$branch->name}}</td>
-                                                <td>{{$branch->address}}, {{$branch->Regency->name}}</td>
+                                                <td>{{$branch->address}}, {{$branch->Regency->name ?? 'City not Found'}}</td>
                                                 <td>
                                                     @if ($branch->BranchType)
                                                     {{$branch->BranchType->code}} - {{$branch->BranchType->name}}
