@@ -264,11 +264,13 @@
                           {{ queue.service.name }}
                         </td>
                         <td>
-                          <span
-                            class="badge badge-secondary"
-                            v-show="queue.status == 'waiting'"
-                            >Menunggu</span
-                          >
+                          <div class="d-flex align-items-center">
+                            <span
+                              class="badge badge-secondary"
+                              v-show="queue.status == 'waiting'"
+                              >Menunggu </span
+                            >
+                          
                           <span
                             class="badge badge-info"
                             v-show="queue.status == 'served'"
@@ -277,7 +279,7 @@
                           <span
                             class="badge badge-warning"
                             v-show="queue.status == 'requeue'"
-                            >Antri Ulang</span
+                            >Antri Ulang </span
                           >
                           <span
                             class="badge badge-danger"
@@ -289,6 +291,8 @@
                             v-show="queue.status == 'end served'"
                             >Layanan Selesai</span
                           >
+                          <p class="fw-bolder text-danger m-2" v-if="queue.requeue_count > 0 && queue.status !== 'requeue'">(U)</p>
+                          </div>
                         </td>
                       </tr>
                     </template>
