@@ -60,20 +60,19 @@ function AppointmentOnsiteVisitorInformation() {
     if (serviceQuery.status === 'success') {
         service = serviceQuery.data
     }
-
+    const selectedTemplateForm = service?.template_form_booking ?? branch?.branch_configuration.template_booking_form;
     const validationMessage = {
         name: validator.message('name', name, ['required']),
         phone: validator.message('phone', phone, ['required', 'phone']),
         email: validator.message('email', email, ['required', 'email']),
-        
-        ...(branch && branch.branch_configuration.template_booking_form === 'form-medical-1' && {
+        ...(selectedTemplateForm === 'form-medical-1' && {
             dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
             address: validator.message('address', address, []),
             emergencyNumber: validator.message('emergencyNumber', emergencyNumber, ['phone']),
             passportNumber: validator.message('passportNumber', passportNumber, ['passportNumber']),
             reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
         }),
-        ...(branch && branch.branch_configuration.template_booking_form === 'form-financing' && {
+        ...(selectedTemplateForm === 'form-financing' && {
             contractNumber: validator.message('contractNumber', contractNumber, ['required','contractNumber']),
             email: validator.message('email', email, ['email']),
         }),
