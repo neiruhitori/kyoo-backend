@@ -291,7 +291,11 @@
                             v-show="queue.status == 'end served'"
                             >Layanan Selesai</span
                           >
-                          <p class="fw-bolder text-danger m-2" v-if="queue.requeue_count > 0 && queue.status !== 'requeue'">(U)</p>
+                          <span
+                            class="badge badge-warning ml-1"
+                            v-if="queue.requeue_count > 0 && queue.status !== 'requeue'"
+                            >U</span
+                          >
                           </div>
                         </td>
                       </tr>
@@ -458,6 +462,8 @@ export default {
   },
 
   async mounted () {
+    console.log(this.sub_services);
+    console.log(this.filteredSubServices);
     await this.getQueues();
     const [selected_queue] = this.queues.filter(v => v.status === 'served');
     if (selected_queue) {
