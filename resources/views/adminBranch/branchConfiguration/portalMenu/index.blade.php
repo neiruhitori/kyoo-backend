@@ -199,7 +199,7 @@
     </div>
     <div class="col-md-12 col-sm-6 mt-4">
         <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade mx-2 my-4" id="portal-menu" role="tabpanel" aria-labelledby="portal-menu-tab">
+        <div class="tab-pane fade show active" id="portal-menu" role="tabpanel" aria-labelledby="portal-menu-tab">
         <form action="{{ route('admin-branch.branch-configuration.menu-portal') }}" method="POST">
             @csrf
             @method('PUT')
@@ -265,28 +265,11 @@
                             </div> --}}
                         </label>
                     </div>
-                   
-                    {{-- <table class="table" style="max-width: 75%">
-                        <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Service</th>
-                            <th scope="col">Form</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                          </tr>
-                        </tbody>
-                    </table> --}}
                 </div>
             </div>
         </form>
         </div>
-        <div class="tab-pane fade show active " id="portal-service" role="tabpanel" aria-labelledby="portal-service-tab">
+        <div class="tab-pane fade mx-2 my-4" id="portal-service" role="tabpanel" aria-labelledby="portal-service-tab">
             <div class="mx-4 my-4">
                 <table class="table">
                     <form action="{{ route('admin-branch.branch-configuration.menu-portal.service.update') }}" method="POST">
