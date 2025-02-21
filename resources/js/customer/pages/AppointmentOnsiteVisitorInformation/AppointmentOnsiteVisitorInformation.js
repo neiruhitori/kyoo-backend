@@ -15,6 +15,7 @@ import Loading from '../../components/Loading'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import { fetchBranch } from '../../api/branch'
+import { fetchServiceById } from '../../api/services'
 
 function useForceUpdate(){
     const [value, setValue] = useState(0)
@@ -47,11 +48,17 @@ function AppointmentOnsiteVisitorInformation() {
     const [selectedButton, setSelectedButton] = useState('submit')
 
     let branch = null
+    let service = null
+    let bookingFormService = null
 
     const branchQuery = useQuery(['branch', branchId], () => fetchBranch(branchId))
-
+    const serviceQuery = useQuery(['service', serviceId], () => fetchServiceById(serviceId, { queueType: '', date: '' }))
+    
     if (branchQuery.status === 'success') {
         branch = branchQuery.data
+    }
+    if (serviceQuery.status === 'success') {
+        service = serviceQuery.data
     }
 
     const validationMessage = {
@@ -232,15 +239,32 @@ function AppointmentOnsiteVisitorInformation() {
     );
 
     const renderForm = () => {
-        switch (branch?.branch_configuration.template_booking_form) {
-            case 'standard-form':
-                return renderStandardUI();
-            case 'form-medical-1':
-                return renderMedicalUI();
-            case 'form-financing':
-                return renderFinanceUI();
-            default:
-                return null;
+        let bookingFormService = serviceQuery.data?.template_form_booking;
+        if (serviceQuery.isLoading) {
+            return <p>Loading...</p>; 
+        }
+        if(bookingFormService == null){
+            switch (branch?.branch_configuration.template_booking_form) {
+                case 'standard-form':
+                    return renderStandardUI();
+                case 'form-medical-1':
+                    return renderMedicalUI();
+                case 'form-financing':
+                    return renderFinanceUI();
+                default:
+                    return null;
+            }
+        }else{
+            switch (bookingFormService) {
+                case 'standard-form':
+                    return renderStandardUI();
+                case 'form-medical-1':
+                    return renderMedicalUI();
+                case 'form-financing':
+                    return renderFinanceUI();
+                default:
+                    return null;
+            }
         }
     };
 
