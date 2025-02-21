@@ -200,7 +200,7 @@ class DirectQueueController extends Controller
         $subServices = $user->flatMap(function ($workstationService) {
             $service = $workstationService->Service;
             return $service ? $service->SubServices : collect();
-        })->unique('id');
+        });
         return view('cs.directQueue.monitor', ['sub_services' => $subServices]);
     }
 

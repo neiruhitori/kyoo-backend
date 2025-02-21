@@ -243,6 +243,7 @@ class ReportController extends Controller
                 'service_transfer' => $directQueue->NewService ? $directQueue->NewService->name : '-',
                 'customer_service' => $directQueue->Vct ? $directQueue->Vct->name : '-',
                 'status' => __(ucwords($directQueue->status)),
+                'requeue_count' => $directQueue->requeue_count > 0 ? 'Antri Ulang' : '-',
             ];
         });
 
