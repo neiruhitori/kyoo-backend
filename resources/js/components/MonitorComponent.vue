@@ -462,8 +462,6 @@ export default {
   },
 
   async mounted () {
-    console.log(this.sub_services);
-    console.log(this.filteredSubServices);
     await this.getQueues();
     const [selected_queue] = this.queues.filter(v => v.status === 'served');
     if (selected_queue) {
