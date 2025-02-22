@@ -76,6 +76,11 @@ function AppointmentOnsiteVisitorInformation() {
             contractNumber: validator.message('contractNumber', contractNumber, ['required','contractNumber']),
             email: validator.message('email', email, ['email']),
         }),
+        ...(selectedTemplateForm === 'form-medical-2' && {
+            dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
+            reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
+            email: validator.message('email', email, ['email']),
+        }),
     };
 
     const bookingMutation = useMutation('booking', (data) => createAppointmentOnsite(data))
@@ -236,6 +241,48 @@ function AppointmentOnsiteVisitorInformation() {
                 />
             </div>
     );
+    
+    const renderMedicalUI2 = () => (
+        <div style={{ flex: '1 1 0%' }}>
+                <TextField
+                    label="Nama/Name"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ch. John Doe"
+                    error={!!validationMessage.name}
+                    helperText={validationMessage.name}
+                />
+                <TextField
+                    label="Tanggal lahir/DOB"
+                    type="date"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    error={!!validationMessage.dateOfBirth}
+                    helperText={validationMessage.dateOfBirth}
+                />
+                <TextField
+                    label="No. Telepon/Phone number"
+                    type="tel"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+62"
+                    error={!!validationMessage.phone}
+                    helperText={validationMessage.phone}
+                />
+                <TextField
+                    label="Alasan Kunjungan/Reason for visit"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={reasonForVisit}
+                    onChange={(e) => setReasonForVisit(e.target.value)}
+                    placeholder="Ch. CheckUp"
+                    error={!!validationMessage.reasonForVisit}
+                    helperText={validationMessage.reasonForVisit}
+                />
+            </div>
+    );
 
     const renderForm = () => {
         let bookingFormService = serviceQuery.data?.template_form_booking;
@@ -248,6 +295,8 @@ function AppointmentOnsiteVisitorInformation() {
                     return renderStandardUI();
                 case 'form-medical-1':
                     return renderMedicalUI();
+                case 'form-medical-2':
+                    return renderMedicalUI2();
                 case 'form-financing':
                     return renderFinanceUI();
                 default:
@@ -259,6 +308,8 @@ function AppointmentOnsiteVisitorInformation() {
                     return renderStandardUI();
                 case 'form-medical-1':
                     return renderMedicalUI();
+                case 'form-medical-2':
+                    return renderMedicalUI2();
                 case 'form-financing':
                     return renderFinanceUI();
                 default:
