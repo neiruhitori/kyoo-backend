@@ -19,7 +19,7 @@ class PortalMenuController extends Controller
 
     public function formServiceUpdate(Request $request)
     {
-        $formTemplates = $request->template_form_service_;
+        $formTemplates = $request->template_form_service;
 
         foreach ($formTemplates as $serviceId => $formTemplate) {
             $form = $formTemplate == 'none' ? null : $formTemplate;
@@ -27,10 +27,8 @@ class PortalMenuController extends Controller
                 'template_form_booking' => $form
             ]);
         }
-
+        $request->session()->flash('warning', __('Portal Menu has been updated'));
         return back();
-        // $id = $request->all();
-        // dd($id);
     }
 
     public function update(Request $request)
