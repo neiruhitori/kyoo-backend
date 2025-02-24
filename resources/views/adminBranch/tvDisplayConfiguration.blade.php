@@ -737,7 +737,7 @@
                                             <div class="form-group">
                                                 <label for="youtube_volume">{{ __('Volume') }}</label>
                                                 <div class="d-flex">
-                                                    <input class="mr-3" type="range" id="youtube_volume" name="youtube_volume" min="1" max="100" value="{{ $layout_configuration->youtube_volume }}" >
+                                                    <input class="mr-3" type="range" id="youtube_volume" name="youtube_volume" min="1" max="100" value="{{ $layout_configuration->youtube_volume ?? 1 }}" >
                                                     <small id="volumePercent"></small>
                                                 </div>
                                             </div>

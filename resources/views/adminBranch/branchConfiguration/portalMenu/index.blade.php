@@ -184,19 +184,30 @@
 </div>
 
 <div class="card shadow mb-4">
-    <div class="card-header">
-        <h6 class="font-weight-bold text-primary mb-0">
+    <div class="card-header pb-0">
+        {{-- <h6 class="font-weight-bold text-primary mb-0">
             Portal Menu
-        </h6>
+        </h6> --}}
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+             <a class="nav-link active px-5" id="portal-menu-tab" data-toggle="tab" href="#portal-menu" role="tab" aria-controls="portal-menu" aria-selected="true">Portal Menu</a>
+            </li>
+            @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+            <li class="nav-item" role="presentation">
+             <a class="nav-link px-5" id="portal-service-tab" data-toggle="tab" href="#portal-service" role="tab" aria-controls="invoice" aria-selected="false">Portal Menu (Service)</a>
+            </li>
+            @endif
+        </ul>
     </div>
-    <div class="col-md-12 col-sm-12 mt-3">
+    <div class="col-md-12 col-sm-6 mt-4">
+        <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="portal-menu" role="tabpanel" aria-labelledby="portal-menu-tab">
         <form action="{{ route('admin-branch.branch-configuration.menu-portal') }}" method="POST">
             @csrf
             @method('PUT')
     
             <div class="">
                 <div class="row">
-                 
                     <div class="form-group ml-3 col-md-5" style="width: 250px;">
                         <label for="select-template">Pilih layout yang sesuai</label>
                         <select name="layer" id="selectLayer" class="form-control" onchange="changeLayout(this)">
@@ -206,9 +217,23 @@
                             </option>
                         </select>
                     </div>
-                    @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_appointment)
-                    <div class="col-md" id="formBookingAppointment">
-                        <div class="form-group">
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-7 d-flex" >
+                        @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+                        <div class="form-group ml-3" id="formBooking">
+                            <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
+                            <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror" >
+                                <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
+                                <option value="form-medical-1" {{ $branchConfiguration->template_booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
+                                <option value="form-medical-2" {{ $branchConfiguration->template_booking_form == 'form-medical-2' ? 'selected' : '' }}>Form Medical 2</option>
+                                <option value="form-financing" {{ $branchConfiguration->template_booking_form == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
+                            </select>
+                            @include('layouts.inputError', ['errorName' => 'template_booking_form'])
+                        </div>
+                        @endif
+                        @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_appointment)
+                        <div class="form-group ml-3" id="formBookingAppointment">
                             <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
                             <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror" style="width: 240px">
                                 <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
@@ -216,26 +241,15 @@
                             </select>
                             @include('layouts.inputError', ['errorName' => 'template_booking_form'])
                         </div>
-                    </div>
-                    @endif
-
-                    @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
-                    <div class="col-md" id="formBooking">
-                        <div class="form-group">
-                            <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
-                            <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror" >
-                                <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
-                                <option value="form-medical-1" {{ $branchConfiguration->template_booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
-                                <option value="form-financing" {{ $branchConfiguration->template_booking_form == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
-                            </select>
-                            @include('layouts.inputError', ['errorName' => 'template_booking_form'])
+                        @endif
+                        <div class="col-md-5 mb-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-warning ml-1 ">Simpan Form</submit>
                         </div>
                     </div>
-                    @endif
-                  
-        </div>
+            </div>
+        
 
-                <div class="d-flex mb-2 ml-3">
+                <div class="d-flex mb-2 ml-2">
                     <div class="d-flex flex-column align-items-center" >
                         <label for="one-layer" class="bg-secondary mx-2 p-2 rounded" id="one-layer">
                             <img src="{{ asset('img/portal-menu/1-layer.jpeg') }}" style="width: 175px; height: 295px" alt="">
@@ -254,15 +268,49 @@
                             </div> --}}
                         </label>
                     </div>
-                   
-                </div>
-               
-
-                <div class="col-md-7 ml-2 mb-3">
-                    <button type="submit" class="btn btn-warning ml-1 ">Simpan</submit>
                 </div>
             </div>
         </form>
+        </div>
+    @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
+        <div class="tab-pane fade mx-2 my-4" id="portal-service" role="tabpanel" aria-labelledby="portal-service-tab">
+            <div class="mx-4 my-4">
+                <table class="table">
+                    <form action="{{ route('admin-branch.branch-configuration.menu-portal.service.update') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="d-flex justify-content-between mb-2">
+                        <h5>Form Template (Service)</h5>
+                        <button type="submit" class="btn btn-warning ">Simpan Form</submit>
+                    </div>
+                    <thead>
+                      <tr>
+                        <th scope="col">Service</th>
+                        <th scope="col">Template Booking Form</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($services as $service)
+                        <tr>
+                             <td>{{ $service->name }}</td>
+                             <td>
+                                 <select name="template_form_service [{{ $service->id }}]" id="template_form_service" class="form-control" >
+                                     <option value="none" {{ $service->template_form_booking == null ? 'selected' : '' }}>None</option>
+                                     <option value="standard-form" {{ $service->template_form_booking == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
+                                     <option value="form-medical-1" {{ $service->template_form_booking == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
+                                     <option value="form-medical-2" {{ $branchConfiguration->template_booking_form == 'form-medical-2' ? 'selected' : '' }}>Form Medical 2</option>
+                                     <option value="form-financing" {{ $service->template_form_booking == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
+                                 </select>
+                             </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </form>
+                  </table>
+            </div>
+        </div>
+    @endif
+        </div>
     </div>
    
 </div>
@@ -294,7 +342,7 @@
                         twoDesc.style.display = 'block';
                         oneLayer.style.display = 'none';
                         twoLayer.style.display = 'flex';
-                        formBooking.style.display = 'flex';
+                        formBooking.style.display = 'block';
                     }
                 }
                 window.onload = function() {
