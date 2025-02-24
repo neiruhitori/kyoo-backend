@@ -294,11 +294,11 @@
                         <tr>
                              <td>{{ $service->name }}</td>
                              <td>
-                                 <select name="template_form_service [{{ $service->id }}]" id="template_form_service" class="form-control" >
+                                 <select name="template_form_service[{{ $service->id }}]" id="template_form_service" class="form-control" >
                                      <option value="none" {{ $service->template_form_booking == null ? 'selected' : '' }}>None</option>
                                      <option value="standard-form" {{ $service->template_form_booking == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
                                      <option value="form-medical-1" {{ $service->template_form_booking == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
-                                     <option value="form-medical-2" {{ $branchConfiguration->template_booking_form == 'form-medical-2' ? 'selected' : '' }}>Form Medical 2</option>
+                                     <option value="form-medical-2" {{ $service->template_form_booking == 'form-medical-2' ? 'selected' : '' }}>Form Medical 2</option>
                                      <option value="form-financing" {{ $service->template_form_booking == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
                                  </select>
                              </td>
