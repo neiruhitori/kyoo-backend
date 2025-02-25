@@ -89,6 +89,20 @@
 
                                 @include('layouts.inputError', ['errorName' => 'prices'])
                             </div>
+                                <div class="form-group">
+                                <label for="prices">{{ __('Harga Billing (Oversea)') }} <small class="text-danger ml-2">*Dalam format USD</small></label>
+
+                                <input
+                                    name="en_prices"
+                                    type="number"
+                                    class="form-control
+                                    @error('prices') is-invalid @enderror"
+                                    value="{{old('en_prices') ?: ($prices->en_prices ?: 0)}}"
+                                    required
+                                >
+
+                                @include('layouts.inputError', ['errorName' => 'prices'])
+                            </div>
                             <div class="form-group">
                                 <label for="subscription_duration">Durasi Langganan</label>
                                 <select

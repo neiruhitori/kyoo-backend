@@ -266,15 +266,6 @@
                             </div> --}}
                         </label>
                     </div>
-<<<<<<< HEAD
-                   
-                </div>
-               
-
-                <div class="col-md-7 ml-2 mb-3">
-                    <button type="submit" class="btn btn-warning ml-1 ">{{ __('Save') }}</submit>
-=======
->>>>>>> origin/signage-sound-fix
                 </div>
             </div>
         </form>

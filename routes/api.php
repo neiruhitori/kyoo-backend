@@ -128,6 +128,7 @@ Route::get('search', 'API\SearchQueueController');
 
 
 Route::post('/subscription/callback','AdminBranch\BillingController@callbackInvoice');
+Route::post('/paypal/callback','AdminBranch\BillingController@callbackPaypal');
 /**
  * External API Routes
  */

@@ -94,6 +94,7 @@ class BillingController extends Controller
         $request->validate([
             'billing_types' => 'required|string',
             'prices' => 'required|string',
+            'en_prices' => 'required',
             'subscription_duration' => 'required|integer',
         ]);
         if (strpos($request->prices, '.') !== false || strpos($request->prices, ',') !== false) {
@@ -104,6 +105,7 @@ class BillingController extends Controller
         $price = BillingPricesModel::where('id',$id)->update([
             "billing_types" => $request->billing_types,
             "prices" => $request->prices,
+            "en_prices" => $request->en_prices,
             "subscription_duration" => $request->subscription_duration,
         ]);
         if(!$price){

@@ -39,6 +39,7 @@
                                                 <th>{{ __('Tipe Antrian') }}</th>
                                                 <th>{{ __('Tipe Lisensi') }}</th>
                                                 <th>{{ __('Nominal') }}</th>
+                                                <th>{{ __('Nominal (USD)') }}</th>
                                                 <th>{{ __('Lama Langganan') }}</th>
                                                 <th>{{ __('Action') }}</th>
                                             </tr>
@@ -67,6 +68,7 @@
                                                     @endif 
                                                 </td>
                                                 <td>Rp. {{ number_format($p->prices, 2, ',', '.') }}</td>
+                                                <td>USD ${{ $p->en_prices ?: 0}}</td>
                                                 <td>
                                                   {{ $p->subscription_duration }} Bulan
                                                 </td>

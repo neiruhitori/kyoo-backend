@@ -113,17 +113,24 @@
                 <x-icon icon="group" class="k-icon" />
               </div>
 
+             
               <select name="queue_type" id="queue_type" required>
                 <option disabled selected>{{ __('Select Queue Type') }}</option>
+                @if (app()->getLocale() == 'en')
+                <option value="appointment_queue" {{ old('queue_type')=='appointment_queue' ? 'selected' : '' }}>
+                  {{ __('Appointment Queue') }}
+                </option>
+              @else
                 <option value="direct_queue" {{ old('queue_type')=='direct_queue' ? 'selected' : '' }}>
-                  Antrian Onsite
+                  {{ __('Direct Queue') }}
                 </option>
                 <option value="appointment_queue" {{ old('queue_type')=='appointment_queue' ? 'selected' : '' }}>
-                  Antrian Appointment
+                  {{ __('Appointment Queue') }}
                 </option>
                 <option value="exhibition_queue" {{ old('queue_type')=='exhibition_queue' ? 'selected' : '' }}>
-                  Antrian Exhibition
+                  {{ __('Exhibition Queue') }}
                 </option>
+              @endif
               </select>
             </div>
 

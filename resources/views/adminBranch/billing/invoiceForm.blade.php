@@ -154,10 +154,10 @@
                 </div>
                 <div class="col mb-2">
                     <div>{{ __('Payment Status') }}: </div>
-                    <b><span class="badge badge-warning text-dark" >{{ $unpaidInvoice->status}}</span></b>
+                    <b id="unpaidStatus"><span class="badge badge-warning text-dark" >{{ $unpaidInvoice->status}}</span></b>
                 </div>
                 <div class="col mb-2">
-                    <a href="{{ $unpaidInvoice->invoice_url}}" target="_blank" class="btn btn-primary py-2 px-3">{{ __('Pay Here') }}</a>
+                    <a href="{{ $unpaidInvoice->invoice_url}}" target="_blank" class="btn btn-primary py-2 px-3" id="payButton">{{ __('Pay Here') }}</a>
                 </div>
             </div>
         </div>
@@ -175,12 +175,16 @@
 
                     <div class="mx-4 my-4">
                         <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;" class="pt-1">{{ __('Package Options') }}:</h6>
+                            <h6 style="min-width: 150px;" class="pt-1">{{ __('License Type') }}:</h6>
                             <div class="d-flex">
                                 <select class="custom-select" id="packageSelection" name="packageSelection" style="max-width: 300px;"  {{ $unpaidInvoice ? 'disabled' : '' }}>
                                     <option value="lite" {{ $subscription && $subscription->package == 'lite' ? 'selected' : '' }}>Lite</option>
                                     <option value="premium" {{ $subscription && $subscription->package == 'premium' ? 'selected' : '' }}>Premium</option>
+                                    @if (Auth::user()->Branch->country == 'Indonesia')
                                     <option value="custom" {{ $subscription && $subscription->package == 'custom' ? 'selected' : '' }}>Custom</option>
+                                    @else
+                                        
+                                    @endif
                                 </select>
                             </div>
                         </div> 
@@ -215,19 +219,19 @@
                             <p class="pt-2 ml-3">{{ __('Workstation') }}</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;" class="pt-1">{{ __('Virtual Counter') }}:</h6>
+                            <h6 style="min-width: 150px;" class="pt-1">{{ __('Staff') }}:</h6>
                             <input style="max-width: 200px;" type="number" class="form-control" name="services" id="services" min="1" max="15" required value="{{ $subscription ? $subscription->max_service  : '1' }}" readonly>
-                            <p class="pt-2 ml-3">{{ __('Officer') }}</p>
+                            <p class="pt-2 ml-3">{{ __('Staff') }}</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <h6 style="min-width: 150px;" class="pt-1">Web Kiosk:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="kiosk" id="kiosk" required value="{{ $subscription ? $subscription->kiosk  : '0' }}" readonly>
+                            <input style="max-width: 200px;" type="number" class="form-control" name="kiosk" id="kiosk" min="0" max="3" required value="{{ $subscription ? $subscription->kiosk  : '0' }}" readonly>
                             <p class="pt-2 ml-3">{{ __('Device') }}</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
                             <div id="web-signage" style="display: flex">
                                 <h6 style="min-width: 150px;" class="pt-1">Web Signage TV:</h6>
-                                <input style="max-width: 200px;" type="number" class="form-control" name="signage" id="signage" min="1" value="1" required readonly>
+                                <input style="max-width: 200px;" type="number" class="form-control" name="signage" id="signage" min="1" max="3" value="1" required readonly>
                                 <p class="pt-2 ml-3">{{ __('Device') }}</p>
                             </div>
                         </div>
@@ -237,6 +241,7 @@
                                 <b></b>
                             </div>
                         </div>
+                        
                         <input type="hidden" name="amount" id="amount">
                        
                     </div>
@@ -258,83 +263,99 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title text-dark" id="staticBackdropLabel"><b>{{ __('Kyoo Subscription') }}</b></h5>
+          <h5 class="modal-title text-dark" id="staticBackdropLabel"><b>{{ __('KYOO Subscription') }}</b></h5>
         </div>
         <div class="modal-body">
           <div class="row " style="color: #000">
-            <div class="col-md-12">
+            <div class="col-md-3">
                 <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 105px"><b>{{ __('Package Options') }}:</b></h6>
-                        <div class="ml-2" style="min-width: 200px">
-                            <h6 class="" id="md_license"></h6>
-                        </div>
+                    <h6 class="mr-2" style="min-width: 105px"><b>{{ __('License Type') }}:</b></h6>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="ml-2" style="min-width: 200px">
+                    <h6 class="" id="md_license"></h6>
                 </div>
             </div>
 
-            <div class="col-md-12">
+            <div class="col-md-3">
                 <div class="d-flex align-items-center mb-2">
                     <h6 class="mr-2" style="min-width: 105px"><b>{{ __('Queue Type') }}:</b></h6>
-                        <div class="ml-2" style="min-width: 200px">
-                            <h6 class="" id="md_queue_type"></h6>
-                        </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="ml-2" style="min-width: 200px">
+                    <h6 class="" id="md_queue_type"></h6>
                 </div>
             </div>
             
-            <div class="col-md-12">
+            <div class="col-md-3">
                 <div class="d-flex align-items-center mb-2">
                     <h6 class="mr-2" style="min-width: 105px"><b>{{ __('Subs. Duration') }}:</b></h6>
-                        <div  class="ml-2" style="min-width: 200px">
-                            <h6 class="" id="md_subsDuration"></h6>
-                        </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div  class="ml-2" style="min-width: 200px">
+                    <h6 class="" id="md_subsDuration"></h6>
                 </div>
             </div>
 
-        <div class="col-md-4 d-flex">
+        <div class="col-md-3 d-flex">
             <div class="d-flex align-items-center mb-2">
-                <h6 class="mr-2" style="min-width: 110px"><b>{{ __('Maximum Queue') }}:</b></h6>
-                    <div class="ml-2" style="min-width: 90px">
-                        <h6 class="" id="md_queue"></h6>
-                    </div>
+                <h6 class="mr-2" style="min-width: 110px"><b>{{ __('Max Queue') }}:</b></h6>
             </div>
         </div>    
-
-        <div class="col-md-4" id="md_table_container">
-            <div class="d-flex align-items-center mb-2" >
-                <h6 class="mr-2" style="min-width: 110px"><b>{{ __('Counter Amount') }}:</b></h6>
-                    <div class="ml-2" style="min-width: 90px">
-                        <h6 class="" id="md_table"></h6>
-                    </div>
+        <div class="col-md-9">
+            <div class="ml-2" style="min-width: 90px">
+                <h6 class="" id="md_queue"></h6>
             </div>
+        </div>
+
+        <div class="col-md-3" id="md_table_container">
+            <div class="d-flex align-items-center mb-2" >
+                <h6 class="mr-2" style="min-width: 110px"><b>{{ __('Counter') }}:</b></h6>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="ml-2" style="min-width: 90px">
+                <h6 class="" id="md_table"></h6>
+            </div>    
         </div>
 
         <div class="w-100"></div>
 
-        <div class="col-md-4 d-flex">
+        <div class="col-md-3 d-flex">
             <div class="d-flex align-items-center mb-2">
-                <h6 class="mr-2" style="min-width: 110px"><b>{{ __('Virtual Counter') }}:</b></h6>
-                    <div class="ml-2" style="min-width: 90px">
-                        <h6 class="" id="md_service"></h6>
-                    </div>
+                <h6 class="mr-2" style="min-width: 110px"><b>{{ __('Staff') }}:</b></h6>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="ml-2" style="min-width: 90px">
+                <h6 class="" id="md_service"></h6>
             </div>
         </div>
 
-        <div class="col-md-4" id="md_kiosk_container">
+        <div class="col-md-3" id="md_kiosk_container">
             <div class="d-flex align-items-center mb-2" >
                 <h6 class="mr-2" style="min-width: 110px"><b>Web Kiosk:</b></h6>
-                    <div class="ml-2" style="min-width: 90px">
-                        <h6 class="" id="md_kiosk"></h6>
-                    </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="ml-2" style="min-width: 90px">
+                <h6 class="" id="md_kiosk"></h6>
             </div>
         </div>
 
         <div class="w-100"></div>
 
-        <div class="col-md-4 " id="md_signage_container">
-            <div class="d-flex align-items-center mb-2" >
+        <div class="col-md-3 " id="md_signage_container">
+            <div class="d-flex align-items-end mb-2" >
                 <h6 class="mr-2" style="min-width: 112px"><b>Web Signage:</b></h6>
-                    <div id="signage" class="ml-2" style="min-width: 90px">
-                        <h6 class="" id="md_signage"></h6>
-                    </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div id="signage" class="ml-2" style="min-width: 90px">
+                <h6 class="" id="md_signage"></h6>
             </div>
         </div>
 
@@ -402,6 +423,15 @@
 
           <div class="row" style="color: #000" id="nonCustom">
 
+            <div class="col-md-12" id="pricepercounter">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 112px"><b>Counter Price /Month:</b></h6>
+                        <div id="pingu" class="ml-2" style="min-width: 90px">
+                            <h6 class=""></h6>
+                        </div>
+                </div>
+            </div>
+
             <div class="col-md-12 d-flex">
                 <div class="d-flex align-items-center mb-2">
                     <h6 class="mr-2" style="min-width: 112px"><b>Subtotal Item:</b></h6>
@@ -411,7 +441,7 @@
                 </div>
             </div>
 
-            <div class="col-md-12 d-flex">
+            <div class="col-md-12" id="formTax">
                 <div class="d-flex align-items-center mb-2">
                     <h6 class="mr-2" style="min-width: 112px"><b>{{ __('VAT 11%') }}  :</b></h6>
                         <div id="tax" class="ml-2" style="min-width: 90px">
@@ -453,12 +483,12 @@
     let table = document.getElementById('table');
     let services = document.getElementById('services');
     let kiosk = document.getElementById('kiosk');
+    let signage = document.getElementById('signage');
     let subsDuration = document.getElementById('subs_duration'); 
     let packageSelection = document.getElementById('packageSelection'); 
     let form = document.getElementById('formInvoice');
     let queueType = document.getElementById('license_type');
     let modalButton = document.getElementById('modalBtn');
-    let signage = document.getElementById('signage');
     let signageContainer = document.getElementById('web-signage');
     let modalSignage = document.getElementById('md_signage_container');
     let priceElement = document.getElementById('price');
@@ -466,59 +496,224 @@
     let itemsElement = document.getElementById('items');
     let totalElement = document.getElementById('total');
     let amount = document.getElementById('amount');
+    let payButton = document.getElementById("payButton");
+    let unpaidStatus = document.getElementById("unpaidStatus");
+
+// function toggleSignageInput(selectedPackage) {
+//     const isDirect = {!! json_encode($isDirect) !!};//blade escape
+//     updateFeatures(selectedPackage, isDirect);
+//     if (selectedPackage === 'premium') {
+//         queue.setAttribute('readonly', true);
+//         table.setAttribute('readonly', true);
+//         services.setAttribute('readonly', true);
+//         kiosk.setAttribute('readonly', true);
+
+//         queue.value = 500;
+//         table.value = 1;
+//         services.value = 3;
+//         kiosk.value = 0;
+//         signageContainer.style.display = 'flex';  
+//         modalSignage.style.display = 'flex';
+//         signage.setAttribute('readonly', true);   
+//         signage.value = 1; // Nilai default saat premium
+//     } else if (selectedPackage === 'custom') {
+//         // queue.removeAttribute('readonly');
+//         table.removeAttribute('readonly');
+//         services.removeAttribute('readonly');
+//         kiosk.removeAttribute('readonly');
+        
+//         table.addEventListener('input', function() {
+//         const tableValue = parseInt(table.value) || 0;
+//         let country = "{{ Auth::user()->Branch->country }}"
+//         if(country == 'Indonesia'){
+//             services.value = tableValue * 2;
+//         }else{
+//             services.value = tableValue * 2;
+//         }
+
+//                 if (tableValue >= 2) {
+//                     queue.value = 500
+//                 }else{
+//                     queue.value = 100
+//                 }
+//             });
+//         signageContainer.style.display = 'flex';
+//         modalSignage.style.display = 'flex';  
+//         signage.removeAttribute('readonly');  
+//         signage.value = 1;     
+//         kiosk.value = 1;
+//     } else {
+//         queue.setAttribute('readonly', true);
+//         table.setAttribute('readonly', true);
+//         services.setAttribute('readonly', true);
+//         kiosk.setAttribute('readonly', true);
+//         queue.value = 100;
+//         table.value = 1;
+//         services.value = 1;
+//         kiosk.value = 0;
+//         signageContainer.style.display = 'none';
+//         modalSignage.style.display = 'none';  
+//         signage.value = '';                      
+//     }
+//     updateFeatures(selectedPackage, isDirect);
+                      
+// }
+
+// queue.addEventListener('input',function() {
+//     let value = parseInt(this.value) || 1;
+//     let package = packageSelection.value;
+
+//     if (package == 'lite' && value > 100) {
+//         this.value = Math.min(Math.max(value, 1), 100);
+//     }
+// })
+
+
+
+function checkExpiry() {
+    if("{{ $unpaidInvoice }}" !== ""){
+        let expiryDate = new Date("{{ $unpaidInvoice->expiry_date ?? '' }}");
+        let now = new Date();
+        if (now >= expiryDate) {
+            unpaidStatus.innerHTML = `<span class="badge badge-danger text-white" >EXPIRED</span>`
+            payButton.style.pointerEvents = "none"; 
+            payButton.style.opacity = "0.5"; 
+            payButton.innerText = "Expired"; 
+        }
+    }else{
+
+    }
+}
+if("{{ $unpaidInvoice }}" !== ""){
+checkExpiry(); 
+setInterval(checkExpiry, 60000);
+}
+
+limitInput(queue,100,500,packageSelection);
+limitInput(table,1,5,packageSelection);
+limitInput(services,1,15,packageSelection);
+limitInput(kiosk,1,3,packageSelection);
+limitInput(signage,1,3,packageSelection);
+
+function limitInput(element, min, max, packageSelection = null) {
+    element.addEventListener('input', function () {
+        let value = parseInt(this.value) || min; // Default ke `min` jika tidak valid
+        if(element.id == 'queue'){
+            if (packageSelection) {
+                max = (packageSelection.value === 'lite') ? 100 : 500; 
+            }
+        }
+        this.value = Math.min(Math.max(value, min), max);
+    });
+}
 
 function toggleSignageInput(selectedPackage) {
-    const isDirect = {!! json_encode($isDirect) !!};//blade escape
-    updateFeatures(selectedPackage, isDirect);
-    if (selectedPackage === 'premium') {
-        queue.setAttribute('readonly', true);
-        table.setAttribute('readonly', true);
-        services.setAttribute('readonly', true);
-        kiosk.setAttribute('readonly', true);
+    const isDirect = {!! json_encode($isDirect) !!}; // Blade escape
+    const country = "{{ Auth::user()->Branch->country }}";
 
-        queue.value = 500;
-        table.value = 1;
-        services.value = 3;
-        kiosk.value = 0;
-        signageContainer.style.display = 'flex';  
-        modalSignage.style.display = 'flex';
-        signage.setAttribute('readonly', true);   
-        signage.value = 1; // Nilai default saat premium
-    } else if (selectedPackage === 'custom') {
-        // queue.removeAttribute('readonly');
+    updateFeatures(selectedPackage, isDirect);
+
+    //non-indo
+    if (country !== 'Indonesia') {
+        queue.removeAttribute('readonly');
         table.removeAttribute('readonly');
         services.removeAttribute('readonly');
         kiosk.removeAttribute('readonly');
-        table.addEventListener('input', function() {
-        const tableValue = parseInt(table.value) || 0;
-                services.value = tableValue * 3;
-                if (tableValue >= 2) {
-                    queue.value = 500
-                }else{
-                    queue.value = 100
-                }
-            });
+
         signageContainer.style.display = 'flex';
-        modalSignage.style.display = 'flex';  
-        signage.removeAttribute('readonly');  
-        signage.value = 1;     
-        kiosk.value = 1;
-    } else {
-        queue.setAttribute('readonly', true);
-        table.setAttribute('readonly', true);
-        services.setAttribute('readonly', true);
-        kiosk.setAttribute('readonly', true);
-        queue.value = 100;
-        table.value = 1;
-        services.value = 1;
-        kiosk.value = 0;
-        signageContainer.style.display = 'none';
-        modalSignage.style.display = 'none';  
-        signage.value = '';                      
+        modalSignage.style.display = 'flex';
+        
+        if (selectedPackage === 'premium') {
+            queue.removeAttribute('readonly');
+            signage.removeAttribute('readonly');
+                    setValues({
+                        queue: 500,
+                        table: 1,
+                        services: 2,
+                        kiosk: 0,
+                        signage: 1
+                    });
+                    signageContainer.style.display = 'flex';
+                    modalSignage.style.display = 'flex';
+                }else {
+                    // queue.setAttribute('readonly', true);
+                    // signage.setAttribute('readonly', true);
+                    table.addEventListener('input', function () {
+                    const tableValue = parseInt(table.value) || 0;
+                    services.value = tableValue * 2;
+                });
+                setValues({
+                    queue: 100,
+                    table: 1,
+                    services: 2,
+                    kiosk: 0,
+                    signage: ''
+                });
+                signageContainer.style.display = 'none';
+                modalSignage.style.display = 'none';
+            }
+        return;
+
     }
+
+
+    //indo
+    if (selectedPackage === 'premium') {
+        setReadOnly([queue, table, services, kiosk, signage], true);
+        setValues({
+            queue: 500,
+            table: 1,
+            services: 3,
+            kiosk: 0,
+            signage: 1
+        });
+        signageContainer.style.display = 'flex';
+        modalSignage.style.display = 'flex';
+    } else if (selectedPackage === 'custom') {
+        table.removeAttribute('readonly');
+        services.removeAttribute('readonly');
+        kiosk.removeAttribute('readonly');
+        signage.removeAttribute('readonly');
+
+        table.addEventListener('input', function () {
+            const tableValue = parseInt(table.value) || 0;
+            services.value = tableValue * 3;
+            queue.value = tableValue >= 2 ? 500 : 100;
+        });
+
+        signageContainer.style.display = 'flex';
+        modalSignage.style.display = 'flex';
+        setValues({ signage: 1, kiosk: 1 });
+    } else {
+        setReadOnly([queue, table, services, kiosk], true);
+        setValues({
+            queue: 100,
+            table: 1,
+            services: 1,
+            kiosk: 0,
+            signage: ''
+        });
+        signageContainer.style.display = 'none';
+        modalSignage.style.display = 'none';
+    }
+
     updateFeatures(selectedPackage, isDirect);
-                      
 }
+
+function setReadOnly(elements, state) {
+    elements.forEach(el => el.setAttribute('readonly', state));
+}
+
+function setValues(values) {
+    Object.keys(values).forEach(id => {
+        if (document.getElementById(id)) {
+            document.getElementById(id).value = values[id];
+        }
+    });
+}
+
+
+
 
 function updateFeatures(selectedPackage, isDirect) {
     let featuresText = '';
@@ -579,9 +774,9 @@ function getModalData() {
     document.getElementById('md_table').innerHTML = tableVal + ` {{ __('Workstation') }}`;
     document.getElementById('md_license').innerHTML = packageVal;
     document.getElementById('md_queue_type').innerHTML = queueTypeVal;
-    document.getElementById('md_subsDuration').innerHTML = subsDurationVal + " ` {{ __('Month') }}`";
+    document.getElementById('md_subsDuration').innerHTML = subsDurationVal + ` {{ __('Month') }}`;
     document.getElementById('md_queue').innerHTML = queueVal + ` {{ __('Queue') }}`;
-    document.getElementById('md_service').innerHTML = serviceVal + ` {{ __('Officer') }}`;
+    document.getElementById('md_service').innerHTML = serviceVal + ` {{ __('Staff') }}`;
     
 }
 
@@ -595,11 +790,13 @@ packageSelection.addEventListener('change', function() {
 });
 
 
-function calculateTotal(price) {
-    const tax = price * 0.11; // PPN 11%
+function calculateTotal(price, country = 'Indonesia') {
+    let tax = 0;
+    if (country == 'Indonesia') {
+        tax = price * 0.11; // PPN 11%
+    }
     const total = price + tax;
-
-    return { price, tax, total};
+    return {price, tax, total}
 }
 
 function getData(selectedPackage){
@@ -633,9 +830,8 @@ function getData(selectedPackage){
             const data = response.data;
             
             if (data) {
-                console.log(data);
-                
-                const { price, tax, total, itemPrices } = calculateTotal(data.license_prices);
+                const { price, tax, total, itemPrices } = calculateTotal(data.license_prices, data.country);
+              
                 if(data.billing_type == 'custom'){
                     //jika license custom
                     document.getElementById('itemContainer').style.display = 'table';
@@ -672,14 +868,32 @@ function getData(selectedPackage){
                     document.getElementById('signagePrice').innerHTML = `<h6>${signagePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })} /{{ __('Month') }}</h6>`;
                     document.getElementById('signageTotalPrice').innerHTML = `<h6>${data.signage_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                     // document.getElementById('customLicensePrice').innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+
                     document.getElementById('customTax').innerHTML = `<h6>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+
                     document.getElementById('customTotal').innerHTML = `<h5><b>${total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h5>`;
                     itemsElement.innerHTML = `<h6><b>${data.license_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
                 }else{
+                    let custTaxContainer= document.getElementById('formTax');
+                    custTaxContainer.style.display = 'revert';
+                    let custPerContainer= document.getElementById('pricepercounter');
+                    custPerContainer.style.display = 'none';
+                    //if non_idn
                     document.getElementById('nonCustom').style.display = 'flex';
-                    priceElement.innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-                    taxElement.innerHTML = `<h6>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-                    totalElement.innerHTML = `<h5><b>${total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h5>`;
+                    if(data.country != 'Indonesia'){
+                            custTaxContainer.style.display = 'none';
+                            custPerContainer.style.display = 'revert';
+                            let perCounterPrice = price/data.subscription_duration;
+                            document.getElementById('pingu').innerHTML =
+                            `<h6>USD ${perCounterPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</h6>`;
+                            priceElement.innerHTML = `<h6>${tableVal} Counter x ${data.subscription_duration} Months x USD ${perCounterPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</h6>`;
+                            totalElement.innerHTML = `<h5><b>USD ${total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></h5>`;
+                    }else{
+                        priceElement.innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                        taxElement.innerHTML = `<h6>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
+                        totalElement.innerHTML = `<h5><b>${total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h5>`;
+                    }
+                    
                    
                 }
                 amount.value = total;
@@ -714,6 +928,7 @@ form.addEventListener('submit',function (e) {
     confirmBtn.disabled = true;
 });
 toggleSignageInput(packageSelection.value);
+
 </script>
 
 
