@@ -15,6 +15,7 @@ import Loading from '../../components/Loading'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import { fetchBranch } from '../../api/branch'
+import { fetchServiceById } from '../../api/services'
 
 function useForceUpdate(){
     const [value, setValue] = useState(0)
@@ -47,27 +48,37 @@ function AppointmentOnsiteVisitorInformation() {
     const [selectedButton, setSelectedButton] = useState('submit')
 
     let branch = null
+    let service = null
+    let bookingFormService = null
 
     const branchQuery = useQuery(['branch', branchId], () => fetchBranch(branchId))
-
+    const serviceQuery = useQuery(['service', serviceId], () => fetchServiceById(serviceId, { queueType: '', date: '' }))
+    
     if (branchQuery.status === 'success') {
         branch = branchQuery.data
     }
-
+    if (serviceQuery.status === 'success') {
+        service = serviceQuery.data
+    }
+    const selectedTemplateForm = service?.template_form_booking ?? branch?.branch_configuration.template_booking_form;
     const validationMessage = {
         name: validator.message('name', name, ['required']),
         phone: validator.message('phone', phone, ['required', 'phone']),
         email: validator.message('email', email, ['required', 'email']),
-        
-        ...(branch && branch.branch_configuration.template_booking_form === 'form-medical-1' && {
+        ...(selectedTemplateForm === 'form-medical-1' && {
             dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
             address: validator.message('address', address, []),
             emergencyNumber: validator.message('emergencyNumber', emergencyNumber, ['phone']),
             passportNumber: validator.message('passportNumber', passportNumber, ['passportNumber']),
             reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
         }),
-        ...(branch && branch.branch_configuration.template_booking_form === 'form-financing' && {
+        ...(selectedTemplateForm === 'form-financing' && {
             contractNumber: validator.message('contractNumber', contractNumber, ['required','contractNumber']),
+            email: validator.message('email', email, ['email']),
+        }),
+        ...(selectedTemplateForm === 'form-medical-2' && {
+            dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
+            reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
             email: validator.message('email', email, ['email']),
         }),
     };
@@ -230,17 +241,80 @@ function AppointmentOnsiteVisitorInformation() {
                 />
             </div>
     );
+    
+    const renderMedicalUI2 = () => (
+        <div style={{ flex: '1 1 0%' }}>
+                <TextField
+                    label="Nama/Name"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ch. John Doe"
+                    error={!!validationMessage.name}
+                    helperText={validationMessage.name}
+                />
+                <TextField
+                    label="Tanggal lahir/DOB"
+                    type="date"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    error={!!validationMessage.dateOfBirth}
+                    helperText={validationMessage.dateOfBirth}
+                />
+                <TextField
+                    label="No. Telepon/Phone number"
+                    type="tel"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+62"
+                    error={!!validationMessage.phone}
+                    helperText={validationMessage.phone}
+                />
+                <TextField
+                    label="Alasan Kunjungan/Reason for visit"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={reasonForVisit}
+                    onChange={(e) => setReasonForVisit(e.target.value)}
+                    placeholder="Ch. CheckUp"
+                    error={!!validationMessage.reasonForVisit}
+                    helperText={validationMessage.reasonForVisit}
+                />
+            </div>
+    );
 
     const renderForm = () => {
-        switch (branch?.branch_configuration.template_booking_form) {
-            case 'standard-form':
-                return renderStandardUI();
-            case 'form-medical-1':
-                return renderMedicalUI();
-            case 'form-financing':
-                return renderFinanceUI();
-            default:
-                return null;
+        let bookingFormService = serviceQuery.data?.template_form_booking;
+        if (serviceQuery.isLoading) {
+            return <p>Loading...</p>; 
+        }
+        if(bookingFormService == null){
+            switch (branch?.branch_configuration.template_booking_form) {
+                case 'standard-form':
+                    return renderStandardUI();
+                case 'form-medical-1':
+                    return renderMedicalUI();
+                case 'form-medical-2':
+                    return renderMedicalUI2();
+                case 'form-financing':
+                    return renderFinanceUI();
+                default:
+                    return null;
+            }
+        }else{
+            switch (bookingFormService) {
+                case 'standard-form':
+                    return renderStandardUI();
+                case 'form-medical-1':
+                    return renderMedicalUI();
+                case 'form-medical-2':
+                    return renderMedicalUI2();
+                case 'form-financing':
+                    return renderFinanceUI();
+                default:
+                    return null;
+            }
         }
     };
 

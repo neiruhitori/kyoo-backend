@@ -289,6 +289,11 @@
                             v-show="queue.status == 'end served'"
                             >{{ t('End Served') }}</span
                           >
+                          <span
+                            class="badge badge-warning ml-1"
+                            v-if="queue.requeue_count > 0 && queue.status !== 'requeue'"
+                            >U</span>
+                          </div>
                         </td>
                       </tr>
                     </template>

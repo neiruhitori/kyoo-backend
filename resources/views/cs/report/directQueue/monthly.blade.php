@@ -123,6 +123,7 @@
                                         <th>{{ __('Service Transfer') }}</th>
                                         <th>{{ __('Petugas Layanan') }}</th>
                                         <th>{{ __('Status') }}</th>
+                                        <th>{{ __('Antri Ulang') }}</th>
                                     </thead>
                                     <tbody>
                                     </tbody>
@@ -178,7 +179,8 @@
                 { data: 'sub_service' },
                 { data: 'service_transfer' },
                 { data: 'customer_service' },
-                { data: 'status' }
+                { data: 'status' },
+                { data: 'requeue_count' },
             ],
             "ordering": false,
             "dom": 'Bfrtip',

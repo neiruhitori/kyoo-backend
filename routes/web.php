@@ -135,6 +135,7 @@ Route::namespace('AdminBranch')
 
             Route::get('/menu-portal', 'PortalMenuController@edit')->name('menu-portal');
             Route::put('/menu-portal', 'PortalMenuController@update')->name('menu-portal.update');
+            Route::put('/menu-portal/service', 'PortalMenuController@formServiceUpdate')->name('menu-portal.service.update');
 
             Route::put('/device-account/restore', 'DeviceAccountController@restore')->name('device-account.restore');
             Route::post('/device-account/reset-password/{user}', 'DeviceAccountController@resetPassword')->name('device-account.reset-password');

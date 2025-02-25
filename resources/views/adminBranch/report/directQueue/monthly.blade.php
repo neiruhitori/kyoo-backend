@@ -123,6 +123,7 @@
                                         <th>{{ __('Service Transfer') }}</th>
                                         <th>{{ __('Virtual Counter') }}</th>
                                         <th>{{ __('Status') }}</th>
+                                        <th>{{ __('Antri Ulang') }}</th>
                                     </thead>
                                     <tbody>
                                         @forelse ($data as $directQueue)
@@ -235,6 +236,7 @@
                                             <td>{{  $directQueue->Vct ? $directQueue->Vct->name : '-' }}
                                             </td>
                                             <td>{{ __(ucwords($directQueue->status)) }}</td>
+                                            <td>{{ $directQueue->requeue_count > 0 ? 'Antri Ulang' : '-' }}</td>
                                         </tr>
                                         @empty
                                             <tr>
