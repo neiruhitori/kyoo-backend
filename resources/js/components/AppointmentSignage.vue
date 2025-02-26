@@ -158,6 +158,7 @@ export default {
                     },
       currentLocale: this.lang || "en",
       localeDate: id,
+      country: this.branch.country,
       promotionMedia: null
     };
     },
@@ -165,7 +166,6 @@ export default {
   watch: {
     async activeImage(newValue) {
       const self = this;
-
       const videoExtensions = [".mp4"];
       const lowerCaseUrl =
         self.promotionImages[newValue - 1].url.toLowerCase();
@@ -353,7 +353,12 @@ export default {
             const base64Medias = await Promise.all(fetchMedia);
 
             // Fetch Audio
-            const audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            let audios = [];
+            if(this.country != 'Indonesia'){
+               audios = ['intro_bell', 'customer_number', 'please_proceed', 'to_counter'];
+            }else{
+               audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            }
             for (let i = 0; i <= 9; i++) {
                 audios.push(i.toString());
             }
@@ -365,7 +370,10 @@ export default {
 
             const base64Audios = [];
             const fetchAudio = audios.map(async audio => {
-                const audio_url = `/storage/audio/vo/${audio}.wav`
+              let audio_url = `/storage/audio/vo/${audio}.wav`;
+              if (this.country != 'Indonesia') {
+                 audio_url = `/storage/audio/vo_en/${audio}.wav`
+              }
                 const response = await fetch(audio_url);
                 const blob = await response.blob();
 
@@ -477,10 +485,16 @@ export default {
             this.isPlaying = true;
 
             const queueNo = this.servingQueue.number;
-            const audio = ['intro_bell', 'nomor_antrian'];
-            const counter_id = this.servingQueue.workstation.label.replace(/\D/g, "");
+            let audio = [];
+            if(this.country != 'Indonesia'){
+               audio = ['intro_bell', 'customer_number'];
+               audio.push(...queueNo.toString().split(''), 'please_proceed', 'to_counter');
+            }else{
+               audio = ['intro_bell', 'nomor_antrian'];
+               audio.push(...queueNo.toString().split(''), 'dicounter');
+              }
+              const counter_id = this.servingQueue.workstation.label.replace(/\D/g, "");
 
-            audio.push(...queueNo.toString().split(''), 'dicounter');
             if (counter_id) {
                 audio.push(...counter_id.split(""));
             }
