@@ -686,12 +686,18 @@ class BillingController extends Controller
     {
         $print = Invoice::with('branch')->where('id_invoice',$id)->first();
         $subs = Subscription::where('invoice',$print->invoice_number)->first();
-         $total = $print->amount;
-         $subTotal = $total / 1.11;
-         $ppn = $total - $subTotal;
+        $total = $print->amount;
+        $subTotal = $total;
+        $ppn = 0;
+        $country = $print->branch->country;
+
+         if ($country == 'Indonesia') {
+             $subTotal = $total / 1.11;
+             $ppn = $total - $subTotal;
+            }
    
         
-         return view('adminBranch.billing.print', compact('print', 'subs', 'total', 'subTotal', 'ppn')); 
+         return view('adminBranch.billing.print', compact('print', 'subs', 'total', 'subTotal', 'ppn','country')); 
     }
 
 

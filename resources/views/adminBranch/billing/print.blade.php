@@ -84,7 +84,13 @@
                             @endif
                             {{ __('For :num Months',['num' => $subs->subs_duration]) }}
                             ({{ \Carbon\Carbon::parse($print->created_at)->translatedFormat('d/m/Y') }} - {{ \Carbon\Carbon::parse($print->created_at)->addMonths($subs->subs_duration)->translatedFormat('d/m/Y') }})</th>
-                        <td class="text-left"> Rp. {{ number_format($subTotal, 0, ',', '.') }}</td>
+                        <td class="text-left">   
+                            @if($print->currency == 'USD')
+                                {{ $print->currency ?? 'USD' }} ${{ number_format($subTotal, 2) }}
+                            @else
+                                Rp. {{ number_format($subTotal, 0, ',', '.') }}
+                            @endif
+                        </td>
                       </tr>
                       <tr class="font-weight-bolder">
                         <td class="text-right">
@@ -92,10 +98,15 @@
                         </td>
                         <td>
                             <div class="text-left">
-                                Rp. {{ number_format($subTotal, 0, ',', '.') }}
+                              @if($print->currency == 'USD')
+                                 {{ $print->currency ?? 'USD' }} ${{ number_format($subTotal, 2) }}
+                              @else
+                                  Rp. {{ number_format($subTotal, 0, ',', '.') }}
+                              @endif
                             </div>
                         </td>  
                       </tr>
+                      @if($country == 'Indonesia')
                       <tr class="text-right font-weight-bolder">
                         <td>
                             {{ __('VAT 11%') }} : 
@@ -106,13 +117,18 @@
                             </div>
                         </td>
                       </tr>
+                      @endif
                       <tr class="text-right font-weight-bolder">
                         <td>
                             Total : 
                         </td>
                         <td>
                             <div class="text-left">
-                                Rp. {{ number_format($total, 0, ',', '.') }}
+                            @if($print->currency == 'USD')
+                              {{ $print->currency ?? 'USD' }} ${{ number_format($total, 2) }}
+                           @else
+                              Rp. {{ number_format($total, 0, ',', '.') }}
+                           @endif
                             </div>
                         </td>
                       </tr>
