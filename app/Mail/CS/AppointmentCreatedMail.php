@@ -35,12 +35,22 @@ class AppointmentCreatedMail extends Mailable
         $branch = $this->appointment->Slot->Service->Branch;
         $country = $branch->country;
         $locale = $country == 'Indonesia' ? 'id' : 'en';
+        $timezoneArr = [
+            'WIB'  => 'Asia/Jakarta',
+            'WITA' => 'Asia/Makassar',
+            'WIT'  => 'Asia/Jayapura',
+            'SGT'  => 'Asia/Singapore',
+            'ICT'  => 'Asia/Ho_Chi_Minh',
+        ];
+        $timezone = $timezoneArr[$branch->timezone] ?? config('app.timezone');
         // setlocale(LC_TIME, 'id_ID');
         app()->setLocale($locale);
-
-        $startTime = Carbon::parse($this->appointment->date . ' ' . $this->appointment->start_time)
+        \Log::info($this->appointment->Slot->start_time);
+        $startTime = Carbon::parse($this->appointment->date . ' ' . $this->appointment->Slot->start_time)
+        ->setTimezone($timezone)
         ->format('Ymd\THis');
-        $endTime = Carbon::parse($this->appointment->date . ' ' . $this->appointment->end_time)
+        $endTime = Carbon::parse($this->appointment->date . ' ' . $this->appointment->Slot->end_time)
+        ->setTimezone($timezone)
         ->format('Ymd\THis');
 
         // init file ics
@@ -50,8 +60,8 @@ class AppointmentCreatedMail extends Mailable
         $icsContent .= "BEGIN:VEVENT\r\n";
         $icsContent .= "UID:" . uniqid() . "@kyoo.id\r\n";
         $icsContent .= "DTSTAMP:" . now()->format('Ymd\THis') . "Z\r\n";
-        $icsContent .= "DTSTART:{$startTime}Z\r\n";
-        $icsContent .= "DTEND:{$endTime}Z\r\n";
+        $icsContent .= "DTSTART:{$startTime}\r\n";
+        $icsContent .= "DTEND:{$endTime}\r\n";
         $icsContent .= "SUMMARY:Appointment at " . $branch->name . "\r\n";
         $icsContent .= "DESCRIPTION:Your scheduled appointment at " . $branch->name . "\r\n";
         $icsContent .= "LOCATION:" . $branch->address . "\r\n";
