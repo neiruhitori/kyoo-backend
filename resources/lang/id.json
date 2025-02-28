@@ -392,6 +392,9 @@
     "Send Recovery Email": "Kirim Email Pemulihan",
     "Back to": "Kembali ke",
 
+    "You have made an appointment on :booking_date at :branch_name. Click the button below to track your appointment.":"Anda telah membuat appointment pada tanggal :booking_date di :branch_name. Klik tombol dibawah untuk melacak Appointment Anda. ",
+    "Appointment at :branch_name": "Appointment di :branch_name",
+
     "List Schedule Template": "Daftar Template Jadwal",
     "List Branch": "Daftar Cabang",
     "List Branch Type": "Daftar Tipe Cabang",

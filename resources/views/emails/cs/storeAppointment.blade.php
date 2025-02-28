@@ -1,12 +1,13 @@
 @component('mail::message')
 # Appointment
 
-Anda telah membuat appointment pada tanggal {{ $booking_date }} di {{ $branch_name }}. Klik tombol dibawah untuk melacak Appointment Anda.
+{{-- Anda telah membuat appointment pada tanggal {{ $booking_date }} di {{ $branch_name }}. Klik tombol dibawah untuk melacak Appointment Anda. --}}
+{{ __('You have made an appointment on :booking_date at :branch_name. Click the button below to track your appointment.',['booking_date' => $booking_date,'branch_name' => $branch_name ]) }}
 
 @component('mail::button', ['url' => url('customer/' . $branch_id. '/appointment/booking-status/' . $appointment_id)])
 {{ __('Check My Appointment') }}
 @endcomponent
 
-Terima kasih,<br>
+{{ __('Thank You') }},<br>
 {{ $branch_name }}
 @endcomponent
