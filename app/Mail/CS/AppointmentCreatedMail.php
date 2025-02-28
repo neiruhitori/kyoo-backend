@@ -38,10 +38,12 @@ class AppointmentCreatedMail extends Mailable
         // setlocale(LC_TIME, 'id_ID');
         app()->setLocale($locale);
 
-        $startTime = Carbon::parse($this->appointment->date)->setTime(10, 0)->format('Ymd\THis');
-        $endTime = Carbon::parse($this->appointment->date)->setTime(11, 0)->format('Ymd\THis');
+        $startTime = Carbon::parse($this->appointment->date . ' ' . $this->appointment->start_time)
+        ->format('Ymd\THis');
+        $endTime = Carbon::parse($this->appointment->date . ' ' . $this->appointment->end_time)
+        ->format('Ymd\THis');
 
-        // Buat isi file ICS
+        // init file ics
         $icsContent = "BEGIN:VCALENDAR\r\n";
         $icsContent .= "VERSION:2.0\r\n";
         $icsContent .= "PRODID:-//KYOO//Appointment//EN\r\n";
@@ -56,9 +58,6 @@ class AppointmentCreatedMail extends Mailable
         $icsContent .= "END:VEVENT\r\n";
         $icsContent .= "END:VCALENDAR\r\n";
 
-        // Simpan file ICS ke storage sementara
-        $icsPath = storage_path('app/public/calendar/appointment-' . $this->appointment->id . '.ics');
-        file_put_contents($icsPath, $icsContent);
 
         return $this
             ->from('noreply@kyoo.id', 'KYOO')
@@ -70,8 +69,7 @@ class AppointmentCreatedMail extends Mailable
                 'branch_name' => $branch->name,
                 'booking_date' =>  Carbon::parse($this->appointment->date)->locale($locale)->isoFormat('D MMMM YYYY')
             ])
-            ->attach($icsPath, [
-                'as' => 'appointment.ics',
+            ->attachData($icsContent,'appointment-'.$this->appointment->id.'.ics' ,[
                 'mime' => 'text/calendar',
             ]);
     }
