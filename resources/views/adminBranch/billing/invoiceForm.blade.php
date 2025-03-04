@@ -228,19 +228,21 @@
                             <input style="max-width: 200px;" type="number" class="form-control" name="kiosk" id="kiosk" min="0" max="3" required value="{{ $subscription ? $subscription->kiosk  : '0' }}" readonly>
                             <p class="pt-2 ml-3">{{ __('Device') }}</p>
                         </div>
-                        <div class="d-flex align-items-center mb-3">
+                        <div class="d-flex align-items-center mb-5">
                             <div id="web-signage" style="display: flex">
                                 <h6 style="min-width: 150px;" class="pt-1">Web Signage TV:</h6>
                                 <input style="max-width: 200px;" type="number" class="form-control" name="signage" id="signage" min="1" max="3" value="1" required readonly>
                                 <p class="pt-2 ml-3">{{ __('Device') }}</p>
                             </div>
                         </div>
+                        @if (Auth::user()->Branch->country == 'Indonesia')
                         <div class="d-flex align-items-center mb-5">
                             <h6 style="min-width: 150px;" class="pt-1">{{ __('Feature') }}:</h6>
                             <div id="feature">
                                 <b></b>
                             </div>
                         </div>
+                        @endif
                         
                         <input type="hidden" name="amount" id="amount">
                        
@@ -610,9 +612,6 @@ function limitInput(element, min, max, packageSelection = null) {
 function toggleSignageInput(selectedPackage) {
     const isDirect = {!! json_encode($isDirect) !!}; // Blade escape
     const country = "{{ Auth::user()->Branch->country }}";
-
-    updateFeatures(selectedPackage, isDirect);
-
     //non-indo
     if (country !== 'Indonesia') {
         queue.removeAttribute('readonly');
@@ -659,6 +658,7 @@ function toggleSignageInput(selectedPackage) {
 
     //indo
     if (selectedPackage === 'premium') {
+        updateFeatures(selectedPackage, isDirect);
         setReadOnly([queue, table, services, kiosk, signage], true);
         setValues({
             queue: 500,

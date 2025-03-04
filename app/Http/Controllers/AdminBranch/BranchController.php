@@ -100,23 +100,7 @@ class BranchController extends Controller
     {
         $country = Auth::user()->Branch->country;
 
-        switch ($country) {
-            case 'Indonesia':
-                $provinces = Province::all();
-                break;
-
-            case 'Singapore':
-                $provinces = SGProvince::all();
-                break;
-
-            case 'Vietnam':
-                $provinces = VNProvinces::all();
-                break;
-            
-            default:
-                 $provinces = Province::all();
-                break;
-            }
+        $provinces = Province::where('country',$country)->get();
         $data = [
             'branch' => Branch::find(Auth::user()->branch_id),
             'provinces' => $provinces

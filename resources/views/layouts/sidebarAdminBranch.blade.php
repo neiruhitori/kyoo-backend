@@ -91,7 +91,7 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#instruction-of-use"
            aria-expanded="true" aria-controls="instruction-of-use">
             <i class="fas fa-fw fa-info-circle"></i>
-            <span>{{ __('Instruction for Use') }}</span>
+            <span>{{ __('Instruction Help') }}</span>
         </a>
 
         <div class="collapse {{ !request()->is('admin-branch/product-guide/*') ?: 'show' }}" id="instruction-of-use"

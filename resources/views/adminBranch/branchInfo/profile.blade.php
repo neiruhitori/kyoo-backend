@@ -106,15 +106,32 @@
                     <option value="" selected disabled>{{ __('Select Timezone') }}</option>
                     @switch($branch->country)
                         @case('Indonesia')
-                        <option value="WIB" {{ $branch->timezone == 'WIB' ? 'selected' : '' }}>Indonesia {{ __('WIB') }} (GMT +7)</option>
-                        <option value="WITA" {{ $branch->timezone == 'WITA' ? 'selected' : '' }}>Indonesia {{ __('WITA') }} (GMT +8)</option>
-                        <option value="WIT" {{ $branch->timezone == 'WIT' ? 'selected' : '' }}>Indonesia {{ __('WIT') }} (GMT +9)</option>
+                        <option value="WIB" {{ $branch->timezone == 'WIB' ? 'selected' : '' }}>Indonesia {{ __('WIB') }} (UTC +7)</option>
+                        <option value="WITA" {{ $branch->timezone == 'WITA' ? 'selected' : '' }}>Indonesia {{ __('WITA') }} (UTC +8)</option>
+                        <option value="WIT" {{ $branch->timezone == 'WIT' ? 'selected' : '' }}>Indonesia {{ __('WIT') }} (UTC +9)</option>
                             @break
                         @case('Singapore')
-                        <option value="SGT" selected>Singapore {{ __('SGT') }} (GMT+7)</option>
+                        <option value="SGT" selected>Singapore Time - {{ __('SGT') }} (UTC+7)</option>
                             @break
                         @case('Vietnam')
-                        <option value="ICT" selected>Vietnam {{ __('ICT') }} (GMT+7)</option>
+                        <option value="ICT" selected>Indochina Time - {{ __('ICT') }} (UTC+7)</option>
+                            @break
+                        @case('Brunei')
+                        <option value="BNT" selected>Brunei-Muara - {{ __('BNT') }} (UTC+8)</option>
+                            @break
+                        @case('Thailand')
+                        <option value="ICT" selected>Indochina Time - {{ __('ICT') }} (UTC+7)</option>
+                            @break
+                        @case('Malaysia')
+                        <option value="ICT" selected>Malaysia Time - {{ __('MYT') }} (UTC+8)</option>
+                            @break
+                        @case('Timor-Leste')
+                        <option value="TLT" selected>Timor Leste Time - {{ __('TLT') }} (UTC+9)</option>
+                            @break
+                        @case('Australia')
+                        <option value="AEST" selected>Australian Eastern Standard Time - {{ __('AEST') }} (UTC+10)</option>
+                        <option value="ACST" selected>Australian Central Standard Time - {{ __('ACST') }} (UTC+9:30)</option>
+                        <option value="AWST" selected>Australian Western Standard Time - {{ __('AWST') }} (UTC+8)</option>
                             @break
                         @default
                             
