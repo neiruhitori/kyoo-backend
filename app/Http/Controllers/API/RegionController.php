@@ -10,6 +10,7 @@ use App\Models\SGRegencies;
 use App\Models\VNProvinces;
 use App\Models\VNRegencies;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 class RegionController extends Controller
@@ -25,32 +26,14 @@ class RegionController extends Controller
     }
     public function provinceByCountry($country)
     {
-        switch ($country) {
-            case 'Indonesia':
-                $provinces = Province::all();
+        if ($country) {
+            $provinces = DB::table('provinces')->where('country', $country)->get();
                 return response()->json([
                     'success' => true,
                     'message' => 'get all province',
                     'data' => $provinces
                 ]);
-
-            case 'Singapore':
-                $provinces = SGProvince::all();
-                return response()->json([
-                    'success' => true,
-                    'message' => 'get all province',
-                    'data' => $provinces
-                ]);
-
-            case 'Vietnam':
-                $provinces = VNProvinces::all();
-                return response()->json([
-                    'success' => true,
-                    'message' => 'get all province',
-                    'data' => $provinces
-                ]);
-            
-            default:
+        }else{
                 return response()->json([
                     'success' => false,
                     'message' => 'country not identified',
@@ -79,38 +62,22 @@ class RegionController extends Controller
         ]);
     }
 
-    public function regencyByProvince($country,$province)
+    public function regencyByProvince($country,$province_id)
     {
-        switch ($country) {
-            case 'Indonesia':
-                $provinces = Regency::where('province_id', $province)->get();
+        if ($country) {
+                $regencies = Regency::where('country', $country)
+                                ->where('province_id', $province_id)->get();
                 return response()->json([
                     'success' => true,
-                    'message' => 'get all province',
-                    'data' => $provinces
+                    'message' => 'get all regencies',
+                    'data' => $regencies
                 ]);
-
-            case 'Singapore':
-                $provinces = SGRegencies::where('province_id', $province)->get();
-                return response()->json([
-                    'success' => true,
-                    'message' => 'get all province',
-                    'data' => $provinces
-                ]);
-
-            case 'Vietnam':
-                $provinces = VNRegencies::where('province_id', $province)->get();
-                return response()->json([
-                    'success' => true,
-                    'message' => 'get all province',
-                    'data' => $provinces
-                ]);
-            
-            default:
+            }else{
                 return response()->json([
                     'success' => false,
                     'message' => 'country not identified',
                 ], 404);
-        }
+            }
+        
     }
 }

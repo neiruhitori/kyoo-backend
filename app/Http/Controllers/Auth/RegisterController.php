@@ -85,7 +85,7 @@ class RegisterController extends Controller
         $countries = Countries::getList('en_US');
         $categories = IndustryCategory::all();
         $provinces = Province::all();
-        $selectedCountries = array_intersect_key($countries, array_flip(['ID', 'SG', 'VN']));
+        $selectedCountries = array_intersect_key($countries, array_flip(['ID', 'SG', 'VN', 'MY', 'TL', 'BN', 'TH', 'AU']));
         return view('register', [
             'countries' => $selectedCountries,
             'categories' => $categories,

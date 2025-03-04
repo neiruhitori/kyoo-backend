@@ -42,20 +42,8 @@ class StoreRegistrationBranch extends FormRequest
             'country' => 'required|string',
             'address' => 'required|string',
             'phone' => 'required|numeric|min:5',
-            'regency_id' => ['required',function($attribute, $value, $fail){
-                $this->validateRegencyId($attribute, $value, $fail);
-            }],
+            'regency_id' => 'required','exist:regencies',
             'accept_term_condition' => 'required'
         ];
     }
-    public function validateRegencyId($attribute, $value, $fail)
-        {
-            $existsInIndo = Regency::where('id', $value)->exists();
-            $existsInVN = VNRegencies::where('id', $value)->exists();
-            $existsInSG = SGRegencies::where('id', $value)->exists();
-
-            if (!$existsInIndo && !$existsInVN && !$existsInSG) {
-                $fail(__('The selected regency does not exist in any region.'));
-            }
-        }
 }

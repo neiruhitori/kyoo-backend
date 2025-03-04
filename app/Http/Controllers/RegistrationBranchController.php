@@ -103,22 +103,9 @@ class RegistrationBranchController extends Controller
                 break;
         }
 
-        switch ($registrationBranch['country']) {
-            case 'Indonesia':
-                $reg = Regency::with('province')->find($registrationBranch['regency_id']);
-                $prov = $reg->province;
-                break;
-            case 'Singapore':
-                $reg = SGRegencies::with('province')->find($registrationBranch['regency_id']);
-                $prov = $reg->province;
-                break;
-            case 'Vietnam':
-                $reg = VNRegencies::with('province')->find($registrationBranch['regency_id']);
-                $prov = $reg->province;
-                break;
-            default:
-                $prov = null;
-            }
+
+        $reg = Regency::with('province')->find($registrationBranch['regency_id']);
+        $prov = $reg->province;
 
 
         $timeNow = Carbon::now();

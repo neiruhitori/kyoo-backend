@@ -421,7 +421,6 @@
     }
 
     function fetchRegencies(country,provinceId) {
-      // console.log(provinceId);
       const oldRegency = '{{ old('regency_id') }}'
 
       fetch(`/api/regency/${country}/${provinceId}`)
