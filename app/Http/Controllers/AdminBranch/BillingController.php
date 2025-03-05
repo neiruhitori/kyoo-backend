@@ -272,12 +272,22 @@ class BillingController extends Controller
                         break;
                     }
                 }
-                $countryTimezones = [
-                    'Indonesia' => 'Asia/Jakarta',
-                    'Vietnam' => 'Asia/Ho_Chi_Minh',
-                    'Singapore' => 'Asia/Singapore',
+                $timezoneMapping = [
+                    'WIB'  => 'Asia/Jakarta',      
+                    'WITA' => 'Asia/Makassar',     
+                    'WIT'  => 'Asia/Jayapura',     
+                    'ICT'  => 'Asia/Bangkok',       
+                    'MYT'  => 'Asia/Kuala_Lumpur',  
+                    'BNT'  => 'Asia/Brunei',        
+                    'TLT'  => 'Asia/Dili',           
+                    'AEST' => 'Australia/Sydney',   
+                    'ACST' => 'Australia/Darwin',   
+                    'AWST' => 'Australia/Perth',   
                 ];
-                $timezone = $countryTimezones[Auth::user()->Branch->country];
+                
+                $userTimezone = Auth::user()->Branch->timezone;
+                $timezone = $timezoneMapping[$userTimezone] ?? 'UTC';
+                // dd($timezone);
                 $invoice_data = [
                     // 'id_invoice' => '1A867992C6617241Y',
                     // 'invoice_url' => 'https://www.sandbox.paypal.com/checkoutnow?token=1A867992C6617241Y',
@@ -316,7 +326,7 @@ class BillingController extends Controller
                     ]);
                 });
 
-                $request->session()->flash('success', 'Invoice berhasil dibuat');
+                $request->session()->flash('success', __('Invoice successfully created'));
 
                 return redirect()->back();
                 // dd($invoice_data);
