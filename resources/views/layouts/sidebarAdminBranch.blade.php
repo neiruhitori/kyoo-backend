@@ -179,7 +179,7 @@
                     class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/user*') ?: 'active' }}"
                     href="{{ route('admin-branch.branch-configuration.user.index') }}"
                 >
-                    {{ __('Virtual Counter') }}
+                    {{ __('Staff') }}
                 </a>
 
                 @if (
