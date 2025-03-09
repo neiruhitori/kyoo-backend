@@ -5,47 +5,45 @@
         <div class="col-xl-12 col-lg-7">
             <form id="filterForm" class="mb-4" style="width: 100%; max-width: 300px;">
                 <div class="form-group">
-                    <label for="report_type">Jenis Laporan</label>
+                    <label for="report_type">{{ __('Report Type') }}</label>
                     <select
                         class="form-control"
                         id="report_type"
                         autocomplete="off"
                     >
-                        <option value="monthly">Bulanan</option>
-                        <option value="daily">Harian</option>
+                        <option value="monthly">{{ __('Monthly') }}</option>
+                        <option value="daily">{{ __('Daily') }}</option>
                     </select>
                 </div>
 
                 <div class="form-group d-none" id="daily_type">
-                    <label for="date">Tanggal</label>
+                    <label for="date">{{ __('Date') }}</label>
                     <input type="date" class="form-control" autocomplete="off" name="date" id="date" value={{ date('Y-m-d') }}>
                 </div>
 
                 <div class="form-row" id="monthly_type">
                     <div class="form-group col-md-6">
-                        <label for="month">Bulan</label>
+                        <label for="month">{{ __('Select Month') }}</label>
                         <select
                             class="form-control"
                             id="month"
                             autocomplete="off"
                         >
-                            <option value="1" {{ date('n') == 1 ? 'selected' : '' }}>Januari</option>
-                            <option value="2" {{ date('n') == 2 ? 'selected' : '' }}>Februari</option>
-                            <option value="3" {{ date('n') == 3 ? 'selected' : '' }}>Maret</option>
-                            <option value="4" {{ date('n') == 4 ? 'selected' : '' }}>April</option>
-                            <option value="5" {{ date('n') == 5 ? 'selected' : '' }}>Mei</option>
-                            <option value="6" {{ date('n') == 6 ? 'selected' : '' }}>Juni</option>
-                            <option value="7" {{ date('n') == 7 ? 'selected' : '' }}>Juli</option>
-                            <option value="8" {{ date('n') == 8 ? 'selected' : '' }}>Agustus</option>
-                            <option value="9" {{ date('n') == 9 ? 'selected' : '' }}>September</option>
-                            <option value="10" {{ date('n') == 10 ? 'selected' : '' }}>Oktober</option>
-                            <option value="11" {{ date('n') == 11 ? 'selected' : '' }}>November</option>
-                            <option value="12" {{ date('n') == 12 ? 'selected' : '' }}>Desember</option>
+                        <option value="1" {{ date('n') == 1 ? 'selected' : '' }}>{{ __('January') }}</option>
+                        <option value="2" {{ date('n') == 2 ? 'selected' : '' }}>{{ __('February') }}</option>
+                        <option value="3" {{ date('n') == 3 ? 'selected' : '' }}>{{ __('March') }}</option>
+                        <option value="4" {{ date('n') == 4 ? 'selected' : '' }}>{{ __('April') }}</option>
+                        <option value="5" {{ date('n') == 5 ? 'selected' : '' }}>{{ __('May') }}</option>
+                        <option value="6" {{ date('n') == 6 ? 'selected' : '' }}>{{ __('June') }}</option>
+                        <option value="7" {{ date('n') == 7 ? 'selected' : '' }}>{{ __('July') }}</option>
+                        <option value="8" {{ date('n') == 8 ? 'selected' : '' }}>{{ __('August') }}</option>
+                        <option value="11" {{ date('n') == 11 ? 'selected' : '' }}>{{ __('November') }}</option>
+                        <option value="12" {{ date('n') == 12 ? 'selected' : '' }}>{{ __('December') }}</option>
                         </select>
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="year">Tahun</label>
+                        <label for="year">{{ __('Select Year') }}</label>
                         <select
                             class="form-control"
                             id="year"
@@ -59,7 +57,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="report_type">Departemen</label>
+                    <label for="report_type">{{ __('Department') }}</label>
                     <select
                         class="form-control"
                         id="department_id"
@@ -76,7 +74,7 @@
 
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Laporan Meja</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Workstation Report') }}</h6>
                 </div>
 
                 <div class="card-body">
@@ -102,38 +100,38 @@
                         <table class="table table-bordered table-striped mb-4" id="table">
                             <thead>
                                 <tr>
-                                    <th rowspan="2" class="align-middle">Meja</th>
-                                    <th rowspan="2" class="align-middle">Layanan</th>
-                                    <th colspan="3" class="text-center">Total Antrian</th>
-                                    <th rowspan="2" class="align-middle text-center">Waktu Operasional</th>
-                                    <th rowspan="2" class="align-middle text-center">Total Waktu Melayani</th>
-                                    <th rowspan="2" class="align-middle text-center">Total Waktu Idle</th>
-                                    <th rowspan="2" class="align-middle text-right">Produktivitas</th>
-                                    <th colspan="3" class="text-center">Waktu Tunggu</th>
-                                    <th colspan="3" class="text-center">Waktu Dilayani</th> 
+                                    <th rowspan="2" class="align-middle">{{ __('Workstation') }}</th>
+                                    <th rowspan="2" class="align-middle">{{ __('Service') }}</th>
+                                    <th colspan="3" class="text-center">{{ __('Total Queue') }}</th>
+                                    <th rowspan="2" class="align-middle text-center">{{ __('Operational Hours') }}</th>
+                                    <th rowspan="2" class="align-middle text-center">{{ __('Total Serving Time') }}</th>
+                                    <th rowspan="2" class="align-middle text-center">{{ __('Total Idle Time') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Productivity') }}</th>
+                                    <th colspan="3" class="text-center">{{ __('Waiting Time') }}</th>
+                                    <th colspan="3" class="text-center">{{ __('Served Time') }}</th> 
                                 </tr>
     
                                 <tr>
                                     {{-- Total Antrian Child Header --}}
-                                    <th class="text-right align-middle">Jumlah Tiket</th>
-                                    <th class="text-right align-middle">Dilayani</th>
-                                    <th class="text-right align-middle">Tidak Hadir</th>
+                                    <th class="text-right align-middle">{{ __('Total Tickets') }}</th>
+                                    <th class="text-right align-middle">{{ __('Serve') }}</th>
+                                    <th class="text-right align-middle">{{ __('No Show') }}</th>
 
                                     {{-- Waktu Tunggu Child Header --}}
-                                    <th class="text-center align-middle">Tercepat</th>
-                                    <th class="text-center align-middle">Rata-Rata</th>
-                                    <th class="text-center align-middle">Terlama</th>
+                                    <th class="text-center align-middle">{{ __('Fastest') }}</th>
+                                    <th class="text-center align-middle">{{ __('Average') }}</th>
+                                    <th class="text-center align-middle">{{ __('Longest') }}</th>
     
                                     {{-- Waktu Melayani Child Header --}}
-                                    <th class="text-center align-middle">Tercepat</th>
-                                    <th class="text-center align-middle">Rata-Rata</th>
-                                    <th class="text-center align-middle">Terlama</th>
+                                    <th class="text-center align-middle">{{ __('Fastest') }}</th>
+                                    <th class="text-center align-middle">{{ __('Average') }}</th>
+                                    <th class="text-center align-middle">{{ __('Longest') }}</th>
                                 </tr>
                             </thead>
     
                             <tbody>
                                 <tr>
-                                    <td colspan="15" class="text-center">Data tidak ditemukan.</td>
+                                    <td colspan="15" class="text-center">{{ __('Data not Found') }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -215,7 +213,7 @@
         
         if (!res.length) {
             $("#table tbody").html(`<tr>
-                <td colspan="15" class="text-center">Data tidak ditemukan.</td>
+                <td colspan="15" class="text-center">{{ __('Data not Found') }}</td>
             </tr>`)
             return
         }

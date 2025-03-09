@@ -34,5 +34,9 @@ class Invoice extends Model
         return $this->belongsTo('App\Branch','branch_id');
     }
 
+    public function subscription(){
+        return $this->hasOne('App\Models\Subscription', 'invoice', 'invoice_number');
+    }
+
     use HasFactory;
 }

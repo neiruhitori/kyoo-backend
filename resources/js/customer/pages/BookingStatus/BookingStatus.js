@@ -28,10 +28,12 @@ import Story from '../../components/Story'
 import ClockIcon from '../../icons/ClockIcon'
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import styled from 'styled-components'
+import useLocalization from '../../hooks/useLocalization'
 
 export default function BookingStatus() {
+    const{t, locale} = useLocalization();
     const { bookingId, queueType, branchId } = useParams()
-    const PAGE_TITLE = `Status ${queueType}`
+    const PAGE_TITLE = t(`${queueType} Status`)
 
     const [rating, setRating] = useState(0)
     const [allowRate, setAllowRate] = useState(false)
@@ -77,12 +79,12 @@ export default function BookingStatus() {
         })
 
     const bookingStatusMap = {
-        'book': 'Dipesan',
+        'book': t('Booked'),
         'check in': 'Check In',
-        'served': 'Dilayani',
-        'end served': 'Selesai',
-        'no show': 'Tidak Hadir',
-        'canceled': 'Dibatalkan'
+        'served': t('Serve'),
+        'end served': t('End Served'),
+        'no show': t('No Show'),
+        'canceled': t('Cancelled')
     }
     const bookingStatus = bookingStatusMap[booking?.status]
 
@@ -225,14 +227,14 @@ export default function BookingStatus() {
                                 }}
                             />
                             <span>
-                                {!!booking && getAbrvDate(formatBrowser(booking.date))}
+                                {!!booking && getAbrvDate(formatBrowser(booking.date), locale)}
                             </span>
                             <span style={{
                                 margin: '0 0.5rem'
                             }}>|</span>
                             <span style={{
                                 marginRight: '0.5rem'
-                            }}>Sesi {slot?.session}:</span>
+                            }}>{t('Session')} {slot?.session}:</span>
                             <span style={{
                                 fontWeight: '700',
                                 color: '#007EC6'
@@ -253,7 +255,7 @@ export default function BookingStatus() {
                                 display: 'inline-block',
                                 marginBottom: '.375rem'
                             }}>
-                                Kode Booking
+                                {t('Booking Code')}
                             </div>
 
                             <div style={{
@@ -274,7 +276,7 @@ export default function BookingStatus() {
                                 display: 'inline-block',
                                 marginBottom: '.625rem'
                             }}>
-                                Status Antrian
+                                {t('Queue Status')}
                             </div>
 
                             <div>
@@ -296,7 +298,7 @@ export default function BookingStatus() {
                         marginBottom: '0.75rem',
                         fontWeight: '500'
                     }}>
-                        Nomor Antrian
+                         {t('Queue Number')}
                     </div>
 
                     <div>
@@ -317,7 +319,7 @@ export default function BookingStatus() {
                         marginBottom: '0.75rem',
                         fontWeight: '500'
                     }}>
-                        Antrian Sekarang
+                       {t('Current Queue')}
                     </div>
 
                     <span>{booking?.current_queue || 0}</span>
@@ -329,7 +331,7 @@ export default function BookingStatus() {
             }}>
                 <h4 style={{
                     marginBottom: '1.625rem'
-                }}>Detail User</h4>
+                }}>{t('Customer Details')}</h4>
 
                 <div>
                     <div style={{
@@ -340,7 +342,7 @@ export default function BookingStatus() {
                         <div style={{
                             flex: '1',
                             color: '#A5A5A5'
-                        }}>Nama Lengkap</div>
+                        }}>{t('Full Name')}</div>
 
                         <div style={{
                             flex: '1',
@@ -378,7 +380,7 @@ export default function BookingStatus() {
                         <div style={{
                             flex: '1',
                             color: '#A5A5A5'
-                        }}>No. Telepon</div>
+                        }}>{t('Phone Number')}</div>
 
                         <div style={{
                             flex: '1',
@@ -397,7 +399,7 @@ export default function BookingStatus() {
                         <div style={{
                             flex: '1',
                             color: '#A5A5A5'
-                        }}>Catatan</div>
+                        }}>{t('Notes')}</div>
 
                         <div style={{
                             flex: '1',
@@ -416,7 +418,7 @@ export default function BookingStatus() {
             }}>
                 <p style={{
                     textAlign: 'center'
-                }}>Seberapa puas Anda terhadap layanan kami?</p>
+                }}>{t('How satisfied are you with our service?')}</p>
 
                 <div style={{
                     marginTop: '1.125rem'
@@ -437,7 +439,7 @@ export default function BookingStatus() {
                         color: '#FFFFFF',
                         backgroundColor: '#007EC6',
                         border: 'none'
-                    }} onClick={handleFeedbackClick}>Kirim Feedback</button>
+                    }} onClick={handleFeedbackClick}>{t('Send Feedback')}</button>
                 </div>}
             </Card>}
 
@@ -449,14 +451,14 @@ export default function BookingStatus() {
                     fontSize: '1rem',
                     marginBottom: '.375rem',
                     textTransform: 'capitalize'
-                }}>Informasi Antrian</h4>
+                }}>{t('Queue Information')}</h4>
 
                 <p style={{
                     lineHeight: '1.5',
                 }}>
                     {queueType === 'onsite'
-                        ? 'Anda akan dipanggil oleh counter yang Anda pilih sesuai dengan nomor antrian Anda.'
-                        : 'Antrian dapat dilihat di Email Anda. Cukup lihatkan Nomor Antrian sesuai dengan waktu yang kamu tentukan.'}
+                        ? t('You will be called by the counter you selected according to your queue number.')
+                        : t('The queue can be viewed in your email. Just show your Queue Number according to the time you specified.')}
                 </p>
             </InfoAlert>
 
@@ -465,7 +467,7 @@ export default function BookingStatus() {
                     fontSize: '1rem',
                     marginBottom: '.375rem',
                     textTransform: 'capitalize'
-                }}>Syarat & Ketentuan</h4>
+                }}>{t('Terms and Conditions')}</h4>
 
                 <p
                     style={{
@@ -486,7 +488,7 @@ export default function BookingStatus() {
                 style={{ width: '100%' }}
                 onClick={handleCancelClick}
             >
-                Batalkan Appoinment
+                {t('Cancel Appointment')}
             </Button>
         </div>}
 
@@ -498,7 +500,7 @@ export default function BookingStatus() {
                     textAlign: 'center',
                     margin: '0 auto',
                     lineHeight: '1.5'
-                }}>Apakah Anda yakin ingin membatalkan appointment?</p>
+                }}>{t('Are you sure you want to cancel the appointment?')}</p>
             </div>
 
             <div style={{
@@ -506,8 +508,8 @@ export default function BookingStatus() {
                 justifyContent: 'center',
                 gap: '1rem'
             }}>
-                <Button color="primary" onClick={() => handleConfirmCancel(booking?.id)}>Ya, Batalkan</Button>
-                <Button color="secondary" onClick={() => setIsShowDialog(false)}>Tidak</Button>
+                <Button color="primary" onClick={() => handleConfirmCancel(booking?.id)}>{t('Yes, Cancel the Appointment')}</Button>
+                <Button color="secondary" onClick={() => setIsShowDialog(false)}>{t('No')}</Button>
             </div>
         </Dialog>}
     </>

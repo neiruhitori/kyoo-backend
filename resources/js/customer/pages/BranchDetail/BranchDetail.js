@@ -22,6 +22,7 @@ import ArrowDownIcon from '../../icons/ArrowDownIcon'
 import SendIcon from '../../icons/SendIcon'
 import PhoneIcon from '../../icons/PhoneIcon'
 import LocationIcon from '../../icons/LocationIcon'
+import useLocalization from '../../hooks/useLocalization'
 
 const ScheduleItem = styled.div`
     display: flex;
@@ -34,7 +35,10 @@ const ScheduleItem = styled.div`
 `
 
 export default function BranchDetail() {
-    const PAGE_TITLE = 'Detail Lokasi'
+
+    const {t, locale} = useLocalization();
+
+    const PAGE_TITLE = t('Location Details')
     const { branchId, queueType } = useParams()
 
     let branch = null
@@ -126,12 +130,14 @@ export default function BranchDetail() {
                             borderBottomLeftRadius: '0',
                             borderBottomRightRadius: '0',
                         }}
+                        t = {t}
                     />
                     : <BranchStatusClosed
                         style={{
                             borderBottomLeftRadius: '0',
                             borderBottomRightRadius: '0',
                         }}
+                        t = {t}
                     />}
                 </div>
             </Banner>
@@ -143,7 +149,7 @@ export default function BranchDetail() {
                         justifyContent: 'space-between',
                         alignItems: 'center'
                     }}>
-                        <h4>Jam Operasional</h4>
+                        <h4>{t('Operational Hours')}</h4>
 
                         <button style={{
                             display: 'flex',
@@ -161,7 +167,7 @@ export default function BranchDetail() {
                     {isOpen && <div style={{
                         marginTop: '1.625rem'
                     }}>
-                        {getDaysName().map((day, idx) => {
+                        {getDaysName(locale).map((day, idx) => {
                             const schedule = branch.schedule.find(schedule => {
                                 return schedule.day === enDays[idx]
                             })
@@ -171,7 +177,7 @@ export default function BranchDetail() {
                             if (schedule?.status === 'closed') {
                                 listValue = '-'
                             } else if (schedule?.status === 'fullday') {
-                                listValue = 'Sehari penuh'
+                                listValue = t('Full day')
                             } else if (schedule?.status === 'open') {
                                 listValue = `${schedule.start_time.slice(0, 5)} - ${schedule.end_time.slice(0, 5)}`
                             }
@@ -199,7 +205,7 @@ export default function BranchDetail() {
                 <div style={{
                     marginTop: '1.625rem'
                 }}>
-                    <h4>Kontak</h4>
+                    <h4>{t('Contact')}</h4>
                     <div style={{
                         marginTop: '1.125rem'
                     }}>

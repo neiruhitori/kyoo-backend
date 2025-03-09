@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800" v-once>Daftar Appointment {{ branch.name }}</h1>
+            <h1 class="h3 mb-0 text-gray-800" v-once>{{ t('Appointment List') }} {{ branch.name }}</h1>
         </div>
 
         <div
@@ -16,14 +16,14 @@
             <div class="col-md-12">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Appointment Aktif</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">{{ t('Active Appointment') }}</h6>
                     </div>
 
                     <div class="card-body">
                         <div class="mb-3">
                             <a href="/cs/appointments/create" class="btn btn-primary">
                                 <span class="fas fa-plus"></span>&nbsp;
-                                Tambah
+                                {{ t('Add') }}
                             </a>
                         </div>
 
@@ -31,19 +31,19 @@
                             <table class="table" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th>Nomor Antrian</th>
-                                        <th>Kode Booking</th>
-                                        <th>Customer</th>
-                                        <th>Status</th>
-                                        <th>Layanan</th>
-                                        <th class="text-center">Slot Waktu</th>
-                                        <th class="text-center">Aksi</th>
+                                        <th> {{ t('Queue Number') }}</th>
+                                        <th> {{ t('Booking Code') }}</th>
+                                        <th> {{ t('Customer Name') }}</th>
+                                        <th> {{ t('Status') }}</th>
+                                        <th> {{ t('Service') }}</th>
+                                        <th class="text-center"> {{ t('Time Slot') }}</th>
+                                        <th class="text-center"> {{ t('Action') }}</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
                                     <tr v-if="!activeAppointments.length">
-                                        <td colspan="7" class="text-center">Tidak ada data</td>
+                                        <td colspan="7" class="text-center"> {{ t('No data') }}</td>
                                     </tr>
 
                                     <tr
@@ -57,15 +57,15 @@
                                         </td>
                                         <td>
                                             <span class="badge badge-primary" v-if="appointment.status === 'book'">
-                                                Dibooking
+                                                {{ t('Book') }}
                                             </span>
 
                                             <span class="badge badge-success" v-else-if="appointment.status === 'check in'">
-                                                Hadir
+                                                {{ t('Attend') }}
                                             </span>
 
                                             <span class="badge badge-info" v-else-if="appointment.status === 'served'">
-                                                Dilayani
+                                                {{ t('Serve') }}
                                             </span>
                                         </td>
                                         <td>{{ appointment.service.name }}</td>
@@ -85,7 +85,7 @@
                                                 @click="onNoShow(appointment.id)"
                                                 v-if="appointment.status === 'book'"
                                             >
-                                                Tidak Hadir
+                                            {{ t('No Show') }}
                                             </button>
 
                                             <button
@@ -93,7 +93,7 @@
                                                 class="btn btn-primary"
                                                 @click="onServed(appointment.id)"
                                             >
-                                                Layani
+                                            {{ t('Serve') }}
                                             </button>
 
                                             <button
@@ -101,7 +101,7 @@
                                                 class="btn btn-success"
                                                 @click="onEndServed(appointment.id)"
                                             >
-                                                Layanan Selesai
+                                            {{ t('End Serve') }}
                                             </button>
 
                                             <button
@@ -109,7 +109,7 @@
                                                 class="btn btn-danger ml-1"
                                                 @click="onCancel(appointment.id)"
                                             >
-                                                Batal
+                                            {{ t('Cancel') }}
                                             </button>
                                         </td>
                                     </tr>
@@ -123,7 +123,7 @@
             <div class="col-md-12">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Appointment Selesai</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">{{ t('Appointment Completed') }}</h6>
                     </div>
 
                     <div class="card-body">
@@ -131,19 +131,19 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Nomor Antrian</th>
-                                        <th>Kode Booking</th>
-                                        <th>Customer</th>
-                                        <th class="text-center">Waktu Dilayani</th>
-                                        <th>Layanan</th>
-                                        <th class="text-center">Slot Waktu</th>
-                                        <th>Status</th>
+                                        <th>{{ t('Queue Number') }}</th>
+                                        <th>{{ t('Booking Code') }}</th>
+                                        <th>{{ t('Customer Name') }}</th>
+                                        <th class="text-center">{{ t('Served Time') }}</th>
+                                        <th>{{ t('Service') }}</th>
+                                        <th class="text-center">{{ t('Time Slot') }}</th>
+                                        <th>{{ t('Status') }}</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
                                     <tr v-if="!finishAppointments.length">
-                                        <td colspan="7" class="text-center">Tidak ada data</td>
+                                        <td colspan="7" class="text-center">{{ t('No data') }}</td>
                                     </tr>
 
                                     <tr
@@ -162,15 +162,15 @@
                                         </td>
                                         <td>
                                             <span class="badge badge-success" v-if="appointment.status === 'end served'">
-                                                Selesai Dilayani
+                                                {{ t('End Served') }}
                                             </span>
 
                                             <span class="badge badge-warning" v-else-if="appointment.status === 'no show'">
-                                                Tidak Hadir
+                                                {{ t('No Show') }}
                                             </span>
 
                                             <span class="badge badge-danger" v-else-if="appointment.status === 'canceled'">
-                                                Dibatalkan
+                                                {{ t('Cancelled') }}
                                             </span>
                                         </td>
                                     </tr>
@@ -186,19 +186,19 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Batalkan Appointment</h5>
+                        <h5 class="modal-title">{{ t('Cancel Appointment') }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="isShowModal = false">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
 
                     <div class="modal-body">
-                        <p>Apakah Anda yakin ingin membatalkan appointment <strong>{{ selectedAppointment.number }}</strong>?</p>
+                        <p>{{ t('Are you sure you want to cancel the appointment') }} <strong>{{ selectedAppointment.number }}</strong>?</p>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="isShowModal = false">Tidak</button>
-                        <button type="button" class="btn btn-danger" @click="confirmCancel(selectedAppointment.id)">Ya, Batalkan Appointment</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="isShowModal = false">{{ ('No') }}</button>
+                        <button type="button" class="btn btn-danger" @click="confirmCancel(selectedAppointment.id)">{{ t('Yes, Cancel the Appointment') }}</button>
                     </div>
                 </div>
             </div>
@@ -208,7 +208,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Detail Pelanggan</h5>
+                        <h5 class="modal-title">{{ t('Customer Details') }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="isShowCustomer = false">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -216,28 +216,28 @@
 
                     <div class="modal-body">
                         <div class="row mb-2">
-                            <div class="col-md-4">Nama</div>
+                            <div class="col-md-4">{{ t('Name') }}</div>
                             <div class="text-dark">{{ customerDetail.name }}</div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-md-4">Email</div>
+                            <div class="col-md-4">{{ t('Email') }}</div>
                             <div class="text-dark">{{ customerDetail.email }}</div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-md-4">No. Telepon</div>
+                            <div class="col-md-4">{{ t('Phone Number') }}</div>
                             <div class="text-dark">{{ customerDetail.phone }}</div>
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-md-4">Catatan</div>
+                            <div class="col-md-4">{{ t('Notes') }}</div>
                             <div class="text-dark">{{ customerDetail.notes }}</div>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="isShowCustomer = false">Tutup</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="isShowCustomer = false">{{ t('Close') }}</button>
                     </div>
                 </div>
             </div>
@@ -247,7 +247,8 @@
 
 <script>
 import audioRecorder from "../utils/audio-recorder"
-
+import ID from "../../lang/id.json";
+import EN from "../../lang/en.json";
 export default {
     props: {
         branch: {
@@ -261,6 +262,9 @@ export default {
         vct: {
             type: Object,
             required: true
+        }, 
+        lang: {
+            type: String,
         }
     },
 
@@ -268,6 +272,11 @@ export default {
         return {
             activeAppointments: [],
             finishAppointments: [],
+            messages: {
+                    en: EN,
+                    id: ID,
+                    },
+            currentLocale: this.lang || "en",
 
             isShowModal: false,
             selectedAppointment: null,
@@ -295,6 +304,7 @@ export default {
       });
     },
     mounted() {
+    console.log(this.lang)
         this.getQueues()
         Echo.channel(`event_appointment_queue_general.${this.branch.id}`)
         .listen("AppointmentQueue", () => {
@@ -303,6 +313,14 @@ export default {
     },
 
     methods: {
+        t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
         async getQueues() {
             const finishedAppointmentStatus = ['end served', 'no show', 'canceled']
 

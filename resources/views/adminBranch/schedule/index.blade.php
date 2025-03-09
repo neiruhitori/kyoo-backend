@@ -10,19 +10,19 @@
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
                     <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
+                    {{ __('Information') }}
                 </h6>
 
                 <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
+                    {{ __('Show') }}
                 </button>
             </div>
 
             <div class="custom-info-body">
                 <p>
-                    Jadwal hari kerja merupakan jadwal buka tutup kantor cabang Anda setiap hari. Anda juga dapat menambahkan informasi hari pengecualian dimana kantor cabang anda tutup karena mengikuti hari Libur Nasional.
+                    {{ __('infobox.schedule') }} 
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
             </div>
         </div>
     </div>
@@ -109,7 +109,7 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Hari Libur</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Holiday') }}</h6>
                 </div>
 
                 <div class="card-body">
@@ -120,14 +120,14 @@
                                     href="{{ route('admin-branch.branch-configuration.holiday.create') }}"
                                     class="btn btn-primary"
                                 >
-                                    Tambah Hari Libur
+                                   {{ __('create.module',['module' => __('Holiday')])}}
                                 </a>
 
                                 <a
                                     href="{{ route('admin-branch.branch-configuration.holiday.template.create') }}"
                                     class="btn btn-primary"
                                 >
-                                    Pilih Template Hari Libur
+                                    {{ __('Select Holiday Template') }}
                                 </a>
                             </div>
 
@@ -135,9 +135,9 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">Tanggal</th>
-                                            <th>Deskripsi</th>
-                                            <th class="text-center">Aksi</th>
+                                            <th class="text-center">{{ ('Date') }}</th>
+                                            <th>{{ __('Description') }}</th>
+                                            <th class="text-center">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -158,7 +158,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="3" class="text-center">Data tidak ditemukan</td>
+                                                <td colspan="3" class="text-center">{{ __('Data not Found') }}</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -175,11 +175,38 @@
 @push('js')
     <script src="{{asset('admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
-    <script src="{{asset('admin/js/demo/datatables-demo.js')}}"></script>
+    {{-- <script src="{{asset('admin/js/demo/datatables-demo.js')}}"></script> --}}
 
     <script>
         $(function () {
           $('[data-toggle="tooltip"]').tooltip()
+        })
+        $(document).ready(function() {
+            $('#dataTable').dataTable({
+                "language": {
+                    "emptyTable": "{{ __('No Data') }}",
+                    "info": "{{ __('Displaying :start to :end of :total data') }}"
+                            .replace(':start', '_START_')
+                            .replace(':end', '_END_')
+                            .replace(':total', '_TOTAL_'),
+                    "infoEmpty": "{{ __('No Data') }}",
+                    "infoFiltered": "",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "{{ __('Show :menu data') }}"
+                                    .replace(':menu', '_MENU_'),
+                    "loadingRecords": "{{ __('Loading...') }}",
+                    "processing": "{{ __('Processing...') }}",
+                    "search": "{{ __('Search:') }}",
+                    "zeroRecords": "{{ __('No data found') }}",
+                    "paginate": {
+                        "first": "{{ __('First') }}",
+                        "last": "{{ __('Last') }}",
+                        "next": "{{ __('Next') }}",
+                        "previous": "{{ __('Previous') }}"
+                    },
+                }
+            })
         })
     </script>
 @endpush

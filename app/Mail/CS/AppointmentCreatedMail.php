@@ -2,11 +2,12 @@
 
 namespace App\Mail\CS;
 
+use Carbon\Carbon;
+use App\Appointment;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Appointment;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class AppointmentCreatedMail extends Mailable
 {
@@ -32,18 +33,54 @@ class AppointmentCreatedMail extends Mailable
     public function build()
     {
         $branch = $this->appointment->Slot->Service->Branch;
+        $country = $branch->country;
+        $locale = $country == 'Indonesia' ? 'id' : 'en';
+        $timezoneArr = [
+            'WIB'  => 'Asia/Jakarta',
+            'WITA' => 'Asia/Makassar',
+            'WIT'  => 'Asia/Jayapura',
+            'SGT'  => 'Asia/Singapore',
+            'ICT'  => 'Asia/Ho_Chi_Minh',
+        ];
+        $timezone = $timezoneArr[$branch->timezone] ?? config('app.timezone');
+        // setlocale(LC_TIME, 'id_ID');
+        app()->setLocale($locale);
+        \Log::info($this->appointment->Slot->start_time);
+        $startTime = Carbon::parse($this->appointment->date . ' ' . $this->appointment->Slot->start_time)
+        ->setTimezone($timezone)
+        ->format('Ymd\THis');
+        $endTime = Carbon::parse($this->appointment->date . ' ' . $this->appointment->Slot->end_time)
+        ->setTimezone($timezone)
+        ->format('Ymd\THis');
 
-        setlocale(LC_TIME, 'id_ID');
+        // init file ics
+        $icsContent = "BEGIN:VCALENDAR\r\n";
+        $icsContent .= "VERSION:2.0\r\n";
+        $icsContent .= "PRODID:-//KYOO//Appointment//EN\r\n";
+        $icsContent .= "BEGIN:VEVENT\r\n";
+        $icsContent .= "UID:" . uniqid() . "@kyoo.id\r\n";
+        $icsContent .= "DTSTAMP:" . now()->format('Ymd\THis') . "Z\r\n";
+        $icsContent .= "DTSTART:{$startTime}\r\n";
+        $icsContent .= "DTEND:{$endTime}\r\n";
+        $icsContent .= "SUMMARY:Appointment at " . $branch->name . "\r\n";
+        $icsContent .= "DESCRIPTION:Your scheduled appointment at " . $branch->name . "\r\n";
+        $icsContent .= "LOCATION:" . $branch->address . "\r\n";
+        $icsContent .= "END:VEVENT\r\n";
+        $icsContent .= "END:VCALENDAR\r\n";
+
 
         return $this
             ->from('noreply@kyoo.id', 'KYOO')
-            ->subject('Appointment di ' . $branch->name)
+            ->subject(__('Appointment at :branch_name',['branch_name' => $branch->name]))
             ->markdown('emails.cs.storeAppointment', [
                 'appointment' => $this->appointment,
                 'appointment_id' => $this->appointment->id,
                 'branch_id' => $branch->id,
                 'branch_name' => $branch->name,
-                'booking_date' => date('j F Y', strtotime($this->appointment->date))
+                'booking_date' =>  Carbon::parse($this->appointment->date)->locale($locale)->isoFormat('D MMMM YYYY')
+            ])
+            ->attachData($icsContent,'appointment-'.$this->appointment->id.'.ics' ,[
+                'mime' => 'text/calendar',
             ]);
     }
 }

@@ -6,11 +6,11 @@
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
                     <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
+                    {{ __('Information') }}
                 </h6>
 
                 <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
+                    {{ __('Show') }}
                 </button>
             </div>
 
@@ -18,15 +18,13 @@
                 <p>
                 <ul style="padding-left: 2rem;">
                     <li style="margin-bottom: 0.25rem;">
-                        Ini adalah konfigurasi fitur yang bisa anda sesuaikan dengan kebutuhan.
-                    </li>
+                        {{ __('infobox.features1') }}                    </li>
                     <li>
-                        Untuk API Antrian KYOO hanya akan tampil Ketika cabang sudah memiliki license API.
-                        API KYOO dapat di-integrasikan ke berbagai channel layanan anda seperti WA, Telegram dll.
+                        {{ __('infobox.features2') }} 
                     </li>
                 </ul>
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                <button class="btn btn-warning float-right" data-toggle="alert"> {{ __('Hide') }}</button>
             </div>
         </div>
     </div>
@@ -106,7 +104,7 @@
                                     </div>
 
                                     @if (Auth::user()->Branch->hasAccess('Panggilan Suara'))
-                                        <label for="">Panggilan Suara</label>
+                                        <label for="">{{ __('Voice Call') }}</label>
 
                                         <div class="form-group">
                                             <div class="form-check">
@@ -119,14 +117,14 @@
                                                         : ''
                                                     }}>
 
-                                                <label for="queue-voice-label" class="form-check-label">Aktifkan</label>
+                                                <label for="queue-voice-label" class="form-check-label">{{ __('Activate') }}</label>
                                             </div>
                                             @include('layouts.inputError', ['errorName' => 'queue_voice'])
                                         </div>
                                     @endif
 
                                     @if (Auth::user()->Branch->hasAccess('Promosi'))
-                                        <label for="">Promosi</label>
+                                        <label for="">{{ __('Promotion') }}</label>
 
                                         <div class="form-group">
                                             <div class="form-check">
@@ -139,7 +137,7 @@
                                                         : ''
                                                     }}>
 
-                                                <label for="promotion-label" class="form-check-label">Promosi</label>
+                                                <label for="promotion-label" class="form-check-label">{{ __('Activate') }}</label>
                                             </div>
 
                                             @include('layouts.inputError', ['errorName' => 'queue_voice'])
@@ -147,7 +145,7 @@
                                     @endif
                                 @endif
 
-                                <label for="wa-notification">Notifikasi WA</label>
+                                <label for="wa-notification">{{ __('Whatsapp Notification') }}</label>
 
                                 <div class="form-group">
                                     <div class="form-check">
@@ -160,13 +158,13 @@
                                                 : ''
                                             }}>
 
-                                        <label for="wa-notification" class="form-check-label">Aktifkan</label>
+                                        <label for="wa-notification" class="form-check-label">{{ __('Activate') }}</label>
                                     </div>
 
                                     @include('layouts.inputError', ['errorName' => 'wa_notification'])
                                 </div>
 
-                                <label for="serving-directly">Melayani Langsung</label>
+                                <label for="serving-directly">{{ __('Serve Directly') }}</label>
 
                                 <div class="form-group">
                                     <div class="form-check">
@@ -179,7 +177,7 @@
                                                 : ''
                                             }}>
 
-                                        <label for="serving-directly" class="form-check-label">Aktifkan</label>
+                                        <label for="serving-directly" class="form-check-label">{{ __('Activate') }}</label>
                                     </div>
 
                                     @include('layouts.inputError', ['errorName' => 'serving_directly'])
@@ -196,7 +194,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        {{ __('Konfigurasi Check-in Onsite Hybrid') }}
+                        {{ __('Onsite Hybrid Check-in Configuration') }}
                     </h6>
                 </div>
                 <div class="card-body">
@@ -208,7 +206,7 @@
                             @if ($branch_config->layer == 1)
                             <div class="col-md-12">
                                 <b class="my-2">
-                                    Fitur ini hanya dapat digunakan untuk Page Portal Hybrid Appointment-Onsite
+                                    {{ __('This feature can only be used for the Hybrid Appointment-Onsite Portal Page') }}
                                 </b>
                             </div>
                             @endif
@@ -217,13 +215,13 @@
                         <div class="col-md-3" id="select-check">
                             @if ($branch_config->layer != 1)
                             <select class="custom-select" id="check-in" name="check_in_rule">
-                                <option value="0" {{ $branch_config->check_in_rule == 0 ? 'selected' : ''}}>0 Jam</option>
-                                <option value="1" {{ $branch_config->check_in_rule == 1 ? 'selected' : ''}}>1 Jam</option>
-                                <option value="2" {{ $branch_config->check_in_rule == 2 ? 'selected' : ''}}>2 Jam</option>
-                                <option value="3" {{ $branch_config->check_in_rule == 3 ? 'selected' : ''}}>3 Jam</option>
-                                <option value="4" {{ $branch_config->check_in_rule == 4 ? 'selected' : ''}}>4 Jam</option>
-                                <option value="5" {{ $branch_config->check_in_rule == 5 ? 'selected' : ''}}>5 Jam</option>
-                                <option value="24" {{ $branch_config->check_in_rule == 24 ? 'selected' : ''}}>24 Jam</option>
+                                <option value="0" {{ $branch_config->check_in_rule == 0 ? 'selected' : ''}}>0 {{ __('Hour')  }}</option>
+                                <option value="1" {{ $branch_config->check_in_rule == 1 ? 'selected' : ''}}>1 {{ __('Hour')  }}</option>
+                                <option value="2" {{ $branch_config->check_in_rule == 2 ? 'selected' : ''}}>2 {{ __('Hour')  }}</option>
+                                <option value="3" {{ $branch_config->check_in_rule == 3 ? 'selected' : ''}}>3 {{ __('Hour')  }}</option>
+                                <option value="4" {{ $branch_config->check_in_rule == 4 ? 'selected' : ''}}>4 {{ __('Hour')  }}</option>
+                                <option value="5" {{ $branch_config->check_in_rule == 5 ? 'selected' : ''}}>5 {{ __('Hour')  }}</option>
+                                <option value="24" {{ $branch_config->check_in_rule == 24 ? 'selected' : ''}}>24 {{ __('Hour')  }}</option>
                               </select>
                             @else
                                 
@@ -290,9 +288,9 @@
                         function getValue() {
                         let value = checkin.value;                       
                             if (value == '0') {
-                                desc.innerHTML = '*Pengguna dapat langsung melakukan check-in';
+                                desc.innerHTML = `*{{ __('Users can check in directly') }}`;
                             } else {
-                                desc.innerHTML = `*Pengguna dapat check-in ${value} Jam sebelum janji temu`;
+                                desc.innerHTML = `*${"{{ __('Users can check in :num hour before the appointment', ['num' => ':num']) }}".replace(':num', value)}`;
                                 }
                         }
                         getValue()

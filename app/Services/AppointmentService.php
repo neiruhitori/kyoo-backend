@@ -31,40 +31,48 @@ class AppointmentService
         return Cache::lock('appointments', 10)->block(5, function () use ($data) {
             $service = Service::find($data['service_id']);
             $branch = $service->Branch;
+            if ($branch->country != 'Indonesia') {
+                app()->setLocale('en');
+            }
 
             // Limit free appointments
             if ($this->isFreeAppointmentExceeded($data['branch_id'], $data['date'])) {
-                throw new \Exception('Batas appointment gratis hari ini terlampaui');
+                throw new \Exception(__('The limit for free appointments today has been exceeded'));
             }
 
             // Prevent double appointments
             if ($this->isAppoinmentDuplicate($data)) {
-                throw new \Exception('Appointment telah terdaftar');
+                throw new \Exception(__('Appointment already registered'));
             }
 
             // Prevent appointment on full slot
             if ($this->isAppointmentSlotFull($data['slot_id'], $data['date'])) {
-                throw new \Exception('Sesi appointment tidak tersedia');
+                throw new \Exception(__('The appointment session is not available'));
             }
 
             // Prevent appointment on holidays
             if ($this->isHoliday($data['branch_id'], $data['date'])) {
-                throw new \Exception('Sesi appointment tidak tersedia');
+                throw new \Exception(__('The appointment session is not available'));
             }
 
             // Prevent appointment on closed days
             if ($this->isClosed($data['branch_id'], $data['date'])) {
-                throw new \Exception('Sesi appointment tidak tersedia');
+                throw new \Exception(__('The appointment session is not available'));
             }
 
             // Can't select finished session
             if ($this->isAppointmentSessionFinish($data['slot_id'], $data['date'])) {
-                throw new \Exception('Sesi appointment sudah berakhir');
+                throw new \Exception(__('The appointment session has ended'));
             }
 
             // Prevent empty workstation service
             if ($this->isWorkstationServiceEmpty($data['service_id'])) {
-                throw new \Exception('Tidak ada layanan');
+                throw new \Exception(__('No services available'));
+            }
+
+            //check if branch is expired
+            if ($this->isBranchExpired($branch->license_expiration_date)) {
+                throw new \Exception(__('The trial period or branch license has expired'));
             }
 
             $timeRange = $this->getFinalTimeSlot([
@@ -80,7 +88,7 @@ class AppointmentService
 
             // Check overlap appointment
             if ($this->isAppointmentOverlap($data['slot_id'], $data['end_time'])) {
-                throw new \Exception('Sesi waktu telah dibooking oleh layanan lain');
+                throw new \Exception(__('Already booked by another service'));
             }
 
             $data['booking_code'] = BookingCode::generate();
@@ -303,19 +311,19 @@ class AppointmentService
         $appointment = Appointment::find($appointmentId);
 
         if (!$appointment) {
-            throw new \Exception('Appointment tidak ditemukan');
+            throw new \Exception(__('Appointment not found'));
         }
 
         if ($appointment->status === 'check in') {
-            throw new \Exception('Customer sudah hadir');
+            throw new \Exception(__('Customer has arrived'));
         }
 
         if ($appointment->status === 'served') {
-            throw new \Exception('Appointment sudah dilayani');
+            throw new \Exception(__('Appointment has been served'));
         }
 
         if (in_array($appointment->status, ['end served', 'no show', 'canceled'])) {
-            throw new \Exception('Appointment sudah selesai');
+            throw new \Exception(__('Appointment has been completed'));
         }
 
         Appointment::where('id', $appointment->id)->update([
@@ -329,19 +337,19 @@ class AppointmentService
         $appointment = Appointment::find($appointmentId);
 
         if (!$appointment) {
-            throw new \Exception('Appointment tidak ditemukan');
+            throw new \Exception(__('Appointment not found'));
         }
 
         if ($appointment->status === 'served') {
-            throw new \Exception('Appointment sudah dilayani');
+            throw new \Exception(__('Appointment has been served'));
         }
 
         if (in_array($appointment->status, ['end served', 'no show', 'canceled'])) {
-            throw new \Exception('Appointment sudah selesai');
+            throw new \Exception(__('Appointment has been completed'));
         }
 
         if ($appointment->status !== 'check in') {
-            throw new \Exception('Customer belum hadir');
+            throw new \Exception(__('Customer has not yet arrived'));
         }
 
         Appointment::where('id', $appointment->id)->update([
@@ -360,19 +368,19 @@ class AppointmentService
         $appointment = Appointment::find($appointmentId);
 
         if (!$appointment) {
-            throw new \Exception('Appointment tidak ditemukan');
+            throw new \Exception(__('Appointment not found'));
         }
 
         if ($appointment->status === 'canceled') {
-            throw new \Exception('Appointment sudah dibatalkan');
+            throw new \Exception(__('Appointment has been canceled'));
         }
 
         if ($appointment->status === 'served') {
-            throw new \Exception('Apointment sedang berlangsung');
+            throw new \Exception(__('Appointment is in progress'));
         }
 
         if (in_array($appointment->status, ['end served', 'no show'])) {
-            throw new \Exception('Appointment sudah selesai');
+            throw new \Exception(__('Appointment has been completed'));
         }
 
         Appointment::where('id', $appointmentId)->update([
@@ -388,23 +396,23 @@ class AppointmentService
         $appointment = Appointment::find($appointmentId);
 
         if (!$appointment) {
-            throw new \Exception('Appointment tidak ditemukan');
+            throw new \Exception(__('Appointment not found'));
         }
 
         if ($appointment->status === 'check in') {
-            throw new \Exception('Customer sudah hadir');
+            throw new \Exception(__('Customer has arrived'));
         }
 
         if ($appointment->status === 'no show') {
-            throw new \Exception('Appointment sudah diperbarui');
+            throw new \Exception(__('Appointment has been updated'));
         }
 
         if ($appointment->status === 'served') {
-            throw new \Exception('Appointment sedang dilayani');
+            throw new \Exception(__('Appointment is being served'));
         }
 
         if (in_array($appointment->status, ['end served', 'canceled'])) {
-            throw new \Exception('Appointment sudah selesai');
+            throw new \Exception(__('Appointment has been completed'));
         }
 
         Appointment::where('id', $appointmentId)->update(['status' => 'no show']);
@@ -415,15 +423,15 @@ class AppointmentService
         $appointment = Appointment::find($appointmentId);
 
         if (!$appointment) {
-            throw new \Exception('Appointment tidak ditemukan');
+            throw new \Exception(__('Appointment not found'));
         }
 
         if (in_array($appointment->status, ['no show', 'canceled', 'end served'])) {
-            throw new \Exception('Appointment sudah selesai');
+            throw new \Exception(__('Appointment has been completed'));
         }
 
         if ($appointment->status != 'served') {
-            throw new \Exception('Appointment belum dilayani');
+            throw new \Exception(__('Appointment has not yet been served'));
         }
 
         Appointment::where('id', $appointmentId)->update([
@@ -438,7 +446,7 @@ class AppointmentService
     public function getFutureAppointmentsByDate($date)
     {
         if (strtotime($date) < strtotime(date('Y-m-d'))) {
-            throw new \InvalidArgumentException('Appointment lama tidak tersedia');
+            throw new \InvalidArgumentException(__('Appointment is no longer available'));
         }
 
         return Appointment::with(['Service', 'Slot', 'Branch', 'Workstation'])
@@ -464,7 +472,7 @@ class AppointmentService
     public function getAppointmentSlotsByDateRange($from, $to)
     {
         if (strtotime($from) > strtotime($to)) {
-            throw new \InvalidArgumentException('Tanggal awal tidak boleh lebih dari tanggal akhir');
+            throw new \InvalidArgumentException(__('Start date cannot be later than the end date'));
         }
 
         return Appointment::with('Service.Slot')
@@ -494,5 +502,12 @@ class AppointmentService
             ->whereDate('date', $date)
             ->groupBy(['date', 'service_id', 'slot_id'])
             ->get();
+    }
+
+    public function isBranchExpired($license_expiry_date){
+        $currentDateTime = date('Y-m-d H:i:s');
+        $expiry_date = date('Y-m-d H:i:s', strtotime($license_expiry_date));
+
+        return $license_expiry_date < $currentDateTime;
     }
 }

@@ -2,22 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use App\Branch;
+use App\Customer;
+use App\BranchType;
+use App\Models\Regency;
+use App\Models\Province;
+use App\Models\SGProvince;
+use App\Models\SGRegencies;
+use App\Models\VNProvinces;
+use App\Models\VNRegencies;
 use App\RegistrationBranch;
+use App\BranchConfiguration;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreRegistrationBranch;
-use Illuminate\Support\Facades\Crypt;
+use App\Helpers\AutoPopulate;
+use Illuminate\Support\Carbon;
 use App\Mail\RegistrationBranchMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Crypt;
 use Laravel\Socialite\Facades\Socialite;
 use App\Mail\Branch\Registration\Verified;
-use App\User;
-use App\Customer;
-use App\Branch;
-use App\BranchConfiguration;
-use App\BranchType;
-use App\Helpers\AutoPopulate;
+use App\Http\Requests\StoreRegistrationBranch;
 use App\Interfaces\BranchTypeRepositoryInterface;
-use Illuminate\Support\Carbon;
 
 class RegistrationBranchController extends Controller
 {
@@ -56,6 +62,7 @@ class RegistrationBranchController extends Controller
     public function store(StoreRegistrationBranch $request)
     {
         $input = $request->all();
+
         $input['password'] = Crypt::encryptString($request->password);
         $branch = RegistrationBranch::create($input);
 
@@ -96,10 +103,16 @@ class RegistrationBranchController extends Controller
                 break;
         }
 
+
+        $reg = Regency::with('province')->find($registrationBranch['regency_id']);
+        $prov = $reg->province;
+
+
         $timeNow = Carbon::now();
         $licenseExpirationDay = config('app.license_expiration_day');
 
         // duplicate to branches table
+        $input['timezone'] = $prov ? $prov->timezone : null;
         $input['mobile_phone'] = $registrationBranch->phone;
         $input['license_expiration_date'] = $timeNow->addDays($licenseExpirationDay);
         $branch = Branch::create($input);

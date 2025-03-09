@@ -1,7 +1,7 @@
 <template>
   <div class="monitor-container">
     <div class="monitor-sidebar">
-      <h6 class="sidebar-subtitle">DIPANGGIL</h6>
+      <h6 class="sidebar-subtitle">{{ t('CALLED') }}</h6>
 
       <div class="calling-card">
         <div class="calling-counter" v-if="servingQueue">
@@ -31,7 +31,7 @@
         </div>
       </div>
 
-      <h6 class="sidebar-subtitle">MENUNGGU</h6>
+      <h6 class="sidebar-subtitle">{{ t('WAITING') }}</h6>
 
       <div class="waiting-list" v-if="!waitingQueue.length">
         <div class="waiting-card waiting-card-empty"></div>
@@ -110,7 +110,9 @@
 
 <script>
 import { format } from 'date-fns'
-import { id } from 'date-fns/locale'
+import { id,enUS } from 'date-fns/locale'
+import ID from "../../lang/id.json";
+import EN from "../../lang/en.json";
 
 const audioEl = new Audio();
 
@@ -126,6 +128,9 @@ export default {
     signature: {
       type: String,
       required: true,
+    },
+    lang: {
+      type: String,
     },
     config: {
       type: Object,
@@ -147,6 +152,13 @@ export default {
       playQueue: [],
       currentImageDuration: 5000,
       isPlaying: false,
+      messages: {
+                    en: EN,
+                    id: ID,
+                    },
+      currentLocale: this.lang || "en",
+      localeDate: id,
+      country: this.branch.country,
       promotionMedia: null
     };
     },
@@ -154,7 +166,6 @@ export default {
   watch: {
     async activeImage(newValue) {
       const self = this;
-
       const videoExtensions = [".mp4"];
       const lowerCaseUrl =
         self.promotionImages[newValue - 1].url.toLowerCase();
@@ -223,29 +234,41 @@ export default {
     this.checkAutoplayPermission();
     this.subscribeAudioEvent();
     this.saveToLocal();
+    this.setLocale();
   },
 
   computed: {
     currentTimes() {
       return format(this.currentDate, 'HH:mm', {
-        locale: id
+        locale: this.localeDate
       })
     },
 
     currentDay() {
       return format(this.currentDate, 'EEEE', {
-        locale: id
+        locale: this.localeDate
       })
     },
 
     currentFormattedDate() {
       return format(this.currentDate, 'dd MMMM yyyy', {
-        locale: id
+        locale: this.localeDate
       })
     }
   },
 
   methods: {
+    t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
+        setLocale() {
+            this.localeDate = this.currentLocale == "id" ? id : enUS;
+        },
     subscribeAudioEvent() {
       const self = this;
       audioEl.onended = function () {
@@ -330,7 +353,12 @@ export default {
             const base64Medias = await Promise.all(fetchMedia);
 
             // Fetch Audio
-            const audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            let audios = [];
+            if(this.country != 'Indonesia'){
+               audios = ['intro_bell', 'customer_number', 'please_proceed', 'to_counter'];
+            }else{
+               audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            }
             for (let i = 0; i <= 9; i++) {
                 audios.push(i.toString());
             }
@@ -342,7 +370,10 @@ export default {
 
             const base64Audios = [];
             const fetchAudio = audios.map(async audio => {
-                const audio_url = `/storage/audio/vo/${audio}.wav`
+              let audio_url = `/storage/audio/vo/${audio}.wav`;
+              if (this.country != 'Indonesia') {
+                 audio_url = `/storage/audio/vo_en/${audio}.wav`
+              }
                 const response = await fetch(audio_url);
                 const blob = await response.blob();
 
@@ -454,10 +485,16 @@ export default {
             this.isPlaying = true;
 
             const queueNo = this.servingQueue.number;
-            const audio = ['intro_bell', 'nomor_antrian'];
-            const counter_id = this.servingQueue.workstation.label.replace(/\D/g, "");
+            let audio = [];
+            if(this.country != 'Indonesia'){
+               audio = ['intro_bell', 'customer_number'];
+               audio.push(...queueNo.toString().split(''), 'please_proceed', 'to_counter');
+            }else{
+               audio = ['intro_bell', 'nomor_antrian'];
+               audio.push(...queueNo.toString().split(''), 'dicounter');
+              }
+              const counter_id = this.servingQueue.workstation.label.replace(/\D/g, "");
 
-            audio.push(...queueNo.toString().split(''), 'dicounter');
             if (counter_id) {
                 audio.push(...counter_id.split(""));
             }

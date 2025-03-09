@@ -44,14 +44,14 @@
                     class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/monitoring/department') ?: 'active' }}"
                     href="{{ route('admin-branch.monitoring.department') }}"
                 >
-                    Departemen
+                    {{ __('Department') }}
                 </a>
 
                 <a
                     class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/monitoring/service') ?: 'active' }}"
                     href="{{ route('admin-branch.monitoring.service') }}"
                 >
-                    Layanan
+                    {{ __('Service') }}
                 </a>
             </div>
         </div>
@@ -64,7 +64,8 @@
         <li class="nav-item {{ !request()->is('admin-branch/appointment-onsites*') ?: 'active' }}">
             <a class="nav-link" href="{{ route('admin-branch.appointment-onsites') }}">
                 <i class="fas fa-fw fa-calendar-check"></i>
-                <span>{{ __('list.module', ['module' => __('Appointment')]) }}</span></a>
+                <span>{{ __('Appointment List') }}</span></a>
+                
         </li>
     @endif
 
@@ -90,7 +91,7 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#instruction-of-use"
            aria-expanded="true" aria-controls="instruction-of-use">
             <i class="fas fa-fw fa-info-circle"></i>
-            <span>{{ __('Instruction for Use') }}</span>
+            <span>{{ __('Instruction Help') }}</span>
         </a>
 
         <div class="collapse {{ !request()->is('admin-branch/product-guide/*') ?: 'show' }}" id="instruction-of-use"
@@ -100,7 +101,7 @@
                     class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/product-guide/queue-configuration') ?: 'active' }}"
                     href="{{ route('admin-branch.product-guide.queue-configuration') }}"
                 >
-                    {{ __('How to Configure Qeueu') }}
+                    {{ __('How to Configure Queue') }}
                 </a>
 
                 <a
@@ -178,7 +179,7 @@
                     class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/user*') ?: 'active' }}"
                     href="{{ route('admin-branch.branch-configuration.user.index') }}"
                 >
-                    {{ __('Virtual Counter') }}
+                    {{ __('Staff') }}
                 </a>
 
                 @if (
@@ -224,7 +225,7 @@
                         class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/queue-monitor') ?: 'active' }}"
                         href="{{ route('admin-branch.branch-configuration.queue-monitor') }}"
                     >
-                        Monitor Antrian (TV)
+                        {{ __('Queue Signage TV') }}
                     </a>
                 @endif
 
@@ -244,7 +245,7 @@
                     class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/terms-conditions') ?: 'active' }}"
                     href="{{ route('admin-branch.branch-configuration.terms-conditions.index') }}"
                 >
-                    Syarat & Ketentuan
+                    {{ __('Terms and Conditions') }}
                 </a>
 
                 @if (
@@ -267,7 +268,7 @@
                         class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/promotions*') ?: 'active' }}"
                         href="{{ route('admin-branch.branch-configuration.promotions.index') }}"
                     >
-                        Promosi
+                       {{ __('Promotion')}}
                     </a>
                 @endif
             </div>
@@ -284,7 +285,7 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#service-quality"
                aria-expanded="true" aria-controls="service-quality">
                 <i class="fas fa-star"></i>
-                <span>Kualitas Pelayanan</span>
+                <span>{{ __('Service Quality') }}</span>
             </a>
 
             <div
@@ -298,7 +299,7 @@
                             class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/service-quality/audio-recording') && !request()->is('admin-branch/service-quality/audio-recording') && !request()->is('admin-branch/service-quality/audio-recording') ?: 'active' }}"
                             href="{{ route('admin-branch.service-quality.audio-recording.index') }}"
                         >
-                            Putar Rekaman
+                            {{ __('Recording') }}
                         </a>
                     @endif
                 </div>
@@ -365,42 +366,42 @@
                         class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/customer-satisfaction*') ?: 'active' }}"
                         href="{{ route('admin-branch.report.customer-satisfaction') }}"
                     >
-                        Laporan Kepuasan Pelanggan
+                        {{ __('Customer Satisfaction Report') }}
                     </a>
 
                     <a
                         class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/department*') ?: 'active' }}"
                         href="{{ route('admin-branch.report.department') }}"
                     >
-                        Laporan Departemen
+                       {{ __('Department Report')}}
                     </a>
 
                     <a
                         class="collapse-item kyoo-sublink {{ !request()->routeIs('admin-branch.report.service.*') ?: 'active' }}"
                         href="{{ route('admin-branch.report.service.index') }}"
                     >
-                        Laporan Layanan
+                        {{ __('Service Report') }}
                     </a>
 
                     <a
                         class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/service-distribution*') ?: 'active' }}"
                         href="{{ route('admin-branch.report.service-distribution') }}"
                     >
-                        Laporan Distribusi Tunggu Layanan
+                        {{ __('Waiting Service Distribution Report') }}
                     </a>
 
                     <a
                         class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/workstation*') ?: 'active' }}"
                         href="{{ route('admin-branch.report.workstation') }}"
                     >
-                        Laporan Meja
+                        {{ __('Workstation Report') }}
                     </a>
 
                     <a
                         class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/report/vct*') ?: 'active' }}"
                         href="{{ route('admin-branch.report.vct') }}"
                     >
-                        Laporan User
+                        {{ __('User Report') }}
                     </a>
                 @endif
             </div>

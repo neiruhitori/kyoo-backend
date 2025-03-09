@@ -43,7 +43,13 @@
                                                 <td>{{$loop->iteration}}</td>
                                                 <td>{{$inv->branch->name}}</td>
                                                     <td>{{ $inv->description }}</td>
-                                                    <td>Rp. {{ number_format($inv->amount, 2, ',', '.') }}</td>
+                                                    <td>
+                                                        @if($inv->currency == 'USD')
+                                                            {{ $inv->currency ?? 'USD' }} ${{ number_format($inv->amount, 2) }}
+                                                        @else
+                                                            Rp {{ number_format($inv->amount, 2, ',', '.') }}
+                                                        @endif
+                                                    </td>
                                                     <td>
                                                         @if ($inv->status == "PAID")
                                                         <b><span class="badge badge-success">{{$inv->status}}</span></b>

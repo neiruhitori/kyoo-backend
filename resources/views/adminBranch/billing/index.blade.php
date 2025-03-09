@@ -121,7 +121,7 @@
 
     <div class="mb-3 mx-3">
         <h5 class="font-weight-bold text-primary mb-0">
-            Menu Billing
+            {{ __('Billing Menu') }}
         </h5>
     </div>
 
@@ -142,26 +142,26 @@
                     @if (Auth::user()->Branch->BranchType->is_premium)
                     <div class="mx-4 my-4">
                         <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;">Jenis License:</h6>
+                            <h6 style="min-width: 150px;">{{ __('License Type') }}:</h6>
                             <h6><b>{{ Auth::user()->Branch->BranchType->name }}</b></h6>
                         </div>
                         <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;">Masa Aktif:</h6>
+                            <h6 style="min-width: 150px;">{{ __('Active Period') }}:</h6>
                             {{-- format tanggal d-M-Y   --}}
                             <h6> <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->updated_at)->translatedFormat('d F Y') }}</b> - 
                                 <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->license_expiration_date)->translatedFormat('d F Y') }}</b>
                             </h6>
                         </div>
                         <div class="d-flex align-items-start mb-3">
-                            <h6 style="min-width: 150px;">Fitur:</h6>
+                            <h6 style="min-width: 150px;">{{ __('Feature') }}:</h6>
                             <div class="row">
                                 <div class="col-md-12 mb-3">
-                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_counter }} Meja</button>
-                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_queue }} Antrian</button>
+                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_counter }} {{ __('Workstation') }}</button>
+                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_queue }} {{ __('Queue') }}</button>
 
                                     @foreach ($features as $val)
 
-                                    <button class="btn btn-primary mb-2">{{ $val->additionalFeature->name }}</button>
+                                    <button class="btn btn-primary mb-2">{{ __($val->additionalFeature->name) }}</button>
 
                                     @endforeach
                                 </div>
@@ -171,21 +171,21 @@
                     @else
                     <div class="mx-4 my-4">
                         <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;">Jenis License:</h6>
+                            <h6 style="min-width: 150px;">{{ __('License Type') }}:</h6>
                             <h6><b>Trial</b></h6>
-                            <a href="{{ route('admin-branch.subscription') }}" class="ml-3 btn btn-warning">Daftar Berlangganan KYOO</a>
+                            <a href="{{ route('admin-branch.subscription') }}" class="ml-3 btn btn-warning">{{ __('KYOO Subscription') }}</a>
                         </div>
                         <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;">Masa Aktif:</h6>
+                            <h6 style="min-width: 150px;">{{ __('Active Period') }}:</h6>
                             <h6> <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->updated_at)->translatedFormat('d F Y') }}</b> - 
                                 <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->license_expiration_date)->translatedFormat('d F Y') }}</b>
                             </h6>
                         </div>
                         <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;">Fitur:</h6>
+                            <h6 style="min-width: 150px;">{{ __('Feature') }}:</h6>
                             <div>
-                                <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_counter }} Meja</button>
-                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_queue }} Antrian</button>
+                                <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_counter }} {{ __('Workstation') }}</button>
+                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_queue }} {{ __('Queue') }}</button>
                             </div>
                         </div>
                     </div>
@@ -200,24 +200,32 @@
                         <table class="table table-striped">
                             <thead>
                               <tr>
-                                <th scope="col">Tanggal</th>
-                                <th scope="col">Deskripsi</th>
-                                <th scope="col">Jumlah Nominal</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Opsi</th>
+                                <th scope="col">{{ __('Date') }}</th>
+                                <th scope="col">{{ __('Description') }}</th>
+                                <th scope="col">{{ __('Nominal Amount') }}</th>
+                                <th scope="col">{{ __('Status') }}</th>
+                                <th scope="col">{{ __('Action') }}</th>
                               </tr>
                             </thead>
                             <tbody>
-                                @if ($invoice->isEmpty())
+                                @if ($invoices->isEmpty())
                                 <tr>
-                                    <td colspan="5" class="text-center">Tidak ada data invoice.</td>
+                                    <td colspan="5" class="text-center">{{ __('No Invoice') }}.</td>
                                 </tr>    
                                 @else
-                                @foreach ($invoice as $inv)
+                                @foreach ($invoices as $inv)
                                 <tr>
                                     <th>{{ \Carbon\Carbon::parse($inv->created_at)->translatedFormat('d F Y') }}</th>
-                                    <td>{{ $inv->description }}</td>
-                                    <td>Rp. {{ number_format($inv->amount, 2, ',', '.') }}</td>
+                                    <td class="invoice-description">
+                                        {{ app()->getLocale() == 'en' ? ($inv->description_en ?? $inv->description) : $inv->description }}
+                                    </td>
+                                    <td>
+                                        @if($inv->currency == 'USD')
+                                            {{ $inv->currency ?? 'USD' }} ${{ number_format($inv->amount, 2) }}
+                                        @else
+                                            Rp {{ number_format($inv->amount, 2, ',', '.') }}
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($inv->status == "PAID")
                                         <b><span class="badge badge-success">{{$inv->status}}</span></b>
@@ -227,7 +235,7 @@
                                         <b><span class="badge badge-danger">{{$inv->status}}</span></b>
                                         @endif 
                                     </td>
-                                    <td><button onclick="printInvoice('{{ $inv->id_invoice }}')" class="btn btn-secondary" title="Unduh Riwayat Invoice"><i class="fas fa-download"></i></button></td>
+                                    <td><button onclick="printInvoice('{{ $inv->id_invoice }}')" class="btn btn-secondary" title="{{ __('Download Invoice History') }}"><i class="fas fa-download"></i></button></td>
                                   </tr>
                                 @endforeach
 

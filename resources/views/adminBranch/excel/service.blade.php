@@ -16,41 +16,41 @@
 
         <tr>
             <td colspan="10" style="text-align: center">
-                Laporan Layanan
+                {{ __('Service Report') }}
             </td>
         </tr>
 
         <tr></tr>
         <tr>
-            <td><strong>Tanggal:</strong></td>
+            <td><strong>{{ __('Date') }}:</strong></td>
             <td>{{ $date }}</td>
         </tr>
         <tr>
-            <td><strong>Departemen:</strong></td>
+            <td><strong>{{ __('Department') }}:</strong></td>
             <td>{{ $department->name }}</td>
         </tr>
         <tr></tr>
 
         <thead>
             <tr>
-                <th rowspan="2" style="width: 120px; font-weight: bold;">Layanan</th>
-                <th colspan="3" style="font-weight: bold; text-align: center">Total Antrian</th>
-                <th colspan="3" style="font-weight: bold; text-align: center">Waktu Tunggu</th>
-                <th colspan="3" style="font-weight: bold; text-align: center">Waktu Dilayani</th> 
+                <th rowspan="2" style="width: 120px; font-weight: bold;">{{ __('Service') }}</th>
+                <th colspan="3" style="font-weight: bold; text-align: center">{{ __('Total Queue') }}</th>
+                <th colspan="3" style="font-weight: bold; text-align: center">{{ __('Waiting Time') }}</th>
+                <th colspan="3" style="font-weight: bold; text-align: center">{{ __('Served Time') }}</th> 
             </tr>
 
             <tr>
-                <th style="width: 90px; font-weight: bold; text-align: right">Jumlah Tiket</th>
-                <th style="width: 90px; font-weight: bold; text-align: right">Dilayani</th>
-                <th style="width: 90px; font-weight: bold; text-align: right">Tidak Hadir</th>
+                <th style="width: 90px; font-weight: bold; text-align: right">{{ __('Total Tickets') }}</th>
+                <th style="width: 90px; font-weight: bold; text-align: right">{{ __('Serve') }}</th>
+                <th style="width: 90px; font-weight: bold; text-align: right">{{ __('No Show') }}</th>
 
-                <th style="width: 90px; font-weight: bold; text-align: center">Tercepat</th>
-                <th style="width: 90px; font-weight: bold; text-align: center">Rata-Rata</th>
-                <th style="width: 90px; font-weight: bold; text-align: center">Terlama</th>
+                <th style="width: 90px; font-weight: bold; text-align: center">{{ __('Fastest') }}</th>
+                <th style="width: 90px; font-weight: bold; text-align: center">{{ __('Average') }}</th>
+                <th style="width: 90px; font-weight: bold; text-align: center">{{ __('Longest') }}</th>
 
-                <th style="width: 90px; font-weight: bold; text-align: center">Tercepat</th>
-                <th style="width: 90px; font-weight: bold; text-align: center">Rata-Rata</th>
-                <th style="width: 90px; font-weight: bold; text-align: center">Terlama</th>
+                <th style="width: 90px; font-weight: bold; text-align: center">{{ __('Fastest') }}</th>
+                <th style="width: 90px; font-weight: bold; text-align: center">{{ __('Average') }}</th>
+                <th style="width: 90px; font-weight: bold; text-align: center">{{ __('Longest') }}</th>
             </tr>
         </thead>
 

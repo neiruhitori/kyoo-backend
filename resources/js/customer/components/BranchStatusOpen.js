@@ -14,6 +14,7 @@ const OpenTime = styled.span(() => ({
 }))
 
 function BranchStatusOpen(props) {
+    const openText = typeof props.t === 'function' ? props.t('OPEN') : 'BUKA';
     return <BranchStatus style={props.style}>
         <OpenStatus style={{
             marginRight: '0.375rem'
@@ -23,7 +24,7 @@ function BranchStatusOpen(props) {
                 height: '0.5rem',
                 marginRight: '0.375rem'
             }} />
-            BUKA
+            {openText}
         </OpenStatus>|
 
         <OpenTime>

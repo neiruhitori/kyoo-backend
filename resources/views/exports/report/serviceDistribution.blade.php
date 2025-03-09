@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan Distribusi Tunggu Layanan</title>
+    <title>{{ __('Waiting Service Distribution Report') }}</title>
 
     <style>
         html, body {
@@ -45,18 +45,18 @@
         <h2 class="report-title">{{ $title }}</h2>
         <div style="margin-bottom: .25rem">{{ $branch['name'] }}</div>
         <div style="margin-bottom: .25rem">
-            <strong>Tanggal:</strong> {{ $reportTime }}
+            <strong>{{ __('Date') }}:</strong> {{ $reportTime }}
         </div>
         <div>
-            <strong>Departemen:</strong> {{ $department->name }}
+            <strong>{{ __('Department') }}:</strong> {{ $department->name }}
         </div>
     </div>
 
     <table class="table" style="width: 100%">
         <thead>
             <tr>
-                <th rowspan="2" class="align-middle">Layanan</th>
-                <th colspan="14" class="text-center">Jumlah Tiket dalam Interval (Menit)</th>
+                <th rowspan="2" class="align-middle">{{ __('Service') }}</th>
+                <th colspan="14" class="text-center">{{ __('Tickets in Interval (Minutes)') }}</th>
                 <th rowspan="2" class="align-middle text-right">Total</th>
             </tr>
 
@@ -93,7 +93,7 @@
             </tr>
             @empty
                 <tr>
-                    <td colspan="10" class="text-center">Data tidak ditemukan.</td>
+                    <td colspan="10" class="text-center">{{ __('Data not Found') }}</td>
                 </tr>
             @endforelse
         </tbody>

@@ -10,11 +10,11 @@
         <div class="custom-info-head">
             <h6 class="font-weight-bold my-0">
                 <span class="fas fa-info-circle text-primary mr-1"></span>
-                Informasi
+                {{ __('Information') }}
             </h6>
 
             <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                Tampilkan
+                {{ __('Show') }}
             </button>
         </div>
 
@@ -22,13 +22,12 @@
             <p>
                 <ul style="padding-left: 2rem;">
                     <li style="margin-bottom: 0.25rem;">
-                        Akun perangkat digunakan untuk mengakses web display signage antrian dan Webkiosk antrian 
+                        {{ __('infobox.device1') }}
                     </li>
                     <li style="margin-bottom: 0.25rem;">
-                        Halaman login akun perangkat sama dengan halaman login user admin dan user petugas layanan
-                </ul>
+                        {{ __('infobox.device2') }}                </ul>
             </p>
-            <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
         </div>
     </div>
 </div>
@@ -154,11 +153,38 @@
 @push('js')
     <script src="{{asset('admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
-    <script src="{{asset('admin/js/demo/datatables-demo.js')}}"></script>
+    {{-- <script src="{{asset('admin/js/demo/datatables-demo.js')}}"></script> --}}
 
     <script>
         $(function () {
           $('[data-toggle="tooltip"]').tooltip()
+        })
+        $(document).ready(function() {
+            $('#dataTable').dataTable({
+                "language": {
+                    "emptyTable": "{{ __('No Data') }}",
+                    "info": "{{ __('Displaying :start to :end of :total data') }}"
+                            .replace(':start', '_START_')
+                            .replace(':end', '_END_')
+                            .replace(':total', '_TOTAL_'),
+                    "infoEmpty": "",
+                    "infoFiltered": "",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "{{ __('Show :menu data') }}"
+                                    .replace(':menu', '_MENU_'),
+                    "loadingRecords": "{{ __('Loading...') }}",
+                    "processing": "{{ __('Processing...') }}",
+                    "search": "{{ __('Search:') }}",
+                    "zeroRecords": "{{ __('No data found') }}",
+                    "paginate": {
+                        "first": "{{ __('First') }}",
+                        "last": "{{ __('Last') }}",
+                        "next": "{{ __('Next') }}",
+                        "previous": "{{ __('Previous') }}"
+                    },
+                }
+            })
         })
     </script>
 @endpush

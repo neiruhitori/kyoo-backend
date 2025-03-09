@@ -45,32 +45,32 @@
         <h2 class="report-title">{{ $title }}</h2>
         <div style="margin-bottom: .25rem">{{ $branch['name'] }}</div>
         <div>
-            <strong>Tanggal:</strong> {{ $reportTime }}
+            <strong>{{ __('Date') }}:</strong> {{ $reportTime }}
         </div>
     </div>
 
     <table class="table" style="width: 100%">
         <thead>
             <tr>
-                <th rowspan="2" class="align-middle">Departemen</th>
-                <th rowspan="2" class="align-middle">Meja</th>
-                <th colspan="3" class="text-center">Total Antrian</th>
-                <th colspan="3" class="text-center">Waktu Tunggu</th>
-                <th colspan="3" class="text-center">Waktu Dilayani</th> 
+                <th rowspan="2" class="align-middle">{{ __('Department') }}</th>
+                <th rowspan="2" class="align-middle">{{ __('Workstation') }}</th>
+                <th colspan="3" class="text-center">{{ __('Total Queue') }}</th>
+                <th colspan="3" class="text-center">{{ __('Waiting Time') }}</th>
+                <th colspan="3" class="text-center">{{ __('Served Time') }}</th> 
             </tr>
 
             <tr>
-                <th class="text-right">Jumlah Tiket</th>
-                <th class="text-right">Dilayani</th>
-                <th class="text-right">Tidak Hadir</th>
+                <th class="text-right">{{ __('Total Tickets') }}</th>
+                <th class="text-right">{{ __('Serve') }}</th>
+                <th class="text-right">{{ __('No Show') }}</th>
 
-                <th class="text-center">Tercepat</th>
-                <th class="text-center">Rata-Rata</th>
-                <th class="text-center">Terlama</th>
+                <th class="text-center">{{ __('Fastest') }}</th>
+                <th class="text-center">{{ __('Average') }}</th>
+                <th class="text-center">{{ __('Longest') }}</th>
 
-                <th class="text-center">Tercepat</th>
-                <th class="text-center">Rata-Rata</th>
-                <th class="text-center">Terlama</th>
+                <th class="text-center">{{ __('Fastest') }}</th>
+                <th class="text-center">{{ __('Average') }}</th>
+                <th class="text-center">{{ __('Longest') }}</th>
             </tr>
         </thead>
 
@@ -91,7 +91,7 @@
             </tr>
             @empty
                 <tr>
-                    <td colspan="11" class="text-center">Data tidak ditemukan.</td>
+                    <td colspan="11" class="text-center">{{ __('Data not Found') }}</td>
                 </tr>
             @endforelse
         </tbody>

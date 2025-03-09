@@ -94,7 +94,7 @@
                                         <thead>
                                             <th>{{ __('Order Date') }}</th>
                                             <th>{{ __('Reservation Date') }}</th>
-                                            <th>{{ __('Kode Unik') }}</th>
+                                            <th>{{ __('Booking Code') }}</th>
                                             <th>{{ __('Queue No') }}</th>
                                             <th>{{ __('Name') }}</th>
                                             <th>{{ __('Email') }}</th>

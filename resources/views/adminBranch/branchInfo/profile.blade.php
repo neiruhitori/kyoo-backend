@@ -20,19 +20,19 @@
         <div class="custom-info-head">
             <h6 class="font-weight-bold my-0">
                 <span class="fas fa-info-circle text-primary mr-1"></span>
-                Informasi
+                {{ __('Information') }}
             </h6>
 
             <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                Tampilkan
+                {{ __('Show') }}
             </button>
         </div>
 
         <div class="custom-info-body">
             <p>
-                Informasi tampilan cabang akan terhubung dengan tampilan informasi di Mobile Apps dan Web Antrian.
+                {{ __('infobox.profile') }}
             </p>
-            <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
         </div>
     </div>
 </div>
@@ -61,7 +61,7 @@
             <input type="hidden" name="id" value="{{$branch->id}}">
 
             <div class="form-group">
-                <label for="name">{{ __('name.module', ['module' => __('Branch')]) }}</label>
+                <label for="name">{{ __('Branch Name') }}</label>
                 <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name') ?: $branch->name}}" readonly>
                 @include('layouts.inputError', ['errorName' => 'name'])
             </div>
@@ -99,13 +99,43 @@
                 @include('layouts.inputError', ['errorName' => 'email'])
             </div>
 
+
             <div class="form-group">
-                <label for="timezone">{{ __('Indonesia Timezone') }}</label>
+                <label for="timezone">{{ __('Select Timezone') }}</label>
                 <select name="timezone" id="timezone" class="form-control @error('timezone') is-invalid @enderror" disabled>
                     <option value="" selected disabled>{{ __('Select Timezone') }}</option>
-                    <option value="WIB">{{ __('WIB') }}</option>
-                    <option value="WITA">{{ __('WITA') }}</option>
-                    <option value="WIT">{{ __('WIT') }}</option>
+                    @switch($branch->country)
+                        @case('Indonesia')
+                        <option value="WIB" {{ $branch->timezone == 'WIB' ? 'selected' : '' }}>Indonesia {{ __('WIB') }} (UTC +7)</option>
+                        <option value="WITA" {{ $branch->timezone == 'WITA' ? 'selected' : '' }}>Indonesia {{ __('WITA') }} (UTC +8)</option>
+                        <option value="WIT" {{ $branch->timezone == 'WIT' ? 'selected' : '' }}>Indonesia {{ __('WIT') }} (UTC +9)</option>
+                            @break
+                        @case('Singapore')
+                        <option value="SGT" selected>Singapore Time - {{ __('SGT') }} (UTC+7)</option>
+                            @break
+                        @case('Vietnam')
+                        <option value="ICT" selected>Indochina Time - {{ __('ICT') }} (UTC+7)</option>
+                            @break
+                        @case('Brunei')
+                        <option value="BNT" selected>Brunei-Muara - {{ __('BNT') }} (UTC+8)</option>
+                            @break
+                        @case('Thailand')
+                        <option value="ICT" selected>Indochina Time - {{ __('ICT') }} (UTC+7)</option>
+                            @break
+                        @case('Malaysia')
+                        <option value="ICT" selected>Malaysia Time - {{ __('MYT') }} (UTC+8)</option>
+                            @break
+                        @case('Timor-Leste')
+                        <option value="TLT" selected>Timor Leste Time - {{ __('TLT') }} (UTC+9)</option>
+                            @break
+                        @case('Australia')
+                        <option value="AEST" selected>Australian Eastern Standard Time - {{ __('AEST') }} (UTC+10)</option>
+                        <option value="ACST" selected>Australian Central Standard Time - {{ __('ACST') }} (UTC+9:30)</option>
+                        <option value="AWST" selected>Australian Western Standard Time - {{ __('AWST') }} (UTC+8)</option>
+                            @break
+                        @default
+                            
+                    @endswitch
                 </select>
                 @include('layouts.inputError', ['errorName' => 'country'])
             </div>

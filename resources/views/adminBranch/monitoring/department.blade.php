@@ -6,7 +6,7 @@
             <form id="filterForm" class="mb-4">
                 <div class="form-row align-items-end">
                     <div class="col-auto">
-                        <label for="deparmentId">Departemen</label>
+                        <label for="deparmentId">{{ __('Department') }}</label>
                         <select class="form-control" id="departmentId" style="width: 180px;" autocomplete="off">
                             @foreach ($departments as $department)
                                 <option value="{{ $department->id }}">{{ $department->name }}</option>
@@ -22,13 +22,13 @@
 
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Monitoring Departemen</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Monitoring {{ __('Department') }}</h6>
                 </div>
 
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="d-flex align-items-center">
-                            <label for="refreshInterval" class="mr-3 mb-0" style="white-space: nowrap;">Refresh / menit</label>
+                            <label for="refreshInterval" class="mr-3 mb-0" style="white-space: nowrap;">Refresh / {{ __('Minutes') }}</label>
                             <select class="form-control" autocomplete="off" id="refreshInterval" style="max-width: 70px">
                                 <option value="5" selected>5</option>
                                 <option value="10">10</option>
@@ -46,29 +46,29 @@
                         <table class="table table-bordered table-striped mb-4" id="table">
                             <thead>
                                 <tr>
-                                    <th rowspan="2" class="align-middle">Nama Layanan</th>
-                                    <th rowspan="2" class="align-middle text-right">Menunggu</th>
-                                    <th rowspan="2" class="align-middle text-right">Dilayani</th>
-                                    <th rowspan="2" class="align-middle text-right">Tidak Hadir</th>
-                                    <th colspan="3" class="text-center">Waktu Tunggu</th>
-                                    <th colspan="3" class="text-center">Waktu Melayani</th>
+                                    <th rowspan="2" class="align-middle">{{ __('Service Name') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Waiting') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('Served') }}</th>
+                                    <th rowspan="2" class="align-middle text-right">{{ __('No Show') }}</th>
+                                    <th colspan="3" class="text-center">{{ __('Waiting Time') }}</th>
+                                    <th colspan="3" class="text-center">{{ __('Service Time') }}</th>
                                 </tr>
     
                                 <tr>
                                     {{-- Waktu Tunggu Child Header --}}
-                                    <th class="text-center">Saat Ini</th>
-                                    <th class="text-center">Rata-Rata</th>
-                                    <th class="text-center">Terlama</th>
+                                    <th class="text-center">{{ __('Currently') }}</th>
+                                    <th class="text-center">{{ __('Average') }}</th>
+                                    <th class="text-center">{{ __('Longest') }}</th>
     
                                     {{-- Waktu Melayani Child Header --}}
-                                    <th class="text-center">Saat Ini</th>
-                                    <th class="text-center">Rata-Rata</th>
-                                    <th class="text-center">Terlama</th>
+                                    <th class="text-center">{{ __('Currently') }}</th>
+                                    <th class="text-center">{{ __('Average') }}</th>
+                                    <th class="text-center">{{ __('Longest') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="10" class="text-center">Data tidak ditemukan.</td>
+                                    <td colspan="10" class="text-center">{{ __('Data not Found') }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -146,6 +146,8 @@
     }
 
     function transformResponse(data) {
+        var maxwait = "{{ route('admin-branch.monitoring.department.maxwait', ':id') }}";
+        var maxservice = "{{ route('admin-branch.monitoring.department.maxservice', ':id') }}";
         return data.map(v => {
             return `<tr>
                 <td>${v.name}</td>
@@ -154,10 +156,10 @@
                 <td class="text-right">${v.total_no_show}</td>
                 <td class="text-center">${formatTime(v.now_waiting_duration)}</td>
                 <td class="text-center">${formatTime(v.avg_waiting_duration)}</td>
-                <td class="text-center"><a href="/admin-branch/monitoring/department-detail/${v.id}/max-wait">${formatTime(v.max_waiting_duration)}</a></td>
+                <td class="text-center"><a href="${maxwait.replace(':id', v.id)}">${formatTime(v.max_waiting_duration)}</a></td>
                 <td class="text-center">${formatTime(v.now_served_duration)}</td>
                 <td class="text-center">${formatTime(v.avg_served_duration)}</td>
-                <td class="text-center"><a href="/admin-branch/monitoring/department-detail/${v.id}/max-service">${formatTime(v.max_served_duration)}</a></td>
+                <td class="text-center"><a href="${maxservice.replace(':id', v.id)}">${formatTime(v.max_served_duration)}</a></td>
 
             </tr>`
         })

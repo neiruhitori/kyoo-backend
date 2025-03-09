@@ -11,7 +11,7 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">
-                            Setting {{ __('Device Account') }}
+                            {{ __('Device Account Settings') }}
                         </h6>
                     </div>
 

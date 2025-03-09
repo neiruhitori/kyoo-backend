@@ -52,6 +52,10 @@
                                     class="collapse-item kyoo-sublink {{ !request()->is($submenu->route) ?: 'active'  }}"
                                     href="{{ url($submenu->route) }}"
                                 >
+                                {{-- <a
+                                    class="collapse-item kyoo-sublink {{ !request()->is($submenu->route) ?: 'active'  }}"
+                                    href="{{ url((request()->segment(1) ?? app()->getLocale()) . '/' . ltrim($submenu->route, '/')) }}"
+                                > --}}
                                     {{ __($submenu->name_label) }}
                                 </a>
                             @endforeach
@@ -66,14 +70,14 @@
         <li class="nav-item">
             <a class="nav-link" href="{{route('dashboard')}}">
                 <i class="fas fa-list-ul"></i>
-                <span>Appointment Aktif</span>
+                <span>{{ __('Active Appointment') }}</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a href="{{ route('cs.appointment.future.index') }}" class="nav-link">
                 <i class="fas fa-list-ul"></i>
-                <span>Daftar Appointment</span>
+                <span>{{ __('Appointment List') }}</span>
             </a>
         </li>
     @endif
@@ -93,7 +97,7 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ route('cs.voiceRecorder.index') }}">
                 <i class="fas fa-microphone"></i>
-                <span>Rekam Suara</span></a>
+                <span>{{ __('Record Audio') }}</span></a>
         </li>
     @endif
 
@@ -163,9 +167,10 @@
         @foreach (Auth::user()->Branch->getCsActiveMenus(Auth::user()->WorkstationVct->workstation_id) as $key => $menu)
             @if (is_object($menu) && isset($menu->route))
                 <li class="nav-item {{ !request()->is($menu->route) ?: 'active'  }}">
+                    {{-- <a class="nav-link" href="{{ url((request()->segment(1) ?? app()->getLocale()) . '/' . ltrim($menu->route, '/')) }}"> --}}
                     <a class="nav-link" href="{{ url($menu->route) }}">
                         <i class="fas fa-cog"></i>
-                        <span>{{ __($menu->name_label) }}</span></a>
+                        <span>{{ __($menu->name) }}</span></a>
                 </li>
             @endif
         @endforeach

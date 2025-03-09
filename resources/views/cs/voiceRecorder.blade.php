@@ -83,7 +83,7 @@
     <div class="w-[1050px] mx-auto my-[30px]">
         <div class="w-[510px] h-[99px] bg-[#0D61A1] rounded-[12px] text-white text-center mx-auto pt-[18px]">
             <input type="text" id="customer_name" class="bg-[#0D61A1] text-bold text-[20px] border-b-[1px] border-white outline-none text-center mb-[8px] pb-[5px]">
-            <p class="text-[rgba(255,255,255,0.52)] text-semibold text-[14px]">Nama Customer</p>
+            <p class="text-[rgba(255,255,255,0.52)] text-semibold text-[14px]">{{ __('Customer Name') }}</p>
         </div>
 
         <div class="shadow-[0px_4px_22px_rgba(0,0,0,0.1)] w-[510px] h-[330px] mx-auto mt-[27px] text-center mt-[24px] pt-[24px] relative">
@@ -100,24 +100,24 @@
                 <img src="{{asset('img/audio-conversations/pause.png')}}" class="w-[24px] h-[24px]" id="imgPlay" alt="">
             </button>
             <div class="flex justify-center items-center mt-[24px]">
-                <h3 class="font-semibold text-[14px] text-[rgba(0,0,0,0.24)]">Klik tombol</h3>
+                <h3 class="font-semibold text-[14px] text-[rgba(0,0,0,0.24)]">{{ __('Press the button') }}</h3>
                 <img src="{{asset('img/audio-conversations/microphone-inactive.png')}}" class="w-[20px] h-[20px] mx-[12.9px]" id="recordPreview" alt="">
-                <h3 class="font-semibold text-[14px] text-[rgba(0,0,0,0.24)] flex wording-audio">untuk mulai</h3>
+                <h3 class="font-semibold text-[14px] text-[rgba(0,0,0,0.24)] flex wording-audio">{{ __('to start') }}</h3>
             </div>
         </div>
 
         <div class="mt-[30px] mx-auto">
             <h3 class="text-[18px] mb-[27px] leading-[24px] font-bold">
-                Transaksi Rekaman
+                {{ __('Transaction Record') }}
             </h3>
 
             <table id="myTable" border="1" class="w-full rounded-tl-[12px]">
                 <thead class="h-[53px] text-white text-center">
                     <tr>
-                        <th class="bg-[#0E5EA0] rounded-tl-[12px]">Nama File</th>
-                        <th class="bg-[#0E5EA0]">Nama Pelanggan</th>
-                        <th class="bg-[#0E5EA0]">Tanggal</th>
-                        <th class="bg-[#0E5EA0] rounded-tr-[12px]">Durasi</th>
+                        <th class="bg-[#0E5EA0] rounded-tl-[12px]">{{ __('File Name') }}</th>
+                        <th class="bg-[#0E5EA0]">{{ __('Customer Name') }}</th>
+                        <th class="bg-[#0E5EA0]">{{ __('Date') }}</th>
+                        <th class="bg-[#0E5EA0] rounded-tr-[12px]">{{ __('Duration') }}</th>
                     </tr>
                 </thead>
                 <tbody id="tbody_id" class="text-center">
@@ -300,7 +300,7 @@
         stopButton.classList.remove("hidden")
 
         // recordPreview.src = "./assets/microphone-active.png"
-        wordingAudio.innerHTML = 'untuk berhenti'
+        wordingAudio.innerHTML = "{{ __('to stop') }}"
 
         stopButton.style.animation = "pulse-black 2.5s infinite";
         stopButton.style.borderRadius = "20px";
@@ -341,7 +341,7 @@
         stopButton.style.animation = "";
 
         //information play/pause
-        wordingAudio.innerHTML = 'untuk mulai'
+        wordingAudio.innerHTML = "{{ __('to start') }}"
         // recordPreview.src = "./assets/microphone-slash.png"
 
         // stop timer
@@ -388,7 +388,7 @@
                 })
             }).then(res => {
                 if (res.status === 201) {
-                    swal('', 'Audio berhasil disimpan', 'success')
+                    swal('', 'Audio saved', 'success')
                     return;
                 }
                 console.log('Invalid status saving audio message: ' + res.status);
@@ -412,7 +412,7 @@
                 })
             }).then(res => {
                 if (res.status === 201) {
-                    swal('', 'Audio berhasil disimpan', 'success')
+                    swal('', 'Audio saved', 'success')
                     return;
                 }
                 console.log('Invalid status saving audio message: ' + res.status);

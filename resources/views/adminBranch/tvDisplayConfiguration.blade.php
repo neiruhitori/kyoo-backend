@@ -134,7 +134,7 @@
     <div class="card shadow mb-4">
         <div class="card-header">
             <h6 class="font-weight-bold text-primary mb-0">
-                Manajemen Display TV
+               {{ __('TV Display Management')}}
             </h6>
         </div>
 
@@ -144,8 +144,8 @@
         <div class="row">
             <div class="col-md-5 col-sm-12 mb-5">
                 <div class="mb-4">
-                    <h5 class="font-weight-bold">Display Iklan</h5>
-                    <p class="text-caption">Tambahkan iklan untuk ditampilkan di monitor antrian</p>
+                    <h5 class="font-weight-bold">{{ __('Ad Display') }}</h5>
+                    <p class="text-caption">{{ __('Add advertisements to be displayed on the queue monitor') }}</p>
                 </div>
 
                 <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update', Auth::user()->branch_id) }}" id="image_form" method="POST" enctype="multipart/form-data">
@@ -154,25 +154,25 @@
 
                     <div class="d-flex mb-3">
                         <div class="monitor-images-wrapper {{ $template_signage != 'custom-layout-2' ? 'd-none' : '' }}" id="selectSwitchContainer">
-                            <div class="mb-1">Opsi Display</div>
+                            <div class="mb-1">{{ __('Display Option') }}</div>
                             <div class="monitor-image-container">
                                 <select class="custom-select" name="selectSwitch" id="selectSwitch" style="width: 150px">
-                                    <option value="file" {{ $switchLink == 'file' ? 'selected' : '' }}>Gambar/Video</option>
+                                    <option value="file" {{ $switchLink == 'file' ? 'selected' : '' }}>Image/Video</option>
                                     <option value="youtube" {{ $switchLink == 'youtube' ? 'selected' : '' }}>Youtube</option>
                                   </select>
                             </div>
                             
                         </div>
-                        <div class="monitor-images-wrapper mx-3 {{ $template_signage != 'custom-layout-2' ? 'd-none' : '' }}" id="display_durationContainer">
-                            <div class="mb-1">Durasi Display</div>
+                        <div class="monitor-images-wrapper mx-3 {{ $template_signage != 'custom-layout-2' ? 'd-none' : '' }}"">
+                            <div class="mb-1">{{ __('Display Duration') }}</div>
                             <div class="monitor-image-container">
                                 <select class="custom-select" name="display_duration" id="display_duration" style="width: 110px">
-                                    <option value="5" {{ $display_duration == '5' ? 'selected' : '' }} >5 Detik</option>
-                                    <option value="10" {{ $display_duration == '10' ? 'selected' : '' }}>10 Detik</option>
-                                    <option value="15" {{ $display_duration == '15' ? 'selected' : '' }}>15 Detik</option>
-                                    <option value="20" {{ $display_duration == '20' ? 'selected' : '' }}>20 Detik</option>
-                                    <option value="25" {{ $display_duration == '25' ? 'selected' : '' }}>25 Detik</option>
-                                    <option value="30" {{ $display_duration == '30' ? 'selected' : '' }}>30 Detik</option>
+                                    <option value="5" {{ $display_duration == '5' ? 'selected' : '' }} >5 {{ __('Seconds') }}</option>
+                                    <option value="10" {{ $display_duration == '10' ? 'selected' : '' }}>10 {{ __('Seconds') }}</option>
+                                    <option value="15" {{ $display_duration == '15' ? 'selected' : '' }}>15 {{ __('Seconds') }}</option>
+                                    <option value="20" {{ $display_duration == '20' ? 'selected' : '' }}>20 {{ __('Seconds') }}</option>
+                                    <option value="25" {{ $display_duration == '25' ? 'selected' : '' }}>25 {{ __('Seconds') }}</option>
+                                    <option value="30" {{ $display_duration == '30' ? 'selected' : '' }}>30 {{ __('Seconds') }}</option>
                                   </select>
                             </div>
                         </div>
@@ -227,7 +227,7 @@
                             </label>
                         
                             <div>
-                                <div class="mb-1">Gambar / Video Iklan 1</div>
+                                <div class="mb-1">{{ __('Advertisement Image/Video :num', ['num'=> 1]) }}</div>
                                 <div>
                                     <button type="button" class="delete-image-button hidden" id="delete_button_1"
                                         onclick="deleteMedia(1)">
@@ -259,7 +259,7 @@
                             </label>
                         
                             <div>
-                                <div class="mb-1">Gambar / Video Iklan 2</div>
+                                <div class="mb-1">{{ __('Advertisement Image/Video :num', ['num'=> 2]) }}</div>
                                 <div>
                                     <button type="button" class="delete-image-button hidden" id="delete_button_2"
                                         onclick="deleteMedia(2)">
@@ -291,7 +291,7 @@
                             </label>
                         
                             <div>
-                                <div class="mb-1">Gambar / Video Iklan 3</div>
+                                <div class="mb-1">{{ __('Advertisement Image/Video :num', ['num'=> 3]) }}</div>
                                 <div>
                                     <button type="button" class="delete-image-button hidden" id="delete_button_3"
                                         onclick="deleteMedia(3)">
@@ -316,7 +316,7 @@
                                 </div>
                             </label>
                             <div>
-                                <div class="mb-1">Gambar Iklan 4</div>
+                                <div class="mb-1">{{ __('Advertisement Image :num', ['num' => 4]) }}</div>
                                 <div>
                                     <button type="button" class="delete-image-button hidden" id="delete_button_4" onclick="deleteImage(4)">
                                         <span class="fas fa-times mr-1"></span>
@@ -338,7 +338,7 @@
                                 </div>
                             </label>
                             <div>
-                                <div class="mb-1">Gambar Iklan 5</div>
+                                <div class="mb-1">{{ __('Advertisement Image :num', ['num' => 5]) }}</div>
                                 <div>
                                     <button type="button" class="delete-image-button hidden" id="delete_button_5" onclick="deleteImage(5)">
                                         <span class="fas fa-times mr-1"></span>
@@ -360,7 +360,7 @@
                                 </div>
                             </label>
                             <div>
-                                <div class="mb-1">Gambar Iklan 6</div>
+                                <div class="mb-1">{{ __('Advertisement Image :num', ['num' => 6]) }}</div>
                                 <div>
                                     <button type="button" class="delete-image-button hidden" id="delete_button_6" onclick="deleteImage(6)">
                                         <span class="fas fa-times mr-1"></span>
@@ -371,7 +371,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" id="submit_image" class="btn btn-warning hidden">Unggah Gambar</submit>
+                    <button type="submit" id="submit_image" class="btn btn-warning hidden">{{ __('Upload Image') }}</submit>
                 </form>
             </div>
 
@@ -381,7 +381,7 @@
                     @method('PUT')
                     <div class="mb-4">
                         <h5 class="font-weight-bold">Layout Display</h5>
-                        <p class="text-caption">Pilih jenis layout yang sesuai dengan bisnis Anda</p>
+                        <p class="text-caption">{{ __('Choose a layout type that suits your business') }}</p>
                     </div>
 
                     <div>
@@ -403,22 +403,22 @@
                         <div class="layout-labels">
                             <div class="layout-label-item">
                                 <div class="layout-img" style="background-color: #EADAA4;"></div>
-                                <span>Space Iklan</span>
+                                <span>{{ __('Advertisement Space') }}</span>
                             </div>
 
                             <div class="layout-label-item">
                                 <div class="layout-img" style="background-color: #F6A2FD;"></div>
-                                <span>Sedang Dilayani</span>
+                                <span>{{ __('Being Served') }}</span>
                             </div>
 
                             <div class="layout-label-item">
                                 <div class="layout-img" style="background-color: #93F097;"></div>
-                                <span>Antrian Menunggu</span>
+                                <span>{{ __('Waiting Queue') }}</span>
                             </div>
                         </div>
 
                         <div class="wrapper-submit mt-3">
-                            <button type="submit" class="btn btn-warning">Simpan</submit>
+                            <button type="submit" class="btn btn-warning">{{ __('Save') }}</submit>
                         </div>
                     </div>
                 </form>
@@ -427,21 +427,21 @@
                 @if (!Auth::user()->Branch->TVConfiguration)
                 <form action="" method="">
                     <div class="mb-4">
-                        <h5 class="font-weight-bold">Perbarui Token</h5>
-                        <p class="text-caption">Konfigurasi Signage terlebih dahulu</p>
+                        <h5 class="font-weight-bold">{{ __('Update Token') }}</h5>
+                        <p class="text-caption">{{ __('Update Web Monitor TV Token') }}</p>
                     </div>
-                    <button type="submit" disabled id="submit_image" class="btn btn-primary">Perbarui</submit>
+                    <button type="submit" disabled id="submit_image" class="btn btn-primary">{{ __('Update') }}</submit>
                 </form>
                 @else
                 <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update-token', Auth::user()->branch_id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="mb-4">
-                        <h5 class="font-weight-bold">Perbarui Token</h5>
-                        <p class="text-caption">Perbarui Token Web Monitor TV</p>
+                        <h5 class="font-weight-bold">{{ __('Update Token') }}</h5>
+                        <p class="text-caption">{{ __('Update Web Monitor TV Token') }}</p>
                     </div>
 
-                    <button type="submit" id="submit_image" class="btn btn-primary">Perbarui</submit>
+                    <button type="submit" id="submit_image" class="btn btn-primary">{{ __('Update') }}</submit>
                 </form>
                 @endif
             </div>
@@ -453,7 +453,7 @@
     <div id='layoutConfig2' class="card shadow mb-4 {{ $template_signage == 'custom-layout-2' ?: 'd-none'}}">
         <div class="card-header">
             <h6 class="font-weight-bold text-primary mb-0">
-                Konfigurasi Display TV
+                {{ __('Display TV Configuration') }}
             </h6>
         </div>
 
@@ -464,8 +464,8 @@
                 <div class="col-md-12 col-sm-12">
                     <div class="mt-4 col-md-12">
                         <div class="mb-4 d-flex flex-column align-items-center">
-                            <h5 class="font-weight-bold">Konfigurasi Layout Display</h5>
-                            <p class="text-caption">Atur tampilan yang akan di tampilkan pada monitor antrian</p>
+                            <h5 class="font-weight-bold">{{ __('Display TV Configuration') }}</h5>
+                            <p class="text-caption">{{ __('Set the display that will be shown on the queue monitor') }}</p>
                         </div>
 
                         <form action="{{ route('admin-branch.branch-configuration.queue-monitor.update-custom-layout', Auth::user()->branch_id) }}" method="POST" enctype="multipart/form-data">
@@ -746,7 +746,7 @@
                                 </div>
                             </div>
                             <div class="wrapper-submit mt-3">
-                                <button type="submit" class="btn btn-warning">Simpan</submit>
+                                <button type="submit" class="btn btn-warning">{{ __('Save') }}</submit>
                             </div>
                         </form>
                     </div>

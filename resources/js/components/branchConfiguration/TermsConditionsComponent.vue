@@ -1,7 +1,7 @@
 <template>
   <div style="max-width: 800px; margin: 0 auto;">
     <div class="mb-3">
-      <h3 class="mb-0">Syarat & Ketentuan</h3>
+      <h3 class="mb-0">{{ this.t('Terms and Conditions') }}</h3>
     </div>
 
     <div
@@ -20,7 +20,7 @@
       <div class="card-body">
         <div v-if="isContentEmpty">
           <p class="text-center mb-0" style="margin: 0 auto;">
-            Anda belum memiliki Syarat & Ketentuan.
+            {{ this.t('You do not have Terms and Conditions yet') }}
           </p>
         </div>
 
@@ -35,17 +35,17 @@
     <div class="mt-3">
       <div v-if="isEdit">
         <button class="btn btn-secondary mr-1" @click="exitEdit">
-          Batal
+          {{ this.t('Cancel') }}
         </button>
         <button class="btn btn-warning" @click="saveTermsConditions">
           <span class="fas fa-check"></span>
-          Simpan
+          {{ this.t('Save') }}
         </button>
       </div>
 
       <div v-else-if="isContentEmpty">
         <button class="btn btn-warning" @click="enterEdit">
-          Tambah
+          {{ this.t('Add') }}
         </button>
       </div>
 
@@ -56,6 +56,9 @@
 
 <script>
   import wysiwyg from 'vue-wysiwyg'
+  import id from "../../../lang/id.json";
+  import en from "../../../lang/en.json";
+
 
   Vue.use(wysiwyg, {
     hideModules: {
@@ -77,6 +80,11 @@
   });
 
   export default {
+    props: {
+    locale: {
+      type: String,
+    },
+  },
     mounted() {
       this.setTermsConditions()
     },
@@ -87,6 +95,8 @@
         isEdit: false,
         isContentEmpty: false,
         isLoading: false,
+        messages : { id, en },
+        currentLocale: this.locale || "en", // Default locale
         alert: {
           isShow: false,
           message: '',
@@ -98,6 +108,13 @@
       enterEdit() {
         this.isEdit = true
       },
+      t(key, params = {}) {
+      const translation =
+        this.messages[this.currentLocale][key] || key;
+
+      // Ganti placeholder seperti {number} dengan value dari params
+      return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+    },
 
       exitEdit() {
         this.isEdit = false

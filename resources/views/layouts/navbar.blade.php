@@ -18,9 +18,17 @@
                         @if(!Auth::user()->Branch->is_premium && !Auth::user()->Branch->BranchType->is_exhibition)
                         <li class="nav-item no-arrow mx-1">
                             <div class="mt-3 input-group rounded">
-                                <p class="form-control text-white bg-primary mx-3 rounded">You're using Trial License, upgrade your license to access more features!</p>
+                                <div class="btn-group btn-group-toggle textpromotion" >
+                                    <label class="btn btn-primary" style="pointer-events: none;">
+                                      <small class="text-white">You're using Trial License, upgrade now to access other features!</small>
+                                    </label>
+                                    <label class="btn btn-warning">
+                                        <a class="text-decoration-none text-white" href="{{ route('admin-branch.subscription') }}"><small>Upgrade NOW!</small></a>
+                                    </label>
+                                  </div>
+                                {{-- <p class="form-control text-white bg-primary rounded-start">You're using Trial License, upgrade now to access other features!</p>--}}
                             
-                                <a class="btn btn-warning " href="{{ route('admin-branch.subscription') }}">Upgrade KYOO</a>
+                                <a class="btn btn-warning rounded-end textupgrade" href="{{ route('admin-branch.subscription') }}">Upgrade NOW!</a> 
                             
                             </div>
                         </li>
@@ -29,6 +37,27 @@
                 @default
                     
             @endswitch
+
+            @if (
+                Auth::user()->role != 'admin_kyoo' &&
+                Auth::user()->Branch->BranchType->is_appointment
+            )      
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+            <span class="mr-2 d-none d-lg-inline text-gray-600 small"> <span class="fi fi-{{ app()->getLocale() == 'en' ? 'gb' : 'id'}} fib border"></span> {{ strtoupper(app()->getLocale()) }}</span>
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                    <a class="dropdown-item" href="{{ route('change.locale', 'en') }}">
+                        <span class="fi fi-gb fib border"></span> English
+                    </a>
+                    <a class="dropdown-item" href="{{ route('change.locale', 'id') }}">
+                        <span class="fi fi-id fib border"></span> Indonesia
+                    </a>
+                </div>
+            </li>
+            @endif
         
         <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -73,4 +102,19 @@
         </ul>
 
     </nav>
+    {{-- @push('css') --}}
+        <style>
+            .textupgrade{
+                display: none
+            }
+            @media screen and (max-width:1054px){
+                .textpromotion{
+                    display: none;
+                }
+                .textupgrade{
+                display: block
+            }
+            }
+        </style>
+    {{-- @endpush --}}
     <!-- End of Topbar -->

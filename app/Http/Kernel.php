@@ -75,5 +75,7 @@ class Kernel extends HttpKernel
         'cookie.clientid' => \App\Http\Middleware\SetClientIdCookie::class,
         'access' => \App\Http\Middleware\EnsureUserHasAccess::class,
         'setTimeZone' => \App\Http\Middleware\SetTimeZone::class,
+        'localization' => \App\Http\Middleware\SetLocale::class,
+        'setlocaleIP' => \App\Http\Middleware\SetlocaleByIP::class,
     ];
 }

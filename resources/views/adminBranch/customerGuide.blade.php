@@ -115,7 +115,7 @@
     <div class="col-md-12">
         <div class="card shadow mb-5">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold customer-guide__card-title">{{ __('Panduan Pelanggan') }}</h6>
+                <h6 class="m-0 font-weight-bold customer-guide__card-title">{{ __('Customer Guide') }}</h6>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -125,13 +125,13 @@
                             <div class="card-header" role="tab" id="heading-1">
                                 <h6 class="mb-0">
                                     <a data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1" onclick="showImage('web-portal-asset')">
-                                        Ambil antrian melalui Web Portal
+                                        {{ __('Take a queue through the Web Portal') }}
                                     </a>
                                 </h6>
                                 </div>
                                 <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion">
                                 <div class="card-body">
-                                    Pelanggan dapat mengakses alamat web dibawah ini untuk mengambil antrian onsite/appointement/booking layanan Anda. Alamat web dibawah ini bisa tempatkan di website, Instagram, sosial media, dan channel informasi Institusi Anda lainnya.
+                                    {{ __('Customers can access the web address below to take an onsite queue, appointment, or service booking. The web address below can be placed on your website, Instagram, social media, and other information channels of your institution') }}
                                     <div>
                                         <a href="{{ $short_url }}" target="_blank" id="customer-url">{{ $short_url }}</a>
                                         <button class="btn btn-secondary ml-2" onclick="copyToClipboard()">Copy URL</button>
@@ -143,15 +143,15 @@
                             <div class="card-header" role="tab" id="heading-2">
                             <h6 class="mb-0">
                                 <a class="collapsed" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2" onclick="showImage('qr-code-asset')">
-                                    Ambil antrian melalui QR Code
+                                    {{ __('Take a queue via QR Code') }}
                                 </a>
                             </h6>
                             </div>
                             <div id="collapse-2" class="collapse" aria-labelledby="heading-2" data-parent="#accordion">
                             <div class="card-body">
-                                Pelanggan dapat melakukan scan QR-code Cabang, Anda dapat men-cetak dan menempatkan QR-code ini di pintu masuk Cabang.
+                                {{ __('Customers can scan the Branch QR code. You can print and place this QR code at the Branch entrance') }}
                                 <div style="margin-top: 15px;">
-                                    <a href="{{ url('') }}/admin-branch/branch-qr-code" class="btn btn-sm btn-primary">Lihat QR Code</a>
+                                    <a href="{{ url('') }}/admin-branch/branch-qr-code" class="btn btn-sm btn-primary">{{ __('See QR Code') }}</a>
                                 </div>
                             </div>
                             </div>
@@ -160,13 +160,13 @@
                             <div class="card-header" role="tab" id="heading-3">
                             <h6 class="mb-0">
                                 <a class="collapsed" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3" onclick="showImage('app-asset')">
-                                    Ambil antrian melalui Aplikasi KYOO
+                                    {{ __('Take a queue through the KYOO App') }}
                                 </a>
                             </h6>
                             </div>
                             <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion">
                             <div class="card-body">
-                                Pelanggan dapat mendownload Aplikasi KYOO untuk mengambil antrian.
+                                {{ __('Customers can download the KYOO App to take a queue') }}
                                 <div style="width: 145px;height: auto;">
                                 <a href="https://play.google.com/store/apps/details?id=com.kyoo.android" target="__blank">
                                     <img src="/img/playstore.png" height="70px" />

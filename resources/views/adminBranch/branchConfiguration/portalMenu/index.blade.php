@@ -123,11 +123,11 @@
         <div class="custom-info-head">
             <h6 class="font-weight-bold my-0">
                 <span class="fas fa-info-circle text-primary mr-1"></span>
-                Informasi
+                {{ __('Information') }}
             </h6>
 
             <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                Tampilkan
+                {{ __('Show') }}
             </button>
         </div>
 
@@ -135,13 +135,12 @@
             <p>
                 <ul style="padding-left: 2rem;">
                     <li style="margin-bottom: 0.25rem;">
-                        Disini konfigurasi web portal antrian untuk menampilkan jenis layanan kepada pelanggan.
-                    </li>
+                        {{ __('infobox.menuportal1') }}                    </li>
                     <li style="margin-bottom: 0.25rem;">
-                        Pilih konfigurasi layout web portal yang sesuai dengan scenario proses antrian Anda.
+                        {{ __('infobox.menuportal2') }}
                 </ul>
             </p>
-            <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+            <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
         </div>
     </div>
 </div>
@@ -151,7 +150,7 @@
         <div class="custom-info-head">
             <h6 class="font-weight-bold my-0">
                 <span class="fas fa-info-circle text-primary mr-1"></span>
-                Tentang Portal Menu
+               {{ __('About Portal Menu') }}
             </h6>
         </div>
 
@@ -159,23 +158,22 @@
             <p>
                 <ul style="padding-left: 2rem;" id="desc-1layer">
                     <li style="margin-bottom: 0.25rem;">
-                        Jenis Portal ini merupakan portal standar dengan 1 tingkatan/layer halaman
+                        {{ __('This type of portal is a standard portal with 1 level/layer of pages') }}
                     </li>
                     <li style="margin-bottom: 0.25rem;">
-                        Layer ke-1 untuk pemilihan jenis layanan
+                        {{ __('Layer 1 for selecting the type of service') }}
                 </ul>
                 <ul style="padding-left: 2rem;" id="desc-2layer">
                     <li style="margin-bottom: 0.25rem;">
-                        Jenis Portal ini merupakan portal onsite hybrid dengan appointment dengan 2 tingkatan/layer halaman 
+                        {{ __('This portal type is an onsite hybrid portal with appointments and 2 levels/layers of pages') }}
                     </li>
                     <li style="margin-bottom: 0.25rem;">
-                        Layer ke-1 untuk pemilihan jenis layanan 
+                        {{ __('Layer 1 for selecting the type of service') }}
                     <li style="margin-bottom: 0.25rem;">
-                        Layer ke-2 untuk pemilihan slot waktu layanan
+                        {{ __('Layer 2 for selecting the service time slot') }}
                     </li>
                     <li style="margin-bottom: 0.25rem;">
-                        Form Booking untuk data pelanggan bisa dipilih sesuai dengan kebutuhan anda
-
+                       {{ __('The booking form for customer data can be selected according to your needs') }}
                 </ul>
                 
             </p>
@@ -209,7 +207,7 @@
             <div class="">
                 <div class="row">
                     <div class="form-group ml-3 col-md-5" style="width: 250px;">
-                        <label for="select-template">Pilih layout yang sesuai</label>
+                        <label for="select-template">{{ __('Select the appropriate layout') }}</label>
                         <select name="layer" id="selectLayer" class="form-control" onchange="changeLayout(this)">
                             <option value="1" >Portal Standard 1 Layer</option>
                             <option value="2" {{ $branchConfiguration->layer == 2 ? 'selected' : '' }}>

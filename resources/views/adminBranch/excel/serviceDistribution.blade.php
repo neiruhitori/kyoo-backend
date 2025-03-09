@@ -16,25 +16,25 @@
 
         <tr>
             <td colspan="16" style="text-align: center">
-                Laporan Distributsi Tunggu Layanan
+                {{ __('Waiting Service Distribution Report') }}
             </td>
         </tr>
 
         <tr></tr>
         <tr>
-            <td><strong>Tanggal:</strong></td>
+            <td><strong>{{ __('Date') }}:</strong></td>
             <td>{{ $date }}</td>
         </tr>
         <tr>
-            <td><strong>Departemen:</strong></td>
+            <td><strong>{{ __('Department') }}:</strong></td>
             <td>{{ $department->name }}</td>
         </tr>
         <tr></tr>
 
         <thead>
             <tr>
-                <th rowspan="2" style="width: 120px;">Layanan</th>
-                <th colspan="14" style="text-align: center;">Jumlah Tiket dalam Interval (Menit)</th>
+                <th rowspan="2" style="width: 120px;">{{ __('Service') }}</th>
+                <th colspan="14" style="text-align: center;">{{ __('Tickets in Interval (Minutes)') }}</th>
                 <th rowspan="2" style="text-align: right;">Total</th>
             </tr>
 

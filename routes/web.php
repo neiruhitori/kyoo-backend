@@ -8,6 +8,21 @@ Route::get('/', function () {
     return redirect(route('dashboard'));
 });
 
+//to differ visitor
+Route::group(['middleware' => ['localization','setlocaleIP']], function(){
+
+Auth::routes();
+
+});
+
+Route::get('/change-locale/{locale}','LocalizationController@setLang')->name('change.locale');
+
+//where method prevent conflict from page customer
+Route::middleware('localization')
+->where(['locale' => 'id|en'])
+->group(function(){
+
+
 Route::get('/unauthorized', function () {
     return 'Unauthorized';
 })->name('unauthorized');
@@ -190,8 +205,8 @@ Route::namespace('AdminBranch')
         Route::prefix('/monitoring')->name('monitoring.')->group(function () {
             Route::get('/department', 'DepartmentMonitoringController@index')->name('department');
             Route::get('/department/{id}', 'DepartmentMonitoringController@getData')->name('department.show');
-            Route::get('/department-detail/{id}/max-wait', 'DepartmentMonitoringController@maxWait');
-            Route::get('/department-detail/{id}/max-service', 'DepartmentMonitoringController@maxService');
+            Route::get('/department-detail/{id}/max-wait', 'DepartmentMonitoringController@maxWait')->name('department.maxwait');
+            Route::get('/department-detail/{id}/max-service', 'DepartmentMonitoringController@maxService')->name('department.maxservice');
 
             Route::get('/department/{id}/service', 'ServiceMonitoringController@getServiceByDepartment')->name('department.service');
             Route::get('/service', 'ServiceMonitoringController@index')->name('service');
@@ -286,7 +301,7 @@ Route::put('/vct/reset-password/{user_id}', 'AdminBranch\UserController@updatePa
 Route::get('/device-account/reset-password/{user_id}', 'AdminBranch\DeviceAccountController@reset')->name('adminBranch.device-account.reset');
 Route::put('/device-account/reset-password/{user_id}', 'AdminBranch\DeviceAccountController@updatePassword')->name('adminBranch.device-account.password.update');
 
-Auth::routes();
+// Auth::routes();
 
 // Appointment Status
 Route::get('/appointment/status/{id}', 'AppointmentController@status')->name('appointment.status');
@@ -493,4 +508,7 @@ Route::post('search', 'SearchQueueController@search')->name('search.search');
 
 Route::get('scan', 'QRScannerController@index')->name('scan.index');
 
+Route::get('DEBUG', 'AdminBranch\BillingController@print');
+
+}); //end of locale prefix
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');

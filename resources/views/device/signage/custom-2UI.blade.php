@@ -39,6 +39,7 @@
             :workstations="{{$workstations}}"
             :custom_layout_config="{{ $customLayoutConfig }}"
             :display_duration="{{ $display_duration }}"
+            lang={{ app()->getLocale() }}
         />
     </div>
     <script src="{{asset('js/app.js')}}"></script>

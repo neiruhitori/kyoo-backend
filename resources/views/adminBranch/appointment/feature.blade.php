@@ -15,11 +15,11 @@
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
                     <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
+                    {{ __('Information') }}
                 </h6>
 
                 <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
+                    {{ __('Show') }}
                 </button>
             </div>
 
@@ -27,15 +27,14 @@
                 <p>
                 <ul style="padding-left: 2rem;">
                     <li style="margin-bottom: 0.25rem;">
-                        Ini adalah konfigurasi fitur yang bisa anda sesuaikan dengan kebutuhan.
+                        {{ __('infobox.features1') }} 
                     </li>
                     <li>
-                        Untuk API Antrian KYOO hanya akan tampil Ketika cabang sudah memiliki license API.
-                        API KYOO dapat di-integrasikan ke berbagai channel layanan anda seperti WA, Telegram dll.
+                        {{ __('infobox.features2') }}
                     </li>
                 </ul>
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
             </div>
         </div>
     </div>
@@ -59,7 +58,7 @@
                                 @method('PUT')
 
                                 @if (Auth::user()->Branch->hasAccess('Panggilan Suara'))
-                                    <label for="">Panggilan Suara</label>
+                                    <label for="">{{ __('Voice Call') }}</label>
 
                                     <div class="form-group">
                                         <div class="form-check">
@@ -67,14 +66,14 @@
                                                 id="queue-voice-label"
                                                 {{ ($branch_config && $branch_config->queue_voice) || old('queue_voice') ? 'checked' : '' }}>
 
-                                            <label for="queue-voice-label" class="form-check-label">Aktifkan</label>
+                                            <label for="queue-voice-label" class="form-check-label">{{ __('Activate') }}</label>
                                         </div>
                                         @include('layouts.inputError', ['errorName' => 'queue_voice'])
                                     </div>
                                 @endif
 
                                 @if (Auth::user()->Branch->hasAccess('Promosi'))
-                                    <label for="">Promosi</label>
+                                    <label for="">{{ __('Promotion') }}</label>
 
                                     <div class="form-group">
                                         <div class="form-check">
@@ -82,14 +81,14 @@
                                                 id="promotion-label"
                                                 {{ ($branch_config && $branch_config->promotion) || old('promotion') ? 'checked' : '' }}>
 
-                                            <label for="promotion-label" class="form-check-label">Aktifkan</label>
+                                            <label for="promotion-label" class="form-check-label">{{ __('Activate') }}</label>
                                         </div>
 
                                         @include('layouts.inputError', ['errorName' => 'queue_voice'])
                                     </div>
                                 @endif
 
-                                <label for="wa-notification">Notifikasi WA ke Pelanggan</label>
+                                <label for="wa-notification">{{ __('WhatsApp Notification to Customers') }}</label>
 
                                 <div class="form-group">
                                     <div class="form-check">
@@ -97,14 +96,14 @@
                                             id="wa-notification"
                                             {{ ($branch_config && $branch_config->wa_notification) || old('wa_notification') ? 'checked' : '' }}>
 
-                                        <label for="wa-notification" class="form-check-label">Aktifkan</label>
+                                        <label for="wa-notification" class="form-check-label">{{ __('Activate') }}</label>
                                     </div>
 
                                     @include('layouts.inputError', ['errorName' => 'wa_notification'])
                                 </div>
 
                                 @if (Auth::user()->Branch->isPremium)
-                                    <label for="wa-notification-owner">Notifikasi WA ke Owner</label>
+                                    <label for="wa-notification-owner">{{ __('WhatsApp Notification to Owner') }}</label>
 
                                     <div class="form-group">
                                         <div class="form-check">
@@ -112,7 +111,7 @@
                                                 id="wa-notification-owner"
                                                 {{ ($branch_config && $branch_config->wa_notification_owner) || old('wa_notification_owner') ? 'checked' : '' }}>
 
-                                            <label for="wa-notification-owner" class="form-check-label">Aktifkan</label>
+                                            <label for="wa-notification-owner" class="form-check-label">{{ __('Activate') }}</label>
                                         </div>
 
                                         @include('layouts.inputError', [
@@ -121,7 +120,7 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="phone-owner" class="col-md-2 col-form-label">Nomer WA Owner</label>
+                                        <label for="phone-owner" class="col-md-2 col-form-label">{{ __('Owner Whatsapp Number') }}</label>
                                         <div class="col-md-3">
                                             <input type="number" name="phone_owner" class="form-control form-control-sm"
                                                 id="phone-owner" value="{{ $branch_config->phone_owner }}">

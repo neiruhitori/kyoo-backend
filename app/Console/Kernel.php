@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('notification:hourly')->hourly();
+        $schedule->command('invoice:expire')->dailyAt('07:00');
         $schedule->command('notification:daily')->dailyAt('07:00')->timezone('Asia/Jakarta');
         $schedule->command('appointment:update')->dailyAt('23:55')->timezone('Asia/Jakarta');
         $schedule->command('directQueue:update')->dailyAt('23:55')->timezone('Asia/Jakarta');

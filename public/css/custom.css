@@ -9,6 +9,10 @@ body {
     --blue: #103c7c;
 }
 
+.parent{
+    margin: 0 0rem 0 4rem;
+}
+
 .app-icon {
     width: 10rem;
     height: auto;
@@ -168,6 +172,10 @@ body {
     flex: 1 1 0%;
 }
 
+.lang{
+    display: block;
+}
+
 @media (min-width: 1280px) {
     .page-container {
         flex: 1 1 0%;
@@ -175,5 +183,13 @@ body {
 
     .image-container {
         display: block;
+    }
+    .lang{
+        display: none;
+    }
+}
+@media (max-width: 768px) {
+    .parent{
+        margin: 0 3rem 0 3rem;
     }
 }

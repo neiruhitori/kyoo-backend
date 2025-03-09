@@ -30,16 +30,16 @@
     <div class="col-xl-12 col-lg-7">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Laporan Kepuasan Pelanggan</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{ __('Customer Satisfaction Report') }}</h6>
             </div>
 
             <div class="card-body">
                 <form action="" method="GET" class="mb-4" style="max-width: 500px;">
                     <div class="row">
                         <div class="form-group col-xs-12 col-md-6">
-                            <label>Bulan</label>
+                            <label>{{ __('Select Month') }}</label>
                             <select name="month" class="form-control">
-                                <option disabled selected>--- Pilih Bulan ---</option>
+                                <option disabled selected>--- {{ __('Select Month') }} ---</option>
                                 @for ($i = 1; $i <= 12; $i++)
                                     <option value="{{ $i }}" {{ $month != $i ?: 'selected' }}>
                                         {{ date('F', strtotime('1999-' . $i . '-01')) }}
@@ -49,9 +49,9 @@
                         </div>
 
                         <div class="form-group col-xs-12 col-md-6">
-                            <label>Tahun</label>
+                            <label>{{ __('Select Year') }}</label>
                             <select name="year" class="form-control">
-                                <option disabled selected>--- Pilih Tahun ---</option>
+                                <option disabled selected>--- {{ __('Select Year') }} ---</option>
                                 @for ($i = 2000; $i <= date('Y'); $i++)
                                     <option value="{{ $i }}" {{ $year != $i ?: 'selected' }}>
                                         {{ $i }}
@@ -69,11 +69,11 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th class="text-center">Tanggal</th>
-                            <th class="text-right">Total Antrian</th>
-                            <th class="text-right">Total Feedback</th>
-                            <th class="text-right">Persentasi Feedback</th>
-                            <th>Skor Rata-Rata Ulasan</th>   
+                            <th class="text-center">{{ __('Date') }}</th>
+                            <th class="text-right">{{ __('Total Queue') }}</th>
+                            <th class="text-right">{{ __('Total Feedback') }}</th>
+                            <th class="text-right">{{ __('Feedback Percentage') }}</th>
+                            <th>{{ __('Average Review Score') }}</th>   
                         </tr>
                     </thead>
 
@@ -93,7 +93,7 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="5" class="text-center">Data tidak ditemukan</td>
+                                <td colspan="5" class="text-center">{{ __('Data not Found') }}</td>
                             </tr>
                         @endif
                     </tbody>
@@ -120,41 +120,44 @@
             "ordering": false,
             "dom": 'Bfrtip',
             "language": {
-                "emptyTable": "Tidak ada data",
-                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
-                "infoFiltered": "(ter-filter dari _MAX_ total data)",
+                "emptyTable": "{{ __('No Data') }}",
+                "info": "{{ __('Displaying :start to :end of :total data') }}"
+                            .replace(':start', '_START_')
+                            .replace(':end', '_END_')
+                            .replace(':total', '_TOTAL_'),
+                "infoEmpty": "{{ __('No Data') }}",
+                "infoFiltered": "{{ __('(filtered from :max total data)') }}".replace(':max','_MAX_'),
                 "infoPostFix": "",
                 "thousands": ",",
-                "lengthMenu": "Tampilkan _MENU_ data",
-                "loadingRecords": "Memuat...",
-                "processing": "Memproses...",
-                "search": "Cari:",
-                "zeroRecords": "Tidak ada data yang ditemukan",
+                "lengthMenu": "{{ __('Show :menu data') }}".replace(':menu', '_MENU_'),
+                "loadingRecords": "{{ __('Loading...') }}",
+                "processing": "{{ __('Processing...') }}",
+                "search": "{{ __('Search:') }}",
+                "zeroRecords": "{{ __('No data found') }}",
                 "paginate": {
-                    "first": "Awal",
-                    "last": "Akhir",
-                    "next": "Berikutnya",
-                    "previous": "Sebelum"
+                    "first": "{{ __('First') }}",
+                        "last": "{{ __('Last') }}",
+                        "next": "{{ __('Next') }}",
+                        "previous": "{{ __('Previous') }}"
                 },
                 "aria": {
-                    "sortAscending": ": aktifkan untuk mengurutkan kolom menaik",
-                    "sortDescending": ": aktifkan untuk mengurutkan kolom menurun"
+                    "sortAscending": "{{ __(': enable to sort the column in ascending order') }}",
+                    "sortDescending": "{{ __(': enable to sort the column in descending order') }}"
                 }
             },  
             "buttons": [
                 {
                     extend: 'excelHtml5',
-                    title: "Laporan Kepuasan Pelanggan {{ date('F', $month) }} {{ $year }}"
+                    title: "{{ __('Customer Satisfaction Report') }} {{ date('F', $month) }} {{ $year }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Laporan Kepuasan Pelanggan {{ date('F', $month) }} {{ $year }}"
+                    title: "{{ __('Customer Satisfaction Report') }} {{ date('F', $month) }} {{ $year }}"
                 },
                 {
                     extend: 'print',
-                    text: 'Cetak',
-                    title: "Laporan Kepuasan Pelanggan {{ date('F', $month) }} {{ $year }}"
+                    text: "{{ __('Print') }}",
+                    title: "{{ __('Customer Satisfaction Report') }} {{ date('F', $month) }} {{ $year }}"
                 }
             ]
         })

@@ -11,6 +11,7 @@ import Button from '../../components/Button'
 import { fetchBranch } from '../../api/branch'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
+import useLocalization from './../../hooks/useLocalization';
 
 function useForceUpdate(){
     const [value, setValue] = useState(0)
@@ -20,7 +21,9 @@ function useForceUpdate(){
 const validator = new Validator()
 
 function VisitorInformation() {
-    const PAGE_TITLE = 'Informasi Pengunjung'
+    const {t} = useLocalization();
+
+    const PAGE_TITLE = t('Visitor Information')
     const forceUpdate = useForceUpdate()
     const [searchParams] = useSearchParams()
     const { queueType, branchId, serviceId } = useParams()
@@ -49,7 +52,7 @@ function VisitorInformation() {
             flex: '1 1 0%'
         }}>
             <TextField
-                label="Nama Lengkap"
+                label={t("Full Name")}
                 style={{
                     marginBottom: '1.5rem'
                 }}
@@ -74,7 +77,7 @@ function VisitorInformation() {
             />
 
             <TextField
-                label="No. Telepon"
+                label={t("Phone Number")}
                 type="tel"
                 style={{
                     marginBottom: '1.5rem'
@@ -87,13 +90,13 @@ function VisitorInformation() {
             />
 
             <TextField
-                label="Catatan"
+                label={t("Notes")}
                 style={{
                     marginBottom: '1.5rem'
                 }}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Opsional"
+                placeholder={t("Optional")}
             />
         </div>
  );
@@ -102,7 +105,7 @@ function VisitorInformation() {
             flex: '1 1 0%'
         }}>
             <TextField
-                label="Nama Lengkap"
+                label={t("Full Name")}
                 style={{
                     marginBottom: '1.5rem'
                 }}
@@ -127,7 +130,7 @@ function VisitorInformation() {
             />
 
             <TextField
-                label="No. Telepon"
+                label={t("Phone Number")}
                 type="tel"
                 style={{
                     marginBottom: '1.5rem'
@@ -140,13 +143,13 @@ function VisitorInformation() {
             />
 
             <TextField
-                label="Catatan"
+                label={t("Notes")}
                 style={{
                     marginBottom: '1.5rem'
                 }}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Opsional"
+                placeholder={t("Optional")}
             />
         </div>
  );
@@ -236,7 +239,7 @@ function VisitorInformation() {
                 <Button color="primary" type="submit" style={{
                     width: '100%',
                     fontSize: '1rem'
-                }}>Selanjutnya</Button>
+                }}>{t('Next')}</Button>
             </div>
         </form>
     </>

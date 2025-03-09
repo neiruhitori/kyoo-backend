@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="form-group">
                                     <input id="formatTime" type="checkbox" name="formatTime" value="inMinutes" {{ $time_format == 'inMinutes' ? 'checked' : '' }}>
-                                    <label onclick="toggleCheckbox()" style="cursor: pointer;user-select: none;" class="mx-2" for="">Format durasi dalam satuan menit</label>
+                                    <label onclick="toggleCheckbox()" style="cursor: pointer;user-select: none;" class="mx-2" for="">{{ __('Duration Format in Minutes') }}</label>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
@@ -72,13 +72,13 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Pilih Status</label>
+                                    <label for="">{{ __('Select Status') }}</label>
                                     <select name="status" id="status" class="form-control">
                                         <option value="all">{{ __('All') }}</option>
-                                        <option value="waiting"  {{ $status_sort == 'waiting' ? 'selected': '' }}>Menunggu</option>
-                                        <option value="served" {{ $status_sort == 'served' ? 'selected': '' }}>Dilayani</option>
-                                        <option value="end served" {{ $status_sort == 'end served' ? 'selected': '' }}>Selesai Dilayani</option>
-                                        <option value="no show" {{ $status_sort == 'no show' ? 'selected': '' }}>Tidak Hadir</option>
+                                        <option value="waiting"  {{ $status_sort == 'waiting' ? 'selected': '' }}>{{ __('Waiting') }}</option>
+                                        <option value="served" {{ $status_sort == 'served' ? 'selected': '' }}>{{ __('Serve') }}</option>
+                                        <option value="end served" {{ $status_sort == 'end served' ? 'selected': '' }}>{{ __('End Served') }}</option>
+                                        <option value="no show" {{ $status_sort == 'no show' ? 'selected': '' }}>{{ ('No Show') }}</option>
                                     </select>
                                 </div>
                                
@@ -91,19 +91,19 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <th>{{ __('Queue Number') }}</th>
-                                        <th>{{ __('Kode Unik') }}</th>
-                                        <th>{{ __('Ambil Antrian') }}</th>
-                                        <th>{{ __('Antrian Dipanggil') }}</th>
-                                        <th>{{ __('Mulai Layanan') }}</th>
-                                        <th>{{ __('Selesai Layanan ') }}</th>
-                                        <th>{{ __('Durasi Tunggu') }} </th>
-                                        <th>{{ __('Durasi Layanan (Panggil)') }} </th>
-                                        <th>{{ __('Durasi Layanan') }} </th>
+                                        <th>{{ __('Booking Code') }}</th>
+                                        <th>{{ __('Queue Taken') }}</th>
+                                        <th>{{ __('Queue Called') }}</th>
+                                        <th>{{ __('Start Service') }}</th>
+                                        <th>{{ __('Finish Service') }}</th>
+                                        <th>{{ __('Waiting Duration') }} </th>
+                                        <th>{{ __('Service Duration (Call)') }} </th>
+                                        <th>{{ __('Service Duration') }} </th>
                                         <th>{{ __('Workstation') }}</th>
                                         <th>{{ __('Service') }}</th>
-                                        <th>{{ __('Sub Layanan') }}</th>
+                                        <th>{{ __('Sub Service') }}</th>
                                         <th>{{ __('Service Transfer') }}</th>
-                                        <th>{{ __('Petugas Layanan') }}</th>
+                                        <th>{{ __('Virtual Counter') }}</th>
                                         <th>{{ __('Status') }}</th>
                                         <th>{{ __('Antri Ulang') }}</th>
                                     </thead>

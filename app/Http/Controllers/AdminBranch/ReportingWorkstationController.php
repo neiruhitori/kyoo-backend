@@ -20,7 +20,7 @@ class ReportingWorkstationController extends Controller
     public function __construct(ReportingWorkstationRepositoryInterface $reportingWorkstationRepo)
     {
         $this->reportingWorkstation = $reportingWorkstationRepo;
-        $this->months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $this->months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     }
 
     public function index()
@@ -118,8 +118,8 @@ class ReportingWorkstationController extends Controller
         $date = date('n') . '-' . date('Y');
 
         if ($request->month) {
-            $date = $this->months[(int) $request->month - 1] . '-' . $request->year;
-            $reportTime = $this->months[(int) $request->month - 1] . ' ' . $request->year;
+            $date = __($this->months[(int) $request->month - 1]) . '-' . $request->year;
+            $reportTime = __($this->months[(int) $request->month - 1]) . ' ' . $request->year;
         }
 
         if ($request->date) {
@@ -130,15 +130,15 @@ class ReportingWorkstationController extends Controller
         $data = $this->getExportData($request);
 
         $pdf = Pdf::loadView('exports.report.workstation', [
-            'title' => 'Laporan Meja',
+            'title' => __('Workstation Report'),
             'branch' => Auth::user()->Branch,
-            'reportTime' => $reportTime,
+            'reportTime' => __($reportTime),
             'department' => Department::find($request->department_id),
             'data' => $data
         ])
             ->setPaper('a4', 'potrait');
 
-        return $pdf->download('Laporan_Meja_' . $date . '.pdf');
+        return $pdf->download( __('Workstation Report').'_' . $date . '.pdf');
     }
 
     public function exportToExcel(Request $request)
@@ -148,7 +148,7 @@ class ReportingWorkstationController extends Controller
         $date = date('n') . '-' . date('Y');
 
         if ($request->month) {
-            $date = $this->months[(int) $request->month - 1] . '-' . $request->year;
+            $date = __($this->months[(int) $request->month - 1]) . '-' . $request->year;
         }
 
         if ($request->date) {
@@ -157,7 +157,7 @@ class ReportingWorkstationController extends Controller
 
         return Excel::download(
             new ReportingWorkstationExport($request, $this->reportingWorkstation),
-            'Laporan_Meja_' . $date . '.xlsx'
+            __('Workstation Report').'_' . $date . '.xlsx'
         );
     }
 }

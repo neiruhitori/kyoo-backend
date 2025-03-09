@@ -85,7 +85,7 @@
         <div class="container mx-auto flex flex-wrap">
             <div class="basis-full mb-[31px]">
                 <h3 class="text-[18px] leading-[25px] font-bold">
-                    Transaksi Rekaman
+                    {{ __('Transaction Record') }}
                 </h3>
             </div>
 
@@ -98,11 +98,11 @@
                 <table id="myTable" class="w-full">
                     <thead class="h-[53px] text-white text-center">
                         <tr>
-                            <th class="bg-[#0E5EA0] rounded-tl-[12px]">Nama File</th>
-                            <th class="bg-[#0E5EA0]">Nama Pelanggan</th>
-                            <th class="bg-[#0E5EA0]">Tanggal</th>
-                            <th class="bg-[#0E5EA0]">Ukuran File</th>
-                            <th class="bg-[#0E5EA0]">Durasi</th>
+                            <th class="bg-[#0E5EA0] rounded-tl-[12px]">{{ __('File Name') }}</th>
+                            <th class="bg-[#0E5EA0]">{{ __('Customer Name') }}</th>
+                            <th class="bg-[#0E5EA0]">{{ __('Date') }}</th>
+                            <th class="bg-[#0E5EA0]">{{ __('File Size') }}</th>
+                            <th class="bg-[#0E5EA0]">{{ __('Duration') }}</th>
                             <th class="bg-[#0E5EA0] rounded-tr-[12px]">Audio</th>
                             <!-- <th>Duration</th> -->
                         </tr>
@@ -131,6 +131,7 @@
             return fetch('/admin-branch/service-quality/audio-recording/all?' + query).then(res => {
                 if (res.status === 200) {
                     return res.json().then(json => {
+                        
                         document.getElementById("tbody_id").innerHTML = ''
 
                         json.forEach(data => {
@@ -149,9 +150,12 @@
                                     month: 'long',
                                     year: 'numeric'
                                 };
+                                let locale = "{{ app()->getLocale() }}"
+                                let lang = locale == "id" ? 'id-ID' : 'en-US'; 
 
                                 // console.log(d.toLocaleDateString('en-ZA', options));
-                                let newDate = d.toLocaleDateString('id-ID', options);
+                                // let newDate = d.toLocaleDateString('id-ID', options);
+                                let newDate = d.toLocaleDateString(lang, options);
 
                                 //add data to table
                                 let table_body = document.getElementById("tbody_id");
@@ -178,7 +182,7 @@
                                     second = data.duration % 60
                                     cell5.innerHTML = minute + ":" + second;
                                 } else {
-                                    cell5.innerHTML = data.duration + ' seconds';
+                                    cell5.innerHTML = data.duration + " {{ __('Seconds') }}";
                                 }
 
                                 // savedAudioMessagesContainer.append(audioElement);

@@ -20,7 +20,7 @@
                         <div class="col-md-10 my-5">
                             <div class="my-5" style="font-family: 'Manrope', sans-serif;">
                                 <h2 class="label">Check-in</h2>
-                                <span class="label">(Jika sudah membuat temu janji)</span>
+                                <span class="label">({{ this.t('If you have made an appointment') }})</span>
                             </div>
                             <form
                                 class="mt-4 col"
@@ -29,7 +29,7 @@
                                 <label for="booking_code">
                                     <div class="d-flex justify-content-between p-3 bg-light rounded w-full">
                                         <div class="d-flex flex-column align-items-start mr-4">
-                                            <label class="text-success" style="font-size: 12px;">Masukkan Kode Booking</label>
+                                            <label class="text-success" style="font-size: 12px;">{{ this.t('Insert Booking Code') }}</label>
                                             <input
                                                 class="form-control p-0"
                                                 style="width: 15rem; height: 30px; font-size: 18px; border: 0; background: transparent;"
@@ -66,10 +66,10 @@
                             <div class="d-flex flex-column align-items-center" style="height: 100%">
                                 <div class="my-5" style="font-family: 'Manrope', sans-serif;">
                                     <h5 class="label">
-                                        Pilih Layanan
+                                        {{ this.t('Select Service') }}
                                     </h5>
                                     <span class="label">
-                                        (Kunjungan langsung)
+                                        ({{ this.t('Onsite visit') }})
                                     </span>
                                 </div>
                                 <div class="col px-5 overflow-auto">
@@ -95,9 +95,9 @@
                             <div class="d-flex flex-column align-items-center justify-content-center" style="height: 100%; font-family: 'Manrope', sans-serif;">
                                 <div id="result-section">
                                     <h5 class="label" style="margin-bottom: 15px; margin-top: 5px;">
-                                        Silahkan Foto atau Cetak
+                                        {{ this.t('Please take a photo or print') }}
                                         <br>
-                                        Nomer Antrian
+                                        {{ this.t('Queue Number') }}
                                     </h5>
                                     <div style="margin-bottom: 25px; position: relative;">
                                         <div class="d-flex flex-column align-items-center justify-content-center" style="position: absolute; width: 100%;">
@@ -105,17 +105,17 @@
                                                 <img v-bind:src="branch_logo" alt="logo-kyoo" height="26"/>
                                             </div>
                                             <div class="wrapper-queue-number">
-                                                <span style="font-size: 20px; color: #132D58;margin-bottom: 0.5rem;text-align: center; font-weight: bolder;">Nomor Antrian Anda</span>
+                                                <span style="font-size: 20px; color: #132D58;margin-bottom: 0.5rem;text-align: center; font-weight: bolder;">{{ this.t('Your Queue Number') }}</span>
                                                 <h2 style="font-weight: bold;font-size: 64px;color: #21965E;text-align: center;">
                                                     {{ responseQueue.queue_no ? responseQueue.queue_no : "0000"}}
                                                 </h2>
-                                                <span style="font-size: 12px;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Mohon tunggu sampai nomor <br> antrian Anda dipanggil</span>
+                                                <span style="font-size: 12px;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">{{ this.t('Please wait until') }} <br>{{ this.t('your queue number is called') }}</span>
                                             </div>
                                             <div class="wrapper-service-card">
                                                 <h4 style="font-weight: bold;font-size: 16px;color: #132D58;text-align: center;"> {{ responseQueue.service_name }} </h4>
                                                 <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">{{ currentDay }}, {{ currentFormattedDate }}</span>
                                                 <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">{{ currentTimes }} {{ branch.timezone }}</span>
-                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">Sisa Antrian : {{ responseQueue.total_waiting }}</span>
+                                                <span style="font-size: 12px;color: #132D58;margin-bottom: 0.1rem;text-align: center; font-weight: 600;">{{ this.t('Remaining Queue') }} : {{ responseQueue.total_waiting }}</span>
                                             </div>
                                         </div>
                                         <svg width="263" height="403" viewBox="0 0 263 403" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -134,7 +134,7 @@
                                         v-bind:style="[button_style]"
                                         style="font-family: 'Manrope', sans-serif;"
                                     >
-                                        Cetak
+                                        {{ this.t('Print') }}
                                     </button>
                                 </div>
                             </div>
@@ -157,10 +157,12 @@
 // Import component
 import Vue from "vue";
 import { format } from "date-fns";
-import { id } from "date-fns/locale";
+import { id,enUS } from "date-fns/locale";
 // Loading component
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
+import ID from "../../lang/id.json";
+import EN from "../../lang/en.json";
 
 export default {
     components: {
@@ -182,6 +184,9 @@ export default {
         active_menus: {
             type: Array,
             required: true
+        }, 
+        lang: {
+            type: String,
         }
     },
 
@@ -191,24 +196,27 @@ export default {
         await this.getWorkStations();
         this.updateCurrentDate();
         this.setFocusBookingCode();
+        // console.log(this.localeDate);
+        // console.log(this.currentLocale);
+        this.setLocale();
     },
 
     computed: {
         currentTimes() {
             return format(this.currentDate, "HH:mm", {
-                locale: id,
+                locale: this.localeDate,
             });
         },
 
         currentDay() {
             return format(this.currentDate, "EEEE", {
-                locale: id,
+                locale: this.localeDate,
             });
         },
 
         currentFormattedDate() {
             return format(this.currentDate, "dd MMMM yyyy", {
-                locale: id,
+                locale: this.localeDate,
             });
         },
     },
@@ -270,9 +278,26 @@ export default {
             errorMessage: "",
             errorTimeout: null,
             currentDate: new Date(),
+            messages: {
+                    en: EN,
+                    id: ID,
+                    },
+            currentLocale: this.lang || "en",
+            localeDate: id,
         };
     },
     methods: {
+        t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
+        setLocale() {
+            this.localeDate = this.currentLocale == "id" ? id : enUS;
+        },
         initCurrentDate() {
             let currentDate = new Date();
             const branchTimeZone = this.branch.timezone;

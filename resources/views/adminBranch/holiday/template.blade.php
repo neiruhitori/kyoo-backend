@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Daftar Template Hari Libur</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Holiday Templates List') }}</h6>
                 </div>
 
                 <div class="card-body">
@@ -41,15 +41,15 @@
                                             @csrf
 
                                             <input type="hidden" name="schedule_template_id" value="{{ $scheduleTemplate->id }}">
-                                            <button class="btn btn-primary mb-3">Pilih {{$scheduleTemplate->name}}</button>
+                                            <button class="btn btn-primary mb-3">{{ __('Select :holiday',['holiday'=>$scheduleTemplate->name]) }}</button>
                                         </form>
 
                                         <table class="table" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th class="text-right">ID</th>
-                                                    <th class="text-center">Tanggal</th>
-                                                    <th>Deskripsi</th>
+                                                    <th class="text-center">{{ __('Date') }}</th>
+                                                    <th>{{ __('Description') }}</th>
                                                 </tr>
                                             </thead>
 
@@ -73,7 +73,7 @@
                         href="{{route('admin-branch.branch-configuration.schedule.index')}}"
                         class="btn btn-secondary mt-3"
                     >
-                        Kembali
+                        {{ __('Back') }}
                     </a>
                 </div>
             </div>

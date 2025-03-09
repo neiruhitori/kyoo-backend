@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col" style="max-width: 300px;">
             <div class="form-group">
-                <label for="department_id">Departemen</label>
+                <label for="department_id">{{ __('Department') }}</label>
                 <select
                     class="form-control"
                     id="department_id"
@@ -31,39 +31,39 @@
             </div>
 
             <div class="form-group">
-                <label for="status">Status Antrian</label>
+                <label for="status">{{ __('Queue Status') }}</label>
                 <select
                     class="form-control"
                     id="status"
                     autocomplete="off"
                 >
-                    <option value="end served">Dilayani</option>
-                    <option value="no show">Tidak Hadir</option>
+                    <option value="end served">{{ __('End Served') }}</option>
+                    <option value="no show">{{ __('No Show') }}</option>
                 </select>
             </div>
         </div>
 
         <div class="col" style="max-width: 300px;">
             <div class="form-group">
-                <label for="report_type">Jenis Laporan</label>
+                <label for="report_type">{{ __('Report Type') }}</label>
                 <select
                     class="form-control"
                     id="report_type"
                     autocomplete="off"
                 >
-                    <option value="hourly">Per Jam</option>
-                    <option value="daily">Harian</option>
-                    <option value="monthly">Bulanan</option>
+                    <option value="hourly">{{ __('Hourly') }}</option>
+                    <option value="daily">{{ __('Daily') }}</option>
+                    <option value="monthly">{{ __('Monthly') }}</option>
                 </select>
             </div>
     
             <div class="form-group" id="hourly_type">
-                <label for="date">Tanggal</label>
+                <label for="date">{{ __('Date') }}</label>
                 <input type="date" class="form-control" autocomplete="off" name="date" id="date" value={{ date('Y-m-d') }}>
             </div>
 
             <div class="form-group d-none" id="monthly_type">
-                <label for="date">Tahun</label>
+                <label for="date">{{ __('Year') }}</label>
                 <select
                     class="form-control"
                     id="year"
@@ -77,29 +77,29 @@
     
             <div class="form-row d-none" id="daily_type">
                 <div class="form-group col-md-6">
-                    <label for="month">Bulan</label>
+                    <label for="month">{{ __('Month') }}</label>
                     <select
                         class="form-control"
                         id="month"
                         autocomplete="off"
                     >
-                        <option value="1" {{ date('n') == 1 ? 'selected' : '' }}>Januari</option>
-                        <option value="2" {{ date('n') == 2 ? 'selected' : '' }}>Februari</option>
-                        <option value="3" {{ date('n') == 3 ? 'selected' : '' }}>Maret</option>
-                        <option value="4" {{ date('n') == 4 ? 'selected' : '' }}>April</option>
-                        <option value="5" {{ date('n') == 5 ? 'selected' : '' }}>Mei</option>
-                        <option value="6" {{ date('n') == 6 ? 'selected' : '' }}>Juni</option>
-                        <option value="7" {{ date('n') == 7 ? 'selected' : '' }}>Juli</option>
-                        <option value="8" {{ date('n') == 8 ? 'selected' : '' }}>Agustus</option>
-                        <option value="9" {{ date('n') == 9 ? 'selected' : '' }}>September</option>
-                        <option value="10" {{ date('n') == 10 ? 'selected' : '' }}>Oktober</option>
-                        <option value="11" {{ date('n') == 11 ? 'selected' : '' }}>November</option>
-                        <option value="12" {{ date('n') == 12 ? 'selected' : '' }}>Desember</option>
+                        <option value="1" {{ date('n') == 1 ? 'selected' : '' }}>{{__('January')}}</option>
+                        <option value="2" {{ date('n') == 2 ? 'selected' : '' }}>{{__('February')}}</option>
+                        <option value="3" {{ date('n') == 3 ? 'selected' : '' }}>{{__('March')}}</option>
+                        <option value="4" {{ date('n') == 4 ? 'selected' : '' }}>{{__('April')}}</option>
+                        <option value="5" {{ date('n') == 5 ? 'selected' : '' }}>{{__('May')}}</option>
+                        <option value="6" {{ date('n') == 6 ? 'selected' : '' }}>{{__('June')}}</option>
+                        <option value="7" {{ date('n') == 7 ? 'selected' : '' }}>{{__('July')}}</option>
+                        <option value="8" {{ date('n') == 8 ? 'selected' : '' }}>{{__('August')}}</option>
+                        <option value="9" {{ date('n') == 9 ? 'selected' : '' }}>{{__('September')}}</option>
+                        <option value="10" {{ date('n') == 10 ? 'selected' : '' }}>{{__('October')}}</option>
+                        <option value="11" {{ date('n') == 11 ? 'selected' : '' }}>{{__('November')}}</option>
+                        <option value="12" {{ date('n') == 12 ? 'selected' : '' }}>{{__('December')}}</option>
                     </select>
                 </div>
     
                 <div class="form-group col-md-6">
-                    <label for="year">Tahun</label>
+                    <label for="year">{{ __('Year') }}</label>
                     <select
                         class="form-control"
                         id="year"
@@ -121,7 +121,7 @@
     <div class="col-xl-6 col-lg-12">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Jumlah Antrian User</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{ __('Number of User Queues') }}</h6>
             </div>
 
             <div class="card-body">
@@ -133,7 +133,7 @@
     <div class="col-xl-6 col-lg-12">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Persentase Antrian User</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{ __('Percentage of User Queues') }}</h6>
             </div>
 
             <div class="card-body">
@@ -254,7 +254,7 @@
                 labels: labels,
                 datasets: [
                     {
-                        label: "Total Dilayani",
+                        label: "{{ __('Total Served') }}",
                         backgroundColor: "#4472c4",
                         borderWidth: 1,
                         data
@@ -320,7 +320,7 @@
         const { labels, data } = transformBarData(items)
 
         ctx.data.labels = labels
-        ctx.data.datasets[0].label = status === 'no show' ? 'Total Tidak Hadir' : 'Total Dilayani'
+        ctx.data.datasets[0].label = status === 'no show' ? "{{ __('Total No-Show') }}" : "{{ __('Total Served') }}"
         ctx.data.datasets[0].data = data
         ctx.update()
     }
@@ -375,7 +375,9 @@
     }
 
     function getDailyData(items) {
-        const labels = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu']
+        const labels = ["{{__('Sunday')}}", "{{__('Monday')}}", "{{__('Tuesday')}}", 
+                        "{{__('Wednesday')}}", "{{__('Thursday')}}", "{{__('Friday')}}", 
+                        "{{__('Saturday')}}"]
         const data = []
 
         for (let i = 0; i < labels.length; i++) {
@@ -394,7 +396,10 @@
     }
 
     function getMonthlyData(items) {
-        const labels = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+        const labels = ["{{ __('January')}}", "{{ __('February')}}", "{{ __('March')}}", 
+                        "{{ __('April')}}", "{{ __('May')}}", "{{ __('June')}}", 
+                        "{{ __('July')}}", "{{ __('August')}}", "{{ __('September')}}", 
+                        "{{ __('October')}}", "{{ __('November')}}", "{{ __('December')}}"],
             data = []
 
         for (let i = 0; i < labels.length; i++) {
@@ -413,7 +418,7 @@
     }
 
     function transformPieData(items) {
-        const labels = ['Dilayani', 'Tidak Hadir'],
+        const labels = ["{{ __('Serve') }}", "{{ __('No Show') }}"],
             data = []
 
         // served

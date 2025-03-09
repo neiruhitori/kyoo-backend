@@ -1,0 +1,23 @@
+<?php 
+
+return [
+    'profile' => 'Branch display information will be connected with the information display in the Mobile Apps and Queue Web.',
+    'location' => 'Branch location information will be connected with the information display in the Mobile Apps and Queue Web.',
+    'department1' => 'Department is the highest hierarchy or unit in the KYOO queue. Under the Department, there will be several types of services.',
+    'department2' => 'Service Category is a grouping used to classify services based on the function of a service.',
+    'department3' => 'Service list is the type of services that your Branch Office provides to customers.',
+    'department4' => 'This service list will be visible on the Web Portal, Web Kiosk, and Queue Apps.',
+    'schedule' => 'The working schedule is the opening and closing schedule of your branch office each day. You can also add information about exception days when your branch office is closed due to National Holidays.',
+    'workstation1' => 'The counter is the service desk where the staff will assist customers.',
+    'workstation2' => 'The counter will be attached to the Services at your Branch Office.',
+    'virtualcounter1' => 'This is the page to view and manage service staff in the queue at your Branch Office.',
+    'virtualcounter2' => 'For first-time use, it is necessary to set the staff user password to log in as service staff.',
+    'virtualcounter3' => 'If you forget the staff user password, you can press the reset password button below, and a link will be sent to the branch admin email to reset the password.',
+    'menuportal1' => 'Here is the configuration for the queue web portal to display the types of services to customers.',
+    'menuportal2' => 'Choose the web portal layout configuration that matches your queue process scenario.',
+    'device1' => 'Device accounts are used to access the queue display signage web and queue web kiosk.',
+    'device2' => 'The device account login page is the same as the admin user and service staff user login page.',
+    'features1' => 'This is the feature configuration that you can customize according to your needs.',
+    'features2' => 'For the KYOO Queue API, it will only appear when the branch has an API license. The KYOO API can be integrated into various service channels such as WA, Telegram, etc.',
+    'termsandcondition' => 'Inform the terms and conditions in your portal when using the queue at your office and utilizing your support services.',
+];

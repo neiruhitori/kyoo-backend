@@ -2,6 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Regency;
+use App\Models\SGRegencies;
+use App\Models\VNRegencies;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRegistrationBranch extends FormRequest
@@ -38,7 +42,7 @@ class StoreRegistrationBranch extends FormRequest
             'country' => 'required|string',
             'address' => 'required|string',
             'phone' => 'required|numeric|min:5',
-            'regency_id' => 'required|exists:indoregion_regencies,id',
+            'regency_id' => 'required','exist:regencies',
             'accept_term_condition' => 'required'
         ];
     }

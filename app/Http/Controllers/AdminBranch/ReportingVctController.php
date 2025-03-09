@@ -21,7 +21,7 @@ class ReportingVctController extends Controller
     public function __construct(ReportingVctRepositoryInterface $reportingVctRepo)
     {
         $this->reportingVct = $reportingVctRepo;
-        $this->months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $this->months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     }
 
     public function index()
@@ -125,8 +125,8 @@ class ReportingVctController extends Controller
         $date = date('n') . '-' . date('Y');
 
         if ($request->month) {
-            $date = $this->months[(int) $request->month - 1] . '-' . $request->year;
-            $reportTime = $this->months[(int) $request->month - 1] . ' ' . $request->year;
+            $date = __($this->months[(int) $request->month - 1]) . '-' . $request->year;
+            $reportTime = __($this->months[(int) $request->month - 1]) . ' ' . $request->year;
         }
 
         if ($request->date) {
@@ -137,15 +137,15 @@ class ReportingVctController extends Controller
         $data = $this->getExportData($request);
 
         $pdf = Pdf::loadView('exports.report.vct', [
-            'title' => 'Laporan User',
+            'title' => __('User Report'),
             'branch' => Auth::user()->Branch,
-            'reportTime' => $reportTime,
+            'reportTime' => __($reportTime),
             'department' => Department::find($request->department_id),
             'data' => $data
         ])
             ->setPaper('a4', 'potrait');
 
-        return $pdf->download('Laporan_User_' . $date . '.pdf');
+        return $pdf->download(__('User Report'). '_' . $date . '.pdf');
     }
 
     public function exportToExcel(Request $request)
@@ -155,7 +155,7 @@ class ReportingVctController extends Controller
         $date = date('n') . '-' . date('Y');
 
         if ($request->month) {
-            $date = $this->months[(int) $request->month - 1] . '-' . $request->year;
+            $date = __($this->months[(int) $request->month - 1]) . '-' . $request->year;
         }
 
         if ($request->date) {
@@ -164,7 +164,7 @@ class ReportingVctController extends Controller
 
         return Excel::download(
             new ReportingVctExport($request, $this->reportingVct),
-            'Laporan_User_' . $date . '.xlsx'
+            __('User Report'). '_' . $date . '.xlsx'
         );
     }
 }
