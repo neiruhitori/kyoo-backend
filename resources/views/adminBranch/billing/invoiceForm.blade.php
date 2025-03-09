@@ -588,7 +588,7 @@ function checkExpiry() {
 }
 if("{{ $unpaidInvoice }}" !== ""){
 checkExpiry(); 
-setInterval(checkExpiry, 60000);
+setInterval(checkExpiry, 24 * 60 * 60 * 1000);
 }
 
 limitInput(queue,100,500,packageSelection);

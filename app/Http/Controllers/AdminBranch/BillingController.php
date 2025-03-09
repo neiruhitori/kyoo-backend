@@ -287,7 +287,6 @@ class BillingController extends Controller
                 
                 $userTimezone = Auth::user()->Branch->timezone;
                 $timezone = $timezoneMapping[$userTimezone] ?? 'UTC';
-                // dd($timezone);
                 $invoice_data = [
                     // 'id_invoice' => '1A867992C6617241Y',
                     // 'invoice_url' => 'https://www.sandbox.paypal.com/checkoutnow?token=1A867992C6617241Y',
@@ -295,8 +294,8 @@ class BillingController extends Controller
                     'id_invoice' => $data['id'],
                     'invoice_url' => $approveLink,
                     'status' => 'PENDING',
-                    // 'expiry_date' =>Carbon::now()->addDays(3)->setTimezone($timezone),
-                    'expiry_date' =>Carbon::now()->addMinutes(5)->setTimezone($timezone),
+                    'expiry_date' =>Carbon::now()->addDays(3)->setTimezone($timezone),
+                    // 'expiry_date' =>Carbon::now()->addMinutes(5)->setTimezone($timezone),
                     'description' => $description['desc_indo'],
                     'description_en' => $description['desc_en'],
                     'invoice_number' => $invoice_number,
@@ -531,7 +530,6 @@ class BillingController extends Controller
                     }
                     break;
                 case 'PAYMENT.CAPTURE.COMPLETED':
-
                     DB::transaction(function () use ($event) {
                         $orderID = $event['resource']['supplementary_data']['related_ids']['order_id']; //invoice_id
                         $invoice =  Invoice::where('id_invoice', $orderID)
