@@ -79,7 +79,7 @@ function AppointmentOnsiteVisitorInformation() {
         ...(selectedTemplateForm === 'form-medical-2' && {
             dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
             reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
-            passportNumber: validator.message('passportNumber', passportNumber, ['passportNumber2']),
+            passportNumber: validator.message('passportNumber', passportNumber, ['required','passportNumber2']),
             email: validator.message('email', email, ['email']),
         }),
     };
