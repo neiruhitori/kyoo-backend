@@ -20,4 +20,7 @@ return [
     'features1' => 'This is the feature configuration that you can customize according to your needs.',
     'features2' => 'For the KYOO Queue API, it will only appear when the branch has an API license. The KYOO API can be integrated into various service channels such as WA, Telegram, etc.',
     'termsandcondition' => 'Inform the terms and conditions in your portal when using the queue at your office and utilizing your support services.',
+    'slot1' => 'Services in appointment mode offer flexibility to set Service Day Slots, Service Time Slots, and the maximum number of queues available within each slot.',
+    'slot2' => 'To view the service time slot usage guide, please visit here ',
+    'slot3' => 'here',
 ];

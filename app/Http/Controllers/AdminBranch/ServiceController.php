@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\AdminBranch;
 
-use App\Http\Controllers\Controller;
-use App\Service;
 use App\Log;
+use App\Service;
 use App\Department;
+use App\DirectQueue;
 use Illuminate\Http\Request;
+use App\Models\ServiceCategory;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AdminBranch\StoreService;
 use App\Http\Requests\AdminBranch\UpdateService;
-use App\Models\ServiceCategory;
-use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -129,6 +130,15 @@ class ServiceController extends Controller
         // gate
         if ($service->branch_id != Auth::user()->branch_id) {
             return redirect(route('unauthorized'));
+        }
+        //prevent editing while service is serving queue
+        $checkQueue = DirectQueue::whereDate('created_at', now())
+                    ->where('service_id', $service->id)
+                    ->whereNotIn('status', ['end served','no show'])->exists();
+
+        if ($checkQueue) {
+            $request->session()->flash('error', 'Service is still serving queues!');
+            return redirect()->back();
         }
 
         if ($this->isAllowConfigPrefix()) {

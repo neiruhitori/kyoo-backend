@@ -9,7 +9,7 @@
             role="alert"
             v-if="isShowAlert"
         >
-            {{ alert.message }}
+            {{ t(alert.message) }}
         </div>
 
         <div class="row">
@@ -304,7 +304,6 @@ export default {
       });
     },
     mounted() {
-    console.log(this.lang)
         this.getQueues()
         Echo.channel(`event_appointment_queue_general.${this.branch.id}`)
         .listen("AppointmentQueue", () => {
@@ -343,10 +342,10 @@ export default {
             try {
                 await axios.patch(`/cs/appointments/${id}/checkin`)
 
-                this.showAlert('Appointment diperbarui')
+                this.showAlert('Appointment successfully updated')
             } catch (e) {
                 this.showAlert(
-                    e.response.data?.message || 'Gagal perbarui appointment',
+                    e.response.data?.message || 'Failed to update the appointment',
                     'danger'
                 )
             }
@@ -358,10 +357,10 @@ export default {
             try {
                 await axios.patch(`/cs/appointments/${id}/no-show`)
 
-                this.showAlert('Appointment diperbarui')
+                this.showAlert('Appointment successfully updated')
             } catch (e) {
                 this.showAlert(
-                    e.response.data?.message || 'Gagal perbarui appointment',
+                    e.response.data?.message || 'Failed to update the appointment',
                     'danger'
                 )
             }
@@ -373,12 +372,12 @@ export default {
             try {
                 await axios.patch(`/cs/appointments/${id}/served`)
 
-                this.showAlert('Appointment dilayani')
+                this.showAlert('Appointment served')
 
                 audioRecorder.start()
             } catch (e) {
                 this.showAlert(
-                    e.response.data?.message || 'Gagal melayani appointment',
+                    e.response.data?.message || 'Failed to serve the appointment',
                     'danger'
                 )
             }
@@ -390,10 +389,10 @@ export default {
             try {
                 await axios.patch(`/cs/appointments/${id}/end-served`)
 
-                this.showAlert('Appointment selesai')
+                this.showAlert('Appointment ended')
             } catch (e) {
                 this.showAlert(
-                    e.response.data?.message || 'Gagal mengakhiri appointment',
+                    e.response.data?.message || 'Failed to end the appointment',
                     'danger'
                 )
             }
@@ -416,11 +415,11 @@ export default {
                 await axios.patch(`/cs/appointments/${id}/cancel`)
     
                 this.isShowModal = false
-                this.showAlert('Appointment dibatalkan')
+                this.showAlert('Appointment canceled')
             } catch (e) {
                 this.isShowModal = false
                 this.showAlert(
-                    e.response.data?.message || 'Pembatalan appointment gagal',
+                    e.response.data?.message || 'Failed to cancel the appointment',
                     'danger'
                 )
             }

@@ -79,6 +79,7 @@ function AppointmentOnsiteVisitorInformation() {
         ...(selectedTemplateForm === 'form-medical-2' && {
             dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
             reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
+            passportNumber: validator.message('passportNumber', passportNumber, ['passportNumber2']),
             email: validator.message('email', email, ['email']),
         }),
     };
@@ -263,6 +264,15 @@ function AppointmentOnsiteVisitorInformation() {
                     helperText={validationMessage.dateOfBirth}
                 />
                 <TextField
+                    label="NIK/Passport Number"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={passportNumber}
+                    onChange={(e) => setPassportNumber(e.target.value)}
+                    placeholder="NIK"
+                    error={!!validationMessage.passportNumber}
+                    helperText={validationMessage.passportNumber}
+                />
+                <TextField
                     label="No. Telepon/Phone number"
                     type="tel"
                     style={{ marginBottom: '1.5rem' }}
@@ -327,7 +337,7 @@ function AppointmentOnsiteVisitorInformation() {
 
             return
         }
-
+        const bookingFormService = serviceQuery.data?.template_form_booking || branch?.branch_configuration.template_booking_form;
         try {
             const booking = await bookingMutation.mutateAsync({
                 service_id: serviceId,
@@ -338,14 +348,19 @@ function AppointmentOnsiteVisitorInformation() {
                 fcm_id,
                 date: searchParams.get('date'),
                 slot_id: searchParams.get('slot'),
-                ...(branch && branch.branch_configuration.template_booking_form === 'form-medical-1' && {
+                ...(bookingFormService === 'form-medical-1' && {
                     address,
                     date_of_birth: dateOfBirth,
                     emergency_number: emergencyNumber,
                     passport_number: passportNumber,
                     reason_for_visit: reasonForVisit,
                 }),
-                ...(branch && branch.branch_configuration.template_booking_form === 'form-financing' && {
+                ...(bookingFormService === 'form-medical-2' && {
+                    date_of_birth: dateOfBirth,
+                    passport_number: passportNumber,
+                    reason_for_visit: reasonForVisit,
+                }),
+                ...(bookingFormService === 'form-financing' && {
                     contract_number: contractNumber
                 })
             })

@@ -76,7 +76,7 @@
                             <span class="number-indicator bg-primary mr-3">5</span>
 
                             <p>
-                                <strong>{{ __('Step :no', ['no' => 5]) }} </strong>, {{ __('You can change') }} {{ __('the access to Service Officers at') }}<a href="{{ route('admin-branch.branch-configuration.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Virtual Counter') }}</a>
+                                <strong>{{ __('Step :no', ['no' => 5]) }} </strong>, {{ __('You can change') }} {{ __('the access to Service Officers at') }}<a href="{{ route('admin-branch.branch-configuration.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Staff') }}</a>
                             </p>
                         </div>
                     </div>
