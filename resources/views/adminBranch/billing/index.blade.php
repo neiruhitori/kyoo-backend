@@ -158,6 +158,7 @@
                                 <div class="col-md-12 mb-3">
                                     <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_counter }} {{ __('Workstation') }}</button>
                                     <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_queue }} {{ __('Queue') }}</button>
+                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->BranchConfiguration->max_services}} {{ __('Staff') }}</button>
 
                                     @foreach ($features as $val)
 

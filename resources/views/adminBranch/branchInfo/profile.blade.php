@@ -199,7 +199,7 @@
 
             if (isEdit) {
                 $(e).addClass('btn-outline-danger');
-                $(e).text('Batal')
+                $(e).text("{{ __('Cancel') }}")
                 $('input[type="text"], input[type="email"], input[type="number"], textarea').prop('readonly', false);
                 $('input[type="file"], select').prop('disabled', false);
                 $(".d-none").addClass('d-block');

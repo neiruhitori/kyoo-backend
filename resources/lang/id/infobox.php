@@ -20,4 +20,7 @@ return [
     'features1' => 'Ini adalah konfigurasi fitur yang bisa anda sesuaikan dengan kebutuhan.',
     'features2' => 'Untuk API Antrian KYOO hanya akan tampil Ketika cabang sudah memiliki license API. API KYOO dapat di-integrasikan ke berbagai channel layanan anda seperti WA, Telegram dll.',
     'termsandcondition' => 'Informasikan syarat dan ketentuan di portal anda ketika akan menggunakan antrian di kantor anda dan menggunakan support layanan Anda.',
+    'slot1' => 'Layanan di mode appointment mempunyai fleksibilitas untuk mengatur Slot Hari Layanan, Slot Waktu Jam Layanan dan maksimal jumlah antrian yang disediakan dalam slot tersebut.',
+    'slot2' => 'Untuk melihat panduan penggunaan slot waktu layanan, silahkan kunjungi ',
+    'slot3' => 'disini',
 ];

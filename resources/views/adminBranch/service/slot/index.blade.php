@@ -10,11 +10,11 @@
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
                     <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
+                    {{ __('Information') }}
                 </h6>
 
                 <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
+                    {{ __('Show') }}
                 </button>
             </div>
 
@@ -22,17 +22,17 @@
                 <p>
                     <ul style="padding-left: 2rem;">
                         <li style="margin-bottom: 0.25rem;">
-                            Layanan di mode appointment mempunyai fleksibilitas untuk mengatur Slot Hari Layanan, Slot Waktu Jam Layanan dan maksimal jumlah antrian yang disediakan dalam slot tersebut.
+                            {{ __('infobox.slot1') }}
                         </li>
                         <li>
-                            Untuk melihat panduan penggunaan slot waktu layanan, silahkan kunjungi
+                            {{ __('infobox.slot2') }}
                             <a href="{{ route('admin-branch.product-guide.slot-time') }}" class="font-weight-bold">
-                                <u>disini</u>
+                                <u>{{ __('infobox.slot3') }}</u>
                             </a>
                         </li>
                     </ul>
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
             </div>
         </div>
     </div>

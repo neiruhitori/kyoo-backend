@@ -146,7 +146,7 @@
             <div class="row">
                 <div class="col mb-2">
                     <div>{{ __('Paid Amount') }}:</div> 
-                    <b>Rp. {{ number_format($unpaidInvoice->amount, 2, ',', '.') }}</b>
+                    <b>{{ $unpaidInvoice->currency ?? 'Rp' }}. {{ number_format($unpaidInvoice->amount, 2, ',', '.') }}</b>
                 </div>
                 <div class="col mb-2">
                     <div>{{ __('Expires On') }}: </div>
