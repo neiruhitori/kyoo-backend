@@ -134,8 +134,8 @@ class AppointmentOnsiteController extends Controller
                         'service_id' => $appointmentOnsite->service_id,
                         'name' => $appointmentOnsite->name,
                         'phone' => $appointmentOnsite->phone,
-                        'email' => $appointmentOnsite->email,
-                        'address' => $appointmentOnsite->address,
+                        'email' => $appointmentOnsite->email ?? "No email",
+                        'address' => $appointmentOnsite->address ?? "No address",
                         'customer_id' => $appointmentOnsite->passport_number,
                         'emergency_contact' => $appointmentOnsite->emergency_number,
                         'reason_for_visit' => $appointmentOnsite->reason_for_visit,
@@ -166,7 +166,7 @@ class AppointmentOnsiteController extends Controller
                     ]
                 ];
                 $webhookData = (object) $webhookData;
-
+                
                 $this->sendWebhook($client, $webhookData);
                 
             }else{
