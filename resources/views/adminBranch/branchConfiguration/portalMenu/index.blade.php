@@ -241,7 +241,7 @@
                         </div>
                         @endif
                         <div class="col-md-5 mb-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-warning ml-1 ">Simpan Form</submit>
+                            <button type="submit" class="btn btn-warning ml-1 ">{{ __('Save'). ' Form'}}</submit>
                         </div>
                     </div>
             </div>
@@ -279,7 +279,7 @@
                     @method('PUT')
                     <div class="d-flex justify-content-between mb-2">
                         <h5>Form Template (Service)</h5>
-                        <button type="submit" class="btn btn-warning ">Simpan Form</submit>
+                        <button type="submit" class="btn btn-warning ">{{ __('Save'). ' Form'}}</submit>
                     </div>
                     <thead>
                       <tr>

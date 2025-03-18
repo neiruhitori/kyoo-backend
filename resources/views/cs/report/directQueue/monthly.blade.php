@@ -31,11 +31,11 @@
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
                     <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
+                    {{ __('Information') }}
                 </h6>
 
                 <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
+                    {{ __('Show') }}
                 </button>
             </div>
 
@@ -43,7 +43,7 @@
                 <p>
                     {{ __('For free license, report only available for last 3 months') }}
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
             </div>
         </div>
     </div>
@@ -110,20 +110,20 @@
                                     <thead>
                                         <th>{{ __('Queue Number') }}</th>
                                         <th>{{ __('Booking Code') }}</th>
-                                        <th>{{ __('Ambil Antrian') }}</th>
-                                        <th>{{ __('Antrian Dipanggil') }}</th>
-                                        <th>{{ __('Mulai Layanan') }}</th>
-                                        <th>{{ __('Selesai Layanan ') }}</th>
-                                        <th>{{ __('Durasi Tunggu') }} </th>
-                                        <th>{{ __('Durasi Layanan (Panggil)') }} </th>
-                                        <th>{{ __('Durasi Layanan') }} </th>
+                                        <th>{{ __('Queue Taken') }}</th>
+                                        <th>{{ __('Queue Called') }}</th>
+                                        <th>{{ __('Start Service') }}</th>
+                                        <th>{{ __('Finish Service') }}</th>
+                                        <th>{{ __('Waiting Duration') }} </th>
+                                        <th>{{ __('Service Duration (Call)') }} </th>
+                                        <th>{{ __('Service Duration') }} </th>
                                         <th>{{ __('Workstation') }}</th>
                                         <th>{{ __('Service') }}</th>
-                                        <th>{{ __('Sub Layanan') }}</th>
+                                        <th>{{ __('Sub Service') }}</th>
                                         <th>{{ __('Service Transfer') }}</th>
-                                        <th>{{ __('Petugas Layanan') }}</th>
+                                        <th>{{ __('Staff') }}</th>
                                         <th>{{ __('Status') }}</th>
-                                        <th>{{ __('Antri Ulang') }}</th>
+                                        <th>{{ __('Requeue') }}</th>
                                     </thead>
                                     <tbody>
                                     </tbody>
@@ -186,39 +186,42 @@
             "dom": 'Bfrtip',
             "buttons": [{
                     extend: 'excelHtml5',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ __($months[$month - 1]) }} {{ $year }}"
+                    title: "{{ __('Direct Queue') }} {{ Auth::user()->Branch->name }} {{ __($months[$month - 1]) }} {{ $year }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ __($months[$month - 1]) }} {{ $year }}"
+                    title: "{{ __('Direct Queue') }} {{ Auth::user()->Branch->name }} {{ __($months[$month - 1]) }} {{ $year }}"
                 },
                 {
                     extend: 'print',
-                    text: 'Cetak',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ __($months[$month - 1]) }} {{ $year }}"
+                    text: "{{ __('Print') }}",
+                    title: "{{ __('Direct Queue') }} {{ Auth::user()->Branch->name }} {{ __($months[$month - 1]) }} {{ $year }}"
                 }
             ],
             "language": {
-                "emptyTable": "Tidak ada data",
-                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
-                "infoFiltered": "(ter-filter dari _MAX_ total data)",
+               "emptyTable": "{{ __('No Data') }}",
+                "info": "{{ __('Displaying :start to :end of :total data') }}"
+                            .replace(':start', '_START_')
+                            .replace(':end', '_END_')
+                            .replace(':total', '_TOTAL_'),
+                "infoEmpty": "{{ __('No Data') }}",
+                "infoFiltered": "{{ __('(filtered from :max total data)') }}".replace(':max','_MAX_'),
                 "infoPostFix": "",
                 "thousands": ",",
-                "lengthMenu": "Tampilkan _MENU_ data",
-                "loadingRecords": "Memuat...",
-                "processing": "Memproses...",
-                "search": "Cari:",
-                "zeroRecords": "Tidak ada data yang ditemukan",
+                "lengthMenu": "{{ __('Show :menu data') }}".replace(':menu', '_MENU_'),
+                "loadingRecords": "{{ __('Loading...') }}",
+                "processing": "{{ __('Processing...') }}",
+                "search": "{{ __('Search:') }}",
+                "zeroRecords": "{{ __('No data found') }}",
                 "paginate": {
-                    "first": "Awal",
-                    "last": "Akhir",
-                    "next": "Berikutnya",
-                    "previous": "Sebelum"
+                    "first": "{{ __('First') }}",
+                        "last": "{{ __('Last') }}",
+                        "next": "{{ __('Next') }}",
+                        "previous": "{{ __('Previous') }}"
                 },
                 "aria": {
-                    "sortAscending": ": aktifkan untuk mengurutkan kolom menaik",
-                    "sortDescending": ": aktifkan untuk mengurutkan kolom menurun"
+                    "sortAscending": "{{ __(': enable to sort the column in ascending order') }}",
+                    "sortDescending": "{{ __(': enable to sort the column in descending order') }}"
                 }
             }
         })

@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="form-group">
                                     <input id="formatTime" type="checkbox" name="formatTime" value="inMinutes" {{ $time_format == 'inMinutes' ? 'checked' : '' }}>
-                                    <label onclick="toggleCheckbox()" style="cursor: pointer;user-select: none;" class="mx-2" for="">Format durasi dalam satuan menit</label>
+                                    <label onclick="toggleCheckbox()" style="cursor: pointer;user-select: none;" class="mx-2" for="">{{ __('Duration Format in Minutes') }}</label>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
@@ -72,13 +72,13 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Pilih Status</label>
+                                    <label for="">{{ __('Select Status') }}</label>
                                     <select name="status" id="status" class="form-control">
                                         <option value="all">{{ __('All') }}</option>
-                                        <option value="waiting"  {{ $status_sort == 'waiting' ? 'selected': '' }}>Menunggu</option>
-                                        <option value="served" {{ $status_sort == 'served' ? 'selected': '' }}>Dilayani</option>
-                                        <option value="end served" {{ $status_sort == 'end served' ? 'selected': '' }}>Selesai Dilayani</option>
-                                        <option value="no show" {{ $status_sort == 'no show' ? 'selected': '' }}>Tidak Hadir</option>
+                                        <option value="waiting"  {{ $status_sort == 'waiting' ? 'selected': '' }}>{{ __('Waiting') }}</option>
+                                        <option value="served" {{ $status_sort == 'served' ? 'selected': '' }}>{{ __('Serve') }}</option>
+                                        <option value="end served" {{ $status_sort == 'end served' ? 'selected': '' }}>{{ __('End Served') }}</option>
+                                        <option value="no show" {{ $status_sort == 'no show' ? 'selected': '' }}>{{ ('No Show') }}</option>
                                     </select>
                                 </div>
                                
@@ -91,21 +91,21 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <th>{{ __('Queue Number') }}</th>
-                                        <th>{{ __('Kode Unik') }}</th>
-                                        <th>{{ __('Ambil Antrian') }}</th>
-                                        <th>{{ __('Antrian Dipanggil') }}</th>
-                                        <th>{{ __('Mulai Layanan') }}</th>
-                                        <th>{{ __('Selesai Layanan ') }}</th>
-                                        <th>{{ __('Durasi Tunggu') }} </th>
-                                        <th>{{ __('Durasi Layanan (Panggil)') }} </th>
-                                        <th>{{ __('Durasi Layanan') }} </th>
+                                        <th>{{ __('Booking Code') }}</th>
+                                        <th>{{ __('Queue Taken') }}</th>
+                                        <th>{{ __('Queue Called') }}</th>
+                                        <th>{{ __('Start Service') }}</th>
+                                        <th>{{ __('Finish Service') }}</th>
+                                        <th>{{ __('Waiting Duration') }} </th>
+                                        <th>{{ __('Service Duration (Call)') }} </th>
+                                        <th>{{ __('Service Duration') }} </th>
                                         <th>{{ __('Workstation') }}</th>
                                         <th>{{ __('Service') }}</th>
-                                        <th>{{ __('Sub Layanan') }}</th>
+                                        <th>{{ __('Sub Service') }}</th>
                                         <th>{{ __('Service Transfer') }}</th>
-                                        <th>{{ __('Petugas Layanan') }}</th>
+                                        <th>{{ __('Staff') }}</th>
                                         <th>{{ __('Status') }}</th>
-                                        <th>{{ __('Antri Ulang') }}</th>
+                                        <th>{{ __('Requeue') }}</th>
                                     </thead>
                                     <tbody>
                                         @forelse ($directQueues as $directQueue)
@@ -268,39 +268,42 @@
             "dom": 'Bfrtip',
             "buttons": [{
                     extend: 'excelHtml5',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
+                    title: "{{ __('Onsite Queue') }} {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
+                    title: "{{ __('Onsite Queue') }} {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
                 },
                 {
                     extend: 'print',
-                    text: 'Cetak',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
+                    text: "{{ __('Print') }}",
+                    title: "{{ __('Onsite Queue') }} {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
                 }
             ],
             "language": {
-                "emptyTable": "Tidak ada data",
-                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
-                "infoFiltered": "(ter-filter dari _MAX_ total data)",
+               "emptyTable": "{{ __('No Data') }}",
+                "info": "{{ __('Displaying :start to :end of :total data') }}"
+                            .replace(':start', '_START_')
+                            .replace(':end', '_END_')
+                            .replace(':total', '_TOTAL_'),
+                "infoEmpty": "{{ __('No Data') }}",
+                "infoFiltered": "{{ __('(filtered from :max total data)') }}".replace(':max','_MAX_'),
                 "infoPostFix": "",
                 "thousands": ",",
-                "lengthMenu": "Tampilkan _MENU_ data",
-                "loadingRecords": "Memuat...",
-                "processing": "Memproses...",
-                "search": "Cari:",
-                "zeroRecords": "Tidak ada data yang ditemukan",
+                "lengthMenu": "{{ __('Show :menu data') }}".replace(':menu', '_MENU_'),
+                "loadingRecords": "{{ __('Loading...') }}",
+                "processing": "{{ __('Processing...') }}",
+                "search": "{{ __('Search:') }}",
+                "zeroRecords": "{{ __('No data found') }}",
                 "paginate": {
-                    "first": "Awal",
-                    "last": "Akhir",
-                    "next": "Berikutnya",
-                    "previous": "Sebelum"
+                    "first": "{{ __('First') }}",
+                        "last": "{{ __('Last') }}",
+                        "next": "{{ __('Next') }}",
+                        "previous": "{{ __('Previous') }}"
                 },
                 "aria": {
-                    "sortAscending": ": aktifkan untuk mengurutkan kolom menaik",
-                    "sortDescending": ": aktifkan untuk mengurutkan kolom menurun"
+                    "sortAscending": "{{ __(': enable to sort the column in ascending order') }}",
+                    "sortDescending": "{{ __(': enable to sort the column in descending order') }}"
                 }
             }
         })

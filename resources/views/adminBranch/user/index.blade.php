@@ -40,7 +40,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        {{ __('list.module', ['module' => __('Virtual Counter')]) }}
+                        {{ __('list.module', ['module' => __('Staff')]) }}
                     </h6>
                 </div>
                 <div class="card-body">
@@ -49,7 +49,7 @@
                         <div class="row">
                             <div class="col-md-12 text-right">
                                 <a href="{{route('admin-branch.branch-configuration.user.create')}}" class="btn btn-primary"">
-                                    {{ __('create.module', ['module' => __('Virtual Counter')]) }}
+                                    {{ __('create.module', ['module' => __('Staff')]) }}
                                 </a>
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                                                             btn-warning" data-toggle="tooltip"
                                                             data-placement="bottom"
                                                             title="{{
-                                                                __('edit.module', ['module' => __('Virtual Counter')])
+                                                                __('edit.module', ['module' => __('Staff')])
                                                             }}"
                                                         >
                                                             <i class="fas fa-fw fa-edit"></i>

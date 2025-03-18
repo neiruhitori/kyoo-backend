@@ -204,7 +204,6 @@ class TVDisplayConfigurationController extends Controller
 
     public function update(Branch $branch, Request $request)
 {
-    // dd($request->all());
     $request->validate([
         'image_1' => 'nullable|file|max:10000|mimes:jpeg,png,jpg,gif,svg,mp4',
         'image_2' => 'nullable|file|max:10000|mimes:jpeg,png,jpg,gif,svg,mp4',
@@ -256,18 +255,17 @@ class TVDisplayConfigurationController extends Controller
     }
 
     return redirect()->route('admin-branch.branch-configuration.queue-monitor')
-        ->with('success', 'Konfigurasi display TV berhasil diperbarui.');
+        ->with('success', __('TV Display Configuration has been successfully updated'));
 }
 
     public function updateLayout(Branch $branch, Request $request) {
-        dd($request->all());
         $branch->BranchConfiguration->template_signage = $request->template_signage;
         // if($)
 
         $branch->BranchConfiguration->save();
         return redirect()
             ->route('admin-branch.branch-configuration.queue-monitor')
-            ->with('success', 'Manajemen display TV berhasil diperbarui.');
+            ->with('success', __('TV Display Management has been successfully updated'));
 
     }
 
@@ -288,7 +286,7 @@ class TVDisplayConfigurationController extends Controller
 
         return redirect()
             ->route('admin-branch.branch-configuration.queue-monitor')
-            ->with('success', 'Token Web Monitor TV berhasil diperbarui');
+            ->with('success', __('Web Monitor TV Token has been successfully updated'));
     }
 
     public function updateCustomLayout(Branch $branch, Request $request) {
@@ -329,12 +327,11 @@ class TVDisplayConfigurationController extends Controller
                 'running_text_speed' => 'required|string',
             ]);
         }
-        // dd($request);
 
         $configuration = $this->tvConfigurationRepository->Upsert($branch->id, $request);
 
         return redirect()
             ->route('admin-branch.branch-configuration.queue-monitor')
-            ->with('success', 'Layout Display TV berhasil diperbarui');
+            ->with('success', __('TV Display Layout has been successfully updated'));
     }
 }

@@ -10,6 +10,7 @@ return [
     'schedule' => 'The working schedule is the opening and closing schedule of your branch office each day. You can also add information about exception days when your branch office is closed due to National Holidays.',
     'workstation1' => 'The counter is the service desk where the staff will assist customers.',
     'workstation2' => 'The counter will be attached to the Services at your Branch Office.',
+    'workstation3' => 'Workstation/Table can serve one or more types of services, each with adjustable priority',
     'virtualcounter1' => 'This is the page to view and manage service staff in the queue at your Branch Office.',
     'virtualcounter2' => 'For first-time use, it is necessary to set the staff user password to log in as service staff.',
     'virtualcounter3' => 'If you forget the staff user password, you can press the reset password button below, and a link will be sent to the branch admin email to reset the password.',
@@ -23,4 +24,5 @@ return [
     'slot1' => 'Services in appointment mode offer flexibility to set Service Day Slots, Service Time Slots, and the maximum number of queues available within each slot.',
     'slot2' => 'To view the service time slot usage guide, please visit here ',
     'slot3' => 'here',
+    'subservice' => 'Service can have more types of sub-services',
 ];

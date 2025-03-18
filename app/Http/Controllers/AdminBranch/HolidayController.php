@@ -31,7 +31,7 @@ class HolidayController extends Controller
 
         return redirect()
             ->route('admin-branch.branch-configuration.schedule.index')
-            ->with('success', 'Hari libur ditambahkan');
+            ->with('success', __('Holiday has been added'));
     }
 
     public function template()
@@ -79,7 +79,7 @@ class HolidayController extends Controller
 
         return redirect()
             ->route('admin-branch.branch-configuration.schedule.index')
-            ->with('success', 'Template hari libur ditambahkan');
+            ->with('success', __('Holiday template has been added'));
     }
 
     public function destroy($id)
@@ -88,6 +88,6 @@ class HolidayController extends Controller
 
         return redirect()
             ->route('admin-branch.branch-configuration.schedule.index')
-            ->with('success', 'Hari libur dihapus');
+            ->with('success', __('Holiday has been removed'));
     }
 }

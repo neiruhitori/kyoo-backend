@@ -23,7 +23,7 @@
                                     <input class="form-control" type="hidden" name="pivot_id" value="{{ $subService->pivot->id }}" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label for="priority">{{ __('Sub Layanan') }}</label>
+                                    <label for="priority">{{ __('Sub Service') }}</label>
                                     <select name="sub_service" id="sub_service" class="form-control @error('sub_service') is-invalid @enderror">
                                         @foreach ($pool as $p)
                                         <option value="{{ $p->id }}" {{ $subService->pivot->sub_service_id == $p->id ? 'selected' : '' }}>{{  $p->name }} </option>
