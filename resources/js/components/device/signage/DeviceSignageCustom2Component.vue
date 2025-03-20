@@ -20,7 +20,7 @@
             </div>
             <div class="monitor-container">
                 <div class="monitor-sidebar">
-                    <span class="sidebar-subtitle" v-bind:style="[sidebarSubtitle]">MENUNGGU</span>
+                    <span class="sidebar-subtitle" v-bind:style="[sidebarSubtitle]">{{ t('WAITING') }}</span>
 
                     <div class="waiting-list" v-if="!waitingQueue.length">
                         <div class="waiting-card" v-bind:style="[waitingCard]"/>
@@ -128,8 +128,8 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import moment from 'moment';
 import 'moment-timezone';
-// import ID from "../../../../lang/id.json";
-// import EN from "../../../../lang/en.json";
+import ID from "../../../../lang/id.json";
+import EN from "../../../../lang/en.json";
 
 const audioEl = new Audio();
 
@@ -152,9 +152,9 @@ export default {
         display_duration: {
             type: Number,
         },
-        // lang:{
-        //     type: String,
-        // }
+        lang:{
+            type: String,
+        }
     },
 
     data() {
@@ -164,9 +164,9 @@ export default {
             config: this.branch.branch_configuration,
             isLoading: false,
             waitingQueue: [],
-            // currentLocale: this.lang || 'en',
-            // messages:{ en: EN,
-            //            id: ID,} ,
+            currentLocale: this.lang || 'en',
+            messages:{ en: EN,
+                       id: ID,} ,
             servingQueue: servingQueue,
             activeImage: 1,
             currentDate: moment.tz('Asia/Jakarta'),
@@ -178,6 +178,7 @@ export default {
             promotionMedia: [],
             callAudio: [],
             isPlaying: false,
+            country: this.branch.country,
             background:
                 this.custom_layout_config.background_type == "image"
                     ? {
@@ -246,7 +247,6 @@ export default {
 
             if (isVideo) {
                 try {
-                    console.log(this.currentImageDuration);
                     
                     const response = await fetch(
                         self.promotionImages[newValue - 1].url
@@ -267,9 +267,7 @@ export default {
                 } catch (error) {
                     console.error(error);
                 }
-            } else if(isYouTube){
-                console.log("Current Dur Active: ",this.currentImageDuration);
-                
+            } else if(isYouTube){                
                 try{
                     setTimeout(() => {
                         this.player = new YT.Player('player', {
@@ -323,8 +321,6 @@ export default {
     },
 
     async mounted() {
-        // console.log(this.volumeYT);
-        
         this.initCurrentDate();
         this.getQueues();
         await this.getDisplayImage();
@@ -354,28 +350,33 @@ export default {
     },
 
     methods: {
-        // t(key, params = {}) {
-        //  const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
-        //     if (translation) {
-        //          return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
-        //     } else {
-        //          return key;
-        //     }
-        // },
+        t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
         initCurrentDate() {
             let currentDate = moment.tz('Asia/Jakarta');
             const branchTimeZone = this.branch.timezone;
 
-            let timezone = 'Asia/Jakarta';
-            if (branchTimeZone === 'WITA') {
-                timezone = 'Asia/Makassar';
-            } else if (branchTimeZone === 'WIT') {
-                timezone = 'Asia/Jayapura';
-            } else {
-                timezone = 'Asia/Jakarta';
-            }
+            const timezoneMap = {
+            'WIB': 'Asia/Jakarta',
+            'WITA': 'Asia/Makassar',
+            'WIT': 'Asia/Jayapura',
+            'SGT': 'Asia/Singapore', 
+            'MYT': 'Asia/Singapore', 
+            'BNT': 'Asia/Singapore',
+            'ICT': 'Asia/Bangkok', 
+            'AEST': 'Australia/Sydney', 
+            'AWST': 'Australia/Perth', 
+            'ACST': 'Australia/Darwin',  
+            'TLT': 'Asia/Dili', 
+            };
 
-            currentDate = moment.tz(timezone);
+            currentDate = moment.tz(timezoneMap[branchTimeZone]);
             this.currentDate = currentDate;
         },
         subscribeAudioEvent() {
@@ -417,7 +418,7 @@ export default {
                     };
                 });
 
-                console.log(`Durasi video pertama: ${this.currentImageDuration} ms`);
+                // console.log(`Durasi video pertama: ${this.currentImageDuration} ms`);
             } catch (error) {
                 console.error("Error loading video:", error);
             }
@@ -439,7 +440,7 @@ export default {
             }
         } else if (firstMedia.type === 'image') {
             this.currentImageDuration = this.displayDuration;
-            console.log("Media pertama adalah gambar. Durasi default:", this.currentImageDuration);
+            // console.log("Media pertama adalah gambar. Durasi default:", this.currentImageDuration);
         }
 
         this.animateImage();
@@ -453,10 +454,10 @@ export default {
         onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.PLAYING) {
                 const ytduration = event.target.getDuration() * 1000 - 1000; // Durasi video dalam milidetik
-                console.log("Video Playing - Duration:", ytduration);
+                // console.log("Video Playing - Duration:", ytduration);
             // Cek apakah audio signage masih berjalan sebelum mengubah volume
             if (this.isPlaying) {
-                console.log("Audio signage is active, setting YouTube volume to 0%");
+                // console.log("Audio signage is active, setting YouTube volume to 0%");
                 this.player.setVolume(0); // Set volume ke 0% saat audio signage berjalan
             } 
                 // Set durasi hanya jika belum ditetapkan
@@ -468,7 +469,6 @@ export default {
                 this.animateImage(); 
                 
             }else if(event.data == YT.PlayerState.ENDED){
-                console.log("Video Ended - Moving to next slide");
                 this.currentImageDuration = 0;
                 this.animateImage();
             }
@@ -541,10 +541,8 @@ export default {
         },
         
         async saveToLocal() {
-            // Fetch Image And Video
             const fetchMedia = this.promotionImages.map(async media => {
                 if (this.isYouTube(media.url)) {
-                    console.log(`Skipping YouTube URL: ${media.url}`);
                     return null; // Skip fetching YouTube media
                 }
                 const response = await fetch(media.url);
@@ -562,7 +560,12 @@ export default {
             const base64Medias = await Promise.all(fetchMedia);
 
             // Fetch Audio
-            const audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            let audios = [];
+            if(this.country != 'Indonesia'){
+               audios = ['intro_bell', 'customer_number', 'please_proceed', 'to_counter'];
+            }else{
+               audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            }
             for (let i = 0; i <= 9; i++) {
                 audios.push(i.toString());
             }
@@ -574,7 +577,10 @@ export default {
 
             const base64Audios = [];
             const fetchAudio = audios.map(async audio => {
-                const audio_url = `/storage/audio/vo/${audio}.wav`
+                let audio_url = `/storage/audio/vo/${audio}.wav`;
+                if (this.country != 'Indonesia') {
+                    audio_url = `/storage/audio/vo_en/${audio}.wav`
+                }
                 const response = await fetch(audio_url);
                 const blob = await response.blob();
 
@@ -714,9 +720,14 @@ export default {
             const queueNo = servingQueue.queue_no;
             const workstation = this.workstations.find(workstation => workstation.id === servingQueue.workstation_id);
             const counter_id = workstation.label.replace(/\D/g, '');
-            const audio = ['intro_bell', 'nomor_antrian'];
-
-            audio.push(...queueNo.split(''), 'dicounter');
+            let audio = [];
+            if(this.country != 'Indonesia'){
+               audio = ['intro_bell', 'customer_number'];
+               audio.push(...queueNo.toString().split(''), 'please_proceed', 'to_counter');
+            }else{
+               audio = ['intro_bell', 'nomor_antrian'];
+               audio.push(...queueNo.toString().split(''), 'dicounter');
+            }
             if(counter_id) {
                 audio.push(...counter_id.split(''));
             }

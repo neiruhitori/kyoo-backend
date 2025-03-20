@@ -149,7 +149,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="14" class="text-center">Data tidak ditemukan.</td>
+                                    <td colspan="14" class="text-center">{{ __('Data not Found') }}</td>
                                 </tr>
                                 @endforelse
                             </tbody>

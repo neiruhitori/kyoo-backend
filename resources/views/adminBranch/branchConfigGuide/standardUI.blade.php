@@ -114,7 +114,7 @@
                             <span class="number-indicator bg-primary mr-3">4</span>
 
                             <p>
-                                {{ __('Virtual Counter name from') }} <a href="{{ route('admin-branch.branch-configuration.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Virtual Counter') }}</a>
+                                {{ __('Staff name from') }} <a href="{{ route('admin-branch.branch-configuration.user.index') }}" target="__blank" class="btn btn-sm btn-warning ml-2">{{ __('Staff') }}</a>
                             </p>
                         </div>
                     </div>

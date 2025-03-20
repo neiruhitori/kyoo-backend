@@ -119,7 +119,9 @@ export default {
 
     data() {
         return {
-            config: this.branch.branch_configuration,
+            config: this.branch?.branch_configuration,
+            vo_format: this.branch?.branch_configuration.signage_vo_format ?? 'wav',
+            vo_style: this.branch?.branch_configuration.vo_call_style ?? 'standard',
             isLoading: false,
             waitingQueue: [],
             servingQueue: null,
@@ -186,8 +188,6 @@ export default {
                 ) {
                     return await this.getQueues();
                 }
-
-                console.log("call queue no", message.queue_no);
                 await this.getQueues(message.queue_no);
 
                 if (
@@ -334,7 +334,12 @@ export default {
             const base64Medias = await Promise.all(fetchMedia);
 
             // Fetch Audio
-            const audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            const audios = ['intro_bell', 'nomor_antrian'];
+            if (this.vo_style === 'standard') {
+                audios.push('dicounter');
+            }
+
+
             for (let i = 0; i <= 9; i++) {
                 audios.push(i.toString());
             }
@@ -346,7 +351,7 @@ export default {
 
             const base64Audios = [];
             const fetchAudio = audios.map(async audio => {
-                const audio_url = `/storage/audio/vo/${audio}.wav`
+                const audio_url = `/storage/audio/vo/${audio}.${this.vo_format}`
                 const response = await fetch(audio_url);
                 const blob = await response.blob();
 
@@ -357,7 +362,7 @@ export default {
                     reader.readAsDataURL(blob);
                 });
 
-                const contentType = 'audio/wav';
+                const contentType = `audio/${this.vo_format}`;
                 const dataURL = `data:${contentType};base64,${base64Audio.split(',')[1]}`;
 
                 base64Audios.push({ name: audio, audio: dataURL });
@@ -461,7 +466,11 @@ export default {
             const queueNo = this.servingQueue.queue_no;
             const audio = ['intro_bell', 'nomor_antrian'];
 
-            audio.push(...queueNo.split(''), 'dicounter');
+            audio.push(...queueNo.split(''));
+
+            if (this.vo_style !== 'simple') {
+                audio.push('dicounter');
+            }
 
             const playlist = [];
             audio.forEach(audioID => {

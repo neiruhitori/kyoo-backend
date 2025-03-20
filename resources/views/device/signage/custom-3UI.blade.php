@@ -36,6 +36,7 @@
             :branch="{{$branch}}"
             :features="{{$features}}"
             :custom_layout_config="{{ $customLayoutConfig }}"
+            lang={{ app()->getLocale() }}
         />
     </div>
     <script src="{{asset('js/app.js')}}"></script>

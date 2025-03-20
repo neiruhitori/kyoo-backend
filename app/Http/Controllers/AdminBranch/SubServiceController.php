@@ -46,10 +46,10 @@ class SubServiceController extends Controller
                 'name' => $request->name
             ]);
             if($query){
-                $request->session()->flash('success', __('module.created', ['module' => __('Sub Layanan'), 'name' => $request->name]));
+                $request->session()->flash('success', __('module.created', ['module' => __('Sub Service'), 'name' => $request->name]));
                 return redirect(route('admin-branch.branch-configuration.department.index'));
             }
-            $request->session()->flash('warning', 'Sub layanan gagal ditambahkan');
+            $request->session()->flash('warning', __('Sub-service failed to be added'));
         }
 
     }
@@ -63,10 +63,10 @@ class SubServiceController extends Controller
             if($subService){
                 $query = $subService->update($request->all());
                 if($query){
-                    $request->session()->flash('success', __('module.updated', ['module' => __('Sub Layanan'), 'name' => $request->name]));
+                    $request->session()->flash('success', __('module.updated', ['module' => __('Sub Service'), 'name' => $request->name]));
                     return redirect(route('admin-branch.branch-configuration.department.index'));
                 }
-                $request->session()->flash('warning', 'Sub layanan gagal diperbaharui');
+                $request->session()->flash('warning', __('Sub-service update failed'));
             }
            
         }
@@ -78,7 +78,7 @@ class SubServiceController extends Controller
                         ->firstOrFail();
 
         $sub_service->delete();
-        session()->flash('success', 'Sub Layanan berhasil dihapus!');
+        session()->flash('success', __('Sub-service deleted successfully!'));
         return redirect()->back();
     }
 
@@ -129,7 +129,7 @@ class SubServiceController extends Controller
         ->exists();
 
         if($exist){
-            $request->session()->flash('warning', 'Sub layanan sudah ada di Layanan ini!');
+            $request->session()->flash('warning', __('Sub-service already exists in this service!'));
             return redirect()->back();
         }
         $sub_service = SubService::where('id', $request->sub_service)
@@ -137,7 +137,7 @@ class SubServiceController extends Controller
         
         $service->subServices()->attach($request->sub_service);
 
-        $request->session()->flash('success', "{$sub_service->name} telah ditambahkan");
+        $request->session()->flash('success', __(":subservice added",["subservice" => $sub_service->name]));
         return redirect(route('admin-branch.branch-configuration.service.assign', $service->id));
     }
     public function removeSubService(Request $request, $id){
@@ -151,7 +151,7 @@ class SubServiceController extends Controller
             }])->first();
 
         if (!$service) {
-            $request->session()->flash('warning', 'Layanan atau sub layanan tidak ditemukan.');
+            $request->session()->flash('warning', __('Service or sub-service not found.'));
             return redirect()->back();
         }
 
@@ -159,7 +159,8 @@ class SubServiceController extends Controller
         $service->subServices()->detach($subService->id);
 
         $request->session()->flash('success',
-            "Sub layanan '{$subService->name}' berhasil dihapus dari layanan '{$service->name}'."
+            __(':subservice has been successfully removed from :service.',
+                ['subservice' => $subService->name, 'service'=>$service->name])
         );
 
         return redirect()->back();
@@ -179,7 +180,7 @@ class SubServiceController extends Controller
         }])->first();
 
         if (!$service) {
-            $request->session()->flash('warning', 'Layanan atau sub layanan tidak ditemukan.');
+            $request->session()->flash('warning', __('Service or sub-service not found.'));
             return redirect()->back();
         }
         $pool = SubService::where('branch_id', Auth::user()->Branch->id)->get();
@@ -206,7 +207,7 @@ class SubServiceController extends Controller
         $exists = $service->subServices()->wherePivot('sub_service_id', $request->sub_service)->exists();
 
         if ($exists) {
-            $request->session()->flash('warning', 'Sub Layanan sudah ada di Layanan ini!');
+            $request->session()->flash('warning', __('Sub-service already exists in this service!'));
             return redirect()->back();
         }
         
@@ -214,7 +215,7 @@ class SubServiceController extends Controller
            'sub_service_id' => $request->sub_service
         ]);
 
-        $request->session()->flash('success', "Sub Layanan telah diperbaharui");
+        $request->session()->flash('success', __("Sub-service has been updated"));
         return redirect(route('admin-branch.branch-configuration.service.assign', $service->id));
     }
 }

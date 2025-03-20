@@ -10,6 +10,7 @@ return [
     'schedule' => 'Jadwal hari kerja merupakan jadwal buka tutup kantor cabang Anda setiap hari. Anda juga dapat menambahkan informasi hari pengecualian dimana kantor cabang anda tutup karena mengikuti hari Libur Nasional.',
     'workstation1' => 'Meja merupakan loket/counter tempat petugas akan melayani pelanggan.',
     'workstation2' => 'Meja akan melekat ke Layanan di kantor Cabang Anda.',
+    'workstation3' => '1 Meja bisa melayani 1 atau lebih jenis Layanan dengan prioritas masing-masing layanan yang bisa diatur.',
     'virtualcounter1' => 'Berikut adalah halaman untuk melihat dan mengatur petugas layanan di antrian kantor Cabang Anda.',
     'virtualcounter2' => 'Untuk penggunaan pertama kali, perlu disetting password user petugas agar dapat login sebagai petugas layanan.',
     'virtualcounter3' => 'Jika lupa password user petugas, dapat menekan tombol reset password dibawah dan akan dikirimkan link melalui email admin cabang untuk melakukan proses reset password.',
@@ -23,4 +24,5 @@ return [
     'slot1' => 'Layanan di mode appointment mempunyai fleksibilitas untuk mengatur Slot Hari Layanan, Slot Waktu Jam Layanan dan maksimal jumlah antrian yang disediakan dalam slot tersebut.',
     'slot2' => 'Untuk melihat panduan penggunaan slot waktu layanan, silahkan kunjungi ',
     'slot3' => 'disini',
+    'subservice' => '1 Layanan bisa memiliki 1 atau lebih jenis Sub Layanan',
 ];

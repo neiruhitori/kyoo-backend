@@ -115,7 +115,7 @@
                                                     <td>{{ $appointment_onsite->phone }}</td>
                                                     <td>{{ $appointment_onsite->Service->name }}</td>
                                                     <td>{{ $appointment_onsite->Slot->start_time }} - {{ $appointment_onsite->Slot->end_time }}</td>
-                                                    <td>{{ $appointment_onsite->is_used ? 'Check-In' : 'Belum Check-In' }}</td>
+                                                    <td>{{ $appointment_onsite->is_used ? 'Check-In' : __('Not Checked In') }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
@@ -152,7 +152,7 @@
                                                 <td>{{ $appointment_onsite->contract_number }}</td>
                                                 <td>{{ $appointment_onsite->Service->name }}</td>
                                                 <td>{{ $appointment_onsite->Slot->start_time }} - {{ $appointment_onsite->Slot->end_time }}</td>
-                                                <td>{{ $appointment_onsite->is_used ? 'Check-In' : 'Belum Check-In' }}</td>
+                                                <td>{{ $appointment_onsite->is_used ? 'Check-In' : __('Not Checked In') }}</td>
                                             </tr>
                                         @empty
                                             <tr>
@@ -199,7 +199,7 @@
                                                     <td>{{ $appointment_onsite->reason_for_visit ?? '-' }}</td>
                                                     <td>{{ $appointment_onsite->Service->name }}</td>
                                                     <td>{{ $appointment_onsite->Slot->start_time }} - {{ $appointment_onsite->Slot->end_time }}</td>
-                                                    <td>{{ $appointment_onsite->is_used ? 'Check-In' : 'Belum Check-In' }}</td>
+                                                    <td>{{ $appointment_onsite->is_used ? 'Check-In' : __('Not Checked In') }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
@@ -262,39 +262,42 @@
             "buttons": [
                 {
                     extend: 'excelHtml5',
-                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
+                    title: "{{ __('Appointment Booking Queue') }} {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
+                    title: "{{ __('Appointment Booking Queue') }} {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
                 },
                 {
                     extend: 'print',
-                    text: 'Cetak',
-                    title: "Antrian Appointment Booking {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
+                    text: "{{ __('Print') }}",
+                    title: "{{ __('Appointment Booking Queue') }} {{ Auth::user()->Branch->name }} {{ $appointment_onsites->isNotEmpty() ? '('.$appointment_onsites->first()->date.')' : '' }}"
                 }
             ],
             "language": {
-                "emptyTable": "Tidak ada data",
-                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
-                "infoFiltered": "(ter-filter dari _MAX_ total data)",
+               "emptyTable": "{{ __('No Data') }}",
+                "info": "{{ __('Displaying :start to :end of :total data') }}"
+                            .replace(':start', '_START_')
+                            .replace(':end', '_END_')
+                            .replace(':total', '_TOTAL_'),
+                "infoEmpty": "{{ __('No Data') }}",
+                "infoFiltered": "{{ __('(filtered from :max total data)') }}".replace(':max','_MAX_'),
                 "infoPostFix": "",
                 "thousands": ",",
-                "lengthMenu": "Tampilkan _MENU_ data",
-                "loadingRecords": "Memuat...",
-                "processing": "Memproses...",
-                "search": "Cari:",
-                "zeroRecords": "Tidak ada data yang ditemukan",
+                "lengthMenu": "{{ __('Show :menu data') }}".replace(':menu', '_MENU_'),
+                "loadingRecords": "{{ __('Loading...') }}",
+                "processing": "{{ __('Processing...') }}",
+                "search": "{{ __('Search:') }}",
+                "zeroRecords": "{{ __('No data found') }}",
                 "paginate": {
-                    "first": "Awal",
-                    "last": "Akhir",
-                    "next": "Berikutnya",
-                    "previous": "Sebelum"
+                    "first": "{{ __('First') }}",
+                        "last": "{{ __('Last') }}",
+                        "next": "{{ __('Next') }}",
+                        "previous": "{{ __('Previous') }}"
                 },
                 "aria": {
-                    "sortAscending": ": aktifkan untuk mengurutkan kolom menaik",
-                    "sortDescending": ": aktifkan untuk mengurutkan kolom menurun"
+                    "sortAscending": "{{ __(': enable to sort the column in ascending order') }}",
+                    "sortDescending": "{{ __(': enable to sort the column in descending order') }}"
                 }
             }
         })

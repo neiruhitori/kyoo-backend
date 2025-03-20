@@ -63,7 +63,7 @@
                     </div>
 
                     <div class="sidebar-subtitle" v-bind:style="[cardCounterQueueNumber]">
-                        <span>NO ANTRIAN</span>
+                        <span>{{ t('QUEUE NUMBER') }}</span>
                         <span>COUNTER</span>
                     </div>
 
@@ -87,14 +87,13 @@
             <div class="permission-wrapper" v-if="isAutoPlayBlocked">
                 <div class="permission-body">
                     <p>
-                        Browser Anda memblokir audio autoplay. Tekan tombol
-                        dibawah untuk mengaktifkan autoplay.
+                        {{ t('Your browser is blocking audio autoplay. Press the button below to enable autoplay.') }}
                     </p>
                     <button
                         class="active-button"
                         @click="isAutoPlayBlocked = false"
                     >
-                        Aktifkan Suara Notifikasi
+                    {{ t('Enable Notification Sound') }}
                     </button>
                 </div>
             </div>
@@ -114,6 +113,8 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import moment from 'moment';
 import 'moment-timezone';
+import ID from "../../../../lang/id.json";
+import EN from "../../../../lang/en.json";
 
 const audioEl = new Audio();
 
@@ -130,6 +131,9 @@ export default {
             type: Object,
             required: true,
         },
+        lang:{
+            type: String,
+        }
     },
 
     data() {
@@ -148,6 +152,10 @@ export default {
             promotionMedia: [],
             callAudio: [],
             isPlaying: false,
+            country: this.branch.country,
+            currentLocale: this.lang || 'en',
+            messages:{ en: EN,
+                       id: ID,} ,
             background:
                 this.custom_layout_config.background_type == "image"
                     ? {
@@ -167,6 +175,7 @@ export default {
             },
             dateTime: {
                 color: this.custom_layout_config.datetime_color || "#FFFFFF",
+                alignItems: "center"
             },
             callingCardHeader: {
                 "background-color": this.custom_layout_config.calling_card_header_color || "#e0f0ff",
@@ -304,20 +313,33 @@ export default {
     },
 
     methods: {
+        t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
         initCurrentDate() {
             let currentDate = moment.tz('Asia/Jakarta');
             const branchTimeZone = this.branch.timezone;
 
-            let timezone = 'Asia/Jakarta';
-            if (branchTimeZone === 'WITA') {
-                timezone = 'Asia/Makassar';
-            } else if (branchTimeZone === 'WIT') {
-                timezone = 'Asia/Jayapura';
-            } else {
-                timezone = 'Asia/Jakarta';
-            }
+            const timezoneMap = {
+            'WIB': 'Asia/Jakarta',
+            'WITA': 'Asia/Makassar',
+            'WIT': 'Asia/Jayapura',
+            'SGT': 'Asia/Singapore', 
+            'MYT': 'Asia/Singapore', 
+            'BNT': 'Asia/Singapore',
+            'ICT': 'Asia/Bangkok', 
+            'AEST': 'Australia/Sydney', 
+            'AWST': 'Australia/Perth', 
+            'ACST': 'Australia/Darwin',  
+            'TLT': 'Asia/Dili', 
+            };
 
-            currentDate = moment.tz(timezone);
+            currentDate = moment.tz(timezoneMap[branchTimeZone]);
             this.currentDate = currentDate;
         },
         subscribeAudioEvent() {
@@ -396,7 +418,12 @@ export default {
             const base64Medias = await Promise.all(fetchMedia);
 
             // Fetch Audio
-            const audios = ["intro_bell", "nomor_antrian", "dicounter"];
+            let audios = [];
+            if(this.country != 'Indonesia'){
+               audios = ['intro_bell', 'customer_number', 'please_proceed', 'to_counter'];
+            }else{
+               audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            }
             for (let i = 0; i <= 9; i++) {
                 audios.push(i.toString());
             }
@@ -408,7 +435,10 @@ export default {
 
             const base64Audios = [];
             const fetchAudio = audios.map(async (audio) => {
-                const audio_url = `/storage/audio/vo/${audio}.wav`;
+                let audio_url = `/storage/audio/vo/${audio}.wav`;
+                if (this.country != 'Indonesia') {
+                    audio_url = `/storage/audio/vo_en/${audio}.wav`
+                }
                 const response = await fetch(audio_url);
                 const blob = await response.blob();
 
@@ -587,9 +617,14 @@ export default {
                 (workstation) => workstation.id === servingQueue.workstation_id
             );
             const counter_id = workstation.label.replace(/\D/g, "");
-            const audio = ["intro_bell", "nomor_antrian"];
-
-            audio.push(...queueNo.split(""), "dicounter");
+            let audio = [];
+            if(this.country != 'Indonesia'){
+               audio = ['intro_bell', 'customer_number'];
+               audio.push(...queueNo.toString().split(''), 'please_proceed', 'to_counter');
+            }else{
+               audio = ['intro_bell', 'nomor_antrian'];
+               audio.push(...queueNo.toString().split(''), 'dicounter');
+            }
             if (counter_id) {
                 audio.push(...counter_id.split(""));
             }

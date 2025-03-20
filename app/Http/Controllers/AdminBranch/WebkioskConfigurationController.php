@@ -121,7 +121,7 @@ class WebkioskConfigurationController extends Controller
 
         return redirect()
             ->route('admin-branch.branch-configuration.webkiosk')
-            ->with('success', 'Konfigurasi webkiosk berhasil diperbarui.');
+            ->with('success', __('Webkiosk Configuration has been successfully updated'));
     }
 
     public function updateActiveMenus(Branch $branch, Request $request)
@@ -137,11 +137,11 @@ class WebkioskConfigurationController extends Controller
 
             return redirect()
                 ->route('admin-branch.branch-configuration.webkiosk')
-                ->with('success', 'Konfigurasi aktif menu berhasil diperbarui.');
+                ->with('success', __('Active Menu Configuration has been successfully updated'));
         } catch (\Throwable $th) {
             return redirect()
                 ->route('admin-branch.branch-configuration.webkiosk')
-                ->with('error', 'Error konfigurasi aktif menu');
+                ->with('error', __('Error in Active Menu Configuration'));
         }
     }
 
@@ -162,6 +162,6 @@ class WebkioskConfigurationController extends Controller
 
         return redirect()
             ->route('admin-branch.branch-configuration.webkiosk')
-            ->with('success', 'Token Web Kiosk berhasil diperbarui');
+            ->with('success', __('Web Kiosk Token has been successfully updated'));
     }
 }

@@ -159,14 +159,14 @@
                 } else {
                     // Tampilkan pesan jika format tidak dikenali
                     $("#table tbody").html(`<tr>
-                        <td colspan="9" class="text-center">Format data tidak dikenali.</td>
+                        <td colspan="9" class="text-center">Format data not recognized</td>
                     </tr>`);
                     return;
                 }
 
                 if (!formattedData.length) {
                     $("#table tbody").html(`<tr>
-                        <td colspan="9" class="text-center">Data tidak ditemukan.</td>
+                        <td colspan="9" class="text-center">{{ __('Data not Found') }}</td>
                     </tr>`);
                     return;
                 }
@@ -176,7 +176,7 @@
             } catch (err) {
                 console.error(err);
                 $("#table tbody").html(`<tr>
-                    <td colspan="9" class="text-center">Terjadi kesalahan saat mengambil data.</td>
+                    <td colspan="9" class="text-center">Something wrong when fetching data</td>
                 </tr>`);
             }
     }

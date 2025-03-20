@@ -116,40 +116,43 @@
             "ordering": false,
             "dom": 'Bfrtip',
             "language": {
-                "emptyTable": "Tidak ada data",
-                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
-                "infoFiltered": "(ter-filter dari _MAX_ total data)",
+               "emptyTable": "{{ __('No Data') }}",
+                "info": "{{ __('Displaying :start to :end of :total data') }}"
+                            .replace(':start', '_START_')
+                            .replace(':end', '_END_')
+                            .replace(':total', '_TOTAL_'),
+                "infoEmpty": "{{ __('No Data') }}",
+                "infoFiltered": "{{ __('(filtered from :max total data)') }}".replace(':max','_MAX_'),
                 "infoPostFix": "",
                 "thousands": ",",
-                "lengthMenu": "Tampilkan _MENU_ data",
-                "loadingRecords": "Memuat...",
-                "processing": "Memproses...",
-                "search": "Cari:",
-                "zeroRecords": "Tidak ada data yang ditemukan",
+                "lengthMenu": "{{ __('Show :menu data') }}".replace(':menu', '_MENU_'),
+                "loadingRecords": "{{ __('Loading...') }}",
+                "processing": "{{ __('Processing...') }}",
+                "search": "{{ __('Search:') }}",
+                "zeroRecords": "{{ __('No data found') }}",
                 "paginate": {
-                    "first": "Awal",
-                    "last": "Akhir",
-                    "next": "Berikutnya",
-                    "previous": "Sebelum"
+                    "first": "{{ __('First') }}",
+                        "last": "{{ __('Last') }}",
+                        "next": "{{ __('Next') }}",
+                        "previous": "{{ __('Previous') }}"
                 },
                 "aria": {
-                    "sortAscending": ": aktifkan untuk mengurutkan kolom menaik",
-                    "sortDescending": ": aktifkan untuk mengurutkan kolom menurun"
+                    "sortAscending": "{{ __(': enable to sort the column in ascending order') }}",
+                    "sortDescending": "{{ __(': enable to sort the column in descending order') }}"
                 }
             },
             "buttons": [{
                     extend: 'excelHtml5',
-                    title: "Antrian Appointment {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '(' . $appointments[0]->date . ')' : '' }}"
+                    title: "{{ __('Appointment Queue') }} {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '(' . $appointments[0]->date . ')' : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Antrian Appointment {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '(' . $appointments[0]->date . ')' : '' }}"
+                    title: "{{ __('Appointment Queue') }} {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '(' . $appointments[0]->date . ')' : '' }}"
                 },
                 {
                     extend: 'print',
-                    text: 'Cetak',
-                    title: "Antrian Appointment {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '(' . $appointments[0]->date . ')' : '' }}"
+                    text: "{{ __('Print') }}",
+                    title: "{{ __('Appointment Queue') }} {{ Auth::user()->Branch->name }} {{ count($appointments) > 0 ? '(' . $appointments[0]->date . ')' : '' }}"
                 }
             ]
         })

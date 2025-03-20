@@ -49,17 +49,17 @@
                     <div class="col-md-6 col-12 wrapper-button align-self-start">
                         <div class="d-flex flex-column align-items-center">
                             <img src="{{ asset('img/device/signage.jpeg') }}" style="width: 12rem" alt="">
-                            <a href="{{route('device.web-monitor', ['branch_id' => auth()->user()->branch_id, 'token' => $tv_token])}}" class="button-style mt-4">Monitor Antrian (TV)</a>
+                            <a href="{{route('device.web-monitor', ['branch_id' => auth()->user()->branch_id, 'token' => $tv_token])}}" class="button-style mt-4">{{ __('Queue Signage TV') }}</a>
                         </div>
                     </div>
                     @else
                     <div class="col-md-6 col-12 wrapper-button align-self-start">
                         <div class="d-flex flex-column align-items-center mb-3">
                             <img src="{{ asset('img/device/signage.jpeg') }}" style="width: 12rem" alt="">
-                            <button type="button" disabled class="btn btn-secondary py-3 px-4 mt-4">Monitor Antrian (TV)</button>
+                            <button type="button" disabled class="btn btn-secondary py-3 px-4 mt-4">{{ __('Queue Signage TV') }}</button>
                         </div>
                         <div class="alert alert-danger" role="alert">
-                            <p class="mb-0 p-3">Konfigurasi Monitor Antrian TV tidak lengkap, mohon melakukan konfigurasi dari admin cabang</p>
+                            <p class="mb-0 p-3">{{ __('Queue Monitor TV configuration is incomplete. Please configure it from the branch admin') }}</p>
                         </div>
                     </div>
                     @endif
@@ -79,7 +79,7 @@
                             <button type="button" disabled class="btn btn-secondary py-3 px-4 mt-3">Web Kiosk UI</button>
                         </div>
                         <div class="alert alert-danger" role="alert">
-                            <p class="mb-0 p-3">Konfigurasi Web Kiosk tidak lengkap, mohon melakukan konfigurasi dari admin cabang</p>
+                            <p class="mb-0 p-3">{{ __('Web Kiosk configuration is incomplete. Please configure it from the branch admin') }}</p>
                         </div>
                     </div>
                     @endif

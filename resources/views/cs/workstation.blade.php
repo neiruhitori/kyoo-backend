@@ -86,11 +86,38 @@
 @push('js')
     <script src="{{asset('admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
-    <script src="{{asset('admin/js/demo/datatables-demo.js')}}"></script>
-
     <script>
         $(function () {
           $('[data-toggle="tooltip"]').tooltip()
+        })
+        $('#dataTable').dataTable({
+            "ordering": false,
+            "language": {
+               "emptyTable": "{{ __('No Data') }}",
+                "info": "{{ __('Displaying :start to :end of :total data') }}"
+                            .replace(':start', '_START_')
+                            .replace(':end', '_END_')
+                            .replace(':total', '_TOTAL_'),
+                "infoEmpty": "{{ __('No Data') }}",
+                "infoFiltered": "{{ __('(filtered from :max total data)') }}".replace(':max','_MAX_'),
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "{{ __('Show :menu data') }}".replace(':menu', '_MENU_'),
+                "loadingRecords": "{{ __('Loading...') }}",
+                "processing": "{{ __('Processing...') }}",
+                "search": "{{ __('Search:') }}",
+                "zeroRecords": "{{ __('No data found') }}",
+                "paginate": {
+                    "first": "{{ __('First') }}",
+                        "last": "{{ __('Last') }}",
+                        "next": "{{ __('Next') }}",
+                        "previous": "{{ __('Previous') }}"
+                },
+                "aria": {
+                    "sortAscending": "{{ __(': enable to sort the column in ascending order') }}",
+                    "sortDescending": "{{ __(': enable to sort the column in descending order') }}"
+                }
+            }
         })
     </script>
 @endpush

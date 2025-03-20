@@ -37,7 +37,6 @@ class BranchConfigurationController extends Controller
   public function update(UpdateBranchConfiguration $request)
   {
     $data = $request->all();
-
     $defaults = [
         'queue_voice' => 'off',
         'promotion' => 'off',

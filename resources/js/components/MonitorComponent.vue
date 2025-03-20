@@ -62,7 +62,7 @@
                     <input
                       type="text"
                       class="form-control"
-                      placeholder="Ketik Disini"
+                      :placeholder="t('Type here')" 
                       v-model.lazy="selected_queue"
                       @change="manualInput = true"
                     />

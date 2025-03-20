@@ -105,7 +105,7 @@
                                         <th>{{ __('Service Transfer') }}</th>
                                         <th>{{ __('Virtual Counter') }}</th>
                                         <th>{{ __('Status') }}</th>
-                                        <th>{{ __('Antri Ulang') }}</th>
+                                        <th>{{ __('Requeue') }}</th>
                                     </thead>
                                     <tbody>
                                         @forelse ($directQueues as $directQueue)
@@ -268,39 +268,42 @@
             "dom": 'Bfrtip',
             "buttons": [{
                     extend: 'excelHtml5',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
+                    title: "{{ __('Onsite Queue') }} {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
                 },
                 {
                     extend: 'pdfHtml5',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
+                    title: "{{ __('Onsite Queue') }} {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
                 },
                 {
                     extend: 'print',
-                    text: 'Cetak',
-                    title: "Antrian Onsite {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
+                    text: "{{ __('Print') }}",
+                    title: "{{ __('Onsite Queue') }} {{ Auth::user()->Branch->name }} {{ $start_date ? '(' . $start_date . ')' : '' }} - {{ $end_date ? '(' . $end_date . ')' : '' }}"
                 }
             ],
             "language": {
-                "emptyTable": "Tidak ada data",
-                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                "infoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
-                "infoFiltered": "(ter-filter dari _MAX_ total data)",
+               "emptyTable": "{{ __('No Data') }}",
+                "info": "{{ __('Displaying :start to :end of :total data') }}"
+                            .replace(':start', '_START_')
+                            .replace(':end', '_END_')
+                            .replace(':total', '_TOTAL_'),
+                "infoEmpty": "{{ __('No Data') }}",
+                "infoFiltered": "{{ __('(filtered from :max total data)') }}".replace(':max','_MAX_'),
                 "infoPostFix": "",
                 "thousands": ",",
-                "lengthMenu": "Tampilkan _MENU_ data",
-                "loadingRecords": "Memuat...",
-                "processing": "Memproses...",
-                "search": "Cari:",
-                "zeroRecords": "Tidak ada data yang ditemukan",
+                "lengthMenu": "{{ __('Show :menu data') }}".replace(':menu', '_MENU_'),
+                "loadingRecords": "{{ __('Loading...') }}",
+                "processing": "{{ __('Processing...') }}",
+                "search": "{{ __('Search:') }}",
+                "zeroRecords": "{{ __('No data found') }}",
                 "paginate": {
-                    "first": "Awal",
-                    "last": "Akhir",
-                    "next": "Berikutnya",
-                    "previous": "Sebelum"
+                    "first": "{{ __('First') }}",
+                        "last": "{{ __('Last') }}",
+                        "next": "{{ __('Next') }}",
+                        "previous": "{{ __('Previous') }}"
                 },
                 "aria": {
-                    "sortAscending": ": aktifkan untuk mengurutkan kolom menaik",
-                    "sortDescending": ": aktifkan untuk mengurutkan kolom menurun"
+                    "sortAscending": "{{ __(': enable to sort the column in ascending order') }}",
+                    "sortDescending": "{{ __(': enable to sort the column in descending order') }}"
                 }
             }
         })
