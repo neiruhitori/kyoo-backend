@@ -104,6 +104,40 @@
                                     </div>
 
                                     @if (Auth::user()->Branch->hasAccess('Panggilan Suara'))
+                                    <div class="form-group">
+                                        <label for="signage_vo_format ">{{ __('Signage VO Format') }}</label>
+                                        <select name="signage_vo_format" id="signage_vo_format"
+                                            class="form-control @error('signage_vo_format') is-invalid @enderror">
+                                            <option value="wav"
+                                            {{ !$branch_config || $branch_config->signage_vo_format == "wav" ? 'selected' : '' }}>
+                                                
+                                                {{ __('WAV') }}
+                                            </option>
+                                            <option value="mp3"
+                                            {{ !$branch_config || $branch_config->signage_vo_format == "mp3" ? 'selected' : '' }}>
+                                            {{ __('MP3') }}
+                                        </option>
+                                        </select>
+                                        @include('layouts.inputError', ['errorName' => 'signage_vo_format'])
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="vo_call_style ">{{ __('Signage VO Style') }}</label>
+                                        <select name="vo_call_style" id="vo_call_style"
+                                            class="form-control @error('vo_call_style') is-invalid @enderror"
+                                            {{ Auth::user()->Branch->BranchType->is_premium ?: 'disabled' }}>
+                                            <option value="standard"
+                                            {{ !$branch_config || $branch_config->vo_call_style == "standard" ? 'selected' : '' }}>
+                                                {{ __('Voice Announcement Standard') }}
+                                            </option>
+                                            <option value="simple"
+                                            {{ !$branch_config || $branch_config->vo_call_style == "simple" ? 'selected' : '' }}>
+                                            {{ __('Voice Announcement Simple') }}
+                                        </option>
+                                        </select>
+                                        @include('layouts.inputError', ['errorName' => 'vo_call_style'])
+                                    </div>
+
                                         <label for="">{{ __('Voice Call') }}</label>
 
                                         <div class="form-group">
