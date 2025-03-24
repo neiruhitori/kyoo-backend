@@ -362,7 +362,7 @@ export default {
                     reader.readAsDataURL(blob);
                 });
 
-                const contentType = `audio/${this.vo_format}`;
+                const contentType = `audio/${this.vo_format === 'mp3' ? 'mpeg' : this.vo_format}`;
                 const dataURL = `data:${contentType};base64,${base64Audio.split(',')[1]}`;
 
                 base64Audios.push({ name: audio, audio: dataURL });

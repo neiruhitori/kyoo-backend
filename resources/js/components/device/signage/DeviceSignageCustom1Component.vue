@@ -19,7 +19,7 @@
                     </div>
                 </div>
 
-                <span class="sidebar-subtitle">MENUNGGU</span>
+                <span class="sidebar-subtitle">{{ t('WAITING') }}</span>
 
                 <div class="waiting-list" v-if="!waitingQueue.length">
                     <div class="waiting-card waiting-card-empty"/>
@@ -70,11 +70,10 @@
         <div class="permission-wrapper" v-if="isAutoPlayBlocked">
             <div class="permission-body">
                 <p>
-                    Browser Anda memblokir audio autoplay. Tekan tombol dibawah
-                    untuk mengaktifkan autoplay.
+                    Your browser is blocking audio autoplay. Press the button below to enable autoplay.
                 </p>
                 <button class="active-button" @click="isAutoPlayBlocked = false">
-                    Aktifkan Suara Notifikasi
+                    Enable Notification Sound
                 </button>
             </div>
         </div>
@@ -86,6 +85,8 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import moment from 'moment';
 import 'moment-timezone';
+import ID from "../../../../lang/id.json";
+import EN from "../../../../lang/en.json";
 
 const audioEl = new Audio();
 
@@ -100,6 +101,9 @@ export default {
         },
         workstations: {
             type: Array,
+        },
+        lang:{
+            type: String,
         }
     },
 
@@ -120,6 +124,9 @@ export default {
             promotionMedia: [],
             callAudio: [],
             isPlaying: false,
+            currentLocale: this.lang || 'en',
+            messages:{ en: EN,
+                       id: ID,} ,
         };
     },
 
@@ -174,8 +181,6 @@ export default {
                 ) {
                     return await this.getQueues();
                 }
-
-                console.log("call queue no", message.queue_no);
                 await this.getQueues(message.queue_no);
 
                 if (
@@ -219,20 +224,33 @@ export default {
     },
 
     methods: {
+        t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
         initCurrentDate() {
             let currentDate = moment.tz('Asia/Jakarta');
             const branchTimeZone = this.branch.timezone;
 
-            let timezone = 'Asia/Jakarta';
-            if (branchTimeZone === 'WITA') {
-                timezone = 'Asia/Makassar';
-            } else if (branchTimeZone === 'WIT') {
-                timezone = 'Asia/Jayapura';
-            } else {
-                timezone = 'Asia/Jakarta';
-            }
+            const timezoneMap = {
+            'WIB': 'Asia/Jakarta',
+            'WITA': 'Asia/Makassar',
+            'WIT': 'Asia/Jayapura',
+            'SGT': 'Asia/Singapore', 
+            'MYT': 'Asia/Singapore', 
+            'BNT': 'Asia/Singapore',
+            'ICT': 'Asia/Bangkok', 
+            'AEST': 'Australia/Sydney', 
+            'AWST': 'Australia/Perth', 
+            'ACST': 'Australia/Darwin',  
+            'TLT': 'Asia/Dili', 
+            };
 
-            currentDate = moment.tz(timezone);
+            currentDate = moment.tz(timezoneMap[branchTimeZone]);
             this.currentDate = currentDate;
         },
         subscribeAudioEvent() {
@@ -312,7 +330,12 @@ export default {
             const base64Medias = await Promise.all(fetchMedia);
 
             // Fetch Audio
-            const audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            let audios = [];
+            if(this.country != 'Indonesia'){
+               audios = ['intro_bell', 'customer_number', 'please_proceed', 'to_counter'];
+            }else{
+               audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            }
             for (let i = 0; i <= 9; i++) {
                 audios.push(i.toString());
             }
@@ -324,7 +347,10 @@ export default {
 
             const base64Audios = [];
             const fetchAudio = audios.map(async audio => {
-                const audio_url = `/storage/audio/vo/${audio}.wav`
+                let audio_url = `/storage/audio/vo/${audio}.wav`;
+                if (this.country != 'Indonesia') {
+                    audio_url = `/storage/audio/vo_en/${audio}.wav`
+                }
                 const response = await fetch(audio_url);
                 const blob = await response.blob();
 
@@ -454,9 +480,14 @@ export default {
             const queueNo = servingQueue.queue_no;
             const workstation = this.workstations.find(workstation => workstation.id === servingQueue.workstation_id);
             const counter_id = workstation.label.replace(/\D/g, '');
-            const audio = ['intro_bell', 'nomor_antrian'];
-
-            audio.push(...queueNo.split(''), 'dicounter');
+            let audio = [];
+            if(this.country != 'Indonesia'){
+               audio = ['intro_bell', 'customer_number'];
+               audio.push(...queueNo.toString().split(''), 'please_proceed', 'to_counter');
+            }else{
+               audio = ['intro_bell', 'nomor_antrian'];
+               audio.push(...queueNo.toString().split(''), 'dicounter');
+            }
             if(counter_id) {
                 audio.push(...counter_id.split(''));
             }
