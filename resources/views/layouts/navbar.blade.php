@@ -40,7 +40,7 @@
 
             @if (
                 Auth::user()->role != 'admin_kyoo' &&
-                Auth::user()->Branch->BranchType->is_appointment
+                !Auth::user()->Branch->BranchType->is_exhibition
             )      
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown">

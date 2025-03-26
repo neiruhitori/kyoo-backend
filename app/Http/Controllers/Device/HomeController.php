@@ -422,9 +422,9 @@ class HomeController extends Controller
             
 
             if(!$appointment_onsite) {
-                throw new \Exception('Kode Booking tidak ditemukan atau sudah tidak berlaku', 10003);
+                throw new \Exception(__('Booking code not found or expired'), 10003);
             } elseif ($appointment_onsite->date != date('Y-m-d')) {
-                throw new \Exception('Kode booking belum berlaku, silahkan cek tanggal booking.', 10004);
+                throw new \Exception(__('The booking code is not valid yet, please check the booking date'), 10004);
             }
 
             if ($branchConfig->check_in_rule != 0) {
@@ -433,7 +433,7 @@ class HomeController extends Controller
                 $allowedCheckInTime = $startTime->subHours($branchConfig->check_in_rule);
     
                 if (now()->format('H:i:s') < $allowedCheckInTime->format('H:i:s')) {
-                    throw new \Exception("Check-in dilakukan " . $branchConfig->check_in_rule . " jam sebelum layanan buka. Anda dapat check-in pada jam " . $allowedCheckInTime->format('H:i') . ".", 10005);
+                    throw new \Exception(__('Check-in is done ') . $branchConfig->check_in_rule . __(' hours before the service opens. You can check in at ') . $allowedCheckInTime->format('H:i') . ".", 10005);
                 }
             }
 
