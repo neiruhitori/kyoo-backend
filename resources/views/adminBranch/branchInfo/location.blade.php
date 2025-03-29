@@ -208,7 +208,7 @@
             })
         });
 
-        mapboxgl.accessToken = 'pk.eyJ1IjoiYWJkaXNzc2FsaW0iLCJhIjoiY2wwdnZrYmQ4MWFyNTNvcDRtNXpkM2h6MyJ9.Xc2AhLh0loAWPntzV_Pgvw';
+        mapboxgl.accessToken = 'pk.eyJ1Ijoic3VwcG9ydGt5b28iLCJhIjoiY204dGxjNzF1MDFhbDJrb3AxeWljenpmcCJ9.Di2l0rvbaJwiT8vWaLwcJw';
         const latValue = parseFloat(document.getElementById('latInput').value)
         const lngValue = parseFloat(document.getElementById('lngInput').value)
 
