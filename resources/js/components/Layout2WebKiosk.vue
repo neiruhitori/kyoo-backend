@@ -15,7 +15,7 @@
                 class="col-md-6 wrapper-center"
                 v-bind:style="[primary_background]"
             >
-                <h2 class="label">Scan Kode QR</h2>
+                <h2 class="label">{{ t('Scan QR Code') }}</h2>
                 <img v-bind:src="qr" class="qr-image" alt="qr-code" width="250" />
             </div>
             <div
@@ -24,7 +24,7 @@
             >
                 <div class="wrapper-center" v-if="activeTab == 'menus'">
                     <h5 class="label">
-                        Silahkan Ambil Antrian
+                        {{ t('Please take a queue') }}
                     </h5>
                     <template v-for="workstation in this.workstationServices">
                         <button
@@ -46,11 +46,11 @@
                 >
                     <div class="form-row align-items-start wrapper-form">
                         <div>
-                            <h5 class="label">Masukkan Informasi Antrian</h5>
-                            <p style="font-size: 9px">Untuk Antrian WA wajib mengisi Nama dan No Whatsapp</p>
+                            <h5 class="label"> {{ t('Insert Queue Information') }}</h5>
+                            <p style="font-size: 9px">{{ t('For the WhatsApp queue, you must fill in your Name and WhatsApp Number') }}</p>
                         </div>
                         <div class="col-12">
-                            <label for="name">Nama</label>
+                            <label for="name"> {{ t('Name') }}</label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -59,7 +59,7 @@
                             />
                         </div>
                         <div class="col-12">
-                            <label for="phone">No Whatsapp</label>
+                            <label for="phone">{{ t('Whatsapp Number') }}</label>
                             <input
                                 type="tel"
                                 class="form-control"
@@ -73,7 +73,7 @@
                                 class="btn btn-primary"
                                 v-bind:style="[button_style]"
                             >
-                                Ambil Antrian
+                            {{ t('Take queue') }}
                             </button>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                         v-bind:style="[button_style]"
                         v-if="this.active_menus.includes('wa') && this.is_allow_wa"
                     >
-                        Kirim Nomor Antrian Ke WA
+                    {{ t('Send the queue number to WhatsApp') }}
                     </button>
 
                     <button
@@ -95,7 +95,7 @@
                         v-bind:style="[button_style]"
                         v-if="this.active_menus.includes('photo')"
                     >
-                        Foto Nomor Antrian
+                    {{ t('Capture queue number') }}
                     </button>
 
                     <button
@@ -104,17 +104,17 @@
                         v-bind:style="[button_style]"
                         v-if="this.active_menus.includes('print')"
                     >
-                        Cetak
+                    {{ t('Print') }}
                     </button>
                 </div>
 
                 <div v-if="activeTab == 'result'" id="result-section">
                     <h5 class="label" style="margin-bottom: 25px;">
-                        Silahkan Foto Nomer Antrian
+                        {{ t('Please capture queue number') }}
                     </h5>
                     <div class="wrapper-success-card">
                         <div class="wrapper-queue-number">
-                            <span style="font-size: 1rem;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Nomor Antrian</span>
+                            <span style="font-size: 1rem;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;"> {{ t('Queue Number') }}</span>
                             <h2 style="font-weight: 700;font-size: 3.625rem;color: rgb(16, 60, 124);text-align: center;">
                                 {{ responseQueue.queue_no ? responseQueue.queue_no : "0000"}}
                             </h2>
@@ -147,6 +147,8 @@ import Vue from "vue";
 // Loading component
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
+import ID from "../../lang/id.json";
+import EN from "../../lang/en.json";
 
 export default {
     components: {
@@ -172,6 +174,9 @@ export default {
         active_menus: {
             type: Array,
             required: true
+        },
+        lang:{
+            type: String,
         }
     },
 
@@ -189,6 +194,9 @@ export default {
                 : `/img/logo-color.svg`,
             workstationServices: [],
             activeTab: "menus",
+            currentLocale: this.lang || 'en',
+            messages:{ en: EN,
+                       id: ID,} ,
             selectedWorkstation: null,
             selectedTypeQueue: null,
             primary_background:
@@ -237,6 +245,14 @@ export default {
         };
     },
     methods: {
+        t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
         getAuth() {
             this.auth = JSON.parse(localStorage.getItem('auth'));
             this.formData["user_id"] = this.auth.id;
@@ -269,7 +285,7 @@ export default {
         onClickQueueType(type) {
             if(type == "wa" && (this.formData.name =="" || this.formData.phone == "")) {
                 this.activeTab = "form";
-                this.setError("Untuk Antrian WA wajib mengisi Nama dan No Whatsapp");
+                this.setError(this.t("For the WhatsApp queue, you must fill in your Name and WhatsApp Number"));
                 return;
             }
 
@@ -309,7 +325,7 @@ export default {
                 })
                 .catch(error => {
                     this.isLoading = false;
-                    this.setError("Mohon Maaf, Tidak Bisa Mengambil Antrian");
+                    this.setError(this.t("Sorry, you cannot take a queue number"));
                     console.error(error);
                 });
         },

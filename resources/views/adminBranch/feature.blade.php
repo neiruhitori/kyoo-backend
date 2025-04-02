@@ -113,10 +113,12 @@
                                                 
                                                 {{ __('WAV') }}
                                             </option>
+                                        @if (Auth::user()->Branch->country == 'Indonesia')
                                             <option value="mp3"
                                             {{ !$branch_config || $branch_config->signage_vo_format == "mp3" ? 'selected' : '' }}>
                                             {{ __('MP3') }}
-                                        </option>
+                                            </option>
+                                        @endif
                                         </select>
                                         @include('layouts.inputError', ['errorName' => 'signage_vo_format'])
                                     </div>

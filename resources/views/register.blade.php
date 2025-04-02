@@ -116,20 +116,18 @@
              
               <select name="queue_type" id="queue_type" required>
                 <option disabled selected>{{ __('Select Queue Type') }}</option>
-                @if (app()->getLocale() == 'en')
-                <option value="appointment_queue" {{ old('queue_type')=='appointment_queue' ? 'selected' : '' }}>
-                  {{ __('Appointment Queue') }}
-                </option>
-              @else
+                
                 <option value="direct_queue" {{ old('queue_type')=='direct_queue' ? 'selected' : '' }}>
                   {{ __('Direct Queue') }}
                 </option>
                 <option value="appointment_queue" {{ old('queue_type')=='appointment_queue' ? 'selected' : '' }}>
                   {{ __('Appointment Queue') }}
                 </option>
+                @if (app()->getLocale() != 'en')
                 <option value="exhibition_queue" {{ old('queue_type')=='exhibition_queue' ? 'selected' : '' }}>
                   {{ __('Exhibition Queue') }}
                 </option>
+                @else
               @endif
               </select>
             </div>

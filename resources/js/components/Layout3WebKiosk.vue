@@ -17,7 +17,7 @@
             >
                 <div class="gap-1">
                     <h2 class="label">Check-in</h2>
-                    <span class="label">(Jika sudah membuat temu janji)</span>
+                    <span class="label">({{ t('If you have made an appointment') }})</span>
                 </div>
                 <form
                     class="mb-4"
@@ -28,7 +28,7 @@
                             class="form-control"
                             style="width: 15rem;"
                             v-model="formData.booking_code"
-                            placeholder="Masukkan Kode Booking, contoh : XYBJLL"
+                            :placeholder="t('Enter the booking code, e.g.: XYBJLL')"
                         >
                         </textarea>
                         <button
@@ -49,10 +49,10 @@
                 <div class="wrapper-center" v-if="activeTab == 'menus'">
                     <div class="gap-1">
                         <h5 class="label">
-                            Pilih Layanan
+                            {{ t('Select Services') }}
                         </h5>
                         <span class="label">
-                            (Kunjungan langsung)
+                            ({{ t('Onsite visit') }})
                         </span>
                     </div>
                     <template v-for="workstation in this.workstationServices">
@@ -76,11 +76,11 @@
                 >
                     <div class="form-row align-items-start wrapper-form">
                         <div>
-                            <h5 class="label">Masukkan Informasi Antrian</h5>
-                            <p style="font-size: 9px">Untuk Antrian WA wajib mengisi Nama dan No Whatsapp</p>
+                            <h5 class="label">{{ t('Insert Queue Information') }}</h5>
+                            <p style="font-size: 9px">{{ t('For the WhatsApp queue, you must fill in your Name and WhatsApp Number') }}</p>
                         </div>
                         <div class="col-12">
-                            <label for="name">Nama</label>
+                            <label for="name">{{ t('Name') }}</label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -89,7 +89,7 @@
                             />
                         </div>
                         <div class="col-12">
-                            <label for="phone">No Whatsapp</label>
+                            <label for="phone">{{ t('Whatsapp Number') }}</label>
                             <input
                                 type="tel"
                                 class="form-control"
@@ -103,7 +103,7 @@
                                 class="btn btn-primary"
                                 v-bind:style="[button_style]"
                             >
-                                Ambil Antrian
+                            {{ t('Take queue') }}
                             </button>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
                         v-bind:style="[button_style]"
                         v-if="this.active_menus.includes('wa') && this.is_allow_wa"
                     >
-                        Kirim Nomor Antrian Ke WA
+                    {{ t('Send the queue number to WhatsApp') }}
                     </button>
 
                     <button
@@ -125,7 +125,7 @@
                         v-bind:style="[button_style]"
                         v-if="this.active_menus.includes('photo')"
                     >
-                        Foto Nomor Antrian
+                    {{ t('Capture queue number') }}
                     </button>
 
                     <button
@@ -134,17 +134,17 @@
                         v-bind:style="[button_style]"
                         v-if="this.active_menus.includes('print')"
                     >
-                        Cetak
+                    {{ t('Print') }}
                     </button>
                 </div>
 
                 <div v-if="activeTab == 'result'" id="result-section">
                     <h5 class="label" style="margin-bottom: 25px;">
-                        Silahkan Foto atau Cetak Nomer Antrian
+                        {{ t('Please capture queue number') }}
                     </h5>
                     <div class="wrapper-success-card" style="margin-bottom: 25px;">
                         <div class="wrapper-queue-number">
-                            <span style="font-size: 1rem;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">Nomor Antrian</span>
+                            <span style="font-size: 1rem;color: rgb(122, 122, 122);margin-bottom: 0.5rem;text-align: center;">{{ t('Queue Number') }}</span>
                             <h2 style="font-weight: 700;font-size: 3.625rem;color: rgb(16, 60, 124);text-align: center;">
                                 {{ responseQueue.queue_no ? responseQueue.queue_no : "0000"}}
                             </h2>
@@ -160,7 +160,7 @@
                         @click="print()"
                         v-bind:style="[button_style]"
                     >
-                        Cetak
+                    {{ t('Print') }}
                     </button>
                 </div>
             </div>
@@ -185,6 +185,8 @@ import Vue from "vue";
 // Loading component
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
+import ID from "../../lang/id.json";
+import EN from "../../lang/en.json";
 
 export default {
     components: {
@@ -206,6 +208,9 @@ export default {
         active_menus: {
             type: Array,
             required: true
+        },
+        lang:{
+            type: String,
         }
     },
 
@@ -218,6 +223,9 @@ export default {
         return {
             isLoading: true,
             auth: null,
+            currentLocale: this.lang || 'en',
+            messages:{ en: EN,
+                       id: ID,} ,
             branch_logo: this.branch
                 ? `/storage/${this.branch.logo}`
                 : `/img/logo-color.svg`,
@@ -272,6 +280,14 @@ export default {
         };
     },
     methods: {
+        t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
         getAuth() {
             this.auth = JSON.parse(localStorage.getItem('auth'));
             this.formData["user_id"] = this.auth.id;
@@ -304,7 +320,7 @@ export default {
         onClickQueueType(type) {
             if(type == "wa" && (this.formData.name =="" || this.formData.phone == "")) {
                 this.activeTab = "form";
-                this.setError("Untuk Antrian WA wajib mengisi Nama dan No Whatsapp");
+                this.setError(this.t("For the WhatsApp queue, you must fill in your Name and WhatsApp Number"));
                 return;
             }
 
@@ -312,7 +328,7 @@ export default {
         },
         onSubmitBookingCode() {
             if(this.formData.booking_code == "") {
-                this.setError("Kode booking wajib diisi");
+                this.setError(this.t("Booking Code is required"));
                 return;
             }
 
@@ -355,7 +371,7 @@ export default {
                 })
                 .catch(error => {
                     this.isLoading = false;
-                    this.setError("Kode booking tidak ditemukan");
+                    this.setError(this.t("Booking Code not found"));
                     console.error(error);
                 });
         },
@@ -384,7 +400,7 @@ export default {
                 })
                 .catch(error => {
                     this.isLoading = false;
-                    this.setError("Mohon Maaf, Tidak Bisa Mengambil Antrian");
+                    this.setError(this.t("Sorry, you cannot take a queue number"));
                     console.error(error);
                 });
         },

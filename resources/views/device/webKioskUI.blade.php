@@ -44,7 +44,7 @@
 <body>
     <div id="app">
         @if ($layoutCode == "layout_1")
-        <default-web-kiosk :branch="{{$branch}}" :address="{{json_encode($address)}}" qr={{$qr}} />
+        <default-web-kiosk :branch="{{$branch}}" :address="{{json_encode($address)}}" qr={{$qr}} lang={{ app()->getLocale() }} />
         @endif
 
         @if ($layoutCode == "layout_2")
@@ -54,6 +54,7 @@
             :layout_config="{{ $layoutConfig }}"
             :is_allow_wa={{ json_encode($isAllowWA)  }}
             :active_menus={{ $activeMenus }}
+            lang={{ app()->getLocale() }}
         />
         @endif
 
@@ -63,6 +64,7 @@
             :layout_config="{{ $layoutConfig }}"
             :is_allow_wa={{ json_encode($isAllowWA) }}
             :active_menus={{ $activeMenus }}
+            lang={{ app()->getLocale() }}
         />
         @endif
 

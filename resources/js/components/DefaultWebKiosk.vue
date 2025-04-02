@@ -1,15 +1,15 @@
 <template>
     <div class="row monitor-container">
         <div class="col-md-12 mt-2 mb-1">
-            <span class="font-36 font-weight-700">Scan Disini</span>
+            <span class="font-36 font-weight-700">{{ t('Scan Here') }}</span>
         </div>
         <div class="col-md-12">
             <span class="font-18 font-weight-400"
-                >Untuk mengambil antrian ataupun check-in</span
+                >{{ t('To take a queue or check-in,') }}</span
             >
         </div>
         <div class="col-md-12">
-            <span class="font-18  font-weight-400">scan Kode QR di-bawah</span>
+            <span class="font-18  font-weight-400">{{ t('scan the QR Code below') }}</span>
         </div>
         <div class="col-md-12">
             <img v-bind:src="qr" class="qr-image" alt="qr-code" width="250" />
@@ -26,27 +26,27 @@
             }}</span>
         </div>
         <div class="col-md-12 wrapper-yellow">
-            <span class="font-18 font-weight-700">CARA SCAN KODE QR</span>
+            <span class="font-18 font-weight-700">{{ t('HOW TO SCAN QR CODE') }}</span>
         </div>
         <div class="col-md-12 wrapper-blue">
             <div class="row">
                 <div class="offset-md-3 col-md-2 wrapper-child-info">
                     <span class="number">1</span>
                     <span class="font-18 font-weight-400"
-                        >Gunakan aplikasi kamera handphone Anda atau akses
+                        >{{ t('Use your phone') }} {{ t('camera app') }} {{ t('or visit') }}
                         <b>scan.kyoo.id</b></span
                     >
                 </div>
                 <div class="col-md-2 wrapper-child-info">
                     <span class="number">2</span>
                     <span class="font-18 font-weight-400"
-                        >Arahkan kamera ke kode QR diatas</span
+                        >{{ t('Point your camera at') }} {{ t('the QR Code above') }}</span
                     >
                 </div>
                 <div class="col-md-2 wrapper-child-info">
                     <span class="number">3</span>
                     <span class="font-18 font-weight-400"
-                        >Pilih jenis layanan antrian</span
+                        >{{ t('Select the queue') }} {{ t('service type') }}</span
                     >
                 </div>
             </div>
@@ -66,6 +66,8 @@
 <script>
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
+import ID from "../../lang/id.json";
+import EN from "../../lang/en.json";
 
 export default {
     props: {
@@ -80,19 +82,35 @@ export default {
         qr: {
             type: String,
             required: true
+        },
+        lang:{
+            type: String,
         }
     },
 
     async mounted() {
-        console.log(this.branch_logo);
+        // console.log(this.branch_logo);
     },
 
     data() {
         return {
             branch_logo: this.branch
                 ? `/storage/${this.branch.logo}`
-                : `/img/logo-color.svg`
+                : `/img/logo-color.svg`,
+            currentLocale: this.lang || 'en',
+            messages:{ en: EN,
+                       id: ID,} ,
         };
+    },
+    methods:{
+        t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
     }
 };
 </script>

@@ -165,6 +165,8 @@ export default {
             isLoading: false,
             waitingQueue: [],
             currentLocale: this.lang || 'en',
+            vo_style: this.branch?.branch_configuration.vo_call_style ?? 'standard',
+            vo_format: this.branch?.branch_configuration.signage_vo_format ?? 'wav',
             messages:{ en: EN,
                        id: ID,} ,
             servingQueue: servingQueue,
@@ -560,12 +562,15 @@ export default {
             const base64Medias = await Promise.all(fetchMedia);
 
             // Fetch Audio
-            let audios = [];
-            if(this.country != 'Indonesia'){
-               audios = ['intro_bell', 'customer_number', 'please_proceed', 'to_counter'];
-            }else{
-               audios = ['intro_bell', 'nomor_antrian', 'dicounter'];
+            let audios = ['intro_bell'];
+            const isIndonesia = this.country === 'Indonesia';
+
+            audios.push(isIndonesia ? 'nomor_antrian' : 'customer_number');
+            if (this.vo_style !== 'simple') {
+                const phrase = isIndonesia ? ['dicounter'] : ['please_proceed', 'to_counter'];
+                audios.push(...phrase);
             }
+
             for (let i = 0; i <= 9; i++) {
                 audios.push(i.toString());
             }
@@ -577,7 +582,7 @@ export default {
 
             const base64Audios = [];
             const fetchAudio = audios.map(async audio => {
-                let audio_url = `/storage/audio/vo/${audio}.wav`;
+                let audio_url = `/storage/audio/vo/${audio}.${this.vo_format}`;
                 if (this.country != 'Indonesia') {
                     audio_url = `/storage/audio/vo_en/${audio}.wav`
                 }
@@ -591,7 +596,7 @@ export default {
                     reader.readAsDataURL(blob);
                 });
 
-                const contentType = 'audio/wav';
+                const contentType = `audio/${this.vo_format === 'mp3' ? 'mpeg' : 'wav'}`;
                 const dataURL = `data:${contentType};base64,${base64Audio.split(',')[1]}`;
 
                 base64Audios.push({ name: audio, audio: dataURL });
@@ -720,17 +725,17 @@ export default {
             const queueNo = servingQueue.queue_no;
             const workstation = this.workstations.find(workstation => workstation.id === servingQueue.workstation_id);
             const counter_id = workstation.label.replace(/\D/g, '');
-            let audio = [];
-            if(this.country != 'Indonesia'){
-               audio = ['intro_bell', 'customer_number'];
-               audio.push(...queueNo.toString().split(''), 'please_proceed', 'to_counter');
-            }else{
-               audio = ['intro_bell', 'nomor_antrian'];
-               audio.push(...queueNo.toString().split(''), 'dicounter');
+            let audio = ['intro_bell'];
+            const isIndonesia = this.country === 'Indonesia';
+
+            audio.push(isIndonesia ? 'nomor_antrian' : 'customer_number');
+            audio.push(...queueNo.toString().split(''));
+
+            if (this.vo_style !== 'simple') {
+                const phrase = isIndonesia ? ['dicounter'] : ['please_proceed', 'to_counter'];
+                audio.push(...phrase, ...(counter_id ? counter_id.split('') : []));
             }
-            if(counter_id) {
-                audio.push(...counter_id.split(''));
-            }
+           
 
             const playlist = [];
             audio.forEach(audioID => {

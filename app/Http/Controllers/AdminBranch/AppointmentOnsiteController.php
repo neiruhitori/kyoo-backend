@@ -54,7 +54,7 @@ class AppointmentOnsiteController extends Controller
         $slot = Slot::find($request->slot_id);
 
         if ($this->isAppointmentSlotFull($request->slot_id, $request->date)) {
-            return redirect()->back()->with('error', 'Sesi Appointment Tidak Tersedia');
+            return redirect()->back()->with('error', __('The appointment session is not available'));
         }
         $branchID = Auth::user()->branch_id;
 
@@ -181,7 +181,7 @@ class AppointmentOnsiteController extends Controller
             return redirect()->back()->with('error', 'Pengiriman email gagal, mohon cek koneksi internet Anda.');
         }
 
-        return redirect()->back()->with('success', 'Slot Waktu diperbaharui');
+        return redirect()->back()->with('success', __('Slot has been updated'));
     }
 
     public function getSlots(Request $request)

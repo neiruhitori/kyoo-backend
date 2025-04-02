@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import mapboxgl from '!mapbox-gl'
 
 export default function BranchMap(props) {
-    mapboxgl.accessToken = 'pk.eyJ1IjoiYWJkaXNzc2FsaW0iLCJhIjoiY2wwdnZrYmQ4MWFyNTNvcDRtNXpkM2h6MyJ9.Xc2AhLh0loAWPntzV_Pgvw'
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic3VwcG9ydGt5b28iLCJhIjoiY204dGxjNzF1MDFhbDJrb3AxeWljenpmcCJ9.Di2l0rvbaJwiT8vWaLwcJw'
 
     const mapContainer = useRef(null)
     const map = useRef(null)

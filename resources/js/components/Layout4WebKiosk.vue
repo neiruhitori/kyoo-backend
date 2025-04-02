@@ -317,7 +317,7 @@ export default {
 
 
             axios.get(`/currentDate/${branchTimeZone}`).then(response => {
-                console.log(response)
+                // console.log(response)
                 // let currentDate = new Date(response.data.current_date);
 
                 // // Adjust the time based on branch timezone
@@ -386,7 +386,7 @@ export default {
         },
         onSubmitBookingCode() {
             if(this.formData.booking_code == "") {
-                this.setErrorBooking("Kode booking wajib diisi");
+                this.setErrorBooking(this.t("Booking Code is required"));
                 this.setFocusBookingCode();
                 return;
             }

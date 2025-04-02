@@ -128,6 +128,24 @@
                         @case('Timor-Leste')
                         <option value="TLT" selected>Timor Leste Time - {{ __('TLT') }} (UTC+9)</option>
                             @break
+                        @case('Qatar')
+                        <option value="AST" selected>Arabian Standard Time - {{ __('AST') }} (UTC+3)</option>
+                            @break
+                        @case('Saudi Arabia')
+                        <option value="AST" selected>Arabian Standard Time - {{ __('AST') }} (UTC+3)</option>
+                            @break
+                        @case('Kuwait')
+                        <option value="AST" selected>Arabian Standard Time - {{ __('AST') }} (UTC+3)</option>
+                            @break
+                        @case('Oman')
+                        <option value="GST" selected>Gulf Standard Time - {{ __('GST') }} (UTC+4)</option>
+                            @break
+                        @case('United Arab Emirates')
+                        <option value="GST" selected>Gulf Standard Time - {{ __('GST') }} (UTC+4)</option>
+                            @break
+                        @case('New Zealand')
+                        <option value="NZST" selected>New Zealand Standard Time - {{ __('NZST') }} (UTC+12)</option>
+                            @break
                         @case('Australia')
                         <option value="AEST" selected>Australian Eastern Standard Time - {{ __('AEST') }} (UTC+10)</option>
                         <option value="ACST" selected>Australian Central Standard Time - {{ __('ACST') }} (UTC+9:30)</option>
