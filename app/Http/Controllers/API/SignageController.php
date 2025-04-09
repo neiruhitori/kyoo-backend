@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API;
 use App\User;
 use App\Branch;
 use Carbon\Carbon;
+use App\Workstation;
 use App\Models\TVToken;
-use App\Http\Controllers\Controller;
 use App\Helpers\TVImageHelper;
+use App\Models\FeatureSubscription;
+use App\Http\Controllers\Controller;
 
 class SignageController extends Controller
 {
@@ -20,6 +22,22 @@ class SignageController extends Controller
             'Departments',
             'TVConfiguration.customLayoutConfiguration2'
         ])->firstOrFail();
+
+        $branchConfig = collect($branch->BranchConfiguration)->only([
+            'signage_vo_format',
+            'vo_call_style',
+            'queue_voice'
+        ]);
+
+        $features = FeatureSubscription::with('AdditionalFeature')
+        ->where('branch_id', $branch->id)
+        ->get();
+
+        $workstations = Workstation::whereIn('department_id',
+                         $branch->Departments->pluck('id')->toArray(),)
+        ->take(6)
+        ->orderBy('label')
+        ->get();
 
         $TVConfiguration = $branch->TVConfiguration;
        
@@ -44,6 +62,9 @@ class SignageController extends Controller
                 'layout' => $branch->BranchConfiguration->template_signage,
                 'display_duration' => (int) $TVConfiguration->display_duration * 1000,
                 'custom_layout_config' => $TVConfiguration->customLayoutConfiguration2,
+                'features' => $features,
+                'branch_configuration' => $branchConfig,
+                'workstation' => $workstations,
                 'is_direct_queue' => $branch->BranchType->is_direct_queue,
                 'is_appointment' => $branch->BranchType->is_appointment,
             ]
