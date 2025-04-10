@@ -292,7 +292,7 @@ function AppointmentOnsiteBookingStatus(props) {
                     textAlign: 'center',
                     fontSize: '1.3rem',
                     marginBottom: '1rem'
-                }}>{this('Save your queue?')}</h4>
+                }}>{t('Save your queue?')}</h4>
                 <p style={{
                     textAlign: 'center',
                     margin: '0 auto',
