@@ -70,10 +70,10 @@
         <div class="permission-wrapper" v-if="isAutoPlayBlocked">
             <div class="permission-body">
                 <p>
-                    Your browser is blocking audio autoplay. Press the button below to enable autoplay.
+                    {{ t('Your browser is blocking audio autoplay. Press the button below to enable autoplay.') }}
                 </p>
                 <button class="active-button" @click="isAutoPlayBlocked = false">
-                    Enable Notification Sound
+                    {{ t('Enable Notification Sound') }}
                 </button>
             </div>
         </div>

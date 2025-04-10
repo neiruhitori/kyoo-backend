@@ -2,7 +2,7 @@
     <div class="monitor-container">
         <div class="monitor-sidebar">
             <div class="calling-card">
-                <div class="calling-card-header">DIPANGGIL</div>
+                <div class="calling-card-header">{{ t('CALLED') }}</div>
 
                 <div class="calling-card-body">
                     <h4 class="queue-no" v-if="servingQueue">
@@ -11,7 +11,7 @@
                 </div>
             </div>
 
-            <h6 class="sidebar-subtitle">MENUNGGU</h6>
+            <h6 class="sidebar-subtitle">{{ t('WAITING') }}</h6>
 
             <div class="waiting-list" v-if="!waitingQueue.length">
                 <div class="waiting-card waiting-card-empty"></div>
@@ -84,14 +84,13 @@
         <div class="permission-wrapper" v-if="isAutoPlayBlocked">
             <div class="permission-body">
                 <p>
-                    Browser Anda memblokir audio autoplay. Tekan tombol dibawah
-                    untuk mengaktifkan autoplay.
+                    {{ t('Your browser is blocking audio autoplay. Press the button below to enable autoplay.') }}
                 </p>
                 <button
                     class="active-button"
                     @click="isAutoPlayBlocked = false"
                 >
-                    Aktifkan Suara Notifikasi
+                {{ t('Enable Notification Sound') }}
                 </button>
             </div>
         </div>
@@ -103,6 +102,8 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import moment from 'moment';
 import 'moment-timezone';
+import ID from "../../../../lang/id.json";
+import EN from "../../../../lang/en.json";
 
 const audioEl = new Audio();
 
@@ -115,6 +116,9 @@ export default {
         features: {
             type: Array,
         },
+        lang:{
+            type: String,
+        }
     },
 
     data() {
@@ -123,6 +127,9 @@ export default {
             vo_format: this.branch?.branch_configuration.signage_vo_format ?? 'wav',
             vo_style: this.branch?.branch_configuration.vo_call_style ?? 'standard',
             country: this.branch?.country,
+            currentLocale: this.lang || 'en',
+            messages:{ en: EN,
+                id: ID,} ,
             isLoading: false,
             waitingQueue: [],
             servingQueue: null,
@@ -235,6 +242,14 @@ export default {
     },
 
     methods: {
+        t(key, params = {}) {
+         const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
+            if (translation) {
+                 return translation.replace(/\{(\w+)\}/g, (_, param) => params[param] || "");
+            } else {
+                 return key;
+            }
+        },
         initCurrentDate() {
             let currentDate = moment.tz('Asia/Jakarta');
             const branchTimeZone = this.branch.timezone;
