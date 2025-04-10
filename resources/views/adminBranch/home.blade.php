@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- @if($isShowExpiredBanner) --}}
+@if($isShowExpiredBanner)
     <div class="alert alert-warning alert-block" style="display: flex; justify-content: space-between; align-items: center;">
         <span>{{ __('Your trial period will end in') }} <strong>{{$licenseExpirationDay}}</strong> {{ __('days') }}. {{ __('Upgrade your account to continue enjoying') }} <strong>KYOO</strong></span>
         {{-- <a href="mailto:support@awandigital.id" class="btn btn-warning"><strong>UPGRADE</strong></a> --}}
         <a href="{{ route('admin-branch.subscription') }}" class="btn btn-warning"><strong>UPGRADE</strong></a>
     </div>
-{{-- @endif --}}
+@endif
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">{{ __('Dashboard') }} {{ Auth::user()->Branch->name }}</h1>
