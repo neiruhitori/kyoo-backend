@@ -3,6 +3,7 @@ import { useQuery } from 'react-query'
 import { getDayName, getFullDate } from '../../utils/date'
 import { fetchBranch } from '../../api/branch'
 import { fetchServiceByBranchId } from '../../api/services'
+import useLocalization from '../../hooks/useLocalization'
 
 import Header from '../../components/Header'
 import Banner from '../../components/Banner'
@@ -18,8 +19,9 @@ import ServiceItemSkeleton from '../../components/ServiceItemSkeleton'
 import AngleRightIcon from '../../icons/AngleRightIcon'
 
 function ServiceList() {
+    const {t, locale} = useLocalization();
     const { branchId, queueType } = useParams()
-    const PAGE_TITLE = `Antrian ${queueType}`
+    const PAGE_TITLE = t(":queueType Queue", { queueType: queueType })
     const navigate = useNavigate()
 
     const selectedDate = new Date()
@@ -96,7 +98,7 @@ function ServiceList() {
                         }}>
                             <span style={{
                                 padding: '0 0.75rem'
-                            }}>Lihat Detail</span>
+                            }}>{t('See Details')}</span>
                             <AngleRightIcon color="#FFFFFF" />
                         </div>
                     </Link>
@@ -115,11 +117,13 @@ function ServiceList() {
                     style={{
                         marginTop: '1rem'
                     }}
+                    t={t}
                 />
                 : <BranchStatusClosed
                     style={{
                         marginTop: '1rem'
                     }}
+                    t={t}
                 />}
 
                 <SliderIndicator active={0} total={3} style={{
@@ -135,7 +139,7 @@ function ServiceList() {
             <h4 style={{
                 fontSize: '1rem',
                 marginBottom: '1.125rem'
-            }}>Layanan</h4>
+            }}>{t('Service')}</h4>
 
             {servicesRes.status === 'loading' && <ServiceItemSkeleton />}
 
@@ -146,7 +150,7 @@ function ServiceList() {
                     title: service.name,
                     key: service.id,
                     action: {
-                        label: 'Total Antrian',
+                        label: t('Total Queue'),
                         value: service.total_queue
                     }
                 }

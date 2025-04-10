@@ -10,6 +10,7 @@ import { createFeedback } from '../../api/feedback'
 import usePromotions from '../../hooks/usePromotions'
 import { formatBrowser, getDayName, getMonthAbrvName } from '../../utils/date'
 import { getCookie } from '../../lib/helper'
+import useLocalization from '../../hooks/useLocalization'
 
 import MainContent from '../../components/MainContent'
 import TicketCard from '../../components/TicketCard'
@@ -61,22 +62,23 @@ const OnsiteChipDanger = styled(ChipDanger)`
 
 function getStatus(status) {
     if (status == 'served') {
-        return 'Dilayani'
+        return 'Serve'
     }
     if (status == 'no show') {
-        return 'Tidak Hadir'
+        return 'No Show'
     }
     if (status == 'end served') {
-        return 'Selesai'
+        return 'End Served'
     }
     if (status == 'requeue') {
-        return 'Antri Ulang'
+        return 'Requeue'
     }
 
-    return 'Menunggu'
+    return 'Waiting'
 }
 
 function TicketHead(props) {
+    const {t, locale} = useLocalization();
     return <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -89,7 +91,7 @@ function TicketHead(props) {
             color: '#7A7A7A',
             marginBottom: '.5rem',
             textAlign: 'center'
-        }}>Nomor Antrian</p>
+        }}>{t('Queue Number')}</p>
 
         <h2 style={{
             fontWeight: '700',
@@ -153,7 +155,8 @@ function TicketFooter(props) {
 }
 
 function OnsiteBookingStatus(props) {
-    const PAGE_TITLE = 'Status Antrian Onsite'
+    const {t, locale} = useLocalization();
+    const PAGE_TITLE = t('Onsite Queue Status')
     const REFETCH_INTERVAL = 15000
     const CLIENT_ID = getCookie('client_id')
 
@@ -216,14 +219,14 @@ function OnsiteBookingStatus(props) {
         })
     }
 
-    let onsiteStatus = <OnsiteChipWarning label={getStatus(booking?.status || 'waiting')} />
+    let onsiteStatus = <OnsiteChipWarning label={t(getStatus(booking?.status || 'Waiting'))} />
 
     if (booking?.status == 'no show') {
-        onsiteStatus = <OnsiteChipDanger label={getStatus(booking.status)} />
+        onsiteStatus = <OnsiteChipDanger label={t(getStatus(booking.status))} />
     }
     
     if (booking?.status == 'end served') {
-        onsiteStatus = <OnsiteChipSuccess label={getStatus(booking.status)} />
+        onsiteStatus = <OnsiteChipSuccess label={t(getStatus(booking.status))} />
     }
 
     if (branch?.branch_type.is_premium) {
@@ -311,12 +314,12 @@ function OnsiteBookingStatus(props) {
                     textAlign: 'center',
                     fontSize: '1.3rem',
                     marginBottom: '1rem'
-                }}>Simpan Antrianmu?</h4>
+                }}>{t('Save your queue?')}</h4>
                 <p style={{
                     textAlign: 'center',
                     margin: '0 auto',
                     lineHeight: '1.5'
-                }}>Simpan tiket antrian agar tidak kehilangan informasi antrianmu</p>
+                }}>{t('Save your queue ticket to avoid losing your queue information')}</p>
             </div>
 
             <div style={{
@@ -333,7 +336,7 @@ function OnsiteBookingStatus(props) {
                     fontWeight: 'bold',
                     backgroundColor: '#FFFFFF',
                     fontSize: '1rem'
-                }} onClick={() => handlePrintTicket(booking.queue_no)}>Simpan</button>
+                }} onClick={() => handlePrintTicket(booking.queue_no)}>{t('Save')}</button>
 
                 <button style={{
                     width: '142px',
@@ -344,7 +347,7 @@ function OnsiteBookingStatus(props) {
                     fontWeight: 'bold',
                     backgroundColor: '#D8D8D8',
                     fontSize: '1rem'
-                }} onClick={() => setIsDialogShown(false)}>Tidak</button>
+                }} onClick={() => setIsDialogShown(false)}>{t('No')}</button>
             </div>
         </Dialog>}
 
@@ -356,7 +359,7 @@ function OnsiteBookingStatus(props) {
                     textAlign: 'center',
                     margin: '0 auto',
                     lineHeight: '1.5'
-                }}>Apakah Anda yakin ingin meninggalkan halaman ini?</p>
+                }}>{t('Are you sure you want to leave this page?')}</p>
             </div>
 
             <div style={{
@@ -373,7 +376,7 @@ function OnsiteBookingStatus(props) {
                     color: '#FFFFFF',
                     backgroundColor: '#007EC6',
                     fontSize: '1rem'
-                }} onClick={() => navigate(`/customer/${branchId}/onsite/services`)}>Iya</button>
+                }} onClick={() => navigate(`/customer/${branchId}/onsite/services`)}>{t('Yes')}</button>
 
                 <button style={{
                     width: '142px',
@@ -383,7 +386,7 @@ function OnsiteBookingStatus(props) {
                     outline: 'none',
                     backgroundColor: '#D8D8D8',
                     fontSize: '1rem'
-                }} onClick={() => setIsConfirmationDialogShown(false)}>Tidak</button>
+                }} onClick={() => setIsConfirmationDialogShown(false)}>{t('No')}</button>
             </div>
         </Dialog>}
 
@@ -464,9 +467,9 @@ function OnsiteBookingStatus(props) {
                             {booking.total_remaining_queue
                                 ? <strong style={{
                                     color: 'black'
-                                }}>{booking.total_remaining_queue}</strong>
-                                : 'Tidak Ada'
-                            } Antrian Tersisa
+                                }}>{booking.total_remaining_queue} {t('Remaining Queue')}</strong>
+                                : t('No remaining queue')
+                            } 
                         </p>
                     </div>
                 </div>
@@ -498,7 +501,7 @@ function OnsiteBookingStatus(props) {
                     alignItems: 'center',
                     justifyContent: 'center'
                 }}>
-                    Lihat Detail Antrian
+                    {t('See queue details')}
                     <AngleRightIcon color="#0161AC" style={{
                         marginLeft: '.5rem'
                     }} />
@@ -511,7 +514,7 @@ function OnsiteBookingStatus(props) {
             }}>
                 <p style={{
                     textAlign: 'center'
-                }}>Seberapa puas Anda terhadap layanan kami?</p>
+                }}>{t('How satisfied are you with our service?')}</p>
             
                 <div style={{
                     marginTop: '1.125rem'
@@ -534,7 +537,7 @@ function OnsiteBookingStatus(props) {
                         color: '#FFFFFF',
                         backgroundColor: '#007EC6',
                         border: 'none'
-                    }} onClick={handleFeedbackClick}>Kirim Feedback</button>
+                    }} onClick={handleFeedbackClick}>{t('Send Feedback')}</button>
                 </div>}
             </Card>}
 
@@ -543,12 +546,12 @@ function OnsiteBookingStatus(props) {
                     fontSize: '1rem',
                     marginBottom: '.375rem',
                     textTransform: 'capitalize'
-                }}>Informasi Antrian Onsite</h4>
+                }}>{t('Onsite Queue Information')}</h4>
 
                 <p style={{
                     lineHeight: '1.5',
                 }}>
-                    Anda akan dipanggil oleh counter yang Anda pilih sesuai dengan nomor antrian Anda
+                   {t('You will be called by the counter you selected according to your queue number.')}
                 </p>
             </InfoAlert>
         </MainContent>}

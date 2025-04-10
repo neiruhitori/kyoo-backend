@@ -295,7 +295,7 @@ function TimeSlotList() {
                                     <span style={{
                                         fontWeight: '700',
                                         color: '#007EC6'
-                                    }}>{slot.max_slots - slot.filled_slot}</span>/{slot.max_slots} Slot
+                                    }}>{slot.max_slots - slot.filled_slot}</span>/{slot.max_slots} {t('Slots')}
                                 </p>
                             </div>
 

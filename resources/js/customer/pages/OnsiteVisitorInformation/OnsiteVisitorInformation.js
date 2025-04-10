@@ -12,6 +12,7 @@ import TextField from '../../components/TextField'
 import Button from '../../components/Button'
 import DangerAlert from '../../components/DangerAlert'
 import Loading from '../../components/Loading'
+import useLocalization from '../../hooks/useLocalization'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 
@@ -23,7 +24,8 @@ function useForceUpdate(){
 const validator = new Validator()
 
 function VisitorInformation() {
-    const PAGE_TITLE = 'Informasi Pengunjung'
+    const {t, locale} = useLocalization();
+    const PAGE_TITLE = t('Visitor Information')
     const forceUpdate = useForceUpdate()
     const { branchId, serviceId } = useParams()
     const navigate = useNavigate()
@@ -119,7 +121,7 @@ function VisitorInformation() {
                         fontSize: '1rem',
                         marginBottom: '.375rem',
                         textTransform: 'capitalize'
-                    }}>Gagal membuat antrian</h4>
+                    }}>{t('Failed to Create Queue')}</h4>
 
                     <p style={{
                         lineHeight: '1.5',
@@ -133,7 +135,7 @@ function VisitorInformation() {
                     flex: '1 1 0%'
                 }}>
                     <TextField
-                        label="Nama Lengkap"
+                        label={t("Full Name")}
                         style={{
                             marginBottom: '1.5rem'
                         }}
@@ -158,7 +160,7 @@ function VisitorInformation() {
                     />
 
                     <TextField
-                        label="No. Telepon"
+                        label={t("Phone Number")}
                         type="tel"
                         style={{
                             marginBottom: '1.5rem'
@@ -181,12 +183,12 @@ function VisitorInformation() {
                     width: '100%',
                     fontSize: '1rem',
                     marginBottom: '.5rem'
-                }} onClick={() => setSelectedButton('submit')}>Selanjutnya</Button>
+                }} onClick={() => setSelectedButton('submit')}>{t("Next")}</Button>
 
                 <Button color="link" type="submit" style={{
                     width: '100%',
                     fontSize: '1rem'
-                }} onClick={() => setSelectedButton('skip')}>Lewati</Button>
+                }} onClick={() => setSelectedButton('skip')}>{t('Skip')}</Button>
             </div>
         </form>
     </>

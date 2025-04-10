@@ -4,11 +4,11 @@ class Validator {
         this.messagesShown = false
         this.rules = {
             required: {
-                message: 'Kolom harus diisi',
+                message: 'This field required',
                 validate: (value) => !this.isBlank(value),
             },
             email: {
-                message: 'Email tidak valid',
+                message: 'Invalid Email',
                 validate: (value) => {
                     if (!value) return true
 
@@ -16,7 +16,7 @@ class Validator {
                 }
             },
             phone: {
-                message: 'No. Telepon tidak valid',
+                message: 'Invalid Phone Number',
                 validate: (value) => {
                     if (!value) return true
 
@@ -24,7 +24,7 @@ class Validator {
                 }
             },
             passportNumber: {
-                message: 'NIK/Passport Number tidak valid',
+                message: 'Passport Number is invalid',
                 validate: (value) => {
                     if (!value) return true
 
@@ -32,7 +32,7 @@ class Validator {
                 }
             },
             passportNumber2: {
-                message: 'NIK/Passport Number tidak valid',
+                message: 'Passport Number is invalid',
                 validate: (value) => {
                     if (!value) return true
 
@@ -40,7 +40,7 @@ class Validator {
                 }
             },
             contractNumber: {
-                message: 'Nomor Kontrak tidak valid',
+                message: 'Contract Number is invalid',
                 validate: (value) => {
                     if (!value) return true
 

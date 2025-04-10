@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { format, eachMonthOfInterval, parseISO } from 'date-fns'
 import id from 'date-fns/locale/id'
+import en from 'date-fns/locale/en-US'
 
 import useBranch from '../../hooks/useBranch'
 import useBranchSchedules from '../../hooks/useBranchSchedules'
 import useBranchHolidays from '../../hooks/useBranchHolidays'
 import useBranchServices from '../../hooks/useBranchServices'
 import useBranchServicesCategories from '../../hooks/useBranchServiceCategories'
+import useLocalization from '../../hooks/useLocalization'
 
 import 'react-day-picker/lib/style.css'
 
@@ -38,12 +40,14 @@ import Card from '../../components/Card'
 import CheckIcon from '../../icons/CheckIcon'
 
 function ServicesTwoLayer() {
+    const {t, locale} = useLocalization();
+    const dateLocale = locale == 'en' ? en : id;
     const { branchId } = useParams()
     const [searchParams] = useSearchParams();
     const isAllowback = searchParams.get("is_allow_back");
     const navigate = useNavigate();
 
-    const PAGE_TITLE = 'Antrian Appointment'
+    const PAGE_TITLE = t('Appointment Queue')
 
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [isCalendarShow, setIsCalendarShow] = useState(false)
@@ -103,7 +107,7 @@ function ServicesTwoLayer() {
             end: new Date(now.getFullYear(), 11, 1)
         })
             .map(v => {
-                return format(v, 'MMMM', { locale: id })
+                return format(v, 'MMMM', { locale: dateLocale })
             })
     }
 
@@ -205,7 +209,7 @@ function ServicesTwoLayer() {
                                 }}>
                                     <span style={{
                                         padding: '0 0.75rem'
-                                    }}>Lihat Detail</span>
+                                    }}>{t('See Details')}</span>
 
                                     <AngleRightIcon color="#FFFFFF" />
                                 </div>
@@ -225,11 +229,13 @@ function ServicesTwoLayer() {
                                 style={{
                                     marginTop: '1rem'
                                 }}
+                                t={t}
                             />
                             : <BranchStatusClosed
                                 style={{
                                     marginTop: '1rem'
                                 }}
+                                t={t}
                             />
                         }
 
@@ -246,7 +252,7 @@ function ServicesTwoLayer() {
                     <h4 style={{
                         fontSize: '1rem',
                         marginBottom: '1.125rem'
-                    }}>Kategori Layanan</h4>
+                    }}>{t('Service Category')}</h4>
 
                     {branchServicesCategoryQuery.isLoading && <ServiceItemSkeleton />}
 
@@ -277,7 +283,7 @@ function ServicesTwoLayer() {
                                 color: serviceCategoryId == null ? 'white' : 'black',
                             }} onClick={() => setServiceCategoryId(null)}>
                                 <ServiceContent>
-                                    <ServiceTitle>Lainnya</ServiceTitle>
+                                    <ServiceTitle>{t('Others')}</ServiceTitle>
                                     <CheckIcon />
                                 </ServiceContent>
                             </Card>
@@ -303,7 +309,7 @@ function ServicesTwoLayer() {
                         }}>
                             <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
                         </div>
-                        <h4>Tidak Ada Layanan</h4>
+                        <h4>{t('No Services')}</h4>
                         <p style={{
                             textAlign: 'center',
                             width: '280px',
@@ -311,7 +317,7 @@ function ServicesTwoLayer() {
                             color: '#A5A5A5',
                             fontSize: '.875rem'
                         }}>
-                            Pilih tanggal lain untuk menemukan layanan yang tersedia
+                            {t('Select another date to find available services')}
                         </p>
                     </div>}
                 </MainContent>
@@ -384,11 +390,11 @@ function ServicesTwoLayer() {
                     </CalendarWrapper>}
 
                     <TextField
-                        label="Tanggal"
+                        label={t("Date")}
                         style={{
                             marginBottom: '1.5rem'
                         }}
-                        value={format(selectedDate, 'd MMMM yyyy', { locale: id })}
+                        value={format(selectedDate, 'd MMMM yyyy', { locale: dateLocale })}
                         readOnly
                         endAdornment={
                             <IconButton
@@ -402,7 +408,7 @@ function ServicesTwoLayer() {
                     <h4 style={{
                         fontSize: '1rem',
                         marginBottom: '1.125rem'
-                    }}>Layanan</h4>
+                    }}>{t("Service")}</h4>
 
                     {branchServicesQuery.isLoading && <ServiceItemSkeleton />}
 
@@ -419,7 +425,7 @@ function ServicesTwoLayer() {
                             <ServiceItem
                                 title={service.name}
                                 action={{
-                                    label: "Total Slot Tersedia",
+                                    label: t("Total Available Slots"),
                                     value: availableSlot,
                                     total: service.totalSlot
                                 }}
@@ -438,8 +444,8 @@ function ServicesTwoLayer() {
                                     <span>
                                         {
                                             service.slots.length
-                                                ? service.slots.length + ' Sesi Waktu'
-                                                : 'Tidak Ada Sesi Waktu'
+                                                ? service.slots.length + ` ${t('Time Sessions')}`
+                                        : t('No Time Sessions')
                                         }
                                     </span>
                                 </div>}
@@ -466,7 +472,7 @@ function ServicesTwoLayer() {
                         }}>
                             <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
                         </div>
-                        <h4>Tidak Ada Layanan</h4>
+                        <h4>{t('No Services')}</h4>
                         <p style={{
                             textAlign: 'center',
                             width: '280px',
@@ -474,7 +480,7 @@ function ServicesTwoLayer() {
                             color: '#A5A5A5',
                             fontSize: '.875rem'
                         }}>
-                            Pilih tanggal lain untuk menemukan layanan yang tersedia
+                            {t('Select another date to find available services')}
                         </p>
                     </div>}
 
@@ -497,7 +503,7 @@ function ServicesTwoLayer() {
                         }}>
                             <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
                         </div>
-                        <h4>Tidak Ada Layanan</h4>
+                        <h4>{t('No Services')}</h4>
                         <p style={{
                             textAlign: 'center',
                             width: '280px',
@@ -505,7 +511,7 @@ function ServicesTwoLayer() {
                             color: '#A5A5A5',
                             fontSize: '.875rem'
                         }}>
-                            Pilih kategori lain untuk menemukan layanan yang tersedia
+                           {t('Select another category to find available services')}
                         </p>
                     </div>}
                 </MainContent>

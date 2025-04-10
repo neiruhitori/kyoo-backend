@@ -10,8 +10,15 @@ function useLocalization() {
   const translations = lang === "id" ? ID : EN;
   
 
-  function t(key) {
-    return translations[key] || key; 
+  function t(key, replacements = {}) {
+    let translation = translations[key] || key;
+
+    Object.keys(replacements).forEach((placeholder) => {
+      const value = replacements[placeholder];
+      translation = translation.replaceAll(`:${placeholder}`, value);
+    });
+
+    return translation;
   }
 
   useEffect(() => {
