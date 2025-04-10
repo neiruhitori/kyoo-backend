@@ -8,24 +8,24 @@
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
                     <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
+                    {{ __('Information') }}
                 </h6>
 
                 <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
+                    {{ __('Show') }}
                 </button>
             </div>
 
             <div class="custom-info-body">
                 <ul style="padding-left: 2rem;">
                     <li style="margin-bottom: 0.25rem;">
-                        Ini adalah konfigurasi fitur yang bisa anda sesuaikan dengan kebutuhan.
+                        {{ __('infobox.access1') }}
                     </li>
                     <li>
-                        Aktifkan Menu tambahan untuk halaman petugas layanan
+                        {{ __('infobox.access2') }}
                     </li>
                 </ul>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
+                <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
             </div>
         </div>
     </div>
