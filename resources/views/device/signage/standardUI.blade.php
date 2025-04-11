@@ -34,6 +34,7 @@
         <Device-Signage-Standard-Component 
             :branch="{{$branch}}"
             :features="{{$features}}"
+            lang={{ app()->getLocale() }}
         />
     </div>
     <script src="{{asset('js/app.js')}}"></script>

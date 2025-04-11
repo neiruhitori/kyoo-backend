@@ -70,10 +70,10 @@
         <div class="permission-wrapper" v-if="isAutoPlayBlocked">
             <div class="permission-body">
                 <p>
-                    Your browser is blocking audio autoplay. Press the button below to enable autoplay.
+                    {{ t('Your browser is blocking audio autoplay. Press the button below to enable autoplay.') }}
                 </p>
                 <button class="active-button" @click="isAutoPlayBlocked = false">
-                    Enable Notification Sound
+                    {{ t('Enable Notification Sound') }}
                 </button>
             </div>
         </div>
@@ -353,7 +353,7 @@ export default {
 
             const base64Audios = [];
             const fetchAudio = audios.map(async audio => {
-                let audio_url = `/storage/audio/vo/${audio}.wav`;
+                let audio_url = `/storage/audio/vo/${audio}.${this.vo_format}`;
                 if (this.country != 'Indonesia') {
                     audio_url = `/storage/audio/vo_en/${audio}.wav`
                 }

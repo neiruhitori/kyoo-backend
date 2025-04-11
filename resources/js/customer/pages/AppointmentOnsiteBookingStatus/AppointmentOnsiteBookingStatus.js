@@ -32,6 +32,7 @@ import LocationIcon from '../../icons/LocationIcon'
 import SaveIcon from '../../icons/SaveIcon'
 import RedoIcon from '../../icons/RedoIcon'
 import AngleRightIcon from '../../icons/AngleRightIcon'
+import useLocalization from '../../hooks/useLocalization'
 
 const BranchLogo = styled.img`
     display: inline-block;
@@ -59,8 +60,9 @@ const OnsiteChipWarning = styled(ChipWarning)`
 const OnsiteChipDanger = styled(ChipDanger)`
     font-size: .875rem;
 `
-
 function TicketHead(props) {
+    const {t, locale} = useLocalization();
+    
     return <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -77,7 +79,7 @@ function TicketHead(props) {
             color: '#7A7A7A',
             marginBottom: '.5rem',
             textAlign: 'center'
-        }}>Kode Booking</p>
+        }}>{t('Booking Code')}</p>
 
         <h2 style={{
             fontWeight: '700',
@@ -142,7 +144,8 @@ function TicketFooter(props) {
 }
 
 function AppointmentOnsiteBookingStatus(props) {
-    const PAGE_TITLE = 'Status Antrian'
+    const {t, locale} = useLocalization();
+    const PAGE_TITLE = t('Queue Status')
     const REFETCH_INTERVAL = 15000
     const CLIENT_ID = getCookie('client_id')
 
@@ -289,12 +292,12 @@ function AppointmentOnsiteBookingStatus(props) {
                     textAlign: 'center',
                     fontSize: '1.3rem',
                     marginBottom: '1rem'
-                }}>Simpan Antrianmu?</h4>
+                }}>{t('Save your queue?')}</h4>
                 <p style={{
                     textAlign: 'center',
                     margin: '0 auto',
                     lineHeight: '1.5'
-                }}>Simpan tiket antrian agar tidak kehilangan informasi antrianmu</p>
+                }}>{t('Save your queue ticket to avoid losing your queue information')}</p>
             </div>
 
             <div style={{
@@ -311,7 +314,7 @@ function AppointmentOnsiteBookingStatus(props) {
                     fontWeight: 'bold',
                     backgroundColor: '#FFFFFF',
                     fontSize: '1rem'
-                }} onClick={() => handlePrintTicket(booking.booking_code)}>Simpan</button>
+                }} onClick={() => handlePrintTicket(booking.booking_code)}>{t('Save')}</button>
 
                 <button style={{
                     width: '142px',
@@ -322,7 +325,7 @@ function AppointmentOnsiteBookingStatus(props) {
                     fontWeight: 'bold',
                     backgroundColor: '#D8D8D8',
                     fontSize: '1rem'
-                }} onClick={() => setIsDialogShown(false)}>Tidak</button>
+                }} onClick={() => setIsDialogShown(false)}>{t('No')}</button>
             </div>
         </Dialog>}
 
@@ -334,7 +337,7 @@ function AppointmentOnsiteBookingStatus(props) {
                     textAlign: 'center',
                     margin: '0 auto',
                     lineHeight: '1.5'
-                }}>Apakah Anda yakin ingin meninggalkan halaman ini?</p>
+                }}>{t('Are you sure you want to leave this page?')}</p>
             </div>
 
             <div style={{
@@ -361,7 +364,7 @@ function AppointmentOnsiteBookingStatus(props) {
                     outline: 'none',
                     backgroundColor: '#D8D8D8',
                     fontSize: '1rem'
-                }} onClick={() => setIsConfirmationDialogShown(false)}>Tidak</button>
+                }} onClick={() => setIsConfirmationDialogShown(false)}>{t('No')}</button>
             </div>
         </Dialog>}
 
@@ -446,7 +449,7 @@ function AppointmentOnsiteBookingStatus(props) {
                     alignItems: 'center',
                     justifyContent: 'center'
                 }}>
-                    Lihat Detail Antrian
+                    {t('See queue details')}
                     <AngleRightIcon color="#0161AC" style={{
                         marginLeft: '.5rem'
                     }} />
@@ -459,7 +462,7 @@ function AppointmentOnsiteBookingStatus(props) {
             }}>
                 <p style={{
                     textAlign: 'center'
-                }}>Seberapa puas Anda terhadap layanan kami?</p>
+                }}>{t('How satisfied are you with our service?')}</p>
 
                 <div style={{
                     marginTop: '1.125rem'
@@ -482,7 +485,7 @@ function AppointmentOnsiteBookingStatus(props) {
                         color: '#FFFFFF',
                         backgroundColor: '#007EC6',
                         border: 'none'
-                    }} onClick={handleFeedbackClick}>Kirim Feedback</button>
+                    }} onClick={handleFeedbackClick}>{t('Send Feedback')}</button>
                 </div>}
             </Card>}
 
@@ -491,12 +494,12 @@ function AppointmentOnsiteBookingStatus(props) {
                     fontSize: '1rem',
                     marginBottom: '.375rem',
                     textTransform: 'capitalize'
-                }}>Informasi Antrian Onsite</h4>
+                }}>{t('Onsite Queue Information')}</h4>
 
                 <p style={{
                     lineHeight: '1.5',
                 }}>
-                    Anda harus menyimpan kode booking untuk mendapatkan nomor antrian sesuai dengan hari pemesanan Anda.
+                    {t('You must save the booking code to get the queue number according to your booking date')}
                 </p>
             </InfoAlert>
         </MainContent>}

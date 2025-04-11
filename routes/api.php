@@ -26,6 +26,13 @@ Route::middleware(['auth:api'])->prefix('kiosk')->group(function () {
     });
     
 });
+Route::middleware(['auth:api'])->prefix('signage')->group(function () {
+    Route::middleware(['checkDevice'])->group(function () {
+        Route::get('layout', 'API\SignageController@layout');
+        Route::get('get-media', 'API\SignageController@getMedia');
+    });
+    
+});
 
 // region routes
 Route::get('allProvince/', 'API\RegionController@allProvince');

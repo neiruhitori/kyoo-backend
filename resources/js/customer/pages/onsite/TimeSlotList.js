@@ -22,9 +22,11 @@ import UserIcon from '../../icons/UserIcon'
 import BoxOpenIcon from '../../icons/BoxOpenIcon'
 import SkeletonItem from '../../components/SkeletonItem'
 import ProgressStep from '../../components/ProgressStep'
+import useLocalization from './../../hooks/useLocalization';
 
 function TimeSlotList() {
-    const PAGE_TITLE = 'Slot Waktu'
+    const {t, locale} = useLocalization();
+    const PAGE_TITLE = t('Time Slot');
     const { branchId, serviceId } = useParams()
     const [searchParams] = useSearchParams()
     const date = searchParams.get('date') ? formatBrowser(searchParams.get('date')) : new Date()
@@ -121,7 +123,7 @@ function TimeSlotList() {
             </CalendarWrapper>}
 
             <TextField
-                label="Tanggal"
+                label={t("Date")}
                 style={{
                     marginBottom: '1.5rem'
                 }}
@@ -167,8 +169,8 @@ function TimeSlotList() {
                     <span>
                         {
                             slots.length
-                                ? slots.length + ' Sesi Waktu Tersedia'
-                                : 'Tidak Ada Sesi Waktu Tersedia'
+                                ? slots.length + ` ${t('Time Sessions Available')}`
+                                        : t('No Time Sessions Available')
                         }
                     </span>
                     <span style={{
@@ -197,11 +199,11 @@ function TimeSlotList() {
                     <h4 style={{
                         fontSize: '1rem',
                         marginBottom: '0.5rem'
-                    }}>Layanan</h4>
+                    }}>{t('Service')}</h4>
                     <p style={{
                         fontSize: '0.875rem',
                         color: '#A5A5A5'
-                    }}>Berikut adalah sesi waktu yang tersedia</p>
+                    }}>{t('Here are the available time sessions')}</p>
                 </div>
 
                 {serviceRes.status === 'loading' && <Card style={{
@@ -233,7 +235,7 @@ function TimeSlotList() {
                     }}>
                         <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
                     </div>
-                    <h4>Sesi waktu kosong</h4>
+                    <h4>{t('Empty time sessions')}</h4>
                     <p style={{
                         textAlign: 'center',
                         width: '280px',
@@ -241,7 +243,7 @@ function TimeSlotList() {
                         color: '#A5A5A5',
                         fontSize: '.875rem'
                     }}>
-                        Pilih tanggal lain untuk menemukan sesi waktu yang tersedia
+                       {t('Select another date to find available time slots')}
                     </p>
                 </div>}
 
@@ -286,7 +288,7 @@ function TimeSlotList() {
                                     <span style={{
                                         fontWeight: '700',
                                         color: '#007EC6'
-                                    }}>{slot.max_slots - slot.filled_slot}</span>/{slot.max_slots} Slot
+                                    }}>{slot.max_slots - slot.filled_slot}</span>/{slot.max_slots} {t('Slots')}
                                 </p>
                             </div>
 

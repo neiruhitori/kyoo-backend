@@ -3,7 +3,7 @@
 @section('content')
 @if($isShowExpiredBanner)
     <div class="alert alert-warning alert-block" style="display: flex; justify-content: space-between; align-items: center;">
-        <span>Masa percobaan Anda akan berakhir dalam <strong>{{$licenseExpirationDay}}</strong> hari. Upgrade akun anda agar dapat kembali menikmati layanan <strong>KYOO</strong></span>
+        <span>{{ __('Your trial period will end in') }} <strong>{{$licenseExpirationDay}}</strong> {{ __('days') }}. {{ __('Upgrade your account to continue enjoying') }} <strong>KYOO</strong></span>
         {{-- <a href="mailto:support@awandigital.id" class="btn btn-warning"><strong>UPGRADE</strong></a> --}}
         <a href="{{ route('admin-branch.subscription') }}" class="btn btn-warning"><strong>UPGRADE</strong></a>
     </div>

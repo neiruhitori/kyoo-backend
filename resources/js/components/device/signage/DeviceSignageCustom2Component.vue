@@ -107,10 +107,10 @@
             <div class="permission-wrapper" v-if="isAutoPlayBlocked">
                 <div class="permission-body">
                     <p>
-                      Your browser is blocking audio autoplay. Press the button below to enable autoplay.
+                        {{ t('Your browser is blocking audio autoplay. Press the button below to enable autoplay.') }}
                     </p>
                     <button class="active-button" @click="isAutoPlayBlocked = false">
-                        Enable Notification Sound
+                        {{ t('Enable Notification Sound') }}
                     </button>
                 </div>
             </div>
@@ -295,28 +295,36 @@ export default {
     },
 
     created() {
+        // init koneksi ke channel Pusher berdasarkan id branch
         Echo.channel(`event_direct_queue_general.${this.branch.id}`)
+            //listener event DirectQueue misal, ada antrian baru
             .listen("DirectQueue", () => {
+                //fetch data antrian
                 this.getQueues();
             })
+            // listener event ketika status antrian berubah (dipanggil, dilayani ulang, dll)
             .listen("QueueStatusUpdated", async (message) => {
+            // Jika tidak ada antrian atau status tidak termasuk 'recall' atau 'served',
+            // maka ambil semua antrian ulang 
                 if (
                     !message.queue_no ||
                     !["recall", "served"].includes(message.status)
                 ) {
                     return await this.getQueues();
                 }
-
+                // jika tidak maka, ambil ulang antrian berdasarkan queue_no
                 await this.getQueues(message.queue_no);
 
                 if (
-                    this.config.queue_voice &&
-                    this.features.find((v) => v.additional_feature.name === "Panggilan Suara") &&
-                    this.servingQueue[message.workstation_id] &&
+                    this.config.queue_voice && // cek jika branch config ada fitur voice
+                    //pastikan fitur panggilan aktif
+                    this.features.find((v) => v.additional_feature.name === "Panggilan Suara") && 
+                    this.servingQueue[message.workstation_id] && // ada antrian aktif untuk workstation
                     message.status &&
-                    ["recall", "served"].includes(message.status) &&
-                    !message.not_called
+                    ["recall", "served"].includes(message.status) && //status sesuai
+                    !message.not_called // tidak dalam kondisi 'not_called'
                 ) {
+                     // Panggil fungsi putar audio
                     this.getQueueCallAudio(message);
                 }
             });
@@ -547,9 +555,10 @@ export default {
                 if (this.isYouTube(media.url)) {
                     return null; // Skip fetching YouTube media
                 }
-                const response = await fetch(media.url);
-                const blob = await response.blob();
+                const response = await fetch(media.url); 
+                const blob = await response.blob(); //convert response to blob
 
+                //convert blob to base64
                 const base64Media = await new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.onloadend = () => resolve(reader.result);
@@ -562,40 +571,49 @@ export default {
             const base64Medias = await Promise.all(fetchMedia);
 
             // Fetch Audio
-            let audios = ['intro_bell'];
-            const isIndonesia = this.country === 'Indonesia';
+            let audios = ['intro_bell']; //init array
+            const isIndonesia = this.country === 'Indonesia'; //check negara asal branch
 
+            //sesuaikan audio sesuai bahasa, berdasarkan negara
             audios.push(isIndonesia ? 'nomor_antrian' : 'customer_number');
+
+            //vo style simple: [intro bell, nomor_antrian, A110 (contoh nomer)]
+            //vo style standard: [intro bell, nomor_antrian, A110 (contoh nomer), dicounter, 1 (nomer counter/meja)] 
             if (this.vo_style !== 'simple') {
                 const phrase = isIndonesia ? ['dicounter'] : ['please_proceed', 'to_counter'];
                 audios.push(...phrase);
             }
 
+            //render angka 0–9 sebagai string
             for (let i = 0; i <= 9; i++) {
                 audios.push(i.toString());
             }
+
+            //render huruf A–Z, (kecuali H)
             for (let i = 65; i <= 80; i++) {
                 if (i !== 72) {
                     audios.push(String.fromCharCode(i));
                 }
             }
 
-            const base64Audios = [];
+            const base64Audios = []; //init array base64
+            //loop fetch tiap audio
             const fetchAudio = audios.map(async audio => {
+                //url beda utk vo english
+                //format vo hanya tersedia utk branch dari indonesia (wav/mp3)
                 let audio_url = `/storage/audio/vo/${audio}.${this.vo_format}`;
                 if (this.country != 'Indonesia') {
                     audio_url = `/storage/audio/vo_en/${audio}.wav`
                 }
+                //convert dari response->blob->base64
                 const response = await fetch(audio_url);
                 const blob = await response.blob();
-
                 const base64Audio = await new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.onloadend = () => resolve(reader.result);
                     reader.onerror = reject;
                     reader.readAsDataURL(blob);
                 });
-
                 const contentType = `audio/${this.vo_format === 'mp3' ? 'mpeg' : 'wav'}`;
                 const dataURL = `data:${contentType};base64,${base64Audio.split(',')[1]}`;
 
@@ -703,17 +721,21 @@ export default {
             }
         },
         async getQueueCallAudio(message) {
-            if (this.isPlaying) {
+            if (this.isPlaying) { // check jika audio sedang diputar
                 this.playQueue.push(message);
+                //antrian suara baru dimasukkan ke playQueue
                 return;
             }
 
             this.isPlaying = true;
             this.isBlink(message.workstation_id);
+            // fungsi isBlink untuk menandai workstation sedang memanggil
 
             const servingQueue = this.servingQueue[message.workstation_id];
+            //ambil data antrian berdasarkan workstation_id dari pesan realtime
 
             if(!servingQueue?.queue_no) {
+                //jika tidak ada queue_no, maka lanjutkan ke antrian berikutnya jika ada
                 this.isPlaying = false;
                 if (this.playQueue.length > 0) {
                     const nextMessage = this.playQueue.shift();
@@ -722,10 +744,10 @@ export default {
                 return;
             }
 
-            const queueNo = servingQueue.queue_no;
+            const queueNo = servingQueue.queue_no; //no_antrian yg sedang dilayani
             const workstation = this.workstations.find(workstation => workstation.id === servingQueue.workstation_id);
-            const counter_id = workstation.label.replace(/\D/g, '');
-            let audio = ['intro_bell'];
+            const counter_id = workstation.label.replace(/\D/g, ''); //nomer meja/counter
+            let audio = ['intro_bell']; //init array urutan audio
             const isIndonesia = this.country === 'Indonesia';
 
             audio.push(isIndonesia ? 'nomor_antrian' : 'customer_number');
@@ -737,9 +759,10 @@ export default {
             }
            
 
-            const playlist = [];
+            const playlist = []; //init playlist dari audio yang sudah di load
             audio.forEach(audioID => {
                 const matchingAudio = this.callAudio.find(call => call.id === audioID);
+                //cocokkan audio berdasarkan array urutan audio sebelumnya
                 if (matchingAudio) {
                     playlist.push(matchingAudio.data);
                 }
@@ -750,11 +773,13 @@ export default {
                 }
                 await new Promise(wait => setTimeout(wait, 1000));
 
+            //audio diputar satu per satu
             for (const audioData of playlist) {
                 if (audioEl.paused) {
                     audioEl.src = audioData;
                     audioEl.play();
                 } else {
+                    //lanjut ke audio berikutnya
                     this.playQueue.push(audioData);
                 }
 
@@ -763,12 +788,14 @@ export default {
                 });
             }
 
-            this.isPlaying = false;
+            this.isPlaying = false; //setelah audio diputar, set ke false
             if (this.playQueue.length > 0) {
+                //jika ada antrian berikutnya maka panggil ulang fungsi
                 const nextMessage = this.playQueue.shift();
                 await this.getQueueCallAudio(nextMessage);
             }
-            await new Promise(wait => setTimeout(wait, 1000));
+            //tambahan jeda setelah audio diputar
+            await new Promise(wait => setTimeout(wait, 1000)); 
 
             if (this.player && this.player.setVolume) {
                     this.player.setVolume(this.volumeYT); // Kembalikan volume YouTube

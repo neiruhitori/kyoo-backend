@@ -25,4 +25,6 @@ return [
     'slot2' => 'To view the service time slot usage guide, please visit here ',
     'slot3' => 'here',
     'subservice' => 'Service can have more types of sub-services',
+    'access1' => 'This is the feature configuration that you can adjust to your needs.',
+    'access2' => 'Activate the additional menu for the service officer\'s page',
 ];

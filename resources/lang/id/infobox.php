@@ -25,4 +25,6 @@ return [
     'slot2' => 'Untuk melihat panduan penggunaan slot waktu layanan, silahkan kunjungi ',
     'slot3' => 'disini',
     'subservice' => '1 Layanan bisa memiliki 1 atau lebih jenis Sub Layanan',
+    'access1' => 'Ini adalah konfigurasi fitur yang bisa anda sesuaikan dengan kebutuhan.',
+    'access2' => 'Aktifkan Menu tambahan untuk halaman petugas layanan',
 ];

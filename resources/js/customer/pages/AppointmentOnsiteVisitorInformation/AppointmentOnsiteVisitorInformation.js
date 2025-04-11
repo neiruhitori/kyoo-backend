@@ -12,6 +12,7 @@ import TextField from '../../components/TextField'
 import Button from '../../components/Button'
 import DangerAlert from '../../components/DangerAlert'
 import Loading from '../../components/Loading'
+import useLocalization from '../../hooks/useLocalization'
 
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 import { fetchBranch } from '../../api/branch'
@@ -25,7 +26,8 @@ function useForceUpdate(){
 const validator = new Validator()
 
 function AppointmentOnsiteVisitorInformation() {
-    const PAGE_TITLE = 'Informasi Pengunjung'
+    const {t, locale} = useLocalization();
+    const PAGE_TITLE = t('Visitor Information')
     const forceUpdate = useForceUpdate()
     const [searchParams] = useSearchParams()
     const { branchId, serviceId } = useParams()
@@ -43,7 +45,7 @@ function AppointmentOnsiteVisitorInformation() {
     const [email, setEmail] = useState('')
     const [contractNumber, setContractNumber] = useState('')
     const [reasonForVisit, setReasonForVisit] = useState('')
-    const [headerErrorMessage, setHeaderErrorMessage] = useState('Gagal membuat antrian')
+    const [headerErrorMessage, setHeaderErrorMessage] = useState(t('Failed to Create Queue'))
     const [errorMessage, setErrorMessage] = useState('')
     const [selectedButton, setSelectedButton] = useState('submit')
 
@@ -89,13 +91,13 @@ function AppointmentOnsiteVisitorInformation() {
     const renderStandardUI = () => (
            <div style={{ flex: '1 1 0%' }}>
                         <TextField
-                            label="Nama Lengkap"
+                            label={t("Full Name")}
                             style={{ marginBottom: '1.5rem' }}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Ch. John Doe"
                             error={!!validationMessage.name}
-                            helperText={validationMessage.name}
+                            helperText={t(validationMessage.name)}
                         />
                         <TextField
                             label="Email"
@@ -105,17 +107,17 @@ function AppointmentOnsiteVisitorInformation() {
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Ch. john@mail.com"
                             error={!!validationMessage.email}
-                            helperText={validationMessage.email}
+                            helperText={t(validationMessage.email)}
                         />
                         <TextField
-                            label="No. Telepon"
+                            label={t("Phone Number")}
                             type="tel"
                             style={{ marginBottom: '1.5rem' }}
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             placeholder="+62"
                             error={!!validationMessage.phone}
-                            helperText={validationMessage.phone}
+                            helperText={t(validationMessage.phone)}
                         />
             </div>
     );
@@ -123,13 +125,13 @@ function AppointmentOnsiteVisitorInformation() {
     const renderFinanceUI = () => (
     <div style={{ flex: '1 1 0%' }}>
         <TextField
-            label="Nama/Name"
+            label={t("Name")}
             style={{ marginBottom: '1.5rem' }}
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ch. John Doe"
             error={!!validationMessage.name}
-            helperText={validationMessage.name}
+            helperText={t(validationMessage.name)}
         />
         <TextField
             label="Email"
@@ -139,26 +141,26 @@ function AppointmentOnsiteVisitorInformation() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Ch. john@mail.com"
             error={!!validationMessage.email}
-            helperText={validationMessage.email}
+            helperText={t(validationMessage.email)}
         />
         <TextField
-            label="No. Kontrak/Contract Number"
+            label={t("Contract Number")}
             style={{ marginBottom: '1.5rem' }}
             value={contractNumber}
             onChange={(e) => setContractNumber(e.target.value)}
             placeholder="1234567890"
             error={!!validationMessage.contractNumber}
-            helperText={validationMessage.contractNumber}
+            helperText={t(validationMessage.contractNumber)}
         />
         <TextField
-            label="No. Telepon/Phone Number"
+            label={t("Phone Number")}
             type="tel"
             style={{ marginBottom: '1.5rem' }}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+62"
             error={!!validationMessage.phone}
-            helperText={validationMessage.phone}
+            helperText={t(validationMessage.phone)}
         />
     </div>
     );
@@ -166,60 +168,60 @@ function AppointmentOnsiteVisitorInformation() {
     const renderMedicalUI = () => (
         <div style={{ flex: '1 1 0%' }}>
                 <TextField
-                    label="Nama/Name"
+                    label={t("Name")}
                     style={{ marginBottom: '1.5rem' }}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Ch. John Doe"
                     error={!!validationMessage.name}
-                    helperText={validationMessage.name}
+                    helperText={t(validationMessage.name)}
                 />
                 <TextField
-                    label="Tanggal lahir/DOB"
+                    label={t("Date of Birth")}
                     type="date"
                     style={{ marginBottom: '1.5rem' }}
                     value={dateOfBirth}
                     onChange={(e) => setDateOfBirth(e.target.value)}
                     error={!!validationMessage.dateOfBirth}
-                    helperText={validationMessage.dateOfBirth}
+                    helperText={t(validationMessage.dateOfBirth)}
                 />
                 <TextField
-                    label="Alamat/Address"
+                    label={t("Address")}
                     style={{ marginBottom: '1.5rem' }}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="Ch. Jln Merdeka"
                     error={!!validationMessage.address}
-                    helperText={validationMessage.address}
+                    helperText={t(validationMessage.address)}
                 />
                 <TextField
-                    label="No. Telepon/Phone number"
+                    label={t("Phone Number")}
                     type="tel"
                     style={{ marginBottom: '1.5rem' }}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+62"
                     error={!!validationMessage.phone}
-                    helperText={validationMessage.phone}
+                    helperText={t(validationMessage.phone)}
                 />
                 <TextField
-                    label="Nomer cadangan/Emergency Number"
+                    label={t("Emergency Number")}
                     type="tel"
                     style={{ marginBottom: '1.5rem' }}
                     value={emergencyNumber}
                     onChange={(e) => setEmergencyNumber(e.target.value)}
                     placeholder="+62"
                     error={!!validationMessage.emergencyNumber}
-                    helperText={validationMessage.emergencyNumber}
+                    helperText={t(validationMessage.emergencyNumber)}
                 />
                 <TextField
-                    label="NIK/Passport Number"
+                    label={t("Passport Number")}
                     style={{ marginBottom: '1.5rem' }}
                     value={passportNumber}
                     onChange={(e) => setPassportNumber(e.target.value)}
                     placeholder="NIK"
                     error={!!validationMessage.passportNumber}
-                    helperText={validationMessage.passportNumber}
+                    helperText={t(validationMessage.passportNumber)}
                 />
                 <TextField
                     label="Email"
@@ -229,16 +231,16 @@ function AppointmentOnsiteVisitorInformation() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Ch. john@mail.com"
                     error={!!validationMessage.email}
-                    helperText={validationMessage.email}
+                    helperText={t(validationMessage.email)}
                 />
                 <TextField
-                    label="Alasan Kunjungan/Reason for visit"
+                    label={t("Reason for Visit")}
                     style={{ marginBottom: '1.5rem' }}
                     value={reasonForVisit}
                     onChange={(e) => setReasonForVisit(e.target.value)}
                     placeholder="Ch. CheckUp"
                     error={!!validationMessage.reasonForVisit}
-                    helperText={validationMessage.reasonForVisit}
+                    helperText={t(validationMessage.reasonForVisit)}
                 />
             </div>
     );
@@ -246,50 +248,50 @@ function AppointmentOnsiteVisitorInformation() {
     const renderMedicalUI2 = () => (
         <div style={{ flex: '1 1 0%' }}>
                 <TextField
-                    label="Nama/Name"
+                    label={t("Name")}
                     style={{ marginBottom: '1.5rem' }}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Ch. John Doe"
                     error={!!validationMessage.name}
-                    helperText={validationMessage.name}
+                    helperText={t(validationMessage.name)}
                 />
                 <TextField
-                    label="Tanggal lahir/DOB"
+                    label={t("Date of Birth")}
                     type="date"
                     style={{ marginBottom: '1.5rem' }}
                     value={dateOfBirth}
                     onChange={(e) => setDateOfBirth(e.target.value)}
                     error={!!validationMessage.dateOfBirth}
-                    helperText={validationMessage.dateOfBirth}
+                    helperText={t(validationMessage.dateOfBirth)}
                 />
                 <TextField
-                    label="NIK/Passport Number"
+                    label={t("Passport Number")}
                     style={{ marginBottom: '1.5rem' }}
                     value={passportNumber}
                     onChange={(e) => setPassportNumber(e.target.value)}
                     placeholder="NIK"
                     error={!!validationMessage.passportNumber}
-                    helperText={validationMessage.passportNumber}
+                    helperText={t(validationMessage.passportNumber)}
                 />
                 <TextField
-                    label="No. Telepon/Phone number"
+                    label={t("Phone Number")}
                     type="tel"
                     style={{ marginBottom: '1.5rem' }}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+62"
                     error={!!validationMessage.phone}
-                    helperText={validationMessage.phone}
+                    helperText={t(validationMessage.phone)}
                 />
                 <TextField
-                    label="Alasan Kunjungan/Reason for visit"
+                    label={t("Reason for Visit")}
                     style={{ marginBottom: '1.5rem' }}
                     value={reasonForVisit}
                     onChange={(e) => setReasonForVisit(e.target.value)}
                     placeholder="Ch. CheckUp"
                     error={!!validationMessage.reasonForVisit}
-                    helperText={validationMessage.reasonForVisit}
+                    helperText={t(validationMessage.reasonForVisit)}
                 />
             </div>
     );
@@ -367,9 +369,9 @@ function AppointmentOnsiteVisitorInformation() {
 
             if (!booking.success) {
                 if(booking.code === 10002) {
-                    setHeaderErrorMessage('Gangguan Koneksi')
+                    setHeaderErrorMessage('Connection error')
                 } else {
-                    setHeaderErrorMessage('Gagal membuat antrian')
+                    setHeaderErrorMessage(t('Failed to Create Queue'))
                 }
                 showError(booking.message)
                 return
@@ -377,9 +379,9 @@ function AppointmentOnsiteVisitorInformation() {
             navigate(`/customer/${branchId}/appointment-onsite/booking-status/${booking.data.id}`)
         } catch (error) {
             if(error.code === 10002) {
-                setHeaderErrorMessage('Gangguan Koneksi')
+                setHeaderErrorMessage('Connection error')
             } else {
-                setHeaderErrorMessage('Gagal membuat antrian')
+                setHeaderErrorMessage(t('Failed to Create Queue'))
             }
             showError(error.message)
         }
@@ -451,7 +453,7 @@ function AppointmentOnsiteVisitorInformation() {
                     width: '100%',
                     fontSize: '1rem',
                     marginBottom: '.5rem'
-                }} onClick={() => setSelectedButton('submit')}>Selanjutnya</Button>
+                }} onClick={() => setSelectedButton('submit')}>{t('Next')}</Button>
             </div>
         </form>
     </>

@@ -7,6 +7,7 @@ import { searchBookingByBookingCode } from '../../api/booking'
 import Html5QrcodePlugin from '../../components/Html5QrcodePlugin'
 import KyooLogo from '../../components/KyooLogo'
 import DangerAlert from '../../components/DangerAlert'
+import useLocalization from '../../hooks/useLocalization'
 
 const QRReaderRoot = styled.div`
     height: ${window.innerHeight}px;
@@ -39,6 +40,7 @@ const PageTitle = styled.h4(() => ({
 const initialHeight = window.innerHeight
 
 export default function QRReader() {
+    const {t, locale} = useLocalization();
     const qrRef = useRef(null)
 
     const [parentWidth, setParentWidth] = useState(0)
@@ -139,10 +141,10 @@ export default function QRReader() {
                 transform: 'translateX(-50%)',
                 width: '260px'
             }}>
-                <PageTitle>Scan Kode QR</PageTitle>
+                <PageTitle>{t('Scan QR Code')}</PageTitle>
                 <p style={{
                     textAlign: 'center'
-                }}>Sejajarkan Kode QR dengan kotak dibawah</p>
+                }}>{t('Align the QR code with the box below')}</p>
             </div>}
 
             {activeSection === 'code' && <div style={{
@@ -156,10 +158,10 @@ export default function QRReader() {
                     margin: '0 auto',
                     marginBottom: '2.25rem'
                 }}>
-                    <PageTitle>Masukkan Kode Unik</PageTitle>
+                    <PageTitle>{t('Insert Booking Code')}</PageTitle>
                     <p style={{
                         textAlign: 'center'
-                    }}>Masukkan kode unik untuk melihat status antrian Anda</p>
+                    }}>{t('Enter the unique code to check your queue status')}</p>
                 </div>
 
                 <div style={{
@@ -181,7 +183,7 @@ export default function QRReader() {
                                 letterSpacing: '.02em',
                                 fontSize: '.75rem',
                                 display: 'inline-block'
-                            }}>Kode Unik</label>
+                            }}>{t('Booking Code')}</label>
 
                             <input
                                 type="text"
@@ -216,7 +218,7 @@ export default function QRReader() {
                                 display: 'inline-block',
                                 fontSize: '1.125rem'
                             }}>
-                                Cari
+                                {t('Search')}
                             </button>
                         </div>
                     </form>
@@ -245,7 +247,7 @@ export default function QRReader() {
                     onClick={() => {
                         setActiveSection('code')
                     }}
-                >Kode Unik</SwitchButton>
+                >{t('Booking Code')}</SwitchButton>
             </div>
         </div>
 

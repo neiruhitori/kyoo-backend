@@ -5,6 +5,7 @@ import { Link, useParams }  from 'react-router-dom'
 import { formatBrowser, formatTime, format } from "../../utils/date"
 import { getBooking } from '../../api/booking'
 import { fetchBranch } from '../../api/branch'
+import useLocalization from '../../hooks/useLocalization'
 
 import Header from '../../components/Header'
 import MainContent from '../../components/MainContent'
@@ -13,7 +14,8 @@ import Card from '../../components/Card'
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
 
 export default function BookingDetail() {
-    const PAGE_TITLE = 'Detail Antrian'
+    const {t, locale} = useLocalization();
+    const PAGE_TITLE = t('Queue Detail')
 
     const { bookingId, branchId, queueType } = useParams()
 
@@ -71,7 +73,7 @@ export default function BookingDetail() {
                 }}>
                     <h4 style={{
                         marginBottom: '1.625rem'
-                    }}>Detail Booking</h4>
+                    }}>{t('Booking Details')}</h4>
 
                     <div>
                         <div style={{
@@ -82,7 +84,7 @@ export default function BookingDetail() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>Tanggal Antri</div>
+                            }}>{t('Booking Date')}</div>
 
                             <div style={{
                                 flex: '1',
@@ -101,7 +103,7 @@ export default function BookingDetail() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>Kode Unik</div>
+                            }}>{t('Booking Code')}</div>
 
                             <div style={{
                                 flex: '1',
@@ -120,7 +122,7 @@ export default function BookingDetail() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>Nama Cabang</div>
+                            }}>{t('Branch Name')}</div>
 
                             <div style={{
                                 flex: '1',
@@ -139,7 +141,7 @@ export default function BookingDetail() {
                             <div style={{
                                 flex: '1',
                                 color: '#A5A5A5'
-                            }}>Layanan</div>
+                            }}>{t('Service')}</div>
 
                             <div style={{
                                 flex: '1',
@@ -159,7 +161,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>Waktu</div>
+                                }}>{t('Time')}</div>
 
                                 <div style={{
                                     flex: '1',
@@ -178,7 +180,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>Tanggal</div>
+                                }}>{t('Date')}</div>
 
                                 <div style={{
                                     flex: '1',
@@ -198,7 +200,7 @@ export default function BookingDetail() {
                     }}>
                         <h4 style={{
                             marginBottom: '1.625rem'
-                        }}>Detail Pengunjung</h4>
+                        }}>{t('Customer Details')}</h4>
 
                         <div>
                             <div style={{
@@ -209,7 +211,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>Nama</div>
+                                }}>{t('Name')}</div>
 
                                 <div style={{
                                     flex: '1',
@@ -247,7 +249,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>No. Telepon</div>
+                                }}>{t('Phone Number')}</div>
 
                                 <div style={{
                                     flex: '1',
@@ -265,7 +267,7 @@ export default function BookingDetail() {
                     }}>
                         <h4 style={{
                             marginBottom: '1.625rem'
-                        }}>Detail Pengunjung</h4>
+                        }}>{t('Customer Details')}</h4>
 
                         <div>
                             <div style={{
@@ -276,7 +278,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>Nama</div>
+                                }}>{t('Name')}</div>
 
                                 <div style={{
                                     flex: '1',
@@ -295,7 +297,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>Tanggal lahir</div>
+                                }}>{t('Date of Birth')}</div>
 
                                 <div style={{
                                     flex: '1',
@@ -314,7 +316,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>Alamat</div>
+                                }}>{t('Address')}</div>
 
                                 <div style={{
                                     flex: '1',
@@ -333,7 +335,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>No. Telepon</div>
+                                }}>{t('Phone Number')}</div>
 
                                 <div style={{
                                     flex: '1',
@@ -352,7 +354,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>Nomer Cadangan</div>
+                                }}>{t('Emergency Number')}</div>
 
                                 <div style={{
                                     flex: '1',
@@ -371,7 +373,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>NIK/Passport number</div>
+                                }}>{t('Passport Number')}</div>
 
                                 <div style={{
                                     flex: '1',
@@ -409,7 +411,7 @@ export default function BookingDetail() {
                                 <div style={{
                                     flex: '1',
                                     color: '#A5A5A5'
-                                }}>Alasan Kunjungan</div>
+                                }}>{t('Reason for Visit')}</div>
 
                                 <div style={{
                                     flex: '1',

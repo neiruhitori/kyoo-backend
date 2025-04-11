@@ -59,7 +59,6 @@
     "Sub-Service list in :serv": "Sub-Service list in :serv",
     
     "Service name": "Service name",
-    "Waiting": "Waiting",
     "Waiting Time": "Waiting Time",
     "Currently": "Currently",
     "Average": "Average",
@@ -220,7 +219,6 @@
     "Phone": "Phone",
     "Mobile Phone": "Mobile Phone",
     "Emergency Number": "Emergency Number",
-    "Reason for Visit": "Reason for Visit",
     "Password Confirmation": "Password Confirmation",
     "Category": "Category",
     "Icon": "Icon",
