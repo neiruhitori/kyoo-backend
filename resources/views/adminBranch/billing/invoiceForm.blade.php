@@ -224,9 +224,11 @@
                             <p class="pt-2 ml-3">{{ __('Staff') }}</p>
                         </div>
                         <div class="d-flex align-items-center mb-3">
+                            <div id="web-kiosk" style="display: flex">
                             <h6 style="min-width: 150px;" class="pt-1">Web Kiosk:</h6>
                             <input style="max-width: 200px;" type="number" class="form-control" name="kiosk" id="kiosk" min="0" max="3" required value="{{ $subscription ? $subscription->kiosk  : '0' }}" readonly>
                             <p class="pt-2 ml-3">{{ __('Device') }}</p>
+                            </div>
                         </div>
                         <div class="d-flex align-items-center mb-5">
                             <div id="web-signage" style="display: flex">
@@ -433,9 +435,33 @@
                         </div>
                 </div>
             </div>
+            <div class="col-md-12" id="summCounter">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 112px"><b>Counter Price:</b></h6>
+                        <div id="zafkiel" class="ml-2" style="min-width: 90px">
+                            <h6 class=""></h6>
+                        </div>
+                </div>
+            </div>
+            <div class="col-md-12" id="signagePriceOver">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 112px"><b>Signage Price:</b></h6>
+                        <div id="raphiel" class="ml-2" style="min-width: 90px">
+                            <h6 class=""></h6>
+                        </div>
+                </div>
+            </div>
+            <div class="col-md-12" id="kioskPriceOver">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mr-2" style="min-width: 112px"><b>Kiosk Price:</b></h6>
+                        <div id="miriel" class="ml-2" style="min-width: 90px">
+                            <h6 class=""></h6>
+                        </div>
+                </div>
+            </div>
 
             <div class="col-md-12 d-flex">
-                <div class="d-flex align-items-center mb-2">
+                <div class="d-flex mb-2">
                     <h6 class="mr-2" style="min-width: 112px"><b>Subtotal Item:</b></h6>
                         <div id="price" class="ml-2" style="min-width: 90px">
                             <h6 class=""></h6>
@@ -492,6 +518,7 @@
     let queueType = document.getElementById('license_type');
     let modalButton = document.getElementById('modalBtn');
     let signageContainer = document.getElementById('web-signage');
+    let kioskContainer = document.getElementById('web-kiosk');
     let modalSignage = document.getElementById('md_signage_container');
     let priceElement = document.getElementById('price');
     let taxElement = document.getElementById('tax');
@@ -633,10 +660,10 @@ function toggleSignageInput(selectedPackage) {
                         signage: 1
                     });
                     signageContainer.style.display = 'flex';
+                    kioskContainer.style.display = 'flex';
                     modalSignage.style.display = 'flex';
                 }else {
-                    // queue.setAttribute('readonly', true);
-                    // signage.setAttribute('readonly', true);
+                    setReadOnly([queue, services, kiosk, signage], true);
                     table.addEventListener('input', function () {
                     const tableValue = parseInt(table.value) || 0;
                     services.value = tableValue * 2;
@@ -649,6 +676,7 @@ function toggleSignageInput(selectedPackage) {
                     signage: ''
                 });
                 signageContainer.style.display = 'none';
+                kioskContainer.style.display = 'none';
                 modalSignage.style.display = 'none';
             }
         return;
@@ -740,27 +768,31 @@ function getModalData() {
     let tableVal = table.value;
     let queueVal = queue.value;
     let serviceVal = services.value;
-    let kioskVal = kiosk.value;
     let packageVal = '';
     let subsDurationVal = subsDuration.value;
     let queueTypeVal = '';
         document.getElementById('md_table_container').style.display = 'flex';
-        document.getElementById('md_kiosk_container').style.display = 'flex';
+        document.getElementById('md_kiosk_container').style.display = 'none';
         document.getElementById('md_signage_container').style.display = 'none';
 
     if(packageSelection.value === "custom"){
+        let kioskVal = kiosk.value;
         let signageVal = signage.value;
         packageVal = "Custom";
+        document.getElementById('md_kiosk').innerHTML = kioskVal + ` {{ __('Device') }}`;
         document.getElementById('md_signage').innerHTML = signageVal + ` {{ __('Device') }}`;
-        document.getElementById('md_table_container').style.display = 'none';
-        document.getElementById('md_kiosk_container').style.display = 'none';
-        document.getElementById('md_signage_container').style.display = 'none';
+        // document.getElementById('md_table_container').style.display = 'flex';
+        document.getElementById('md_kiosk_container').style.display = 'flex';
+        document.getElementById('md_signage_container').style.display = 'flex';
         
     }else if(packageSelection.value === "premium"){
-        let signageVal = signage.value;        
+        let signageVal = signage.value;
+        let kioskVal = kiosk.value;        
         packageVal = "Premium";
         document.getElementById('md_signage_container').style.display = 'flex';
+        document.getElementById('md_kiosk_container').style.display = 'flex';
         document.getElementById('md_signage').innerHTML = signageVal + ` {{ __('Device') }}`;
+        document.getElementById('md_kiosk').innerHTML = kioskVal + ` {{ __('Device') }}`;
     }else{
         packageVal = "Lite";
     }
@@ -770,7 +802,7 @@ function getModalData() {
     }else{
         queueTypeVal = "Appointment";
     }
-    document.getElementById('md_kiosk').innerHTML = kioskVal + ` {{ __('Device') }}`;
+    // document.getElementById('md_kiosk').innerHTML = kioskVal + ` {{ __('Device') }}`;
     document.getElementById('md_table').innerHTML = tableVal + ` {{ __('Workstation') }}`;
     document.getElementById('md_license').innerHTML = packageVal;
     document.getElementById('md_queue_type').innerHTML = queueTypeVal;
@@ -875,19 +907,67 @@ function getData(selectedPackage){
                     itemsElement.innerHTML = `<h6><b>${data.license_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
                 }else{
                     let custTaxContainer= document.getElementById('formTax');
-                    custTaxContainer.style.display = 'revert';
                     let custPerContainer= document.getElementById('pricepercounter');
+                    let sigOverContainer= document.getElementById('signagePriceOver');
+                    let summContainer= document.getElementById('summCounter');
+                    let kiOverContainer= document.getElementById('kioskPriceOver');
+                    custTaxContainer.style.display = 'revert';
                     custPerContainer.style.display = 'none';
+                    kiOverContainer.style.display = 'none';
+                    sigOverContainer.style.display = 'none';
+                    summContainer.style.display = 'none';
                     //if non_idn
                     document.getElementById('nonCustom').style.display = 'flex';
                     if(data.country != 'Indonesia'){
-                            custTaxContainer.style.display = 'none';
+                        custTaxContainer.style.display = 'none';
                             custPerContainer.style.display = 'revert';
-                            let perCounterPrice = price/data.subscription_duration;
+                            let perCounterPrice = price/data.subscription_duration/table.value;
+
+                        if (data.billing_type != 'lite') {
+                            
+                            let kioskPrice = data.total_kiosk_prices / kiosk.value / selectedDuration;
+                            let signagePrice = data.signage_prices / signage.value / selectedDuration;
+                            signagePrice = isNaN(signagePrice) ? 0 : signagePrice
+                            kioskPrice = isNaN(kioskPrice) ? 0 : kioskPrice;
+                            let finalPrice = total + data.total_kiosk_prices + data.signage_prices;
+
+                            kiOverContainer.style.display = 'revert';
+                            sigOverContainer.style.display = 'revert';
+                            summContainer.style.display = 'revert';
+                            document.getElementById('zafkiel').innerHTML = 
+                            `<h6>${tableVal} Counter x 
+                                 ${data.subscription_duration} Months x 
+                                USD ${perCounterPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                                </h6>`;
+                            document.getElementById('miriel').innerHTML = 
+                            `<h6>
+                                ${kiosk.value} Device
+                                ${kiosk.value > 0 ? 
+                                ` x ${data.subscription_duration} Months x USD ${kioskPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}` 
+                                : ''}
+                            </h6>`;
+                            document.getElementById('raphiel').innerHTML = 
+                            `<h6>
+                                ${signage.value} Device
+                                ${signage.value > 0 ? 
+                                ` x ${data.subscription_duration} Months x USD ${signagePrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}` 
+                                : ''}
+                            </h6>`;
+                            document.getElementById('pingu').innerHTML =
+                            `<h6>USD ${perCounterPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</h6>`;
+                            priceElement.innerHTML = 
+                            `<h6>Counter : USD ${total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} </h6>
+                             <h6>Signage : USD ${data.signage_prices.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} </h6>
+                             <h6>Kiosk : USD ${data.total_kiosk_prices.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} </h6>`;
+                            totalElement.innerHTML = `<h5><b>USD ${finalPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></h5>`;
+                        }else{
+                          
+                            // let perCounterPrice = data.total_table_prices / table.value / selectedDuration;
                             document.getElementById('pingu').innerHTML =
                             `<h6>USD ${perCounterPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</h6>`;
                             priceElement.innerHTML = `<h6>${tableVal} Counter x ${data.subscription_duration} Months x USD ${perCounterPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</h6>`;
                             totalElement.innerHTML = `<h5><b>USD ${total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></h5>`;
+                        }
                     }else{
                         priceElement.innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
                         taxElement.innerHTML = `<h6>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;

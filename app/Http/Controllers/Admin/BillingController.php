@@ -75,6 +75,7 @@ class BillingController extends Controller
                 $item->update([
                     'item_name' => $request->item_name,
                     'prices' => $request->prices,
+                    'en_prices' => $request->en_prices,
                 ]);
                 $request->session()->flash('warning', 'Data Berhasil Diubah');
                 return redirect(route('admin.billing.item'));
