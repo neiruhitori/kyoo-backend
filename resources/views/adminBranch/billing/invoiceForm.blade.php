@@ -960,6 +960,11 @@ function getData(selectedPackage){
                              <h6>Signage : USD ${data.signage_prices.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} </h6>
                              <h6>Kiosk : USD ${data.total_kiosk_prices.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} </h6>`;
                             totalElement.innerHTML = `<h5><b>USD ${finalPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></h5>`;
+                            amount.value = finalPrice;
+                            confirmBtn.disabled = false;
+                            confirmBtn.textContent = `{{ __('Continue Payment') }}`;
+                            noDataBadge.style.display = 'none';
+                            return
                         }else{
                           
                             // let perCounterPrice = data.total_table_prices / table.value / selectedDuration;
