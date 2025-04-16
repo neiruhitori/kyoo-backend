@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+@push('css')
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+
+@endpush
 <div class="row">
     <div class="col-md-12">
         <div class="card shadow mb-4">
@@ -60,6 +64,7 @@
 </div>
 @endsection
 @push('js')
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     $(document).on('click', 'form button[type=submit]', function(e) {

@@ -240,7 +240,7 @@
         document.getElementById('latInput').value = lat.toFixed(6);
         document.getElementById('lngInput').value = lng.toFixed(6);
 
-        console.log('Clicked at:', lat, lng);
+        // console.log('Clicked at:', lat, lng);
         });
 	</script>
 @endpush

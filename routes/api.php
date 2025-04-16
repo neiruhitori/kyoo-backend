@@ -30,6 +30,7 @@ Route::middleware(['auth:api'])->prefix('signage')->group(function () {
     Route::middleware(['checkDevice'])->group(function () {
         Route::get('layout', 'API\SignageController@layout');
         Route::get('get-media', 'API\SignageController@getMedia');
+        Route::get('get-queue', 'API\SignageController@getQueues');
     });
     
 });

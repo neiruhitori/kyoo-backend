@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\User;
 use App\Branch;
 use Carbon\Carbon;
+use App\Appointment;
+use App\DirectQueue;
 use App\Workstation;
 use App\Models\TVToken;
 use App\Helpers\TVImageHelper;
@@ -54,14 +56,18 @@ class SignageController extends Controller
                 'message' => 'Custom Layout Configuration not found'
             ], 404);
         }
+
+        $custom_layout_config = $TVConfiguration->customLayoutConfiguration2;
+        $custom_layout_config->background_image = "/storage/$custom_layout_config->background_image";
         
 
         return response()->json([
             'success' => true,
             'data' => [
                 'layout' => $branch->BranchConfiguration->template_signage,
+                'logo' => "/storage/$branch->logo",
                 'display_duration' => (int) $TVConfiguration->display_duration * 1000,
-                'custom_layout_config' => $TVConfiguration->customLayoutConfiguration2,
+                'custom_layout_config' => $custom_layout_config,
                 'features' => $features,
                 'branch_configuration' => $branchConfig,
                 'workstation' => $workstations,
@@ -87,6 +93,36 @@ class SignageController extends Controller
         return response()->json([
             'success' => true,
             'data' => $tv_images
+        ]);
+    }
+    public function getQueues(){
+        $branch = auth()->user()->branch;
+        $branch_id = $branch->id;
+
+        if($branch->BranchType->is_appointment){
+            $data = Appointment::with(['Service', 'Workstation'])
+                ->withoutCanceled()
+                ->whereHas('Service', function ($query) use ($branch_id) {
+                    $query->where('branch_id', $branch_id);
+                })
+                ->whereHas('Service.WorkstationService')
+                ->where('date', date('Y-m-d'))
+                ->whereNotIn('status', ['end served', 'no show'])
+                ->orderBy('created_at')
+                ->get();
+        }else{
+            $data = DirectQueue::whereHas('Service', function ($query) use ($branch_id) {
+                return $query->where('branch_id', $branch_id);
+            })
+                ->whereDate('created_at', date('Y-m-d'))
+                ->whereNotIn('status', ['end served', 'no show'])
+                ->orderBy('queue_no')
+                ->get();
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' =>  $data
         ]);
     }
 }
