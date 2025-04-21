@@ -33,6 +33,7 @@
                                                 <th>{{ __('#') }}</th>
                                                 <th>{{ __('Nama Item') }}</th>
                                                 <th>{{ __('Harga Item') }}</th>
+                                                <th>{{ __('Harga Oversea') }}</th>
                                                 <th>{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
@@ -42,6 +43,7 @@
                                                 <td>{{$loop->iteration}}</td>
                                                 <td>{{$item->item_name}}</td>
                                                 <td>Rp. {{ number_format($item->prices, 2, ',', '.') }}</td>
+                                                <td>{{ number_format($item->en_prices, 2, '.', ',') }} USD</td>
                                                 <td>
                                                     <a
                                                         href="{{ route('admin.billing.item.edit', $item->id) }}"

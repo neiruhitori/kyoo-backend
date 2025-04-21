@@ -5,6 +5,8 @@
 <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
 <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
 <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+
 <style type="text/css">
     .log {
         position: absolute;
@@ -40,7 +42,7 @@
         height: 400px;
     }
 </style>
-<script src='https://developer.here.com/javascript/src/iframeheight.js'></script>
+{{-- <script src='https://developer.here.com/javascript/src/iframeheight.js'></script> --}}
 @endpush
 @section('content')
 <div class="row">
@@ -135,7 +137,7 @@
                                     <th>{{ __('Longitude') }}</th>
                                     <td>{{$branch->long}}</td>
                                 </tr>
-                                <tr>
+                                <tr >
                                     <th>{{ __('Maps') }}</th>
                                     <td>
                                         {{-- <iframe
@@ -279,51 +281,28 @@
 </div>
 @endsection
 @push('js')
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
 <script>
     const branch = JSON.parse('{!! $branch !!}')
-		/**
-        * Adds markers to the map highlighting the locations of the captials of
-        * France, Italy, Germany, Spain and the United Kingdom.
-        *
-        * @param  {H.Map} map      A HERE Map instance within the application
-        */
-        function addMarkersToMap(map) {
-            var parisMarker = new H.map.Marker({lat: branch.lat, lng: branch.long});
-            map.addObject(parisMarker);
-        }
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic3VwcG9ydGt5b28iLCJhIjoiY204dGxjNzF1MDFhbDJrb3AxeWljenpmcCJ9.Di2l0rvbaJwiT8vWaLwcJw';
+        // const latValue = parseFloat(document.getElementById('latInput').value)
+        // const lngValue = parseFloat(document.getElementById('lngInput').value)
 
-        /**
-        * Boilerplate map initialization code starts below:
-        */
+        // Default ke Monas kalau input kosong atau invalid
+        const initialLat = branch ? branch.lat : -6.175392
+        const initialLng = branch ?  branch.long : 106.827153
 
-        //Step 1: initialize communication with the platform
-        // In your own code, replace variable window.apikey with your own apikey
-        var platform = new H.service.Platform({
-            apikey: 'lr27OGV_xlkWUrjFSfHhpMKBtxL1zzi3n5tu-jOOYJ4'
+        const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [initialLng, initialLat],
+        zoom: 14
         });
-        var defaultLayers = platform.createDefaultLayers();
 
-        //Step 2: initialize a map - this map is centered over Europe
-        var map = new H.Map(document.getElementById('map'),
-        defaultLayers.vector.normal.map,{
-        center: {lat: branch.lat, lng: branch.long},
-        zoom: 15,
-        pixelRatio: window.devicePixelRatio || 1
-        });
-        // add a resize listener to make sure that the map occupies the whole container
-        window.addEventListener('resize', () => map.getViewPort().resize());
-
-        //Step 3: make the map interactive
-        // MapEvents enables the event system
-        // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
-        var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-
-        // Create the default UI components
-        var ui = H.ui.UI.createDefault(map, defaultLayers);
-
-        // Now use the map as required...
-        window.onload = function () {
-        addMarkersToMap(map);
-        }               
+        // Buat marker kosong di awal
+        let marker = new mapboxgl.Marker()
+        .setLngLat([initialLng, initialLat])
+        .addTo(map);
 </script>
 @endpush

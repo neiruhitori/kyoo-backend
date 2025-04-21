@@ -11,6 +11,7 @@ class ItemPrices extends Model
 
     protected $fillable = [
         'prices',
+        'en_prices',
         'item_name',
         'created_at',
         'updated_at',

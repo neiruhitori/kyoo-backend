@@ -653,12 +653,13 @@ class BillingController extends Controller
         
            if(Auth::user()->Branch->country != 'Indonesia'){
                // ${harga_item selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
-                 $totalSignage = $signagePrices->prices * $duration * $signageQty;
-                 $totalKiosk = $kioskPrices->prices * $duration * $kioskQty;
+                 $totalSignage = $signagePrices->en_prices * $duration * $signageQty;
+                 $totalKiosk = $kioskPrices->en_prices * $duration * $kioskQty;
    
                // ${harga_meja selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
                  $totalTable = $dataBilling->en_prices * $duration * $tableQty;
                  $totalItems = $dataBilling->en_prices * $duration * $tableQty;
+                //  $totalItems = $dataBilling->en_prices;
            }else{
                     if($license == 'custom'){
                         // ${harga_item selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
@@ -678,7 +679,7 @@ class BillingController extends Controller
             return response()->json([
                 'status' => 200,
                 'data' => [
-                    'total_kiosk_prices' => $totalKiosk,
+                    'total_kiosk_prices' => $totalKiosk ,
                     'total_table_prices' =>  $totalTable,
                     'signage_prices' => $totalSignage,
                     'license_prices' => $totalItems ,

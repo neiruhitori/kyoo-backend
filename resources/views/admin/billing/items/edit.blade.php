@@ -12,9 +12,8 @@
             @csrf
             <div class="card-body">
                 @include('layouts.alert')
+                <form action="" method="post">
                 <div class="row">
-                    <div class="col-md-12">
-                        <form action="" method="post">
                             @csrf
                             @method('PUT')
                             <div class="col-md-6">
@@ -37,6 +36,23 @@
                             <div class="col-md-6">
 
                                 <div class="form-group">
+                                <label for="prices">{{ __('Harga Item (Oversea)') }} <small class="text-danger ml-2">*Dalam format USD</small></label>
+
+                                    <input
+                                        name="en_prices"
+                                        type="number"
+                                        class="form-control
+                                        @error('prices') is-invalid @enderror"
+                                        required
+                                        value="{{ $items->en_prices ? $items->en_prices : 0 }}"
+                                    >
+
+                                    @include('layouts.inputError', ['errorName' => 'prices'])
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="form-group">
                                 <label for="prices">{{ __('Harga Item') }} <small class="text-danger ml-2">*Dalam format rupiah</small></label>
 
                                     <input
@@ -53,10 +69,9 @@
                                 
                            
                             </div>
-                            <button class="ml-3 btn btn-warning">{{ __('Tambah') }}</button>
-                        </form>
-                    </div>
-            </div>
+                        </div>
+                        <button class="btn btn-warning">{{ __('Tambah') }}</button>
+                    </form>
         </div>
     </div>
 </div>
