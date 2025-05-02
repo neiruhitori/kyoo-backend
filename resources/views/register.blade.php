@@ -366,8 +366,8 @@
       </a>
       </div>
     </div>
-
-    <img class="page-illustration" src="{{ asset('img/illustrations/registration.svg') }}">
+    <img class="page-illustration" src="{{ asset('img/illustrations/in-line.svg') }}">
+    {{-- <img class="page-illustration" src="{{ asset('img/illustrations/registration.svg') }}"> --}}
   </div>
 
 
