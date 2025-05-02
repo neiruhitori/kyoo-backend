@@ -7,7 +7,7 @@ import BranchDetailStyle3 from '../BranchDetail/BranchDetailStyle3'
 import OnsiteVisitorInformation from '../OnsiteVisitorInformation/OnsiteVisitorInformation'
 import AppointmentOnsiteVisitorInformation from '../AppointmentOnsiteVisitorInformation/AppointmentOnsiteVisitorInformation'
 import BookingDetail from '../BookingDetail/BookingDetail'
-import AppointmentServicesCategoriesStyle1 from '../appointment/ServiceCategoriesStyle1'
+import AppointmentServicesCategoriesStyle3 from '../appointment/ServiceCategoriesStyle3'
 import ServiceList from '../ServiceList/ServiceList'
 import TimeSlotList from '../TimeSlotList/TimeSlotList'
 import OnsiteTimeSlotList from '../onsite/TimeSlotList'
@@ -31,7 +31,7 @@ export default function AppointmentStyle1() {
                <Route path="/scan" element={<QRReader />} />
                <Route path="/customer/:branchId/appointment/services" element={<AppointmentServicesStyle3 />} />
                <Route path="/customer/:branchId/appointment/:serviceCategoryId/services" element={<AppointmentServicesStyle3 />} />
-               <Route path="/customer/:branchId/appointment/services/two-layer" element={<AppointmentServicesCategoriesStyle1 />} />
+               <Route path="/customer/:branchId/appointment/services/two-layer" element={<AppointmentServicesCategoriesStyle3 />} />
                <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
                <Route path="/customer/:branchId/onsite/services/two-layer" element={<OnsiteServicesTwoLayer />} />
                <Route path="/customer/:branchId/onsite/services/:serviceId" element={<OnsiteTimeSlotList />} />
