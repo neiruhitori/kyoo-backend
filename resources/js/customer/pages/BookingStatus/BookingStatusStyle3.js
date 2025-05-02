@@ -8,8 +8,10 @@ import { fetchBranch } from '../../api/branch'
 import { getTermConditionByBranchId } from '../../api/termCondition'
 import { cancelAppointment } from '../../api/appointment'
 import usePromotions from '../../hooks/usePromotions'
-import { getAbrvDate, getDayName, formatBrowser } from '../../utils/date'
-
+import { getAbrvDate, getDayName, formatBrowser, getMonthAbrvName } from '../../utils/date'
+import LocationIcon from '../../icons/LocationIcon'
+import { format, eachMonthOfInterval, parseISO, addDays } from 'date-fns'
+import id from 'date-fns/locale/id'
 import Header from '../../components/Header'
 import Banner from '../../components/Banner'
 import Chip from '../../components/Chip'
@@ -17,9 +19,9 @@ import H2 from '../../components/H2'
 import Card from '../../components/Card'
 import BlueCard from '../../components/BlueCard'
 import InfoAlert from '../../components/InfoAlert'
-import ChipSuccess from '../../components/ChipSuccess'
-import ChipWarning from '../../components/ChipWarning'
-import ChipDanger from '../../components/ChipDanger'
+import ChipSuccess from '../../components/ChipSuccess2'
+import ChipWarning from '../../components/ChipWarning2'
+import ChipDanger from '../../components/ChipDanger2'
 import Rating from '../../components/Rating'
 import Button from '../../components/Button'
 import Dialog from '../../components/Dialog'
@@ -27,8 +29,11 @@ import Story from '../../components/Story'
 
 import ClockIcon from '../../icons/ClockIcon'
 import ArrowLeftIcon from '../../icons/ArrowLeftIcon'
+import UserIcon from '../../icons/UserIcon'
 import styled from 'styled-components'
 import useLocalization from '../../hooks/useLocalization'
+import TicketStyle3 from '../../components/TicketStyle3'
+import TicketCard from '../../components/TicketCard'
 
 export default function BookingStatus() {
     const{t, locale} = useLocalization();
@@ -60,6 +65,8 @@ export default function BookingStatus() {
     const service = serviceQuery.data
     const branch = branchQuery.data
     const termCondition = termConditionQuery.data
+    let schedule = null;
+    const webStyle = branch?.branch_configuration.web_style
 
     const branchType = branch?.branch_type.is_premium
     const isAppointmentUnfinished = ['book', 'check in', 'waiting'].includes(booking?.status)
@@ -75,9 +82,16 @@ export default function BookingStatus() {
         })
         .find((el, idx) => {
             el.session = idx + 1
-            return el.start_time === booking.start_time
+            return el.start_time === booking?.start_time
         })
-        // console.log(booking)
+
+         if (bookingQuery.status === 'success' && branchQuery.status === 'success') {
+        
+                schedule = branch.schedule?.find(v => {
+                    return v.day === getDayName(formatBrowser(booking?.date), 'en')
+                })
+            }
+
     const bookingStatusMap = {
         'book': t('Booked'),
         'check in': 'Check In',
@@ -87,13 +101,34 @@ export default function BookingStatus() {
         'canceled': t('Cancelled')
     }
     const bookingStatus = bookingStatusMap[booking?.status]
-
     useMemo(() => {
         if (booking) {
             setRating(booking.rating)
             setAllowRate(!booking.rating)
         }
     }, [booking])
+    
+ function TicketFooter(props) {
+        return <div style={{
+            display: 'flex',
+            padding: '1.5rem 2.3rem',
+            textAlign: 'center',
+            justifyContent:'space-between'
+          }}>
+            <div>
+              <h4 style={{ marginBottom: '0.3rem' }}>Kode Booking</h4>
+              <p style={{ color: 'blue', padding:'0.5rem .75rem' }}>{props?.bookingCode}</p>
+            </div>
+            <div>
+              <h4 style={{ marginBottom: '0.3rem' }}>Status Antrian</h4>
+              {['waiting', 'served', 'check in', 'book'].includes(props?.status) &&
+                <ChipWarning label={bookingStatus} style={{  borderRadius: '20px', }} />}
+                {props?.status === 'end served' && <ChipSuccess label={bookingStatus} style={{  borderRadius: '20px', }}/>}
+                {['canceled', 'no show'].includes(props?.status) && <ChipDanger label={bookingStatus}  style={{  borderRadius: '20px', }}/>}
+            </div>
+            
+          </div>          
+    }
 
     function handleFeedbackClick() {
         feedbackMutation.mutate({
@@ -107,6 +142,7 @@ export default function BookingStatus() {
             }
         })
     }
+
 
     function handleCancelClick() {
         setIsShowDialog(true)
@@ -148,11 +184,7 @@ export default function BookingStatus() {
             }}
         />}
 
-        <Banner imageUrl={branch?.photo} style={{
-            position: 'absolute'
-        }} />
-
-        <Header bgType="blur">
+        <Header>
             <div style={{
                 height: '3.2rem',
                 display: 'flex'
@@ -163,7 +195,7 @@ export default function BookingStatus() {
                     alignItems: 'center',
                     padding: '.85rem 1.375rem'
                 }}>
-                    <ArrowLeftIcon color="#FFFFFF" />
+                    <ArrowLeftIcon/>
                 </Link>
             </div>
 
@@ -177,240 +209,184 @@ export default function BookingStatus() {
             </div>
         </Header>
 
+
+        
+
+        <div style={{
+            padding: '1.625rem 1.375rem',
+        }}>
+            <Card>
+                <div style={{
+                display: 'flex',
+                justifyContent:'space-between',
+                marginBottom: '0.8rem',
+                }}>
+                    <h4 style={{
+                        fontWeight: '700',
+                        fontSize: '1.5rem',
+                        color: '#103C7C',
+                    }}>
+                        {booking?.service_name}
+                    </h4>
+                    <p style={{
+                        backgroundColor:'#92EC47',
+                        color:'#fff',
+                        borderRadius:'20px',
+                        textAlign:'end',
+                        fontSize: '1rem',
+                        marginBottom: '.5rem',
+                        padding:'0.5rem 1.2rem'
+                    }}>{slot?.session ? `Sesi ` + slot?.session : '-'}</p>
+                </div>
+
+                <div style={{
+                display: 'flex',
+                justifyContent:'space-between',
+                }}>
+                    <p style={{
+                        fontSize: '1rem',
+                        color: '#7A7A7A',
+                        marginBottom: '.5rem',
+                    }}>{booking?.date ? 
+                        format(new Date(booking?.date), 
+                        "EEEE, dd MMMM yyyy")
+                        : '-'}</p>
+                    
+                    <p style={{
+                        fontSize: '1rem',
+                        textAlign:'end',
+                        marginBottom: '.5rem',
+                    }}>{booking?.start_time && booking?.end_time ? 
+                        `${booking?.start_time} - ${booking?.end_time}` 
+                        : '-'}</p>
+                </div>
+            </Card>
+        </div>
+
+            <TicketCard style={{ margin:'0 1.2rem' }}>
+                <TicketStyle3
+                    queueNo={booking?.queue_no}
+                    currentQueue={booking?.current_queue}
+                    webStyle={webStyle}
+                />
+                <TicketFooter
+                    bookingCode={booking?.booking_code.toUpperCase()}
+                    status={booking?.status}
+                />
+            </TicketCard>
+
         <div style={{
             padding: '1.625rem 1.375rem',
             zIndex: '10'
         }}>
-            <div style={{
-                marginBottom: '1rem'
-            }}>
-                <Chip label={booking?.industry_category} />
-            </div>
-
-            <div>
-                <H2 style={{
-                    color: '#FFFFFF'
-                }}>{booking?.branch_name}</H2>
-            </div>
-
-            <Card style={{
-                marginTop: '1.625rem',
-                display: 'flex',
-            }}>
-                <div style={{
-                    flex: '1 1 0%',
-                    paddingRight: '1.125rem',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '1rem'
+            {!!booking?.name && <Card style={{
+                    marginBottom: '1.625rem'
                 }}>
-                    <div style={{
-                        flexGrow: '1'
-                    }}>
-                        <h4 style={{
-                            marginBottom: '0.5rem'
-                        }}>{booking?.service_name}</h4>
-
-                        <div style={{
-                            fontSize: '0.75rem',
-                            color: '#A5A5A5',
-                            marginTop: '0.75rem',
-                            display: 'flex',
-                            alignItems: 'center'
-                        }}>
-                            <ClockIcon
-                                color="#A5A5A5"
-                                width="0.75rem"
-                                height="0.75rem"
-                                style={{
-                                    marginRight: '0.5rem'
-                                }}
-                            />
+                    <div style={{ display:'flex', alignItems:'center', marginBottom:'2rem' }}>
+                        <div style={{ backgroundColor:'#103C7C',
+                                    borderRadius:'6px',
+                                    marginRight: '0.75rem',
+                                     padding:'0.4rem 0.5rem' }}>
                             <span>
-                                {!!booking && getAbrvDate(formatBrowser(booking.date), locale)}
+                                <UserIcon color="#fff" width="30px" height="25px" />
                             </span>
-                            <span style={{
-                                margin: '0 0.5rem'
-                            }}>|</span>
-                            <span style={{
-                                marginRight: '0.5rem'
-                            }}>{t('Session')} {slot?.session}:</span>
-                            <span style={{
-                                fontWeight: '700',
-                                color: '#007EC6'
-                            }}>{booking?.start_time} - {booking?.end_time}</span>
                         </div>
+                        <h4 style={{ fontSize:'large' }}>{t('Customer Details')}</h4>
                     </div>
 
-                    <div style={{
-                        flexGrow: '1',
-                        display: 'flex',
-                        gap: '.75rem'
-                    }}>
+                    
+                    <div style={{ display:'flex', justifyContent:'center', gap:'2rem', flexWrap:'wrap' }}>
                         <div style={{
-                            flex: '1 1 0%'
+                            display: 'flex',
+                            flexDirection:'column',
+                            flex:'1 1 160px',
+                            maxWidth:'240px',
+                            minWidth:'160px',
+                            wordWrap:'break-word',
+                            gap:'1rem',
+                            fontSize: '.875rem',
+                            marginBottom: '1.125rem'
                         }}>
-                            <div style={{
-                                fontSize: '.875rem',
-                                display: 'inline-block',
-                                marginBottom: '.375rem'
-                            }}>
-                                {t('Booking Code')}
-                            </div>
+                            <div>
+                                    <div style={{
+                                        color: '#A5A5A5',
+                                        marginBottom:'0.4rem'
+                                    }}>{t('Full Name')}</div>
 
-                            <div style={{
-                                color: '#007EC6',
-                                fontWeight: '700',
-                                fontSize: '1rem',
-                                textTransform: 'uppercase'
-                            }}>
-                                {booking?.booking_code}
-                            </div>
-                        </div>
-
-                        <div style={{
-                            flex: '1 1 0%'
-                        }}>
-                            <div style={{
-                                fontSize: '.875rem',
-                                display: 'inline-block',
-                                marginBottom: '.625rem'
-                            }}>
-                                {t('Queue Status')}
+                                    <div style={{
+                                        color: '#103C7C',
+                                        fontWeight: '600'
+                                    }}>
+                                        <h3>
+                                        {booking?.name}
+                                        </h3>
+                                </div>
                             </div>
 
                             <div>
-                                {['waiting', 'served', 'check in', 'book'].includes(booking?.status) &&
-                                <ChipWarning label={bookingStatus} />}
-                                {booking?.status === 'end served' && <ChipSuccess label={bookingStatus} />}
-                                {['canceled', 'no show'].includes(booking?.status) && <ChipDanger label={bookingStatus} />}
+                                    <div style={{
+                                        color: '#A5A5A5',
+                                        marginBottom:'0.4rem'
+                                    }}>{t('Phone Number')}</div>
+
+                                    <div style={{
+                                        color: '#103C7C',
+                                        fontWeight: '600'
+                                    }}>
+                                        <h3>
+                                            {booking?.phone}
+                                        </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{
+                            display: 'flex',
+                            flexDirection:'column',
+                            flex:'1 1 160px',
+                            maxWidth:'240px',
+                            minWidth:'160px',
+                            wordWrap:'break-word',
+                            gap:'1rem',
+                            fontSize: '.875rem',
+                            marginBottom: '1.125rem'
+                        }}>
+
+                            <div>
+                                <div style={{
+                                    color: '#A5A5A5',
+                                    marginBottom:'0.4rem'
+                                }}>{t('Email')}</div>
+
+                                <div style={{
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    <h3>
+                                    {booking?.email}
+                                    </h3>
+                                </div>
+                            </div>
+                            
+
+                            <div>
+                                <div style={{
+                                    color: '#A5A5A5',
+                                    marginBottom:'0.4rem'
+                                }}>{t('Notes')}</div>
+
+                                <div style={{
+                                    color: '#103C7C',
+                                    fontWeight: '600'
+                                }}>
+                                    <h3>
+                                    {booking?.notes || '-'}
+                                    </h3>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <BlueCard style={{
-                    width: '119px',
-                    margin: '-1.125rem -1.125rem -1.125rem 0'
-                }}>
-                    <div style={{
-                        fontSize: '0.75rem',
-                        marginBottom: '0.75rem',
-                        fontWeight: '500'
-                    }}>
-                         {t('Queue Number')}
-                    </div>
-
-                    <div>
-                        <span style={{
-                            fontSize: '1.75rem',
-                            fontWeight: '700',
-                            color: '#FFFFFF'
-                        }}>{booking?.queue_no}</span>
-                    </div>
-
-                    <div style={{
-                        borderTop: '1px solid rgba(255, 255, 255, 0.16)',
-                        margin: '.75rem 0'
-                    }}></div>
-
-                    <div style={{
-                        fontSize: '0.75rem',
-                        marginBottom: '0.75rem',
-                        fontWeight: '500'
-                    }}>
-                       {t('Current Queue')}
-                    </div>
-
-                    <span>{booking?.current_queue || 0}</span>
-                </BlueCard>
-            </Card>
-
-            {!!booking?.name && <Card style={{
-                marginTop: '1.625rem'
-            }}>
-                <h4 style={{
-                    marginBottom: '1.625rem'
-                }}>{t('Customer Details')}</h4>
-
-                <div>
-                    <div style={{
-                        display: 'flex',
-                        fontSize: '.875rem',
-                        marginBottom: '1.125rem'
-                    }}>
-                        <div style={{
-                            flex: '1',
-                            color: '#A5A5A5'
-                        }}>{t('Full Name')}</div>
-
-                        <div style={{
-                            flex: '1',
-                            color: '#103C7C',
-                            fontWeight: '600'
-                        }}>
-                            {booking?.name}
-                        </div>
-                    </div>
-
-                    <div style={{
-                        display: 'flex',
-                        fontSize: '.875rem',
-                        marginBottom: '1.125rem'
-                    }}>
-                        <div style={{
-                            flex: '1',
-                            color: '#A5A5A5'
-                        }}>Email</div>
-
-                        <div style={{
-                            flex: '1',
-                            color: '#103C7C',
-                            fontWeight: '600'
-                        }}>
-                            {booking?.email}
-                        </div>
-                    </div>
-
-                    <div style={{
-                        display: 'flex',
-                        fontSize: '.875rem',
-                        marginBottom: '1.125rem'
-                    }}>
-                        <div style={{
-                            flex: '1',
-                            color: '#A5A5A5'
-                        }}>{t('Phone Number')}</div>
-
-                        <div style={{
-                            flex: '1',
-                            color: '#103C7C',
-                            fontWeight: '600'
-                        }}>
-                            {booking?.phone}
-                        </div>
-                    </div>
-
-                    <div style={{
-                        display: 'flex',
-                        fontSize: '.875rem',
-                        marginBottom: '1.125rem'
-                    }}>
-                        <div style={{
-                            flex: '1',
-                            color: '#A5A5A5'
-                        }}>{t('Notes')}</div>
-
-                        <div style={{
-                            flex: '1',
-                            color: '#103C7C',
-                            fontWeight: '600'
-                        }}>
-                            {booking?.notes}
-                        </div>
-                    </div>
-                </div>
-            </Card>}
+                </Card>}
 
             {!!branchType && queueType === 'appointment' && booking?.status === 'end served' && <Card style={{
                 margin: '1.625rem 0',

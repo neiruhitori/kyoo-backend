@@ -28,6 +28,10 @@ import Promotions from './Promotions/Promotions'
 
 import InfoAlert from '../components/InfoAlert'
 
+import RouteAppointmentStyle1 from './Route/Style1'
+import RouteAppointmentStyle2 from './Route/Style2'
+import RouteAppointmentStyle3 from './Route/Style3'
+
 const AppContainer = styled.div`
     max-width: 420px;
     margin: 0 auto;
@@ -40,7 +44,7 @@ const AppContainer = styled.div`
 
 function App() {
     const CLIENT_ID = getCookie('client_id')
-
+    const webStyle = document.getElementById('root').getAttribute('wstyle') ?? 'web-style-1'
     const [infoMessasge, setInfoMessage] = useState('')
 
     // const messaging = useMessaging()
@@ -68,8 +72,20 @@ function App() {
             setInfoMessage('')
         }, 5000)
     }
+    function renderPageByStyle(style) {
+        switch (style) {
+            case 'web-style-1':
+                return <RouteAppointmentStyle1 />;
+            case 'web-style-2':
+                return <RouteAppointmentStyle2 />;
+            case 'web-style-3':
+                return <RouteAppointmentStyle3 />;
+            default:
+                return <RouteAppointmentStyle1 />;
+        }
+    }
 
-    return <AppContainer>
+    return <AppContainer webStyle={webStyle}>
         {!!infoMessasge && <div style={{
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             position: 'fixed',
@@ -89,7 +105,9 @@ function App() {
             </InfoAlert>
         </div>}
 
-        <Routes>
+            { renderPageByStyle(webStyle) }
+        
+        {/* <Routes>
             <Route path="/scan" element={<QRReader />} />
 
             <Route path="/customer/:branchId/appointment/services" element={<AppointmentServices />} />
@@ -118,7 +136,7 @@ function App() {
             <Route path="/customer/:branchId/:queueType/booking-status/:bookingId/detail" element={<BookingDetail />} />
             <Route path="/customer/:branchId/:queueType/detail" element={<BranchDetail />} />
             <Route path="/customer/:branchId/:queueType/promotions" element={<Promotions />} />
-        </Routes>
+        </Routes> */}
     </AppContainer>
 }
 

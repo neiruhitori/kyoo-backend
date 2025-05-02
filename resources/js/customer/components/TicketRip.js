@@ -28,7 +28,7 @@ const TicketRipRoot = styled.div`
         width: 32px;
         height: 32px;
         top: 50%;
-        right: -64px;
+        right: -63px;
         transform: translate(-50%, -50%) rotate(225deg);
         border: 8px solid transparent;
         border-top-color: white;
