@@ -34,8 +34,11 @@ class PortalMenuController extends Controller
     public function update(Request $request)
     {
         $data['layer'] = $request->layer;
-        $data['web_style'] = $request->web_style;
-        $data['ticket_style'] = $request->ticket_style;
+
+        if($request->web_style && $request->ticket_style){
+            $data['web_style'] = $request->web_style;
+            $data['ticket_style'] = $request->ticket_style;
+        }
         
         if($request->template_booking_form) {
             $data['template_booking_form'] = $request->template_booking_form;
