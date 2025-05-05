@@ -31,6 +31,7 @@ class SignageController extends Controller
         $branchConfig = collect($branch->BranchConfiguration)->only([
             'signage_vo_format',
             'vo_call_style',
+            'serving_directly',
             'queue_voice'
         ]);
 
