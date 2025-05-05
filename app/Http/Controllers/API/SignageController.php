@@ -25,6 +25,9 @@ class SignageController extends Controller
             'TVConfiguration.customLayoutConfiguration2'
         ])->firstOrFail();
 
+        $isAppt = $branch->BranchType->is_appointment;
+        $custom_layout_config = null;
+
         $branchConfig = collect($branch->BranchConfiguration)->only([
             'signage_vo_format',
             'vo_call_style',
@@ -50,6 +53,23 @@ class SignageController extends Controller
             ], 404);
         }
 
+        if($isAppt){
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'layout' => $branch->BranchConfiguration->template_signage,
+                    'logo' => $branch->logo ? "/storage/$branch->logo" : null,
+                    'display_duration' => (int) $TVConfiguration->display_duration * 1000,
+                    'custom_layout_config' => $custom_layout_config,
+                    'features' => $features,
+                    'branch_configuration' => $branchConfig,
+                    'workstation' => $workstations,
+                    'is_direct_queue' => $branch->BranchType->is_direct_queue,
+                    'is_appointment' => $branch->BranchType->is_appointment,
+                ]
+            ]);
+        }
+
         if (!$TVConfiguration->customLayoutConfiguration2) {
             return response()->json([
                 'success' => false,
@@ -65,7 +85,7 @@ class SignageController extends Controller
             'success' => true,
             'data' => [
                 'layout' => $branch->BranchConfiguration->template_signage,
-                'logo' => "/storage/$branch->logo",
+                'logo' => $branch->logo ? "/storage/$branch->logo" : null,
                 'display_duration' => (int) $TVConfiguration->display_duration * 1000,
                 'custom_layout_config' => $custom_layout_config,
                 'features' => $features,
