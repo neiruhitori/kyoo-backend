@@ -6,7 +6,6 @@ use Storage;
 use App\Slot;
 use App\Service;
 use App\Schedule;
-use Carbon\Carbon;
 use App\Workstation;
 use App\Models\AppointmentOnsite;
 use Illuminate\Support\Facades\Mail;
@@ -167,28 +166,40 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
         return !!$sameAppointment;
     }
-    public function isAppoinmentNotLate($data) //bisa pakai antrian tidak lebih dari 10 menit
+    public function isAppoinmentNotLate($data)
     {
         $formattedDate = date('Y-m-d', strtotime($data['date']));
         $email = $phone = '';
-
+    
         if (isset($data['email'])) $email = $data['email'];
         if (isset($data['phone'])) $phone = $data['phone'];
-
+    
         $notUsedAppointment = AppointmentOnsite::where([
             'slot_id' => $data['slot_id'],
             'date' => $formattedDate
         ])
             ->where(function ($query) use ($email, $phone) {
                 $query->where('email', $email)
-                    ->orWhere('phone', $phone);
+                      ->orWhere('phone', $phone);
             })
             ->where('is_used', false)
-            ->where('created_at', '>=', Carbon::now()->subMinutes(10))
+            ->orderBy('created_at', 'desc')
             ->first();
-
-        return $notUsedAppointment;
+    
+        if ($notUsedAppointment) {
+            $createdAtTimestamp = strtotime($notUsedAppointment->created_at);
+            $now = time();
+    
+            $diffInMinutes = ($now - $createdAtTimestamp) / 60;
+    
+            if ($diffInMinutes <= 10) {
+                return $notUsedAppointment;
+            }
+        }
+    
+        return null;
     }
+    
 
     public function isAppointmentSlotFull($slotId, $date)
     {
