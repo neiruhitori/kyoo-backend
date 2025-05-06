@@ -2,19 +2,20 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\AppointmentOnsiteRepositoryInterface;
-use App\Mail\CS\AppointmentOnsiteCreatedMail;
-use App\Models\BranchScheduleTemplateDetail;
+use Storage;
+use App\Slot;
 use App\Service;
 use App\Schedule;
-use App\Models\AppointmentOnsite;
-use App\Notifications\AppointmentOnsiteCreatedNotification;
-use App\Slot;
+use Carbon\Carbon;
 use App\Workstation;
-use Illuminate\Support\Facades\Cache;
+use App\Models\AppointmentOnsite;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Storage;
+use App\Models\BranchScheduleTemplateDetail;
+use App\Mail\CS\AppointmentOnsiteCreatedMail;
+use App\Interfaces\AppointmentOnsiteRepositoryInterface;
+use App\Notifications\AppointmentOnsiteCreatedNotification;
 
 class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterface
 {
@@ -38,6 +39,10 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             // Prevent double appointments
             if ($this->isAppoinmentDuplicate($data)) {
+                $isNotLate = $this->isAppoinmentNotLate($data);
+                if ( $isNotLate ) {
+                    return  $isNotLate;
+                }
                 throw new \Exception('Appointment telah terdaftar');
             }
 
@@ -161,6 +166,28 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
             ->first();
 
         return !!$sameAppointment;
+    }
+    public function isAppoinmentNotLate($data) //bisa pakai antrian tidak lebih dari 10 menit
+    {
+        $formattedDate = date('Y-m-d', strtotime($data['date']));
+        $email = $phone = '';
+
+        if (isset($data['email'])) $email = $data['email'];
+        if (isset($data['phone'])) $phone = $data['phone'];
+
+        $notUsedAppointment = AppointmentOnsite::where([
+            'slot_id' => $data['slot_id'],
+            'date' => $formattedDate
+        ])
+            ->where(function ($query) use ($email, $phone) {
+                $query->where('email', $email)
+                    ->orWhere('phone', $phone);
+            })
+            ->where('is_used', false)
+            ->where('created_at', '>=', Carbon::now()->subMinutes(10))
+            ->first();
+
+        return $notUsedAppointment;
     }
 
     public function isAppointmentSlotFull($slotId, $date)

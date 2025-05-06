@@ -30,6 +30,7 @@ class Detail extends JsonResource
  
         return [
             'id' => $this->id,
+            'appointment_onsite' => $this->AppointmentOnsite,
             'date' => $this->created_at,
             'branch_id' => $branch->id,
             'branch_name' => $branch->name,
