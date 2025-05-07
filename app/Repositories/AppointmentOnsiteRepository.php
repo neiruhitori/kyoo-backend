@@ -38,10 +38,6 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
             // Prevent double appointments
             if ($this->isAppoinmentDuplicate($data)) {
-                $isNotLate = $this->isAppoinmentNotLate($data);
-                if ( $isNotLate ) {
-                    return  $isNotLate;
-                }
                 throw new \Exception('Appointment telah terdaftar');
             }
 
@@ -166,40 +162,7 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
         return !!$sameAppointment;
     }
-    public function isAppoinmentNotLate($data)
-    {
-        $formattedDate = date('Y-m-d', strtotime($data['date']));
-        $email = $phone = '';
-    
-        if (isset($data['email'])) $email = $data['email'];
-        if (isset($data['phone'])) $phone = $data['phone'];
-    
-        $notUsedAppointment = AppointmentOnsite::where([
-            'slot_id' => $data['slot_id'],
-            'date' => $formattedDate
-        ])
-            ->where(function ($query) use ($email, $phone) {
-                $query->where('email', $email)
-                      ->orWhere('phone', $phone);
-            })
-            ->where('is_used', false)
-            ->orderBy('created_at', 'desc')
-            ->first();
-    
-        if ($notUsedAppointment) {
-            $createdAtTimestamp = strtotime($notUsedAppointment->created_at);
-            $now = time();
-    
-            $diffInMinutes = ($now - $createdAtTimestamp) / 60;
-    
-            if ($diffInMinutes <= 10) {
-                return $notUsedAppointment;
-            }
-        }
-    
-        return null;
-    }
-    
+
 
     public function isAppointmentSlotFull($slotId, $date)
     {

@@ -91,6 +91,47 @@ class AppointmentOnsiteController extends Controller
             $data['start_time'] = $slot->start_time;
             $data['end_time'] = $slot->end_time;
 
+            $formattedDate = date('Y-m-d', strtotime($data['date']));
+            $email = $phone = '';
+        
+            if (isset($data['email'])) $email = $data['email'];
+            if (isset($data['phone'])) $phone = $data['phone'];
+        
+            $notUsedAppointment = AppointmentOnsite::where([
+                'slot_id' => $data['slot_id'],
+                'date' => $formattedDate
+            ])
+                ->where(function ($query) use ($email, $phone) {
+                    $query->where('email', $email)
+                          ->orWhere('phone', $phone);
+                })
+                ->where('is_used', false)
+                ->orderBy('created_at', 'desc')
+                ->first();
+        
+            if ($notUsedAppointment) {
+                $createdAtRaw = $notUsedAppointment->created_at;
+        
+                // Konversi ke string jika perlu
+                $createdAt = is_string($createdAtRaw) ? $createdAtRaw : $createdAtRaw->toDateTimeString();
+        
+                $createdAtTimestamp = strtotime($createdAt);
+                if ($createdAtTimestamp === false) {
+                    throw new \Exception('Invalid created_at format pada appointment, tidak bisa diparse.');
+                }
+        
+                $now = time();
+                $diffInMinutes = ($now - $createdAtTimestamp) / 60;
+        
+                if ($diffInMinutes <= 10) {
+                    return response()->json([
+                    'success' => true,
+                    'message' => 'appointment onsite created',
+                    'data' => $notUsedAppointment,
+                ]);
+                }
+            }
+
             $appointmentOnsite = $this->appointmentOnsiteRepository->store($data);
 
             $branchID = $appointmentOnsite->service->branch_id;
