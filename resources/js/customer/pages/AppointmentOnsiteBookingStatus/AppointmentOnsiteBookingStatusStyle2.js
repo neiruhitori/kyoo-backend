@@ -36,6 +36,8 @@ import UserIcon from '../../icons/UserIcon'
 import RedoIcon from '../../icons/RedoIcon'
 import AngleRightIcon from '../../icons/AngleRightIcon'
 import useLocalization from '../../hooks/useLocalization'
+import id from 'date-fns/locale/id'
+import en  from 'date-fns/locale/en-US';
 
 const BranchLogo = styled.img`
     display: inline-block;
@@ -65,6 +67,7 @@ const OnsiteChipDanger = styled(ChipDanger)`
 `
    function TicketHead(props) {
         const {t, locale} = useLocalization();
+        const dateLocale = locale == 'id' ? id : en
         return <> <div>
             <div style={{
             padding: '1.75rem',
@@ -99,7 +102,7 @@ const OnsiteChipDanger = styled(ChipDanger)`
                                     padding: '0.5rem 1.2rem',
                                     whiteSpace: 'nowrap',
                                 }}>
-                                    {props?.session ? `Sesi ` + props?.session : '-'}
+                                    {props?.session ?  t('Session')+ ' ' +  props?.session : '-'}
                                 </p>
                         </div>
 
@@ -113,7 +116,7 @@ const OnsiteChipDanger = styled(ChipDanger)`
                         marginBottom: '.5rem',
                     }}>{props?.date ? 
                         format(new Date(props?.date), 
-                        "EEEE, dd MMMM yyyy")
+                        "EEEE, dd MMMM yyyy", {locale:dateLocale})
                         : '-'}</p>
                     
                     <p style={{
@@ -134,11 +137,11 @@ const OnsiteChipDanger = styled(ChipDanger)`
                 padding:'1rem 3rem'
              }}>
                 <div style={{ textAlign:'center' }}>
-                    <h4 style={{ marginBottom:'1.2rem' }}>Nomor Antrian</h4>
+                    <h4 style={{ marginBottom:'1.2rem' }}>{t('Queue No')}</h4>
                     <h2 style={{ fontSize:'2.5rem' }}>{props?.queueNo || 0}</h2>
                 </div>
                 <div style={{ color:'blue', textAlign:'center' }}>
-                    <h4 style={{ marginBottom:'1.2rem' }}>Antrian Sekarang</h4>
+                    <h4 style={{ marginBottom:'1.2rem' }}>{t('Current Queue')}</h4>
                     <h2 style={{ fontSize:'2.5rem' }}>{props?.currentQueue || 0}</h2>
                 </div>
             </div>
@@ -148,6 +151,7 @@ const OnsiteChipDanger = styled(ChipDanger)`
             </>
     }
     function TicketFooter(props) {
+        const {t, locale} = useLocalization();
         return <div style={{
             display: 'flex',
             padding: '1.75rem',
@@ -155,11 +159,11 @@ const OnsiteChipDanger = styled(ChipDanger)`
             flexDirection: 'column'
           }}>
             <div style={{ marginBottom: '1.2rem' }}>
-              <h4 style={{ marginBottom: '0.3rem' }}>Kode Booking</h4>
+              <h4 style={{ marginBottom: '0.3rem' }}>{t('Booking Code')}</h4>
               <p style={{ color: 'blue', fontSize:'1.5rem', fontWeight:'bold' }}>{props?.bookingCode}</p>
             </div>
             <div>
-              <h4 style={{ marginBottom: '0.3rem' }}>Status Antrian</h4>
+              <h4 style={{ marginBottom: '0.3rem' }}>{t('Queue Status')}</h4>
               <div style={{
                 margin: '0 auto .5rem',
                 padding: '3px 10px',
@@ -167,7 +171,7 @@ const OnsiteChipDanger = styled(ChipDanger)`
               }}> 
                 {!props?.isUsed && 
                     <div style={{ backgroundColor:'#33A0FF ', borderRadius:'20px', padding:'3px 10px' }}>
-                        <h4 style={{ color:'#fff' }}>Belum Check-In</h4>
+                        <h4 style={{ color:'#fff' }}>{t('Not Checked In')}</h4>
                     </div>
                 }
                 </div>

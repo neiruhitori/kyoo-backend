@@ -37,6 +37,8 @@ import RedoIcon from '../../icons/RedoIcon'
 import AngleRightIcon from '../../icons/AngleRightIcon'
 import useLocalization from '../../hooks/useLocalization'
 import TicketStyle3 from '../../components/OnsiteTicketStyle3'
+import id from 'date-fns/locale/id'
+import en  from 'date-fns/locale/en-US';
 
 const BranchLogo = styled.img`
     display: inline-block;
@@ -65,6 +67,7 @@ const OnsiteChipDanger = styled(ChipDanger)`
     font-size: .875rem;
 `
     function TicketFooter(props) {
+         const {t, locale} = useLocalization();
         return <div style={{
             display: 'flex',
             padding: '1.75rem',
@@ -72,7 +75,7 @@ const OnsiteChipDanger = styled(ChipDanger)`
             flexDirection: 'column'
           }}>
             <div>
-              <h4 style={{ marginBottom: '0.3rem' }}>Status Antrian</h4>
+              <h4 style={{ marginBottom: '0.3rem' }}>{t('Queue Status')}</h4>
               <div style={{
                 margin: '0 auto .5rem',
                 padding: '3px 10px',
@@ -80,7 +83,7 @@ const OnsiteChipDanger = styled(ChipDanger)`
               }}> 
                 {!props?.isUsed && 
                     <div style={{ backgroundColor:'#33A0FF ', borderRadius:'20px', padding:'3px 10px' }}>
-                        <h4 style={{ color:'#fff' }}>Belum Check-In</h4>
+                        <h4 style={{ color:'#fff' }}>{t('Not Checked In')}</h4>
                     </div>
                 }
                 </div>
@@ -90,6 +93,7 @@ const OnsiteChipDanger = styled(ChipDanger)`
 
 function AppointmentOnsiteBookingStatus(props) {
     const {t, locale} = useLocalization();
+    const dateLocale = locale == 'id' ? id : en
     const PAGE_TITLE = t('Queue Status')
     const REFETCH_INTERVAL = 15000
     const CLIENT_ID = getCookie('client_id')
@@ -417,7 +421,7 @@ function AppointmentOnsiteBookingStatus(props) {
                                     padding: '0.5rem 1.2rem',
                                     whiteSpace: 'nowrap',
                                 }}>
-                                    {slot?.session ? `Sesi ` + slot?.session : '-'}
+                                    {slot?.session ?  t('Session')+ ' ' + slot?.session : '-'}
                                 </p>
                                 </div>
 
@@ -432,7 +436,7 @@ function AppointmentOnsiteBookingStatus(props) {
                                         marginBottom: '.5rem',
                                     }}>{booking?.date ? 
                                         format(new Date(booking?.date), 
-                                        "EEEE, dd MMMM yyyy")
+                                        "EEEE, dd MMMM yyyy", {locale:dateLocale})
                                         : '-'}</p>
                                     
                                     <p style={{

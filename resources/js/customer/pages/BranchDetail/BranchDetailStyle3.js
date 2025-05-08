@@ -150,13 +150,13 @@ export default function BranchDetail() {
                                     }
                     </div>
                     <div style={{ display:'flex', gap:'2rem' }}>
-                        <DetailIconWrapper label='Telepon' onClick={() => handleOpenModal('phone') }>
+                        <DetailIconWrapper label={t('Phone')} onClick={() => handleOpenModal('phone') }>
                                 <PhoneIcon height="25" />
                         </DetailIconWrapper>
                         <DetailIconWrapper label='Email' onClick={() => handleOpenModal('email') }>
                                 <SendIcon height="25" />
                         </DetailIconWrapper>
-                        <DetailIconWrapper label='Jam Buka' onClick={() => handleOpenModal('operational') }>
+                        <DetailIconWrapper label={t('Open Hours')} onClick={() => handleOpenModal('operational') }>
                                 <CalendarIcon height="25" />
                         </DetailIconWrapper>
                     </div>
@@ -170,7 +170,7 @@ export default function BranchDetail() {
                            {activeTab == 'phone' &&(
                             <>
                             <h4 style={{ textAlign:'center', marginBottom:'2rem' }}>
-                                Nomer Telepon
+                                {t('Phone')}
                             </h4>
                             <div style={{ display: 'flex', gap:'1.2rem', alignItems:'center' }}>
                             <PhoneIcon color='white' height="40"
@@ -201,7 +201,7 @@ export default function BranchDetail() {
                             </>)}
                            {activeTab == 'operational' &&(
                             <>
-                            <h4 style={{ textAlign:'center' }}>Jam Buka</h4>
+                            <h4 style={{ textAlign:'center' }}>{t('Open Hours')}</h4>
                             <div style={{ marginTop: '1.625rem' }}>
                             {getDaysName(locale).map((day, idx) => {
                                 const schedule = branch.schedule.find(schedule => {

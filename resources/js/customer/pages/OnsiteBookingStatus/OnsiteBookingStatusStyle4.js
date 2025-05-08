@@ -430,7 +430,7 @@ function OnsiteBookingStatus(props) {
                       
                                   <p style={{  
                                       marginBottom:'1.2rem'
-                                   }}>{format(formatBrowser(booking?.date),'dd MMMM yyyy' )}</p>
+                                   }}>{format(formatBrowser(booking?.date),'dd MMMM yyyy' , {locale:localeTime})}</p>
                       
                                   <p style={{  
                                       marginBottom:'1.2rem'

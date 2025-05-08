@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import useLocalization from '../hooks/useLocalization'
 
 const TicketRipRoot = styled.div`
     height: 13rem;
@@ -71,11 +72,12 @@ const CurrentNumber = styled.h2`
 `
 
 export default function TicketRip(props) {
+    const {t, locale} = useLocalization();
     return (
         <TicketRipRoot {...props}>
             <Wrapper>
                 <div>
-                    <Queue>Kode Booking</Queue>
+                    <Queue>{t('Booking Code')}</Queue>
                     <QueueNumber>{props?.bookingCode}</QueueNumber>
                 </div>
             </Wrapper>

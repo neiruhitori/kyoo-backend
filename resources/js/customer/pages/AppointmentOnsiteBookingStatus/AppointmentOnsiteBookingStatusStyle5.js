@@ -13,6 +13,8 @@ import usePromotions from '../../hooks/usePromotions'
 import { formatBrowser, getDayName, getMonthAbrvName } from '../../utils/date'
 import { getCookie } from '../../lib/helper'
 import { fetchServiceById } from '../../api/services'
+import id from 'date-fns/locale/id'
+import en  from 'date-fns/locale/en-US';
 
 import MainContent from '../../components/MainContent'
 import InfoAlert from '../../components/InfoAlert'
@@ -105,23 +107,26 @@ const Content = styled.p`
                 </div>
         </div>
     }
+
     function TicketFooter(props) {
+        const {t, locale} = useLocalization();
+        const dateLocale = locale == 'id' ? id : en
         return (
             <div style={{ padding: '1.75rem' }} {...props}>
                 <Wrapper>
-                    <Title>Nama Layanan</Title>
+                    <Title>{t('Service Name')}</Title>
                     <span>:</span>
                     <Content>{props.booking?.service_name}</Content>
                 </Wrapper>
     
                 <Wrapper>
-                    <Title>Tanggal</Title>
+                    <Title>{t('Date')}</Title>
                     <span>:</span>
-                    <Content>{format(formatBrowser(props.booking?.date),'dd MMMM yyyy')}</Content>
+                    <Content>{format(new Date(props.booking?.date),'dd MMMM yyyy', {locale:dateLocale})}</Content>
                 </Wrapper>
     
                 <Wrapper>
-                    <Title>Slot Waktu</Title>
+                    <Title>{t('Time Slot')}</Title>
                     <span>:</span>
                     <Content>{props.booking?.start_time.slice(0,5) + ` - ` + props.booking?.end_time.slice(0,5)}</Content>
                 </Wrapper>

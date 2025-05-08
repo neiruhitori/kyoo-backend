@@ -389,7 +389,7 @@ function AppointmentOnsiteBookingStatus(props) {
                                     <div style={{  padding:'3px 5rem' }}>
                                         <h4 style={{ backgroundColor:'#33A0FF ', 
                                             borderRadius:'20px',
-                                            color:'#fff' }}>Belum Check-In</h4>
+                                            color:'#fff' }}>{t('Not Checked In')}</h4>
                                     </div>
                                 }
                            </div>

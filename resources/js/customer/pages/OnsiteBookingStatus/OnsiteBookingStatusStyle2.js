@@ -4,6 +4,8 @@ import { useNavigate, useParams, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import html2canvas from 'html2canvas'
 
+import id from 'date-fns/locale/id'
+import en from 'date-fns/locale/en-US'
 import { getBooking } from '../../api/booking'
 import { format } from 'date-fns'
 import { fetchBranch } from '../../api/branch'
@@ -83,6 +85,7 @@ function getStatus(status) {
 
     function TicketHead(props) {
         const {t, locale} = useLocalization();
+        const dateLocale = locale == 'id' ? id : en
         return <> <div style={{
             paddingBottom:'2.5rem'
         }}>
@@ -119,7 +122,7 @@ function getStatus(status) {
                                     padding: '0.5rem 1.2rem',
                                     whiteSpace: 'nowrap',
                                 }}>
-                                    {props?.session ? `Sesi ` + props?.session : '-'}
+                                    {props?.session ?  t('Session')+ ' ' + props?.session : '-'}
                                 </p>
                         </div>
 
@@ -133,7 +136,7 @@ function getStatus(status) {
                         marginBottom: '.5rem',
                     }}>{props?.date ? 
                         format(new Date(props?.date), 
-                        "EEEE, dd MMMM yyyy")
+                        "EEEE, dd MMMM yyyy", {locale:dateLocale})
                         : '-'}</p>
                     
                     <p style={{
@@ -154,11 +157,11 @@ function getStatus(status) {
                 padding:'1rem 3rem'
              }}>
                 <div style={{ textAlign:'center' }}>
-                    <h4 style={{ marginBottom:'1.2rem' }}>Nomor Antrian</h4>
+                    <h4 style={{ marginBottom:'1.2rem' }}>{t('Queue No')}</h4>
                     <h2 style={{ fontSize:'2.5rem' }}>{props?.queueNo || 0}</h2>
                 </div>
                 <div style={{ color:'blue', textAlign:'center' }}>
-                    <h4 style={{ marginBottom:'1.2rem' }}>Antrian Sekarang</h4>
+                    <h4 style={{ marginBottom:'1.2rem' }}>{t('Current Queue')}</h4>
                     <h2 style={{ fontSize:'2.5rem' }}>{props?.currentQueue || 0}</h2>
                 </div>
             </div>
@@ -175,11 +178,11 @@ function getStatus(status) {
             flexDirection: 'column'
           }}>
             <div style={{ marginBottom: '1.2rem' }}>
-              <h4 style={{ marginBottom: '0.3rem' }}>Kode Booking</h4>
+              <h4 style={{ marginBottom: '0.3rem' }}>{t('Booking Code')}</h4>
               <p style={{ color: 'blue' }}>{props?.bookingCode}</p>
             </div>
             <div>
-              <h4 style={{ marginBottom: '0.3rem' }}>Status Antrian</h4>
+              <h4 style={{ marginBottom: '0.3rem' }}>{t('Queue Status')}</h4>
               <div style={{
                 margin: '0 auto .5rem',
                 padding: '3px 10px',

@@ -129,7 +129,7 @@ function AppointmentOnsiteVisitorInformation() {
                             style={{ marginBottom: '1.5rem' }}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Ch. John Doe"
+                            placeholder={t("Your name")}
                             error={!!validationMessage.name}
                             helperText={t(validationMessage.name)}
                         />
@@ -139,7 +139,7 @@ function AppointmentOnsiteVisitorInformation() {
                             style={{ marginBottom: '1.5rem' }}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Ch. john@mail.com"
+                            placeholder={t("Your E-mail")}
                             error={!!validationMessage.email}
                             helperText={t(validationMessage.email)}
                         />
@@ -163,7 +163,7 @@ function AppointmentOnsiteVisitorInformation() {
             style={{ marginBottom: '1.5rem' }}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Ch. John Doe"
+            placeholder={t("Your Name")}
             error={!!validationMessage.name}
             helperText={t(validationMessage.name)}
         />
@@ -173,7 +173,7 @@ function AppointmentOnsiteVisitorInformation() {
             style={{ marginBottom: '1.5rem' }}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Ch. john@mail.com"
+            placeholder={t("Your E-mail")}
             error={!!validationMessage.email}
             helperText={t(validationMessage.email)}
         />
@@ -206,7 +206,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Ch. John Doe"
+                    placeholder={t("Your name")}
                     error={!!validationMessage.name}
                     helperText={t(validationMessage.name)}
                 />
@@ -263,7 +263,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Ch. john@mail.com"
+                    placeholder={t("Your E-mail")}
                     error={!!validationMessage.email}
                     helperText={t(validationMessage.email)}
                 />
@@ -286,7 +286,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Ch. John Doe"
+                    placeholder={t("Your name")}
                     error={!!validationMessage.name}
                     helperText={t(validationMessage.name)}
                 />
@@ -450,8 +450,8 @@ function AppointmentOnsiteVisitorInformation() {
         </Header>
 
         <div style={{ padding: '2rem 1.375rem', }}>
-            <h2 style={{ marginBottom:'0.5rem' }}>Informasi Pengunjung</h2>
-            <p style={{ color:'#8e8e8e' }}>Silahkan isi data diri anda</p>
+            <h2 style={{ marginBottom:'0.5rem' }}>{t('Visitor Information')}</h2>
+            <p style={{ color:'#8e8e8e' }}>{t('Please fill in your data')}</p>
         </div>
 
         <form onSubmit={handleFormSubmit} style={{
