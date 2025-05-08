@@ -95,7 +95,7 @@ function AppointmentOnsiteVisitorInformation() {
                             style={{ marginBottom: '1.5rem' }}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Ch. John Doe"
+                            placeholder={t("Your name")}
                             error={!!validationMessage.name}
                             helperText={t(validationMessage.name)}
                         />
@@ -105,7 +105,7 @@ function AppointmentOnsiteVisitorInformation() {
                             style={{ marginBottom: '1.5rem' }}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Ch. john@mail.com"
+                            placeholder={t("Your E-mail")}
                             error={!!validationMessage.email}
                             helperText={t(validationMessage.email)}
                         />
@@ -129,7 +129,7 @@ function AppointmentOnsiteVisitorInformation() {
             style={{ marginBottom: '1.5rem' }}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Ch. John Doe"
+            placeholder={t("Your name")}
             error={!!validationMessage.name}
             helperText={t(validationMessage.name)}
         />
@@ -139,7 +139,7 @@ function AppointmentOnsiteVisitorInformation() {
             style={{ marginBottom: '1.5rem' }}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Ch. john@mail.com"
+            placeholder={t("Your E-mail")}
             error={!!validationMessage.email}
             helperText={t(validationMessage.email)}
         />
@@ -172,7 +172,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Ch. John Doe"
+                    placeholder={t("Your name")}
                     error={!!validationMessage.name}
                     helperText={t(validationMessage.name)}
                 />
@@ -190,7 +190,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder="Ch. Jln Merdeka"
+                    placeholder={t("Your Address")}
                     error={!!validationMessage.address}
                     helperText={t(validationMessage.address)}
                 />
@@ -229,7 +229,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Ch. john@mail.com"
+                    placeholder={t("Your E-mail")}
                     error={!!validationMessage.email}
                     helperText={t(validationMessage.email)}
                 />
@@ -238,7 +238,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={reasonForVisit}
                     onChange={(e) => setReasonForVisit(e.target.value)}
-                    placeholder="Ch. CheckUp"
+                    placeholder="CheckUp"
                     error={!!validationMessage.reasonForVisit}
                     helperText={t(validationMessage.reasonForVisit)}
                 />
@@ -252,7 +252,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Ch. John Doe"
+                    placeholder={t("Your name")}
                     error={!!validationMessage.name}
                     helperText={t(validationMessage.name)}
                 />
@@ -289,7 +289,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={reasonForVisit}
                     onChange={(e) => setReasonForVisit(e.target.value)}
-                    placeholder="Ch. CheckUp"
+                    placeholder="CheckUp"
                     error={!!validationMessage.reasonForVisit}
                     helperText={t(validationMessage.reasonForVisit)}
                 />
@@ -374,6 +374,7 @@ function AppointmentOnsiteVisitorInformation() {
                     setHeaderErrorMessage(t('Failed to Create Queue'))
                 }
                 showError(booking.message)
+                console.log(booking)
                 return
             }
             navigate(`/customer/${branchId}/appointment-onsite/booking-status/${booking.data.id}`)
@@ -383,6 +384,7 @@ function AppointmentOnsiteVisitorInformation() {
             } else {
                 setHeaderErrorMessage(t('Failed to Create Queue'))
             }
+            console.log(error)
             showError(error.message)
         }
     }

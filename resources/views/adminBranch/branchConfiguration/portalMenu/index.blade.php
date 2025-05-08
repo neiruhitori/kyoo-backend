@@ -215,11 +215,21 @@
                             </option>
                         </select>
                     </div>
+                    @if(Auth::user()->Branch->BranchType->is_premium)
+                    <div class="form-group ml-3 col-md-5" style="width: 250px;">
+                        <label for="select-template">{{ __('Select the web style/theme') }}</label>
+                        <select name="web_style" id="webStyle" class="form-control">
+                            <option value="web-style-1" {{ $branchConfiguration->web_style == 'web-style-1' ? 'selected' : '' }}>Web Style 1</option>
+                            <option value="web-style-2" {{ $branchConfiguration->web_style == 'web-style-2' ? 'selected' : '' }}>Web Style 2</option>
+                            <option value="web-style-3" {{ $branchConfiguration->web_style == 'web-style-3' ? 'selected' : '' }}>Web Style 3</option>
+                        </select>
+                    </div>
+                    @endif
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-7 d-flex" >
+                    <div class="form-group ml-3 col-md-5" >
                         @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
-                        <div class="form-group ml-3" id="formBooking">
+                        <div class="form-group" id="formBooking">
                             <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
                             <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror" >
                                 <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
@@ -231,20 +241,35 @@
                         </div>
                         @endif
                         @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_appointment)
-                        <div class="form-group ml-3" id="formBookingAppointment">
+                        <div class="form-group" id="formBookingAppointment">
                             <label for="template_booking_form">{{ __('Template Booking Form') }}</label>
-                            <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror" style="width: 240px">
+                            <select name="template_booking_form" id="template_booking_form" class="form-control @error('template_booking_form') is-invalid @enderror">
                                 <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
                                 <option value="form-medical-child" {{ $branchConfiguration->template_booking_form == 'form-medical-child' ? 'selected' : '' }}>Form Medical Dr Anak</option>
                             </select>
                             @include('layouts.inputError', ['errorName' => 'template_booking_form'])
                         </div>
                         @endif
-                        <div class="col-md-5 mb-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-warning ml-1 ">{{ __('Save'). ' Form'}}</submit>
-                        </div>
+                        
                     </div>
-            </div>
+                    @if(Auth::user()->Branch->BranchType->is_premium)
+                    <div class="form-group ml-3 col-md-5" style="width: 250px;">
+                        <label for="select-template">{{ __('Select the ticket style/theme') }}</label>
+                        <select name="ticket_style" id="webStyle" class="form-control">
+                            <option value="ticket-style-1" {{ $branchConfiguration->ticket_style == 'ticket-style-1' ? 'selected' : '' }}>Ticket Style 1</option>
+                            <option value="ticket-style-2" {{ $branchConfiguration->ticket_style == 'ticket-style-2' ? 'selected' : '' }}>Ticket Style 2</option>
+                            <option value="ticket-style-3" {{ $branchConfiguration->ticket_style == 'ticket-style-3' ? 'selected' : '' }}>Ticket Style 3</option>
+                            <option value="ticket-style-4" {{ $branchConfiguration->ticket_style == 'ticket-style-4' ? 'selected' : '' }}>Ticket Style 4</option>
+                            <option value="ticket-style-5" {{ $branchConfiguration->ticket_style == 'ticket-style-5' ? 'selected' : '' }}>Ticket Style 5</option>
+                        </select>
+                    </div>
+                    @endif
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-5 ml-3 mb-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-warning ml-1 ">{{ __('Save'). ' Form'}}</submit>
+                    </div>
+                </div>
         
 
                 <div class="d-flex mb-2 ml-2">

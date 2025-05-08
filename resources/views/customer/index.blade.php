@@ -55,7 +55,10 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <div id="root" locale="{{ $country->country }}"></div>
+    <div id="root" 
+        locale="{{ $country}}" 
+        @if($webStyle) wstyle="{{ $webStyle }}" @endif
+        @if($ticketStyle) tStyle="{{ $ticketStyle }}" @endif></div>
   </body>
 
   <script src="{{ mix('js/customer/app.js') }}"></script>

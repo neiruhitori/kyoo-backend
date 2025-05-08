@@ -27,5 +27,7 @@ class BranchConfiguration extends Model
     'template_booking_form',
     'signage_vo_format',
     'vo_call_style',
+    'web_style',
+    'ticket_style',
   ];
 }

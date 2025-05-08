@@ -77,7 +77,7 @@ export default function BookingStatus() {
             el.session = idx + 1
             return el.start_time === booking.start_time
         })
-
+        // console.log(booking)
     const bookingStatusMap = {
         'book': t('Booked'),
         'check in': 'Check In',

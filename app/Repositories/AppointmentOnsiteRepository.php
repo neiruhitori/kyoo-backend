@@ -2,19 +2,19 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\AppointmentOnsiteRepositoryInterface;
-use App\Mail\CS\AppointmentOnsiteCreatedMail;
-use App\Models\BranchScheduleTemplateDetail;
+use Storage;
+use App\Slot;
 use App\Service;
 use App\Schedule;
-use App\Models\AppointmentOnsite;
-use App\Notifications\AppointmentOnsiteCreatedNotification;
-use App\Slot;
 use App\Workstation;
-use Illuminate\Support\Facades\Cache;
+use App\Models\AppointmentOnsite;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Storage;
+use App\Models\BranchScheduleTemplateDetail;
+use App\Mail\CS\AppointmentOnsiteCreatedMail;
+use App\Interfaces\AppointmentOnsiteRepositoryInterface;
+use App\Notifications\AppointmentOnsiteCreatedNotification;
 
 class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterface
 {
@@ -162,6 +162,7 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
 
         return !!$sameAppointment;
     }
+
 
     public function isAppointmentSlotFull($slotId, $date)
     {
