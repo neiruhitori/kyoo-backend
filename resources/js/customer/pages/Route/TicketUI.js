@@ -4,6 +4,14 @@ import BookingStatusStyle2 from '../BookingStatus/BookingStatusStyle2'
 import BookingStatusStyle3 from '../BookingStatus/BookingStatusStyle3'
 import BookingStatusStyle4 from '../BookingStatus/BookingStatusStyle4'
 import BookingStatusStyle5 from '../BookingStatus/BookingStatusStyle5'
+
+import OnsiteBookingStatus from './../OnsiteBookingStatus/OnsiteBookingStatus'
+import OnsiteBookingStatus2 from './../OnsiteBookingStatus/OnsiteBookingStatusStyle2'
+import OnsiteBookingStatus3 from './../OnsiteBookingStatus/OnsiteBookingStatusStyle3'
+import OnsiteBookingStatus4 from './../OnsiteBookingStatus/OnsiteBookingStatusStyle4'
+import OnsiteBookingStatus5 from './../OnsiteBookingStatus/OnsiteBookingStatusStyle5'
+
+
 import useBranch from '../../hooks/useBranch'
 import { useParams } from 'react-router-dom';
 
@@ -25,17 +33,16 @@ const TicketUI = () => {
   };
   
   const OnsiteComponents = {
-    'ticket-style-2': BookingStatusStyle2,
-    'ticket-style-3': BookingStatusStyle3,
-    'ticket-style-4': BookingStatusStyle4,
-    'ticket-style-5': BookingStatusStyle5,
+    'ticket-style-2': OnsiteBookingStatus2,
+    'ticket-style-3': OnsiteBookingStatus3,
+    'ticket-style-4': OnsiteBookingStatus4,
+    'ticket-style-5': OnsiteBookingStatus5,
   };
   
-  const DefaultComponent = BookingStatus;
   
   const SelectedComponent = isAppt
-    ? (ApptComponents[ticketStyle] || DefaultComponent)
-    : (OnsiteComponents[ticketStyle] || DefaultComponent);
+  ? (ApptComponents[ticketStyle] || BookingStatus)
+  : (OnsiteComponents[ticketStyle] || OnsiteBookingStatus);
   
   return <SelectedComponent />;
 };

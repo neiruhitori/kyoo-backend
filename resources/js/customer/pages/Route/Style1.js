@@ -19,6 +19,7 @@ import AppointmentServices from '../appointment/Services'
 import AppointmentServicesTwoLayer from '../appointment/ServicesTwoLayer'
 import Promotions from '../Promotions/Promotions'
 import TicketUI from './TicketUI'
+import AppointmentOnsiteTicket from './AppointmentOnsiteStatus';
 
 import { useParams } from 'react-router-dom';
 
@@ -26,7 +27,6 @@ import { useParams } from 'react-router-dom';
 
 export default function AppointmentStyle1() {
 const ticketStyle = document.getElementById('root').getAttribute('tstyle') ?? 'ticket_style_1'
-console.log(ticketStyle)
   return (
    <Routes>
                <Route path="/scan" element={<QRReader />} />
@@ -46,11 +46,11 @@ console.log(ticketStyle)
                />
                <Route
                    path="/customer/:branchId/appointment-onsite/booking-status/:bookingId"
-                   element={<AppointmentOnsiteBookingStatus />}
+                   element={<AppointmentOnsiteTicket />}
                />
                <Route
                    path="/customer/:branchId/onsite/booking-status/:bookingId"
-                   element={<OnsiteBookingStatus />}
+                   element={<TicketUI />}
                />
                <Route path="/customer/:branchId/:queueType/booking-status/:bookingId" element={<TicketUI />} />
                <Route path="/customer/:branchId/:queueType/booking-status/:bookingId/detail" element={<BookingDetail />} />

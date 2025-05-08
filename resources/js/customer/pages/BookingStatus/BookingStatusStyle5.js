@@ -142,7 +142,7 @@ export default function BookingStatus() {
                     </h4>
                     <h4 style={{
                         fontWeight: '700',
-                        fontSize: '3rem',
+                        fontSize: '6rem',
                         color: '#103C7C',
                         marginBottom:'1rem'
                     }}>

@@ -2,10 +2,10 @@ import { Routes, Route } from 'react-router-dom'
 
 import OnsiteBookingStatus from '../OnsiteBookingStatus/OnsiteBookingStatus'
 import AppointmentOnsiteBookingStatus from '../AppointmentOnsiteBookingStatus/AppointmentOnsiteBookingStatus'
-import OnsiteServicesTwoLayer from '../onsite/ServicesTwoLayer'
+import OnsiteServicesTwoLayer from '../onsite/ServicesTwoLayerStyle3'
 import BranchDetailStyle3 from '../BranchDetail/BranchDetailStyle3'
 import OnsiteVisitorInformation from '../OnsiteVisitorInformation/OnsiteVisitorInformation'
-import AppointmentOnsiteVisitorInformation from '../AppointmentOnsiteVisitorInformation/AppointmentOnsiteVisitorInformation'
+import AppointmentOnsiteVisitorInformation from '../AppointmentOnsiteVisitorInformation/AppointmentOnsiteVisitorInformationStyle3'
 import BookingDetail from '../BookingDetail/BookingDetail'
 import AppointmentServicesCategoriesStyle3 from '../appointment/ServiceCategoriesStyle3'
 import ServiceList from '../ServiceList/ServiceList'
@@ -19,12 +19,13 @@ import AppointmentServicesStyle3 from '../appointment/ServicesStyle3'
 import AppointmentServicesTwoLayer from '../appointment/ServicesTwoLayer'
 import Promotions from '../Promotions/Promotions'
 import TicketUI from './TicketUI'
+import AppointmentOnsiteTicket from './AppointmentOnsiteStatus';
 
 import { useParams } from 'react-router-dom';
 
 
 
-export default function AppointmentStyle1() {
+export default function AppointmentStyle3() {
 
   return (
    <Routes>
@@ -45,11 +46,11 @@ export default function AppointmentStyle1() {
                />
                <Route
                    path="/customer/:branchId/appointment-onsite/booking-status/:bookingId"
-                   element={<AppointmentOnsiteBookingStatus />}
+                   element={<AppointmentOnsiteTicket />}
                />
                <Route
                    path="/customer/:branchId/onsite/booking-status/:bookingId"
-                   element={<OnsiteBookingStatus />}
+                   element={<TicketUI />}
                />
                <Route path="/customer/:branchId/:queueType/booking-status/:bookingId" element={<TicketUI />} />
                <Route path="/customer/:branchId/:queueType/booking-status/:bookingId/detail" element={<BookingDetail />} />

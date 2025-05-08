@@ -216,28 +216,40 @@ export default function BookingStatus() {
             padding: '1.625rem 1.375rem',
         }}>
             <Card>
-                <div style={{
-                display: 'flex',
-                justifyContent:'space-between',
-                marginBottom: '0.8rem',
+            <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    gap: '1rem',
+                    marginBottom: '0.8rem',
                 }}>
-                    <h4 style={{
-                        fontWeight: '700',
-                        fontSize: '1.5rem',
-                        color: '#103C7C',
-                    }}>
-                        {booking?.service_name}
-                    </h4>
-                    <p style={{
-                        backgroundColor:'#92EC47',
-                        color:'#fff',
-                        borderRadius:'20px',
-                        textAlign:'end',
-                        fontSize: '1rem',
-                        marginBottom: '.5rem',
-                        padding:'0.5rem 1.2rem'
-                    }}>{slot?.session ? `Sesi ` + slot?.session : '-'}</p>
+                <h4 style={{
+                    fontWeight: '700',
+                    fontSize: '1.5rem',
+                    color: '#103C7C',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '70%',
+                }}>
+                    {booking?.service_name}
+                </h4>
+                <p style={{
+                    backgroundColor: '#92EC47',
+                    color: '#fff',
+                    borderRadius: '20px',
+                    textAlign: 'end',
+                    fontSize: '1rem',
+                    marginBottom: '.5rem',
+                    padding: '0.5rem 1.2rem',
+                    whiteSpace: 'nowrap',
+                }}>
+                    {slot?.session ? `Sesi ` + slot?.session : '-'}
+                </p>
                 </div>
+
 
                 <div style={{
                 display: 'flex',

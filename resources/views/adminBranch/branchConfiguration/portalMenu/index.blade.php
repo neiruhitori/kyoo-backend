@@ -215,7 +215,7 @@
                             </option>
                         </select>
                     </div>
-                    @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_appointment)
+                    @if(Auth::user()->Branch->BranchType->is_premium)
                     <div class="form-group ml-3 col-md-5" style="width: 250px;">
                         <label for="select-template">{{ __('Select the web style/theme') }}</label>
                         <select name="web_style" id="webStyle" class="form-control">
@@ -252,7 +252,7 @@
                         @endif
                         
                     </div>
-                    @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_appointment)
+                    @if(Auth::user()->Branch->BranchType->is_premium)
                     <div class="form-group ml-3 col-md-5" style="width: 250px;">
                         <label for="select-template">{{ __('Select the ticket style/theme') }}</label>
                         <select name="ticket_style" id="webStyle" class="form-control">

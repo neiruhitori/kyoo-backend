@@ -139,27 +139,37 @@ export default function BookingStatus() {
             padding: '1.75rem',
         }}>
                 <div style={{
-                display: 'flex',
-                justifyContent:'space-between',
-                marginBottom: '0.8rem',
-                }}>
-                    <h4 style={{
-                        fontWeight: '700',
-                        fontSize: '1.5rem',
-                        color: '#103C7C',
-                    }}>
-                        {props?.serviceName}
-                    </h4>
-                    <p style={{
-                        backgroundColor:'#92EC47',
-                        color:'#fff',
-                        borderRadius:'20px',
-                        textAlign:'end',
-                        fontSize: '1rem',
-                        marginBottom: '.5rem',
-                        padding:'0.5rem 1.2rem'
-                    }}>{props?.session ? `Sesi ` + props?.session : '-'}</p>
-                </div>
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-start',
+                        gap: '1rem',
+                        marginBottom: '0.8rem',}}>
+                                <h4 style={{
+                                    fontWeight: '700',
+                                    fontSize: '1.5rem',
+                                    color: '#103C7C',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '70%',
+                                }}>
+                                    {props?.serviceName}
+                                </h4>
+                                <p style={{
+                                    backgroundColor: '#92EC47',
+                                    color: '#fff',
+                                    borderRadius: '20px',
+                                    textAlign: 'end',
+                                    fontSize: '1rem',
+                                    marginBottom: '.5rem',
+                                    padding: '0.5rem 1.2rem',
+                                    whiteSpace: 'nowrap',
+                                }}>
+                                    {props?.session ? `Sesi ` + props?.session : '-'}
+                                </p>
+                        </div>
 
                 <div style={{
                 display: 'flex',

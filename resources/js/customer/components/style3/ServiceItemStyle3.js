@@ -12,7 +12,13 @@ const ServiceContent = styled.div(() => ({
 const ServiceTitle = styled.div(() => ({
     fontWeight: '700',
     color: 'white',
-    fontSize: '1.25rem'
+    fontSize: '1rem', 
+    maxWidth: '100%', 
+    display: '-webkit-box',
+    WebkitLineClamp: 2,         
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
 }))
 
 const ServiceSubtitle = styled.div(() => ({

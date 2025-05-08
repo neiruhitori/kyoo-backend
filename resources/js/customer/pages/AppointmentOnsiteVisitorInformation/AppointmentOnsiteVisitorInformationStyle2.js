@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useMutation, useQuery } from 'react-query'
 import { useParams, useNavigate, Link, useLocation, useSearchParams } from 'react-router-dom'
 
@@ -8,8 +8,8 @@ import { createAppointmentOnsite } from '../../api/appointmentOnsite'
 
 import Header from '../../components/Header'
 import MainContent from '../../components/MainContent'
-import TextField from '../../components/TextField'
-import Button from '../../components/Button'
+import TextField from '../../components/style1/FormInputStyle1'
+import Button from '../../components/style1/ButtonStyle1'
 import DangerAlert from '../../components/DangerAlert'
 import Loading from '../../components/Loading'
 import useLocalization from '../../hooks/useLocalization'
@@ -48,6 +48,7 @@ function AppointmentOnsiteVisitorInformation() {
     const [headerErrorMessage, setHeaderErrorMessage] = useState(t('Failed to Create Queue'))
     const [errorMessage, setErrorMessage] = useState('')
     const [selectedButton, setSelectedButton] = useState('submit')
+    const [isFilled, setIsFilled] = useState(false)
 
     let branch = null
     let service = null
@@ -85,6 +86,39 @@ function AppointmentOnsiteVisitorInformation() {
             email: validator.message('email', email, ['email']),
         }),
     };
+    
+    useEffect(() => {
+        const templateRequiredMap = {
+          'form-medical-1': ['name', 'phone', 'email', 'reasonForVisit'],
+          'form-financing': ['name', 'phone', 'contractNumber'],
+          'form-medical-2': ['name', 'phone', 'passportNumber', 'reasonForVisit'],
+          default: ['name', 'phone', 'email']
+        };
+      
+        const requiredFields = templateRequiredMap[selectedTemplateForm] ?? templateRequiredMap.default;
+      
+        const formValues = {
+          name, phone, email,
+          dateOfBirth, address, emergencyNumber,
+          passportNumber, reasonForVisit, contractNumber
+        };
+      
+        const isAllFilled = requiredFields.every(field => {
+          const value = formValues[field];
+          const error = validationMessage[field];
+          return value && value.trim() !== '' && !error;
+        });
+      
+        setIsFilled(isAllFilled);
+      }, [
+        selectedTemplateForm,
+        name, phone, email,
+        dateOfBirth, address,
+        emergencyNumber, passportNumber,
+        reasonForVisit, contractNumber,
+        validationMessage
+      ]);
+      
 
     const bookingMutation = useMutation('booking', (data) => createAppointmentOnsite(data))
 
@@ -95,7 +129,7 @@ function AppointmentOnsiteVisitorInformation() {
                             style={{ marginBottom: '1.5rem' }}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder={t("Your name")}
+                            placeholder="Ch. John Doe"
                             error={!!validationMessage.name}
                             helperText={t(validationMessage.name)}
                         />
@@ -105,7 +139,7 @@ function AppointmentOnsiteVisitorInformation() {
                             style={{ marginBottom: '1.5rem' }}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder={t("Your E-mail")}
+                            placeholder="Ch. john@mail.com"
                             error={!!validationMessage.email}
                             helperText={t(validationMessage.email)}
                         />
@@ -129,7 +163,7 @@ function AppointmentOnsiteVisitorInformation() {
             style={{ marginBottom: '1.5rem' }}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder={t("Your name")}
+            placeholder="Ch. John Doe"
             error={!!validationMessage.name}
             helperText={t(validationMessage.name)}
         />
@@ -139,7 +173,7 @@ function AppointmentOnsiteVisitorInformation() {
             style={{ marginBottom: '1.5rem' }}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={t("Your E-mail")}
+            placeholder="Ch. john@mail.com"
             error={!!validationMessage.email}
             helperText={t(validationMessage.email)}
         />
@@ -172,7 +206,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={t("Your name")}
+                    placeholder="Ch. John Doe"
                     error={!!validationMessage.name}
                     helperText={t(validationMessage.name)}
                 />
@@ -190,7 +224,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder={t("Your Address")}
+                    placeholder="Ch. Jln Merdeka"
                     error={!!validationMessage.address}
                     helperText={t(validationMessage.address)}
                 />
@@ -229,7 +263,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t("Your E-mail")}
+                    placeholder="Ch. john@mail.com"
                     error={!!validationMessage.email}
                     helperText={t(validationMessage.email)}
                 />
@@ -238,7 +272,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={reasonForVisit}
                     onChange={(e) => setReasonForVisit(e.target.value)}
-                    placeholder="CheckUp"
+                    placeholder="Ch. CheckUp"
                     error={!!validationMessage.reasonForVisit}
                     helperText={t(validationMessage.reasonForVisit)}
                 />
@@ -252,7 +286,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={t("Your name")}
+                    placeholder="Ch. John Doe"
                     error={!!validationMessage.name}
                     helperText={t(validationMessage.name)}
                 />
@@ -289,7 +323,7 @@ function AppointmentOnsiteVisitorInformation() {
                     style={{ marginBottom: '1.5rem' }}
                     value={reasonForVisit}
                     onChange={(e) => setReasonForVisit(e.target.value)}
-                    placeholder="CheckUp"
+                    placeholder="Ch. CheckUp"
                     error={!!validationMessage.reasonForVisit}
                     helperText={t(validationMessage.reasonForVisit)}
                 />
@@ -374,7 +408,6 @@ function AppointmentOnsiteVisitorInformation() {
                     setHeaderErrorMessage(t('Failed to Create Queue'))
                 }
                 showError(booking.message)
-                console.log(booking)
                 return
             }
             navigate(`/customer/${branchId}/appointment-onsite/booking-status/${booking.data.id}`)
@@ -384,7 +417,6 @@ function AppointmentOnsiteVisitorInformation() {
             } else {
                 setHeaderErrorMessage(t('Failed to Create Queue'))
             }
-            console.log(error)
             showError(error.message)
         }
     }
@@ -416,6 +448,11 @@ function AppointmentOnsiteVisitorInformation() {
                 flex: '1 1 0%'
             }}>{PAGE_TITLE}</div>
         </Header>
+
+        <div style={{ padding: '2rem 1.375rem', }}>
+            <h2 style={{ marginBottom:'0.5rem' }}>Informasi Pengunjung</h2>
+            <p style={{ color:'#8e8e8e' }}>Silahkan isi data diri anda</p>
+        </div>
 
         <form onSubmit={handleFormSubmit} style={{
             display: 'flex',
@@ -451,10 +488,15 @@ function AppointmentOnsiteVisitorInformation() {
                 borderRadius: '16px 16px 0 0',
                 padding: '1.75rem 1.375rem'
             }}>
-                <Button color="primary" type="submit" style={{
+                <Button 
+                color={isFilled ? "primary" : "secondary"}
+                disabled={!isFilled}
+                type="submit" 
+                style={{
                     width: '100%',
                     fontSize: '1rem',
-                    marginBottom: '.5rem'
+                    color: isFilled ? '#FFFFFF' : '#8e8e8e',
+                    backgroundColor: isFilled ? '#0e3776' : '#E8EDF1'
                 }} onClick={() => setSelectedButton('submit')}>{t('Next')}</Button>
             </div>
         </form>
