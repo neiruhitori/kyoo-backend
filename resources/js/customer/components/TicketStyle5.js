@@ -1,5 +1,8 @@
 import styled from 'styled-components';
-import { format, formatBrowser } from '../utils/date';
+import { format } from 'date-fns';
+import useLocalization from '../hooks/useLocalization';
+import id from 'date-fns/locale/id'
+import en  from 'date-fns/locale/en-US';
 
 const Wrapper = styled.div`
     display: grid;
@@ -20,28 +23,33 @@ const Content = styled.p`
 `;
 
 export default function TicketRip(props) {
+    const {t, locale} = useLocalization();
+    const dateLocale = locale == 'id' ? id : en
     return (
         <div style={{ padding: '1.75rem' }} {...props}>
             <Wrapper>
-                <Title>Nama Layanan</Title>
+                <Title>{t('Service Name')}</Title>
                 <span>:</span>
                 <Content>{props.booking?.service_name}</Content>
             </Wrapper>
 
             <Wrapper>
-                <Title>Kode Booking</Title>
+                <Title>{t('Booking Code')}</Title>
                 <span>:</span>
-                <Content>{props.booking?.booking_code}</Content>
+                <Content>{props.booking?.booking_code.toUpperCase()}</Content>
             </Wrapper>
 
             <Wrapper>
-                <Title>Tanggal</Title>
+                <Title>{t('Date')}</Title>
                 <span>:</span>
-                <Content>{format(formatBrowser(props.booking?.date))}</Content>
+                <Content>
+                    {format(new Date(props.booking?.date), 
+                            "dd MMMM yyyy", {locale:dateLocale})}
+                </Content>
             </Wrapper>
 
             <Wrapper>
-                <Title>Slot Waktu</Title>
+                <Title>{t('Time Slot')}</Title>
                 <span>:</span>
                 <Content>{props.booking?.start_time + ` - ` + props.booking?.end_time}</Content>
             </Wrapper>

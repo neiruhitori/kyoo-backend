@@ -427,7 +427,7 @@ function ServicesStyle1() {
                                         ))
                                 )}
                                 {!isSlotLoading && slotList?.length === 0 && (
-                                    <p>Tidak ada layanan</p>
+                                    <p>{t('No services available')}</p>
                                   )}
                 </div>
             </div> {/*main wrapper*/}

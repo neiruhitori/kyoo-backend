@@ -1,12 +1,17 @@
 import  { forwardRef } from 'react'
 import InfoAlert from '../components/InfoAlert'
-import { formatBrowser, format, formatTime } from '../utils/date'
+import { format } from 'date-fns'
 import QRCode from 'react-qr-code';
 import TicketCard from '../components/TicketCard';
 import TicketRip from '../components/TicketRip';
+import id from 'date-fns/locale/id'
+import en  from 'date-fns/locale/en-US'
+import useLocalization from '../hooks/useLocalization'
 
 
 export default forwardRef(function OnsiteQueueTicket({ booking, branch, style }, ref) {
+    const{t, locale} = useLocalization();
+    const dateLocale = locale == 'id' ? id : en
     return <div ref={ref}>
     <TicketCard style={{
         padding: '1.7rem',
@@ -56,7 +61,10 @@ export default forwardRef(function OnsiteQueueTicket({ booking, branch, style },
 
             <p style={{  
                 marginBottom:'1.2rem'
-             }}>{format(formatBrowser(booking?.date))}</p>
+             }}>{ booking?.date ? 
+                format(new Date(booking?.date), 
+                "dd MMMM yyyy", {locale:dateLocale})
+                : '-'}</p>
 
             <p style={{  
                 marginBottom:'1.2rem'

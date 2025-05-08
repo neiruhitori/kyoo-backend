@@ -124,69 +124,6 @@ export default function BookingStatus() {
             }
         })
     }
-    function TicketHead(props) {
-        const {t, locale} = useLocalization();
-        return 
-            <div style={{
-            padding: '1.75rem',
-        }}>
-                <div style={{
-                textAlign:'center',
-                marginBottom: '0.8rem',
-                }}>
-                    <h4 style={{
-                        fontWeight: '700',
-                        fontSize: '1.5rem',
-                        color: '#103C7C',
-                        marginBottom:'1rem'
-                    }}>
-                        {props?.branchName}
-                    </h4>
-                    <QRCode value={props?.bookingCode || ''} size={150}/>
-                    <h4 style={{
-                        fontWeight: '700',
-                        fontSize: '3rem',
-                        color: '#103C7C',
-                        marginBottom:'1rem'
-                    }}>
-                        {props?.queue_no}
-                    </h4>
-                    <h4 style={{
-                        fontWeight: '700',
-                        fontSize: '2rem',
-                        color: '#103C7C',
-                        marginBottom:'1rem'
-                    }}>
-                        {props?.booking_code}
-                    </h4>
-                </div>
-        </div>
-    }
-    function TicketFooter(props) {
-        return <div style={{
-            display: 'flex',
-            padding: '1.75rem',
-            textAlign: 'center',
-            flexDirection: 'column'
-          }}>
-            <div style={{ marginBottom: '1.2rem' }}>
-              <h4 style={{ marginBottom: '0.3rem' }}>Kode Booking</h4>
-              <p style={{ color: 'blue' }}>{props?.bookingCode}</p>
-            </div>
-            <div>
-              <h4 style={{ marginBottom: '0.3rem' }}>Status Antrian</h4>
-              <div style={{
-                margin: '0 auto .5rem',
-                padding: '3px 10px',
-                display: 'inline-block'
-              }}> 
-              {['waiting', 'served', 'check in', 'book'].includes(props?.status) &&
-                <ChipWarning label={bookingStatus} style={{  borderRadius: '20px', }} />}
-                {props?.status === 'end served' && <ChipSuccess label={bookingStatus} style={{  borderRadius: '20px', }}/>}
-                {['canceled', 'no show'].includes(props?.status) && <ChipDanger label={bookingStatus}  style={{  borderRadius: '20px', }}/>}</div>
-            </div>
-          </div>          
-    }
 
     function handleCancelClick() {
         setIsShowDialog(true)

@@ -58,7 +58,7 @@ function VisitorInformation() {
                 }}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ch. John Doe"
+                placeholder="Your Name"
                 error={!!validationMessage.name}
                 helperText={validationMessage.name}
             />
@@ -71,7 +71,7 @@ function VisitorInformation() {
                 }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Ch. john@mail.com"
+                placeholder="Your E-mail"
                 error={!!validationMessage.email}
                 helperText={validationMessage.email}
             />

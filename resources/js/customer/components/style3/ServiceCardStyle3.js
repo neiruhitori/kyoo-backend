@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Card from '../Card'
 import AngleRightIcon from '../../icons/AngleRightIcon'
 import { Children } from 'react'
+import useLocalization from './../../hooks/useLocalization';
 
 const ServiceCard = styled.div(() => ({
     backgroundColor:'#bddbff',
@@ -24,12 +25,13 @@ const Header = styled.h5(() => ({
 }))
 
 function ServiceCardStyle3(props) {
+    const {t, locale} = useLocalization();
     return <ServiceCard {...props}>
         <div style={{ width:'25rem', display:'flex', flexDirection:'column' }}>
 
-            <Header>Slot Waktu</Header>
+            <Header>{t('Time Slot')}</Header>
             <p style={{ color:'#838383', fontSize:'0.85rem', textAlign:'center', marginBottom:'1.5rem' }}>
-                Pilih tanggal dan sesi waktu yang tersedia
+                {t('Choose an available date and time session')}
             </p>
             {props.children}
         </div>

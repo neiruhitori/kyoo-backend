@@ -90,8 +90,8 @@ function BookingConfirmation() {
         </Header>
 
         <div style={{ padding: '2rem 1.375rem', }}>
-            <h2 style={{ marginBottom:'0.5rem' }}>Konfirmasi Antrian</h2>
-            <p style={{ color:'#8e8e8e' }}>Silahkan cek kembali data dan detail booking</p>
+            <h2 style={{ marginBottom:'0.5rem' }}>{t('Queue Confirmation')}</h2>
+            <p style={{ color:'#8e8e8e' }}>{t('Please check your data and booking details again')}</p>
         </div>
 
         <MainContent style={{

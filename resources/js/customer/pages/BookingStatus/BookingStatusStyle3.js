@@ -34,6 +34,7 @@ import styled from 'styled-components'
 import useLocalization from '../../hooks/useLocalization'
 import TicketStyle3 from '../../components/TicketStyle3'
 import TicketCard from '../../components/TicketCard'
+import en  from 'date-fns/locale/en-US';
 
 export default function BookingStatus() {
     const{t, locale} = useLocalization();
@@ -116,11 +117,11 @@ export default function BookingStatus() {
             justifyContent:'space-between'
           }}>
             <div>
-              <h4 style={{ marginBottom: '0.3rem' }}>Kode Booking</h4>
+              <h4 style={{ marginBottom: '0.3rem' }}>{t('Booking Code')}</h4>
               <p style={{ color: 'blue', padding:'0.5rem .75rem' }}>{props?.bookingCode}</p>
             </div>
             <div>
-              <h4 style={{ marginBottom: '0.3rem' }}>Status Antrian</h4>
+              <h4 style={{ marginBottom: '0.3rem' }}>{t('Queue Status')}</h4>
               {['waiting', 'served', 'check in', 'book'].includes(props?.status) &&
                 <ChipWarning label={bookingStatus} style={{  borderRadius: '20px', }} />}
                 {props?.status === 'end served' && <ChipSuccess label={bookingStatus} style={{  borderRadius: '20px', }}/>}
@@ -165,6 +166,7 @@ export default function BookingStatus() {
     const View = styled.div`
         width: 420px;
     `
+    const dateLocale = locale == 'id' ? id : en
 
     return <>
         {promotionsQuery.isSuccess &&
@@ -246,7 +248,7 @@ export default function BookingStatus() {
                     padding: '0.5rem 1.2rem',
                     whiteSpace: 'nowrap',
                 }}>
-                    {slot?.session ? `Sesi ` + slot?.session : '-'}
+                    {slot?.session ? t('Session')+ ' ' + slot?.session : '-'}
                 </p>
                 </div>
 
@@ -261,7 +263,7 @@ export default function BookingStatus() {
                         marginBottom: '.5rem',
                     }}>{booking?.date ? 
                         format(new Date(booking?.date), 
-                        "EEEE, dd MMMM yyyy")
+                        "EEEE, dd MMMM yyyy", {locale:dateLocale})
                         : '-'}</p>
                     
                     <p style={{

@@ -11,11 +11,8 @@ import usePromotions from '../../hooks/usePromotions'
 import { getAbrvDate, getDayName, formatBrowser, getMonthAbrvName } from '../../utils/date'
 import LocationIcon from '../../icons/LocationIcon'
 import { format, eachMonthOfInterval, parseISO, addDays } from 'date-fns'
-import id from 'date-fns/locale/id'
+
 import Header from '../../components/Header'
-import Banner from '../../components/Banner'
-import Chip from '../../components/Chip'
-import H2 from '../../components/H2'
 import Card from '../../components/Card'
 import BlueCard from '../../components/BlueCard'
 import InfoAlert from '../../components/InfoAlert'
@@ -34,6 +31,8 @@ import styled from 'styled-components'
 import useLocalization from '../../hooks/useLocalization'
 import TicketRip from '../../components/TicketRip'
 import TicketCard from '../../components/TicketCard'
+import id from 'date-fns/locale/id'
+import en  from 'date-fns/locale/en-US';
 
 export default function BookingStatus() {
     const{t, locale} = useLocalization();
@@ -132,6 +131,7 @@ export default function BookingStatus() {
     `
     function TicketHead(props) {
         const {t, locale} = useLocalization();
+        const dateLocale = locale == 'id' ? id : en
         return <> <div style={{
             paddingBottom:'2.5rem'
         }}>
@@ -167,7 +167,7 @@ export default function BookingStatus() {
                                     padding: '0.5rem 1.2rem',
                                     whiteSpace: 'nowrap',
                                 }}>
-                                    {props?.session ? `Sesi ` + props?.session : '-'}
+                                    {props?.session ? t('Session')+ ' ' + props?.session : '-'}
                                 </p>
                         </div>
 
@@ -181,7 +181,7 @@ export default function BookingStatus() {
                         marginBottom: '.5rem',
                     }}>{props?.date ? 
                         format(new Date(props?.date), 
-                        "EEEE, dd MMMM yyyy")
+                        "EEEE, dd MMMM yyyy", {locale:dateLocale})
                         : '-'}</p>
                     
                     <p style={{
@@ -202,11 +202,11 @@ export default function BookingStatus() {
                 padding:'1rem 3rem'
              }}>
                 <div style={{ textAlign:'center' }}>
-                    <h4 style={{ marginBottom:'1.2rem' }}>Nomor Antrian</h4>
+                    <h4 style={{ marginBottom:'1.2rem' }}>{t('Queue No')}</h4>
                     <h2 style={{ fontSize:'2.5rem' }}>{props?.queueNo || 0}</h2>
                 </div>
                 <div style={{ color:'blue', textAlign:'center' }}>
-                    <h4 style={{ marginBottom:'1.2rem' }}>Antrian Sekarang</h4>
+                    <h4 style={{ marginBottom:'1.2rem' }}>{t('Current Queue')}</h4>
                     <h2 style={{ fontSize:'2.5rem' }}>{props?.currentQueue || 0}</h2>
                 </div>
             </div>
@@ -222,11 +222,11 @@ export default function BookingStatus() {
             flexDirection: 'column'
           }}>
             <div style={{ marginBottom: '1.2rem' }}>
-              <h4 style={{ marginBottom: '0.3rem' }}>Kode Booking</h4>
+              <h4 style={{ marginBottom: '0.3rem' }}>{t('Booking Code')}</h4>
               <p style={{ color: 'blue' }}>{props?.bookingCode}</p>
             </div>
             <div>
-              <h4 style={{ marginBottom: '0.3rem' }}>Status Antrian</h4>
+              <h4 style={{ marginBottom: '0.3rem' }}>{t('Queue Status')}</h4>
               <div style={{
                 margin: '0 auto .5rem',
                 padding: '3px 10px',

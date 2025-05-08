@@ -67,7 +67,7 @@ function VisitorInformationStyle1() {
                 }}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ch. John Doe"
+                placeholder="Your name"
                 error={!!validationMessage.name}
                 helperText={validationMessage.name}
             />
@@ -80,7 +80,7 @@ function VisitorInformationStyle1() {
                 }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Ch. john@mail.com"
+                placeholder="Your E-mail"
                 error={!!validationMessage.email}
                 helperText={validationMessage.email}
             />
@@ -223,8 +223,8 @@ function VisitorInformationStyle1() {
         </Header>
 
         <div style={{ padding: '2rem 1.375rem', }}>
-            <h2 style={{ marginBottom:'0.5rem' }}>Informasi Pengunjung</h2>
-            <p style={{ color:'#8e8e8e' }}>Silahkan isi data diri anda</p>
+            <h2 style={{ marginBottom:'0.5rem' }}>{t('Visitor Information')}</h2>
+            <p style={{ color:'#8e8e8e' }}>{t('Please fill in your data')}</p>
         </div>
 
         <form onSubmit={handleFormSubmit} style={{
