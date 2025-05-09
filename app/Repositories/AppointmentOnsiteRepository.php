@@ -132,10 +132,14 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
                 $appointmentOnsite->sendNotificationWaBlast($appointmentOnsite);
             }
 
-            try {
-                Mail::to($appointmentOnsite->email)->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
-            } catch (\Exception $e) {
-                throw new \Exception('ERR-0002: Pengiriman email gagal, mohon cek koneksi internet Anda.', 10002);
+            for ($i = 1; $i <= 2; $i++) {
+                try {
+                    Mail::to($appointmentOnsite->email)
+                    ->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
+                    break;
+                } catch (\Exception $e) {
+                    \Log::warning("Gagal kirim email (percobaan $i): " . $e->getMessage());
+                }
             }
 
             return $appointmentOnsite;
