@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.appCS')
 
 @push('css')
 <link href="https://cdn.jsdelivr.net/npm/daisyui@2.15.2/dist/full.css" rel="stylesheet" type="text/css" />

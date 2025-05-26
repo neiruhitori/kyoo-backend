@@ -177,7 +177,7 @@ Route::namespace('AdminBranch')
             Route::get('terms-conditions', 'TermsConditionsController@index')->name('terms-conditions.index');
             Route::get('terms-conditions/get', 'TermsConditionsController@get')->name('terms-conditions.get');
             Route::put('terms-conditions', 'TermsConditionsController@update')->name('terms-conditions.store');
-
+         
             Route::prefix('/promotions')
                 ->name('promotions.')
                 ->middleware('access:Promosi')
@@ -457,6 +457,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS', 'setTimeZone
     Route::post('directQueue/onEndServed', 'DirectQueueController@onEndServed')->middleware('checkDirectQueue');
     Route::post('directQueue/onNoShow', 'DirectQueueController@onNoShow')->middleware('checkDirectQueue');
     Route::post('directQueue/onTransfer', 'DirectQueueController@onTransfer')->middleware('checkDirectQueue');
+    Route::get('directQueue/getQRCode/{queue_id}', 'DirectQueueController@getQrCode')->middleware('checkDirectQueue');
 
     // Report routes
     Route::get('report/daily', 'ReportController@daily')->name('report.daily');

@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.appCS')
 
 @section('content')
     <div id="app">
-        <monitor-component
+        <monitor-component-2
             :max_recall="{{ Auth::user()->Branch->BranchConfiguration->maximum_recall }}"
             :max_requeue="{{ Auth::user()->Branch->BranchConfiguration->maximum_requeue_count }}"
             :allow_transfer="{{ Auth::user()->Branch->BranchConfiguration->allow_transfer ? 'true' : 'false' }}"

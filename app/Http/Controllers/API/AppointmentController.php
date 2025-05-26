@@ -50,7 +50,7 @@ class AppointmentController extends Controller
             ]);
         } catch (\Throwable $e) {
             return response()->json([
-                'sucess' => false,
+                'success' => false,
                 'message' => $e->getMessage(),
                 'data' => []
             ]);

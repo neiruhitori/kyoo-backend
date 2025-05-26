@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.appCS')
 
 @push('css')
     <link href="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
