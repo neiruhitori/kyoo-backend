@@ -496,6 +496,27 @@
                  </div>
              </div>
          </div>
+                 <div class="modal fade show d-block" tabindex="-1" aria-modal="true" v-if="isShowModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ t('Cancel Appointment') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="isShowModal = false">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>{{ t('Are you sure you want to cancel the appointment') }} <strong>{{ selectedAppointment.number }}</strong>?</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="isShowModal = false">{{ ('No') }}</button>
+                        <button type="button" class="btn btn-danger" @click="confirmCancel(selectedAppointment.id)">{{ t('Yes, Cancel the Appointment') }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -1010,9 +1031,10 @@ export default {
         },
 
         async confirmCancel(id) {
+            this.isLoading = true
             try  {
                 await axios.patch(`/cs/appointments/${id}/cancel`)
-    
+                
                 this.isShowModal = false
                 this.showAlert('Appointment canceled')
             } catch (e) {
@@ -1022,6 +1044,7 @@ export default {
                     'danger'
                 )
             }
+            this.isLoading = false
 
             this.getQueues()
         },
