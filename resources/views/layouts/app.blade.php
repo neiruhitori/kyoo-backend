@@ -85,8 +85,14 @@
 
         @case('cs')
         @case('spv')
-            @include('layouts.sidebarCS')
-            @break
+            @php
+                $csPageStyle = Auth::user()->Branch->BranchConfiguration->cs_page;
+            @endphp
+
+            @if($csPageStyle && $csPageStyle != 'style-2')
+                @include('layouts.sidebarCS')
+            @endif
+          @break
 
         @case('admin_corporate')
             @include('layouts.sidebarAdminCorporate')
@@ -116,7 +122,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Kyoo.id 2020</span>
+            <span>Copyright &copy; KYOO 2020</span>
           </div>
         </div>
       </footer>

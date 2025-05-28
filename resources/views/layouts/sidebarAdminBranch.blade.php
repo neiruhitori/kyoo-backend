@@ -271,12 +271,6 @@
                        {{ __('Promotion')}}
                     </a>
                     @endif
-                    <a
-                        class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/webhook*') ?: 'active' }}"
-                        href="{{ route('admin-branch.branch-configuration.webhook.index') }}"
-                    >
-                       {{ __('Webhook')}}
-                    </a>
             </div>
         </div>
     </li>

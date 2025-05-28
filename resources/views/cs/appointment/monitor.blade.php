@@ -1,15 +1,27 @@
-@extends('layouts.appCS')
+@extends('layouts.app')
 
 @section('content')
     <div id="app">
-        <appointment-monitor-2
-            :branch="{{ Auth::user()->Branch }}"
-            :vct="{{ Auth::user() }}"
-            :auth="{{ Auth::user() }}"
-            :workstation="{{ Auth::user()->WorkstationVct->Workstation }}"
-            :services="{{ $services }}"
-            lang={{ app()->getLocale() }}
-        />
+
+        @if (Auth::user()->Branch->BranchConfiguration->cs_page == 'style-2')
+            <appointment-monitor-2
+                :branch="{{ Auth::user()->Branch }}"
+                :vct="{{ Auth::user() }}"
+                :auth="{{ Auth::user() }}"
+                :workstation="{{ Auth::user()->WorkstationVct->Workstation }}"
+                :services="{{ $services }}"
+                lang={{ app()->getLocale() }}
+            />
+            @else
+            <appointment-monitor
+                :branch="{{ Auth::user()->Branch }}"
+                :vct="{{ Auth::user() }}"
+                :auth="{{ Auth::user() }}"
+                :workstation="{{ Auth::user()->WorkstationVct->Workstation }}"
+                :services="{{ $services }}"
+                lang={{ app()->getLocale() }}
+            />
+        @endif
     </div>
 @endsection
 

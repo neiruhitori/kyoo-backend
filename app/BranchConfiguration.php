@@ -29,5 +29,6 @@ class BranchConfiguration extends Model
     'vo_call_style',
     'web_style',
     'ticket_style',
+    'cs_page',
   ];
 }

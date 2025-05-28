@@ -323,8 +323,8 @@ export default {
         async getQueues() {
             const finishedAppointmentStatus = ['end served', 'no show', 'canceled']
 
-            const { data } = await axios.get('/cs/appointments')
-            this.finishAppointments = data.filter(v => {
+            const response = await axios.get('/cs/appointments')
+            this.finishAppointments = response.data.data.filter(v => {
                 return finishedAppointmentStatus.includes(v.status)
             }).sort((a, b) => {
                 if (a.number > b.number) return -1
@@ -333,7 +333,7 @@ export default {
                 return 0
             })
 
-            this.activeAppointments = data.filter(v => {
+            this.activeAppointments = response.data.data.filter(v => {
                 return !finishedAppointmentStatus.includes(v.status)
             })
         },
