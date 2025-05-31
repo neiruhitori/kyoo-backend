@@ -31,9 +31,12 @@ class AppointmentOnsiteController extends Controller
     {
         $dateNow = $request->date ?? date('Y-m-d');
         $dayNow =  strtolower(date("l", strtotime($dateNow)));
-        $services = Service::where('branch_id', $branch_id)
-                            ->get();
-
+        $query = Service::where('branch_id', $branch_id);
+        
+        if ($request->has('service_category_id') && $request->service_category_id != null) {
+            $query->where('service_category_id', $request->service_category_id);
+        }
+        $services = $query->get();
         foreach ($services as $service) {
             // get filled slot
             $filledSlot = $this->getFilledSlot([

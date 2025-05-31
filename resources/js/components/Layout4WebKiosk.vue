@@ -82,7 +82,7 @@
                                             v-bind:style="[button_style]"
                                             :disabled="isLoading"
                                         >
-                                            {{ workstation.service.name }}
+                                            {{ workstation.service.kiosk_name ?? workstation.service.name }}
                                         </button>
                                     </template>
                                 </div>
@@ -196,7 +196,7 @@ export default {
         await this.getWorkStations();
         this.updateCurrentDate();
         this.setFocusBookingCode();
-        // console.log(this.localeDate);
+        console.log(this.workstationServices);
         // console.log(this.currentLocale);
         this.setLocale();
     },

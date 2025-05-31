@@ -105,7 +105,7 @@
                     </div>
                 </div>
             </div>
-            @if(Auth::user()->Branch->BranchType->is_appointment)
+            @if(Auth::user()->Branch->BranchType->is_appointment || Auth::user()->Branch->BranchConfiguration->layer == 2)
                 @include('adminBranch.serviceCategories.index', ['service_categories' => $service_categories])
             @endif
 

@@ -23,6 +23,11 @@
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
                                 <div class="form-group">
+                                    <label for="name">{{ __('Name (Kiosk)') }} <small class="text-primary">*Opsional, default memakai nama layanan</small></label>
+                                    <input name="kiosk_name" type="text" class="form-control @error('kiosk_name') is-invalid @enderror" value="{{old('kiosk_name') ?: $service->kiosk_name}}">
+                                    @include('layouts.inputError', ['errorName' => 'kiosk_name'])
+                                </div>
+                                <div class="form-group">
                                     <label for="department_id">{{ __('Department') }}</label>
                                     <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror">
                                         <option value="">{{ __('- Select Department -') }}</option>
@@ -32,7 +37,8 @@
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'department_id'])
                                 </div>
-                                @if(auth()->user()->Branch->BranchType->is_appointment)
+
+                                
                                     <div class="form-group">
                                         <label for="service_category_id">{{ __('Service Category') }}</label>
                                         <select name="service_category_id" id="service_category_id" class="form-control @error('service_category_id') is-invalid @enderror">
@@ -43,7 +49,8 @@
                                         </select>
                                         @include('layouts.inputError', ['errorName' => 'service_category_id'])
                                     </div>
-                                @endif
+
+
                                 @if ($isAllowConfigPrefix)
                                     <div class="form-group">
                                         <label for="prefix_queue">{{ __('Custom Prefix Number Queue') }}</label>

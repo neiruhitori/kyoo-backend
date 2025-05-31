@@ -18,6 +18,7 @@ import QRReader from '../QRReader/QRReader'
 import AppointmentServices from '../appointment/Services'
 import AppointmentServicesTwoLayer from '../appointment/ServicesTwoLayer'
 import Promotions from '../Promotions/Promotions'
+import CategoryOnsiteServicesTwoLayer from '../onsite/OnsiteCategoryService'
 import TicketUI from './TicketUI'
 import AppointmentOnsiteTicket from './AppointmentOnsiteStatus';
 
@@ -34,7 +35,8 @@ const ticketStyle = document.getElementById('root').getAttribute('tstyle') ?? 't
                <Route path="/customer/:branchId/appointment/:serviceCategoryId/services" element={<AppointmentServices />} />
                <Route path="/customer/:branchId/appointment/services/two-layer" element={<AppointmentServicesCategories />} />
                <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
-               <Route path="/customer/:branchId/onsite/services/two-layer" element={<OnsiteServicesTwoLayer />} />
+               <Route path="/customer/:branchId/onsite/services/two-layer" element={<CategoryOnsiteServicesTwoLayer/>} />
+               <Route path="/customer/:branchId/onsite/two-layer/:serviceCategoryId/services" element={<OnsiteServicesTwoLayer />} />
                <Route path="/customer/:branchId/onsite/services/:serviceId" element={<OnsiteTimeSlotList />} />
                <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
                <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformation />} />

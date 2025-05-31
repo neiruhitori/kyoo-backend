@@ -15,7 +15,8 @@ export function fetchServiceByBranchId(branchId, params) {
         return http.get(`appointment-onsite/direct-queue-by-branch/${branchId}`, {
             params: {
                 date: params.date,
-                day: params.day
+                day: params.day,
+                service_category_id: params.serviceCategoryId
             }
         })
             .then(res => (res.data?.data))
