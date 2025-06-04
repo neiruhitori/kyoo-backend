@@ -228,6 +228,8 @@ function CategoryServicesTwoLayer() {
                                     display: 'flex',
                                     height: '85px',
                                     cursor: 'pointer',
+                                    backgroundImage: 'linear-gradient(270deg, #103C7C -24.91%, #2F5B9B 118.64%)',
+                                    color:'#fff'
                                 }}>
                                     <ServiceContent>
                                         <ServiceTitle>{ category.name }</ServiceTitle>

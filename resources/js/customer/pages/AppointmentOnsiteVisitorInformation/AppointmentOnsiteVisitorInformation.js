@@ -42,6 +42,8 @@ function AppointmentOnsiteVisitorInformation() {
     const [phone, setPhone] = useState('')
     const [emergencyNumber, setEmergencyNumber] = useState('')
     const [passportNumber, setPassportNumber] = useState('')
+    const [agent, setAgent] = useState('')
+    const [vaccine, setVaccine] = useState('')
     const [email, setEmail] = useState('')
     const [contractNumber, setContractNumber] = useState('')
     const [reasonForVisit, setReasonForVisit] = useState('')
@@ -83,6 +85,22 @@ function AppointmentOnsiteVisitorInformation() {
             reasonForVisit: validator.message('reasonForVisit', reasonForVisit, ['required']),
             passportNumber: validator.message('passportNumber', passportNumber, ['required','passportNumber2']),
             email: validator.message('email', email, ['email']),
+        }),
+        ...(selectedTemplateForm === 'form-medical-3' && {
+            dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
+            passportNumber: validator.message('passportNumber', passportNumber, ['required','passportNumber2']),
+            agent: validator.message('agent', agent, ['required']),
+        }),
+        ...(selectedTemplateForm === 'form-medical-4' && {
+            dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
+            passportNumber: validator.message('passportNumber', passportNumber, ['required','passportNumber2']),
+            email: validator.message('email', email, ['email']),
+        }),
+        ...(selectedTemplateForm === 'form-medical-5' && {
+            dateOfBirth: validator.message('dateOfBirth', dateOfBirth, []),
+            passportNumber: validator.message('passportNumber', passportNumber, ['required','passportNumber2']),
+            email: validator.message('email', email, ['email']),
+            vaccine: validator.message('vaccine', vaccine, ['required']),
         }),
     };
 
@@ -295,6 +313,156 @@ function AppointmentOnsiteVisitorInformation() {
                 />
             </div>
     );
+    const renderMedicalUI3 = () => (
+        <div style={{ flex: '1 1 0%' }}>
+                <TextField
+                    label={t("Name")}
+                    style={{ marginBottom: '1.5rem' }}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={t("Your name")}
+                    error={!!validationMessage.name}
+                    helperText={t(validationMessage.name)}
+                />
+                <TextField
+                    label={t("Date of Birth")}
+                    type="date"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    error={!!validationMessage.dateOfBirth}
+                    helperText={t(validationMessage.dateOfBirth)}
+                />
+                <TextField
+                    label={t("Passport Number")}
+                    style={{ marginBottom: '1.5rem' }}
+                    value={passportNumber}
+                    onChange={(e) => setPassportNumber(e.target.value)}
+                    placeholder="NIK"
+                    error={!!validationMessage.passportNumber}
+                    helperText={t(validationMessage.passportNumber)}
+                />
+                <TextField
+                    label={t("Phone Number")}
+                    type="tel"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+62"
+                    error={!!validationMessage.phone}
+                    helperText={t(validationMessage.phone)}
+                />
+                 <TextField
+                    label="Email"
+                    type="email"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={t("Your E-mail")}
+                    error={!!validationMessage.email}
+                    helperText={t(validationMessage.email)}
+                />
+                 <TextField
+                    label="Vessel/Agent"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={agent}
+                    onChange={(e) => setAgent(e.target.value)}
+                    placeholder={t("Your Agent/Vessel")}
+                    error={!!validationMessage.agent}
+                    helperText={t(validationMessage.agent)}
+                />
+            </div>
+    );
+    const renderMedicalUI4 = () => (
+        <div style={{ flex: '1 1 0%' }}>
+                <TextField
+                    label={t("Name")}
+                    style={{ marginBottom: '1.5rem' }}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={t("Your name")}
+                    error={!!validationMessage.name}
+                    helperText={t(validationMessage.name)}
+                />
+                <TextField
+                    label={t("Date of Birth")}
+                    type="date"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    error={!!validationMessage.dateOfBirth}
+                    helperText={t(validationMessage.dateOfBirth)}
+                />
+                <TextField
+                    label={t("Passport Number")}
+                    style={{ marginBottom: '1.5rem' }}
+                    value={passportNumber}
+                    onChange={(e) => setPassportNumber(e.target.value)}
+                    placeholder="NIK"
+                    error={!!validationMessage.passportNumber}
+                    helperText={t(validationMessage.passportNumber)}
+                />
+                <TextField
+                    label={t("Phone Number")}
+                    type="tel"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+62"
+                    error={!!validationMessage.phone}
+                    helperText={t(validationMessage.phone)}
+                />
+            </div>
+    );
+    const renderMedicalUI5 = () => (
+        <div style={{ flex: '1 1 0%' }}>
+                <TextField
+                    label={t("Name")}
+                    style={{ marginBottom: '1.5rem' }}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={t("Your name")}
+                    error={!!validationMessage.name}
+                    helperText={t(validationMessage.name)}
+                />
+                <TextField
+                    label={t("Date of Birth")}
+                    type="date"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    error={!!validationMessage.dateOfBirth}
+                    helperText={t(validationMessage.dateOfBirth)}
+                />
+                <TextField
+                    label={t("Passport Number")}
+                    style={{ marginBottom: '1.5rem' }}
+                    value={passportNumber}
+                    onChange={(e) => setPassportNumber(e.target.value)}
+                    placeholder="NIK"
+                    error={!!validationMessage.passportNumber}
+                    helperText={t(validationMessage.passportNumber)}
+                />
+                <TextField
+                    label={t("Phone Number")}
+                    type="tel"
+                    style={{ marginBottom: '1.5rem' }}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+62"
+                    error={!!validationMessage.phone}
+                    helperText={t(validationMessage.phone)}
+                />
+                <TextField
+                    label={t("Vaccine Type")}
+                    style={{ marginBottom: '1.5rem' }}
+                    value={vaccine}
+                    onChange={(e) => setVaccine(e.target.value)}
+                    error={!!validationMessage.vaccine}
+                    helperText={t(validationMessage.vaccine)}
+                />
+            </div>
+    );
 
     const renderForm = () => {
         let bookingFormService = serviceQuery.data?.template_form_booking;
@@ -309,6 +477,12 @@ function AppointmentOnsiteVisitorInformation() {
                     return renderMedicalUI();
                 case 'form-medical-2':
                     return renderMedicalUI2();
+                case 'form-medical-3':
+                    return renderMedicalUI3();
+                case 'form-medical-4':
+                    return renderMedicalUI4();
+                case 'form-medical-5':
+                    return renderMedicalUI5();
                 case 'form-financing':
                     return renderFinanceUI();
                 default:
@@ -322,6 +496,12 @@ function AppointmentOnsiteVisitorInformation() {
                     return renderMedicalUI();
                 case 'form-medical-2':
                     return renderMedicalUI2();
+                case 'form-medical-3':
+                    return renderMedicalUI3();
+                case 'form-medical-4':
+                    return renderMedicalUI4();
+                case 'form-medical-5':
+                    return renderMedicalUI5();
                 case 'form-financing':
                     return renderFinanceUI();
                 default:
@@ -361,6 +541,20 @@ function AppointmentOnsiteVisitorInformation() {
                     date_of_birth: dateOfBirth,
                     passport_number: passportNumber,
                     reason_for_visit: reasonForVisit,
+                }),
+                ...(bookingFormService === 'form-medical-3' && {
+                    date_of_birth: dateOfBirth,
+                    passport_number: passportNumber,
+                    agent: agent,
+                }),
+                ...(bookingFormService === 'form-medical-4' && {
+                    date_of_birth: dateOfBirth,
+                    passport_number: passportNumber,
+                }),
+                ...(bookingFormService === 'form-medical-5' && {
+                    date_of_birth: dateOfBirth,
+                    passport_number: passportNumber,
+                    vaccine: vaccine,
                 }),
                 ...(bookingFormService === 'form-financing' && {
                     contract_number: contractNumber

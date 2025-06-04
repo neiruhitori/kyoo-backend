@@ -12,7 +12,7 @@ class AppointmentOnsite extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'phone', 'fcm_id', 'client_id', 'booking_code', 'service_id',  'start_time', 'end_time', 'date', 'is_used', 'slot_id', 'date_of_birth', 'address', 'emergency_number', 'passport_number', 'reason_for_visit','contract_number'];
+    protected $fillable = ['name', 'email', 'phone', 'fcm_id', 'client_id', 'booking_code', 'service_id',  'start_time', 'end_time', 'date', 'is_used', 'slot_id', 'date_of_birth', 'address', 'emergency_number', 'passport_number', 'reason_for_visit','contract_number','vaccine','agent'];
 
     public function Service(): BelongsTo
     {
