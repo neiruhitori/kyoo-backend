@@ -8,6 +8,7 @@ use App\Branch;
 use App\Service;
 use Carbon\Carbon;
 use App\DirectQueue;
+use App\Jobs\SendWebhook;
 use App\WorkstationService;
 use App\BranchConfiguration;
 use App\Models\SecretKeyAPi;
@@ -173,7 +174,7 @@ class AppointmentOnsiteController extends Controller
                 $webhookData = [
                     'event_type' => 'onsite_create_booking',
 
-                    'user' => (object)[
+                    'user' =>[
                         'queue_id' => $appointmentOnsite->id,
                         'service_id' => $appointmentOnsite->service_id,
                         'name' => $appointmentOnsite->name,
@@ -186,7 +187,7 @@ class AppointmentOnsiteController extends Controller
                         'date_of_birth' => $appointmentOnsite->date_of_birth,
                         'created_at' => $appointmentOnsite->created_at,
                     ],
-                    'queue' => (object)[
+                    'queue' =>[
                         'id' => $appointmentOnsite->id,
                         'service_id' => $appointmentOnsite->service_id,
                         'branch_id' =>  $branchID,
@@ -198,20 +199,18 @@ class AppointmentOnsiteController extends Controller
                         'end_time' => $endTime,
                         'created_at' => $appointmentOnsite->created_at,
                     ],
-                    'branch' => (object)[
+                    'branch' =>[
                         'id' =>  $branchID,
                         'name' => $branch->name,
                     ],
-                    'service' => (object)[
+                    'service' =>[
                         'id' => $appointmentOnsite->service_id,
                         'name' => $appointmentOnsite->service->name,
                         'branch_id' => $appointmentOnsite->service->Branch->id,
                         'branch_name' => $appointmentOnsite->service->Branch->name,
                     ]
                 ];
-                $webhookData = (object) $webhookData;
-                
-                $this->sendWebhook($client, $webhookData);
+               SendWebhook::dispatch($client, $webhookData);
                 
             }else{
                 $webhookMessage = "There's no Webhook Url/The feature was inactive";
@@ -220,7 +219,7 @@ class AppointmentOnsiteController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'appointment onsite created',
-                'webhook' => $webhookMessage,
+                'webhook' =>  $client,
                 'data' => $appointmentOnsite,
             ]);
         } catch (\Exception $e) {
@@ -244,39 +243,6 @@ class AppointmentOnsiteController extends Controller
         }
 
         return $cleaned_phone;
-    }
-   
-    protected function sendWebhook($client, $webhookData)
-    {
-     
-        $guzzle = new \GuzzleHttp\Client();  
-        $tokenAPI = SecretKeyAPi::where('branch_id', $client->branch_id)->first();
-       
-
-        try {
-
-            $response = $guzzle->post($client->webhook_url, [
-                'headers' => [
-                    'x-secret-token' => $tokenAPI->secret_token,
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => $webhookData
-            ]);
-
-            if ($response->getStatusCode() !== 200) {
-                throw new \Exception('Webhook failed with status: ' . $response->getStatusCode());
-            }
-
-            return response()->json([
-                'status' => 'success',
-               ]);
-
-        } catch (\Exception $e) {
-           return response()->json([
-            'status' => 'error',
-            'message' =>  $e->getMessage()
-           ]);
-        }
     }
     
 }
