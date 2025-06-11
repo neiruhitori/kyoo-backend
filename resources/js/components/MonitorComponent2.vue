@@ -787,7 +787,6 @@ export default {
 
   async mounted () {
     await this.getQueues();
-    console.log(this.workstation)
     const [selected_queue] = this.queues.filter(v => v.status === 'served');
     if (selected_queue) {
       this.selectQueue(selected_queue.queue_no);

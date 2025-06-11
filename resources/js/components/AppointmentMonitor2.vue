@@ -1070,7 +1070,6 @@ export default {
             this.customerDetail.bookingCode = booking_code
             this.customerDetail.status = status
             this.customerDetail.service = service.name
-            console.log(date)
 
             this.isShowCustomer = true
         },
