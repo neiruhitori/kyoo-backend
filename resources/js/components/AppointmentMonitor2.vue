@@ -24,7 +24,7 @@
                 </div>
                 <div class="card shadow mb-4 mr-1">
                     <div class="card-body font-weight-bold rounded p-3" style="width: 11rem;">
-                    <p>{{ t('End Served') }} <i class="ml-4 text-primary bi bi-check-circle"></i></p>
+                    <p>{{ t('End served') }} <i class="ml-4 text-primary bi bi-check-circle"></i></p>
                     <h6>{{ count?.end_served || '0' }}</h6>
                     </div>
                 </div>
@@ -933,7 +933,7 @@ export default {
                             return
                         }
                         this.closeCreateModal()
-                        // this.getQueues()
+                        this.getQueues()
                     })
                 } catch (error) {
                     alert(error.response.data.message);
