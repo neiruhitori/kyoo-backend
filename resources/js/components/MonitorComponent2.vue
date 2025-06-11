@@ -11,7 +11,7 @@
       <div class="col-md-6 d-flex justify-content-between">
         <div class="text-dark p-3">
           <p>{{ username }}</p>
-          <h5 class="font-weight-bold">{{ serviceName }}</h5>
+          <h5 class="font-weight-bold">{{ this.workstation.label }}</h5>
         </div>
       </div>
 
@@ -731,7 +731,7 @@ export default {
       isLoading: true,
       isSubmit: false,
       callerLayer: 1,
-      username: this.auth.name.replace(/^.*?_/, ''),
+      username:  this.auth.name.replace(/^.*?_/, '').replace(/^./, c => c.toUpperCase()),
       queue_detail: null,
       inputValue: '',
       qrCodeImage: '',
@@ -787,6 +787,7 @@ export default {
 
   async mounted () {
     await this.getQueues();
+    console.log(this.workstation)
     const [selected_queue] = this.queues.filter(v => v.status === 'served');
     if (selected_queue) {
       this.selectQueue(selected_queue.queue_no);

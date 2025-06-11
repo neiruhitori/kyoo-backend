@@ -11,7 +11,7 @@
                 <div class="col-md-6 d-flex justify-content-between">
                 <div class="text-dark p-3">
                 <p>{{ username }}</p>
-                <h5 class="font-weight-bold">{{ serviceName }}</h5>
+                <h5 class="font-weight-bold">{{ this.workstation.label }}</h5>
                 </div>
             </div>
 
@@ -560,7 +560,7 @@ export default {
         return {
             activeAppointments: [],
             finishAppointments: [],
-            username: this.auth.name.replace(/^.*?_/, ''),
+            username: this.auth.name.replace(/^.*?_/, '').replace(/^./, c => c.toUpperCase()),
             count: null,
             selected_queue: "",
             slotAvailable:[],
