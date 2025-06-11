@@ -57,6 +57,10 @@
     
     "Holiday" : "Hari Libur",
     "Select Holiday Template" : "Pilih Template Hari Libur",
+    "No queue at the moment" : "Tidak ada antrian saat ini",
+    "Input queue number" : "Masukkan Nomor Antrian",
+    "Scan here to check the queue status" : "Scan disini untuk melihat status antrian",
+    "The system will automatically update the list upon entry" : "Sistem akan memperbarui daftar secara otomatis ketika masuk",
     
     "About Portal Menu" : "Tentang Portal Menu",
     "Select the appropriate layout" : "Pilih layout yang sesuai",

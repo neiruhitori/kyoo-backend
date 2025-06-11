@@ -24,13 +24,13 @@
                 </div>
                 <div class="card shadow mb-4 mr-1">
                     <div class="card-body font-weight-bold rounded p-3" style="width: 11rem;">
-                    <p>Served <i class="ml-4 text-primary bi bi-check-circle"></i></p>
+                    <p>{{ t('End Served') }} <i class="ml-4 text-primary bi bi-check-circle"></i></p>
                     <h6>{{ count?.end_served || '0' }}</h6>
                     </div>
                 </div>
                 <div class="card shadow mb-4 mr-1">
                     <div class="card-body font-weight-bold rounded p-3" style="width: 11rem;">
-                    <p>No Show <i class="ml-4 text-danger bi bi-clock"></i></p>
+                    <p>{{ t('No Show') }} <i class="ml-4 text-danger bi bi-clock"></i></p>
                     <h6>{{ count?.no_show || '0' }}</h6>
                     </div>
                 </div>
@@ -69,10 +69,10 @@
                             <th scope="col">No</th>
                             <th scope="col">{{ t('Code') }}</th>
                             <th scope="col">{{ t('Name') }}</th>
-                            <th scope="col">{{ t('Services') }}</th>
+                            <th scope="col">{{ t('Service') }}</th>
                             <th scope="col">{{ t('Time Slot') }}</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Aksi</th>
+                            <th scope="col">{{ t('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -213,8 +213,8 @@
                     <div v-else class="d-flex justify-content-center">
                     <div class="text-center">
                         <img src="/img/emptystate.png" alt="">
-                        <p class="text-dark font-weight-bold">Tidak ada antrian saat ini</p>
-                        <p>Sistem akan memperbarui daftar secara otomatis ketika masuk</p>
+                        <p class="text-dark font-weight-bold">{{ t('No queue at the moment') }}</p>
+                        <p>{{ t('The system will automatically update the list upon entry') }}</p>
                         </div>
                     </div>
                     
@@ -297,7 +297,7 @@
                          <div class="row justify-content-between mb-4">
                           <div class="col-md-7">
                               <h4 class="text-dark font-weight-bold">{{ customerDetail.name }}</h4>
-                              <div class="d-flex">{{ t('Services') }}:<p class="ml-2 text-dark font-weight-bold"> {{ customerDetail.service }}</p></div>
+                              <div class="d-flex">{{ t('Service') }}:<p class="ml-2 text-dark font-weight-bold"> {{ customerDetail.service }}</p></div>
                           </div>
                           <div class="col-md-4 text-right align-content-center">
                             <span
@@ -458,7 +458,7 @@
                      <div class="modal-body">
                          <div class="row justify-content-end mb-3 px-4 ">
                           <div class="col-md-12 text-right">
-                              <h6>Masukkan Nomor Antrian</h6>
+                              <h6>{{ t('Input queue number') }}</h6>
                               <div class="d-flex justify-content-end align-items-center mt-3" style="gap: 1.5rem;">
                                 <h4 class="font-weight-bolder m-0">{{ this.inputValue || '' }}</h4>
                                 <button class="btn btn-primary" :disabled="this.inputValue == ''" @click="handleCaller">
@@ -982,7 +982,7 @@ export default {
                 selected_queue.status &&
                 selected_queue.status != "check in"
             ) {
-                alert("Status antrian salah");
+                alert("Queue Status Incorrect");
                 return;
             }
 

@@ -18,19 +18,19 @@
       <div class="col-md-6 d-flex">
           <div class="card shadow mb-4 mr-1">
             <div class="card-body font-weight-bold rounded p-3" style="width: 11rem;">
-              <p>Waiting <i class="ml-4 text-success bi bi-people-fill"></i></p>
+              <p>{{ t('Waiting') }} <i class="ml-4 text-success bi bi-people-fill"></i></p>
               <h6>{{ count?.waiting || '0' }}</h6>
             </div>
           </div>
           <div class="card shadow mb-4 mr-1">
             <div class="card-body font-weight-bold rounded p-3" style="width: 11rem;">
-              <p>Served <i class="ml-4 text-primary bi bi-check-circle"></i></p>
+              <p>{{ t('Served') }} <i class="ml-4 text-primary bi bi-check-circle"></i></p>
               <h6>{{ count?.end_served || '0' }}</h6>
             </div>
           </div>
           <div class="card shadow mb-4 mr-1">
             <div class="card-body font-weight-bold rounded p-3" style="width: 11rem;">
-              <p>No Show <i class="ml-4 text-danger bi bi-clock"></i></p>
+              <p>{{ t('No Show') }} <i class="ml-4 text-danger bi bi-clock"></i></p>
               <h6>{{ count?.no_show || '0' }}</h6>
             </div>
           </div>
@@ -67,7 +67,7 @@
                 <th scope="col">No</th>
                 <th scope="col">{{ t('Name') }}</th>
                 <th scope="col">{{ t('Code') }}</th>
-                <th scope="col">{{ t('Services') }}</th>
+                <th scope="col">{{ t('Service') }}</th>
                 <th scope="col">Status</th>
               </tr>
             </thead>
@@ -190,8 +190,8 @@
             <div v-else class="d-flex justify-content-center">
               <div class="text-center">
                   <img src="/img/emptystate.png" alt="">
-                  <p class="text-dark font-weight-bold">Tidak ada antrian saat ini</p>
-                  <p>Sistem akan memperbarui daftar secara otomatis ketika masuk</p>
+                  <p class="text-dark font-weight-bold">{{ t('No queue at the moment') }}</p>
+                  <p>{{ t('The system will automatically update the list upon entry') }}</p>
                 </div>
             </div>
             <hr class="mt-4 mb-4">
@@ -319,7 +319,7 @@
                          <div class="row justify-content-between mb-4">
                           <div class="col-md-7">
                               <h4 class="text-dark font-weight-bold">{{ customerDetail.name }}</h4>
-                              <div class="d-flex">{{ t('Services') }}:<p class="ml-2 text-dark font-weight-bold"> {{ customerDetail.service }}</p></div>
+                              <div class="d-flex">{{ t('Service') }}:<p class="ml-2 text-dark font-weight-bold"> {{ customerDetail.service }}</p></div>
                           </div>
                           <div class="col-md-4 text-right align-content-center">
                             <span
@@ -401,94 +401,7 @@
                  </div>
              </div>
          </div>
-         <!-- Show Queue detail -->
-    <!-- <div class="modal fade show d-block" tabindex="-1" aria-modal="true" v-if="isShowQueue">
-             <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" style="max-width: 900px;">
-                 <div class="modal-content">
-                     <div class="modal-header">
-                         <h5 class="modal-title">{{ t('Queue Details') }}</h5>
-                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="isShowQueue = false">
-                         <span aria-hidden="true">&times;</span>
-                         </button>
-                     </div>
- 
-                     <div class="modal-body">
-                         <div class="row justify-content-between mb-4">
-                          <div class="col-md-7">
-                              <h6>Nomor Antrian</h6>
-                              <h5 class="text-dark font-weight-bold">{{ queue_detail.queue_no }}</h5>
-                          </div>
-                          <div class="col-md-4 text-right align-content-center">
-                            <span
-                              class="badge badge-pill badge-secondary p-2"
-                              v-show="queue_detail.status == 'waiting'"
-                              >{{ t('Waiting') }}</span>
-
-                            <span
-                              class="badge badge-pill badge-info  p-2"
-                              v-show="queue_detail.status == 'served'"
-                              >{{ t('Being Served') }}</span
-                            >
-                            <span
-                              class="badge badge-pill badge-warning p-2"
-                              v-show="queue_detail.status == 'requeue'"
-                              >{{ t('Requeue') }}</span>
-                            <span
-                              class="badge badge-pill badge-danger p-2"
-                              v-show="queue_detail.status == 'no show'"
-                              >{{ t('No Show') }}</span
-                            >
-                            <span
-                              class="badge badge-pill badge-success p-2"
-                              v-show="queue_detail.status == 'end served'"
-                              >{{ t('End Served') }}</span
-                            >
-                          </div>
-                         </div>
- 
-                         <div class="row justify-content-between mb-2 p-2">
-                            <div class="col-md-3 mb-3">
-                               <div class="border rounded p-2">
-                                 <p class="mb-1">{{ t('Date') }}</p>  
-                                 <div class="text-dark font-weight-bold">{{ queue_detail.date }}</div>
-                               </div>
-                            </div>
-                             <div class="col-md-3 mb-3">
-                               <div class="border rounded p-2">
-                                 <p class="mb-1">{{ t('Service') }}</p>  
-                                 <div class="text-dark font-weight-bold">{{ queue_detail.service.name }}</div>
-                               </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                               <div class="border rounded p-2">
-                                 <p class="mb-1">{{ t('Booking Code') }}</p>  
-                                 <div class="text-dark font-weight-bold">{{ queue_detail.booking_code.toUpperCase() }}</div>
-                               </div>
-                            </div>
-                             <div class="col-md-3 mb-3">
-                               <div class="border rounded p-2">
-                                 <p class="mb-1">{{ t('Counter') }}</p>  
-                                 <div class="text-dark font-weight-bold">{{ this.workstation.id == queue_detail.workstation_id ? this.workstation.label : '-' }}</div>
-                               </div>
-                            </div>
-                            <div class="col-md-12 text-center py-4" style="background-color:#E6F3FF;">
-                              <template v-if="qrCodeImage" >
-                                  <div>
-                                    <p>Scan disini untuk melihat status antrian</p>
-                                    <div v-html="qrCodeImage"></div>
-                                  </div>
-                              </template>
-                            </div>
-                         </div>
-                         
-                     </div>
- 
-                     <div class="modal-footer">
-                         <button type="button" class="btn btn-danger" data-dismiss="modal" @click="isShowQueue = false">{{ t('Close') }}</button>
-                     </div>
-                 </div>
-             </div>
-         </div> -->
+        
          <!-- Show Create Modal -->
      <div class="modal fade show d-block" tabindex="-1" aria-modal="true" v-if="isShowCreate">
              <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -599,7 +512,7 @@
                      <div class="modal-body">
                          <div class="row justify-content-end mb-3 px-4 ">
                           <div class="col-md-12 text-right">
-                              <h6>Masukkan Nomor Antrian</h6>
+                              <h6>{{ t('Input queue number') }}</h6>
                               <div class="d-flex justify-content-end align-items-center mt-3" style="gap: 1.5rem;">
                                 <h4 class="font-weight-bolder m-0">{{ this.inputValue || '' }}</h4>
                                 <button class="btn btn-primary" :disabled="this.inputValue == ''" @click="handleCaller">
