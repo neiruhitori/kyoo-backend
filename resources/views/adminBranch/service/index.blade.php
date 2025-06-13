@@ -6,7 +6,19 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-12 text-right">
+            <div class="col-md-3">
+                <form action="" method="get">
+                    <div class="d-flex">
+                        <select class="form-control" name="filter">
+                            <option value="all" {{ $filter == 'all' ? 'selected' : '' }}>All</option>
+                            <option value="active" {{ $filter == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ $filter == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                        </select>
+                        <button type="submit" class="mx-2 btn btn-primary">Filter</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-9 text-right">
                 <a href="{{route('admin-branch.branch-configuration.service.create')}}" class="btn btn-primary"">
                     {{ __('create.module', ['module' => __('Service')]) }}
                 </a>
@@ -26,6 +38,7 @@
                                 )
                                     <th>{{ __('Total Slot Time') }}</th>
                                 @endif
+                                <th>{{ __('Status') }}</th>
                                 <th>{{ __('Action') }}</th>
                             </tr>
                         </thead>
@@ -49,6 +62,41 @@
                                         </td>
                                     @endif
                                     <td>
+                                        @if ($service->is_disable)
+                                            Inactive
+                                        @else
+                                            Active
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($service->is_disable)
+                                        <a
+                                            href="{{route('admin-branch.branch-configuration.service.enableDisable', $service->id)}}"
+                                            class="btn btn-secondary"
+                                            data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="{{
+                                                __('Enable Service')
+                                            }}"
+                                                >
+                                                    <i class="fa fa-unlock"></i>
+                                                </a>
+                                        <form action="{{route('admin-branch.branch-configuration.service.destroy', $service->id)}}" method="post" style="display: inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger"
+                                                data-toggle="tooltip"
+                                                data-placement="bottom"
+                                                title="{{
+                                                    __('remove.module', ['module' => __('Service')])
+                                                }}"
+                                            >
+                                                <i class="fas fa-fw fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @else
                                         @if (
                                             Auth::user()->Branch->BranchType->is_appointment ||
                                             Auth::user()->Branch->BranchType->is_exhibition ||
@@ -77,36 +125,32 @@
                                             <i class="fas fa-fw fa-edit"></i>
                                         </a>
 
-                                    @if (Auth::user()->Branch->FeatureSubscription->contains('feature_id', 9))    
-                                        <a
-                                            href="{{route('admin-branch.branch-configuration.service.assign', $service->id)}}"
-                                            class="btn btn-secondary"
-                                            data-toggle="tooltip"
-                                            data-placement="bottom"
-                                            title="{{
-                                                    __('edit.module', ['module' => __('Sub Service')])
-                                                    }}"
-                                            >
-                                            <i class="fas fa-fw fa-server"></i>
-                                        </a>
-                                    @endif
+                                        @if (Auth::user()->Branch->FeatureSubscription->contains('feature_id', 9))    
+                                            <a
+                                                href="{{route('admin-branch.branch-configuration.service.assign', $service->id)}}"
+                                                class="btn btn-secondary"
+                                                data-toggle="tooltip"
+                                                data-placement="bottom"
+                                                title="{{
+                                                        __('edit.module', ['module' => __('Sub Service')])
+                                                        }}"
+                                                >
+                                                <i class="fas fa-fw fa-server"></i>
+                                            </a>
+                                        @endif
 
-                                        <form action="{{route('admin-branch.branch-configuration.service.destroy', $service->id)}}" method="post" style="display: inline">
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button
-                                                type="submit"
+                                            <a
+                                                href="{{route('admin-branch.branch-configuration.service.enableDisable', $service->id)}}"
                                                 class="btn btn-danger"
                                                 data-toggle="tooltip"
                                                 data-placement="bottom"
                                                 title="{{
-                                                    __('remove.module', ['module' => __('Service')])
+                                                    __('Disable Service')
                                                 }}"
                                             >
-                                                <i class="fas fa-fw fa-trash"></i>
-                                            </button>
-                                        </form>
+                                                <i class="fa fa-lock"></i>
+                                            </a>
+                                     @endif
                                     </td>
                                 </tr>
                             @endforeach

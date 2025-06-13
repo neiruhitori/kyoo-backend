@@ -218,4 +218,18 @@ class SubServiceController extends Controller
         $request->session()->flash('success', __("Sub-service has been updated"));
         return redirect(route('admin-branch.branch-configuration.service.assign', $service->id));
     }
+
+    public function enableDisable($service_id)
+    {
+         $service = Service::where('branch_id', Auth::user()->Branch->id)
+                            ->where('id', $service_id)->first();
+
+        $isDisable = $service->is_disable;
+        $service->update([
+            'is_disable' => !$isDisable,
+            'is_show' => $isDisable,
+            'is_show_webkiosk' => $isDisable,
+        ]);
+        return redirect()->back();
+    }
 }

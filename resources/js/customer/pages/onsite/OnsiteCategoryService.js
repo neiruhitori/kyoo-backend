@@ -238,54 +238,6 @@ function CategoryServicesTwoLayer() {
                             </Link>
             })}
 
-            {/* {isBranchOpen && services?.map(service => {
-                    const availableSlot =
-                        service.filledSlot < service.totalSlot
-                        ? service.totalSlot - service.filledSlot
-                        : 0;
-
-                    if (!service.is_show || service.service_category_id) return null;
-
-                    return (
-                        <Link
-                        to={`/customer/${branchId}/onsite/services/${service.id}?date=${format(
-                            selectedDate,
-                            'yyyy-MM-dd'
-                        )}`}
-                        key={service.id}
-                        style={{ marginBottom: '1.125rem' }}
-                        >
-                        <ServiceItem
-                            title={service.name}
-                            action={{
-                            label: t('Total Available Slots'),
-                            value: availableSlot,
-                            total: service.totalSlot,
-                            }}
-                            subtitle={
-                            <div
-                                style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                }}
-                            >
-                                <ClockIcon
-                                color="#A5A5A5"
-                                width="0.75rem"
-                                height="0.75rem"
-                                style={{ marginRight: '0.5rem' }}
-                                />
-                                <span>
-                                {service.slots.length
-                                    ? service.slots.length + ` ${t('Time Sessions')}`
-                                    : t('No Time Sessions')}
-                                </span>
-                            </div>
-                            }
-                        />
-                        </Link>
-                    )}
-                )} */}
 
             {!isBranchOpen() && <div style={{
                 flex: '1 1 0%',
@@ -337,7 +289,7 @@ function CategoryServicesTwoLayer() {
                     }}>
                         <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
                     </div>
-                    <h4>Tidak Ada Kategori Layanan</h4>
+                    <h4>{t('No Service Available')}</h4>
                     <p style={{
                         textAlign: 'center',
                         width: '280px',
@@ -345,7 +297,7 @@ function CategoryServicesTwoLayer() {
                         color: '#A5A5A5',
                         fontSize: '.875rem'
                     }}>
-                        Tambahkan Kategori Layanan di Admin Branch
+                        {t('Add Services in Admin Branch')}
                     </p>
                 </div>}
         </MainContent>

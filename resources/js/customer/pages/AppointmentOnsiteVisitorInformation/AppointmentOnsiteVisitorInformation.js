@@ -343,7 +343,7 @@ function AppointmentOnsiteVisitorInformation() {
                     helperText={t(validationMessage.passportNumber)}
                 />
                 <TextField
-                    label={t("Phone Number")}
+                    label={t("Whatsapp Number")}
                     type="tel"
                     style={{ marginBottom: '1.5rem' }}
                     value={phone}
@@ -403,7 +403,7 @@ function AppointmentOnsiteVisitorInformation() {
                     helperText={t(validationMessage.passportNumber)}
                 />
                 <TextField
-                    label={t("Phone Number")}
+                    label={t("Whatsapp Number")}
                     type="tel"
                     style={{ marginBottom: '1.5rem' }}
                     value={phone}
@@ -444,7 +444,7 @@ function AppointmentOnsiteVisitorInformation() {
                     helperText={t(validationMessage.passportNumber)}
                 />
                 <TextField
-                    label={t("Phone Number")}
+                    label={t("Whatsapp Number")}
                     type="tel"
                     style={{ marginBottom: '1.5rem' }}
                     value={phone}

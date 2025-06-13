@@ -19,6 +19,7 @@ import AppointmentServicesTwoLayer from '../appointment/ServicesTwoLayer'
 import Promotions from '../Promotions/Promotions'
 import TicketUI from './TicketUI'
 import AppointmentOnsiteTicket from './AppointmentOnsiteStatus';
+import CategoryOnsiteServicesTwoLayerStyle2 from './../onsite/OnsiteCategoryServiceStyle2'
 
 import { useParams } from 'react-router-dom';
 
@@ -33,7 +34,8 @@ export default function AppointmentStyle1() {
                <Route path="/customer/:branchId/appointment/:serviceCategoryId/services" element={<AppointmentServicesStyle1 />} />
                <Route path="/customer/:branchId/appointment/services/two-layer" element={<AppointmentServicesCategoriesStyle1 />} />
                <Route path="/customer/:branchId/:queueType/services" element={<ServiceList />} />
-               <Route path="/customer/:branchId/onsite/services/two-layer" element={<OnsiteServicesTwoLayerStyle2 />} />
+               <Route path="/customer/:branchId/onsite/services/two-layer" element={<CategoryOnsiteServicesTwoLayerStyle2/>} />
+               <Route path="/customer/:branchId/onsite/two-layer/:serviceCategoryId/services" element={<OnsiteServicesTwoLayerStyle2 />} />
                <Route path="/customer/:branchId/onsite/services/:serviceId" element={<OnsiteTimeSlotList />} />
                <Route path="/customer/:branchId/:queueType/services/:serviceId" element={<TimeSlotList />} />
                <Route path="/customer/:branchId/:queueType/services/:serviceId/visitor" element={<VisitorInformationStyle1 />} />

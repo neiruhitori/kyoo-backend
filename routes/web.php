@@ -103,6 +103,7 @@ Route::namespace('AdminBranch')
             Route::resource('service', 'ServiceController');
             Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
             
+            Route::get('service/{id}/enable', 'SubServiceController@enableDisable')->name('service.enableDisable');
             Route::get('service/{id}/assign', 'SubServiceController@assign')->name('service.assign');
             Route::get('service/{id}/add/sub-service', 'SubServiceController@add')->name('service.add.sub-service');
             Route::get('service/{id}/edit/sub-service', 'SubServiceController@editSubService')->name('service.edit.sub-service');
