@@ -27,10 +27,14 @@ class DepartmentController extends Controller
         $sub_services = SubService::whereBranchId(Auth::user()->branch_id)->get();
         $servicesQuery = Service::whereBranchId(Auth::user()->branch_id);
 
-        if ($request->has('filter') && $request->filter == 'inactive') {
-            $servicesQuery->where('is_disable', true);
-        } else if($request->has('filter') && $request->filter == 'active') {
-            $servicesQuery->where('is_disable', false);
+        if($request->has('filter')){
+            if ($request->filter == 'inactive') {
+                $servicesQuery->where('is_disable', true);
+            } else if($request->filter == 'active') {
+                $servicesQuery->where('is_disable', false);
+            }
+        }else{
+             $servicesQuery->where('is_disable', false);
         }
 
         $services = $servicesQuery->get();
@@ -40,7 +44,7 @@ class DepartmentController extends Controller
             'service_categories' => $service_categories,
             'services' => $services,
             'sub_services' => $sub_services,
-            'filter' => $request->filter ?? 'all'
+            'filter' => $request->filter ?? 'active'
         ]);
     }
 
