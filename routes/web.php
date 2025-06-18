@@ -510,7 +510,22 @@ Route::post('search', 'SearchQueueController@search')->name('search.search');
 
 Route::get('scan', 'QRScannerController@index')->name('scan.index');
 
-Route::get('DEBUG', 'AdminBranch\BillingController@print');
+Route::get('AddCategoryService/onlyAdMin', function(){
+       $branchOnsite = App\Branch::onsite()->where('license_expiration_date', '<', Illuminate\Support\Carbon::now())
+                        ->get();
+
+        foreach ($branchOnsite as $branch) {
+            $hasCategory = App\Models\ServiceCategory::where('branch_id', $branch->id)->exists();
+
+            if(!$hasCategory){
+                App\Models\ServiceCategory::create([
+                    'name' => 'Service Category 1',
+                    'branch_id' => $branch->id
+                ]);
+            }
+
+        }
+});
 
 }); //end of locale prefix
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');
