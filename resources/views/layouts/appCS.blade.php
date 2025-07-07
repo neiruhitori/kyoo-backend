@@ -75,33 +75,6 @@
   <!-- Page Wrapper -->
   <div id="wrapper">
 
-    @switch(Auth::user()->role)
-        @case('admin_kyoo')
-            @include('layouts.sidebarAdmin')
-            @break
-
-        @case('admin_branch')
-            @include('layouts.sidebarAdminBranch')
-            @break
-
-        @case('cs')
-        @case('spv')
-            @php
-                $csPageStyle = Auth::user()->Branch->BranchConfiguration->cs_page;
-            @endphp
-
-            @if($csPageStyle && $csPageStyle != 'style-2')
-                @include('layouts.sidebarCS')
-            @endif
-          @break
-
-        @case('admin_corporate')
-            @include('layouts.sidebarAdminCorporate')
-            @break
-        @default
-
-    @endswitch
-
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
 

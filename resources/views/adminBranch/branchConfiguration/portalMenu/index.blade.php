@@ -235,6 +235,9 @@
                                 <option value="standard-form" {{ $branchConfiguration->template_booking_form == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
                                 <option value="form-medical-1" {{ $branchConfiguration->template_booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
                                 <option value="form-medical-2" {{ $branchConfiguration->template_booking_form == 'form-medical-2' ? 'selected' : '' }}>Form Medical 2</option>
+                                <option value="form-medical-3" {{ $branchConfiguration->template_booking_form == 'form-medical-3' ? 'selected' : '' }}>Form Medical 3</option>
+                                <option value="form-medical-4" {{ $branchConfiguration->template_booking_form == 'form-medical-4' ? 'selected' : '' }}>Form Medical 4</option>
+                                <option value="form-medical-5" {{ $branchConfiguration->template_booking_form == 'form-medical-5' ? 'selected' : '' }}>Form Medical 5</option>
                                 <option value="form-financing" {{ $branchConfiguration->template_booking_form == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
                             </select>
                             @include('layouts.inputError', ['errorName' => 'template_booking_form'])
@@ -322,6 +325,9 @@
                                      <option value="standard-form" {{ $service->template_form_booking == 'standard-form' ? 'selected' : '' }}>{{ __('Standard Form') }}</option>
                                      <option value="form-medical-1" {{ $service->template_form_booking == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
                                      <option value="form-medical-2" {{ $service->template_form_booking == 'form-medical-2' ? 'selected' : '' }}>Form Medical 2</option>
+                                     <option value="form-medical-3" {{ $service->template_form_booking == 'form-medical-3' ? 'selected' : '' }}>Form Medical 3</option>
+                                     <option value="form-medical-4" {{ $service->template_form_booking == 'form-medical-4' ? 'selected' : '' }}>Form Medical 4</option>
+                                     <option value="form-medical-5" {{ $service->template_form_booking == 'form-medical-5' ? 'selected' : '' }}>Form Medical 5</option>
                                      <option value="form-financing" {{ $service->template_form_booking == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
                                  </select>
                              </td>

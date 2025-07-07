@@ -39,9 +39,10 @@ import BoxOpenIcon from '../../icons/BoxOpenIcon'
 import { fetchBranch } from '../../api/branch'
 import { useQuery } from 'react-query'
 import { getDayName, getFullDate } from '../../utils/date'
+import Card from '../../components/Card'
 
 
-function ServicesTwoLayer() {
+function CategoryServicesTwoLayer() {
     const { branchId, serviceCategoryId } = useParams()
     const [searchParams] = useSearchParams()
     const isAllowback = searchParams.get("is_allow_back")
@@ -49,27 +50,39 @@ function ServicesTwoLayer() {
     const {t, locale} = useLocalization();
     const dateLocale = locale == "id" ? id : en;
 
+    const ServiceTitle = styled.div(() => ({
+            fontWeight: '700',
+            fontSize: '1rem'
+        }))
+
+    const ServiceContent = styled.div(() => ({
+            display: 'flex',
+            flex: '1 1 0%',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }))
+
     const PAGE_TITLE = t('Appointment Queue')
 
     const [selectedDate, setSelectedDate] = useState(new Date())
-    const [isCalendarShow, setIsCalendarShow] = useState(false)
 
-    const branchServicesQuery = useBranchServices(branchId, {
-            queueType: 'appointment-onsite',
-            date: getFullDate(selectedDate, 'en'),
-            day: getDayName(selectedDate, 'en'),
-            serviceCategoryId: serviceCategoryId
-        })
+    // const branchServicesQuery = useBranchServices(branchId, {
+    //         queueType: 'appointment-onsite',
+    //         date: getFullDate(selectedDate, 'en'),
+    //         day: getDayName(selectedDate, 'en'),
+    //     })
     const branchQuery = useQuery('branch', () => fetchBranch(branchId))
     const branchSchedulesQuery = useBranchSchedules(branchId)
     const branchHolidaysQuery = useBranchHolidays(branchId)
+    const branchServicesCategoryQuery = useBranchServicesCategories(branchId)
 
 
-    const services = branchServicesQuery?.data
+    // const services = branchServicesQuery?.data
+    const categories = branchServicesCategoryQuery?.data
     const branch = branchQuery?.data
     const schedules = branchSchedulesQuery?.data
     const holidays = branchHolidaysQuery?.data
-   
+
     const todaySchedule = schedules?.find(v => v.day === format(selectedDate, 'eeee').toLowerCase())
     const todayHoliday = holidays?.find(v => v.date === format(selectedDate, 'yyyy-MM-dd'))
 
@@ -77,45 +90,15 @@ function ServicesTwoLayer() {
         navigate(`/customer/${branchId}/onsite/services`);
     }
 
-    useEffect(() => {
-        branchSchedulesQuery.refetch()
-        branchHolidaysQuery.refetch()
-        branchServicesQuery.refetch()
-    }, [selectedDate])
+    // useEffect(() => {
+    //     branchSchedulesQuery.refetch()
+    //     branchHolidaysQuery.refetch()
+    //     branchServicesCategoryQuery.refetch()
+    // }, [selectedDate])
 
     function isBranchOpen() {
         return todaySchedule?.status === 'open' && !todayHoliday
     }
-
-    function getClosedDayIndexes() {
-        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-
-        return schedules
-            .filter(v => v.status === 'closed')
-            .map(v => days.indexOf(v.day))
-    }
-
-    function getMonthNames() {
-        const now = new Date()
-
-        return eachMonthOfInterval({
-            start: new Date(now.getFullYear(), 0, 1),
-            end: new Date(now.getFullYear(), 11, 1)
-        })
-            .map(v => {
-                return format(v, 'MMMM', { locale: dateLocale })
-            })
-    }
-
-    function handleDayClick(day, modifiers = {}) {
-        if (modifiers.disabled) return
-        setSelectedDate(day)
-    }
-
-    function handleCalendarClose() {
-        setIsCalendarShow(false)
-    }
-
     return <>
         <Banner imageUrl={branch?.photo}>
             <Header>
@@ -228,100 +211,33 @@ function ServicesTwoLayer() {
         </Banner>
 
         <MainContent>
-            {isCalendarShow && <CalendarWrapper
-                onClick={handleCalendarClose}
-            >
-                <DayPicker
-                    onDayClick={handleDayClick}
-                    months={getMonthNames()}
-                    modifiers={{
-                        selected: selectedDate,
-                        disabled: [
-                            ...holidays.map(v => parseISO(v.date)),
-                            { daysOfWeek: getClosedDayIndexes() },
-                            { before: new Date() }
-                        ]
-                    }}
-                    modifiersStyles={{
-                        selected: {
-                            backgroundColor: '#0172CB',
-                            color: '#FFFFFF'
-                        }
-                    }}
-                />
-            </CalendarWrapper>}
-
-            <TextField
-                label={t("Date")}
-                style={{
-                    marginBottom: '1.5rem'
-                }}
-                value={format(selectedDate, 'd MMMM yyyy', { locale: dateLocale })}
-                readOnly
-                endAdornment={
-                    <IconButton
-                        onClick={() => setIsCalendarShow(true)}
-                    >
-                        <CalendarIcon height="24" width="24" />
-                    </IconButton>
-                }
-            />
 
             <h4 style={{
                 fontSize: '1rem',
                 marginBottom: '1.125rem'
             }}>{t('Service')}</h4>
 
-            {branchServicesQuery.isLoading && <ServiceItemSkeleton />}
+            {branchServicesCategoryQuery.isLoading && <h5>Loading...</h5>}
 
-            {isBranchOpen && services?.map(service => {
-                    const availableSlot =
-                        service.filledSlot < service.totalSlot
-                        ? service.totalSlot - service.filledSlot
-                        : 0;
+            
+            {isBranchOpen() && categories?.map(category => {
+                            return <Link to={`/customer/${branchId}/onsite/two-layer/${category.id}/services`} key={category.id} style={{
+                                marginBottom: '1.125rem'
+                            }}>
+                                <Card style={{
+                                    display: 'flex',
+                                    height: '85px',
+                                    cursor: 'pointer',
+                                    backgroundImage: 'linear-gradient(270deg, #103C7C -24.91%, #2F5B9B 118.64%)',
+                                    color:'#fff'
+                                }}>
+                                    <ServiceContent>
+                                        <ServiceTitle>{ category.name }</ServiceTitle>
+                                    </ServiceContent>
+                                </Card>
+                            </Link>
+            })}
 
-                    if (!service.is_show) return null;
-
-                    return (
-                        <Link
-                        to={`/customer/${branchId}/onsite/services/${service.id}?date=${format(
-                            selectedDate,
-                            'yyyy-MM-dd'
-                        )}`}
-                        key={service.id}
-                        style={{ marginBottom: '1.125rem' }}
-                        >
-                        <ServiceItem
-                            title={service.name}
-                            action={{
-                            label: t('Total Available Slots'),
-                            value: availableSlot,
-                            total: service.totalSlot,
-                            }}
-                            subtitle={
-                            <div
-                                style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                }}
-                            >
-                                <ClockIcon
-                                color="#A5A5A5"
-                                width="0.75rem"
-                                height="0.75rem"
-                                style={{ marginRight: '0.5rem' }}
-                                />
-                                <span>
-                                {service.slots.length
-                                    ? service.slots.length + ` ${t('Time Sessions')}`
-                                    : t('No Time Sessions')}
-                                </span>
-                            </div>
-                            }
-                        />
-                        </Link>
-                    )}
-                )}
 
             {!isBranchOpen() && <div style={{
                 flex: '1 1 0%',
@@ -354,7 +270,7 @@ function ServicesTwoLayer() {
                 </p>
             </div>}
 
-            {services && services.length == 0 && isBranchOpen() && <div style={{
+            {categories && categories.length == 0 && isBranchOpen() && <div style={{
                     flex: '1 1 0%',
                     display: 'flex',
                     flexDirection: 'column',
@@ -373,7 +289,7 @@ function ServicesTwoLayer() {
                     }}>
                         <BoxOpenIcon width="5rem" height="5rem" color="#A5A5A5" />
                     </div>
-                    <h4>Tidak Ada Layanan</h4>
+                    <h4>{t('No Service Available')}</h4>
                     <p style={{
                         textAlign: 'center',
                         width: '280px',
@@ -381,12 +297,11 @@ function ServicesTwoLayer() {
                         color: '#A5A5A5',
                         fontSize: '.875rem'
                     }}>
-                        Pilih kategori lain untuk menemukan layanan yang tersedia
+                        {t('Add Services in Admin Branch')}
                     </p>
                 </div>}
         </MainContent>
     </>
 }
 
-export default ServicesTwoLayer
-
+export default CategoryServicesTwoLayer

@@ -10,6 +10,7 @@ use App\Workstation;
 use App\Models\AppointmentOnsite;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
+use App\Jobs\SendAppointmentOnsiteMail;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Mail\CS\AppointmentOnsiteCreatedMail;
@@ -132,11 +133,16 @@ class AppointmentOnsiteRepository implements AppointmentOnsiteRepositoryInterfac
                 $appointmentOnsite->sendNotificationWaBlast($appointmentOnsite);
             }
 
-            try {
-                Mail::to($appointmentOnsite->email)->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
-            } catch (\Exception $e) {
-                throw new \Exception('ERR-0002: Pengiriman email gagal, mohon cek koneksi internet Anda.', 10002);
-            }
+            // for ($i = 1; $i <= 2; $i++) {
+            //     try {
+            //         Mail::to($appointmentOnsite->email)
+            //         ->send(new AppointmentOnsiteCreatedMail($appointmentOnsite));
+            //         break;
+            //     } catch (\Exception $e) {
+            //         \Log::warning("Gagal kirim email (percobaan $i): " . $e->getMessage());
+            //     }
+            // }
+            SendAppointmentOnsiteMail::dispatch($appointmentOnsite);
 
             return $appointmentOnsite;
         });

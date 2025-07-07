@@ -721,7 +721,9 @@ selected_queue: selected_queue.created_at
           this.selected_queue = this.queues[0]?.queue_no || "";
           this.isOnServed = false;
 
-          this.resetTimer()
+          if(this.auth.branch.branch_type.is_premium){
+            this.resetTimer()
+          }
         } else {
           this.isOnServed = true;
         }
@@ -753,7 +755,9 @@ selected_queue: selected_queue.created_at
           serving_duration: selected_queue.called_at ? Math.floor(moment().diff(moment(selected_queue.called_at)) / 1000) : 0
         });
 
-        this.resetTimer()
+        if(this.auth.branch.branch_type.is_premium){
+            this.resetTimer()
+        }
 
         this.onServedQueue = null;
         this.isOnServed = false;
@@ -769,7 +773,9 @@ selected_queue: selected_queue.created_at
       if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop()
       }
-      this.resetTimer()
+      if(this.auth.branch.branch_type.is_premium){
+        this.resetTimer()
+      }
 
       const selected_queue = this.queues.find(
         (queue) => queue.queue_no === this.selected_queue
@@ -801,7 +807,9 @@ selected_queue: selected_queue.created_at
       if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop()
       }
-      this.resetTimer()
+      if(this.auth.branch.branch_type.is_premium){
+            this.resetTimer()
+      }
 
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === this.selected_queue
@@ -845,7 +853,9 @@ selected_queue: selected_queue.created_at
       if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
         this.mediaRecorder.stop()
       }
-      this.resetTimer()
+      if(this.auth.branch.branch_type.is_premium){
+            this.resetTimer()
+      }
 
       const selected_queue = this.queues.filter(
         (queue) => queue.queue_no === e.target.queue_no.value

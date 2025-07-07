@@ -1,15 +1,16 @@
 <?php
 namespace App\Helpers;
 
-use App\Schedule;
+use Str;
 use App\User;
-use App\Department;
+use App\Branch;
 use App\Service;
+use App\Schedule;
+use App\Department;
 use App\Workstation;
 use App\WorkstationVct;
 use App\WorkstationService;
-use App\Branch;
-use Str;
+use App\Models\ServiceCategory;
 
 class AutoPopulate {
     public static function create($branch_id)
@@ -70,6 +71,11 @@ class AutoPopulate {
             'workstation_id' => $workstation->id,
             'service_id' => $service->id,
             'priority' => 1
+        ]);
+
+        ServiceCategory::create([
+            'name' => 'Service Category 1',
+            'branch_id' => $branch_id
         ]);
     }
 }

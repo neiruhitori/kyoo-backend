@@ -105,13 +105,14 @@
                     </div>
                 </div>
             </div>
-            @if(Auth::user()->Branch->BranchType->is_appointment)
+            @if(Auth::user()->Branch->BranchType->is_appointment || Auth::user()->Branch->BranchConfiguration->layer == 2)
                 @include('adminBranch.serviceCategories.index', ['service_categories' => $service_categories])
             @endif
 
             @include('adminBranch.service.index', ['services' => $services])
+            
             @if (Auth::user()->Branch->FeatureSubscription->contains('feature_id', 9))
-            @include('adminBranch.service.sub_service.index', ['sub_services' => $sub_services])
+                @include('adminBranch.service.sub_service.index', ['sub_services' => $sub_services])
             @endif
         </div>
     </div>

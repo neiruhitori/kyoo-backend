@@ -72,8 +72,8 @@ class LoginController extends Controller
         if ($loggedUser->role !== 'admin_kyoo') {
             $licenseExpirationDate = $loggedUser->Branch->license_expiration_date;
             $isExpired = Carbon::parse($licenseExpirationDate);
-            $branchIsPremium = $loggedUser->Branch->BranchType->is_premium;
-            if ($licenseExpirationDate && $isExpired->isPast() && !$branchIsPremium) {
+            // $branchIsPremium = $loggedUser->Branch->BranchType->is_premium;
+            if ($licenseExpirationDate && $isExpired->isPast()) {
                 // on failed expired account for non admin kyoo
                 $this->guard()->logout();
                 return redirect()->route('login')->with(['error' => __('Trial Period Has Ended')]);

@@ -270,7 +270,7 @@
                     >
                        {{ __('Promotion')}}
                     </a>
-                @endif
+                    @endif
             </div>
         </div>
     </li>

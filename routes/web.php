@@ -103,6 +103,7 @@ Route::namespace('AdminBranch')
             Route::resource('service', 'ServiceController');
             Route::resource('service.slot', 'SlotController')->shallow()->middleware('checkAppointmentQueue');
             
+            Route::get('service/{id}/enable', 'SubServiceController@enableDisable')->name('service.enableDisable');
             Route::get('service/{id}/assign', 'SubServiceController@assign')->name('service.assign');
             Route::get('service/{id}/add/sub-service', 'SubServiceController@add')->name('service.add.sub-service');
             Route::get('service/{id}/edit/sub-service', 'SubServiceController@editSubService')->name('service.edit.sub-service');
@@ -177,7 +178,7 @@ Route::namespace('AdminBranch')
             Route::get('terms-conditions', 'TermsConditionsController@index')->name('terms-conditions.index');
             Route::get('terms-conditions/get', 'TermsConditionsController@get')->name('terms-conditions.get');
             Route::put('terms-conditions', 'TermsConditionsController@update')->name('terms-conditions.store');
-
+         
             Route::prefix('/promotions')
                 ->name('promotions.')
                 ->middleware('access:Promosi')
@@ -457,6 +458,7 @@ Route::namespace('CS')->prefix('cs')->middleware('auth', 'checkCS', 'setTimeZone
     Route::post('directQueue/onEndServed', 'DirectQueueController@onEndServed')->middleware('checkDirectQueue');
     Route::post('directQueue/onNoShow', 'DirectQueueController@onNoShow')->middleware('checkDirectQueue');
     Route::post('directQueue/onTransfer', 'DirectQueueController@onTransfer')->middleware('checkDirectQueue');
+    Route::get('directQueue/getQRCode/{queue_id}', 'DirectQueueController@getQrCode')->middleware('checkDirectQueue');
 
     // Report routes
     Route::get('report/daily', 'ReportController@daily')->name('report.daily');
@@ -508,7 +510,22 @@ Route::post('search', 'SearchQueueController@search')->name('search.search');
 
 Route::get('scan', 'QRScannerController@index')->name('scan.index');
 
-Route::get('DEBUG', 'AdminBranch\BillingController@print');
+Route::get('AddCategoryService/onlyAdMin', function(){
+       $branchOnsite = App\Branch::onsite()->where('license_expiration_date', '<', Illuminate\Support\Carbon::now())
+                        ->get();
+
+        foreach ($branchOnsite as $branch) {
+            $hasCategory = App\Models\ServiceCategory::where('branch_id', $branch->id)->exists();
+
+            if(!$hasCategory){
+                App\Models\ServiceCategory::create([
+                    'name' => 'Service Category 1',
+                    'branch_id' => $branch->id
+                ]);
+            }
+
+        }
+});
 
 }); //end of locale prefix
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');

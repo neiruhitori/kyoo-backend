@@ -151,6 +151,17 @@
                         <option value="ACST" selected>Australian Central Standard Time - {{ __('ACST') }} (UTC+9:30)</option>
                         <option value="AWST" selected>Australian Western Standard Time - {{ __('AWST') }} (UTC+8)</option>
                             @break
+                        @case('United States')
+                            <option value="ET" selected> Eastern Time - {{ __('ET') }} (UTC-5:00)</option>
+                            <option value="CT" selected> Central Time - {{ __('CT') }} (UTC-6:00)</option>
+                            <option value="MT" selected> Mountain Time - {{ __('MT') }} (UTC-7:00)</option>
+                            <option value="MST" selected> Mountain Standard Time - {{ __('MST') }} (UTC-7:00)</option>
+                            <option value="PT" selected> Pacific Time - {{ __('PT') }} (UTC-8:00)</option>
+                            <option value="AKT" selected> Alaska Time - {{ __('AKT') }} (UTC-9:00)</option>
+                            <option value="HAT" selected> Hawaii-Aleutian Time - {{ __('HAT') }} (UTC-10:00)</option>
+                            <option value="ST" selected> Samoa Time - {{ __('ST') }} (UTC-11:00)</option>
+                            <option value="ChST" selected> Chamorro Standard Time - {{ __('ChST') }} (UTC+10:00)</option>
+                        @break
                         @default
                             
                     @endswitch

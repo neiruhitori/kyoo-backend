@@ -26,6 +26,12 @@ class UpdateService extends FormRequest
     {
         return Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->BranchType->is_premium;
     }
+    protected function isAppointment()
+    {
+        return Auth::user()->Branch->BranchType->is_appointment;
+    }
+
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -38,10 +44,11 @@ class UpdateService extends FormRequest
         return [
             'name' => 'required|string',
             'department_id' => 'required|exists:departments,id',
-            'service_category_id' => 'exists:service_categories,id',
+            'service_category_id' => $this->isAppointment() ? 'exists:service_categories,id' : 'nullable',
             'prefix_queue' => $this->isRequiredPrefixQueue() ? 'required|alpha_num' : 'nullable|alpha_num',
             'sla_duration' => $this->isRequiredSLADuration() ? 'numeric|min:0' : 'numeric',
             'is_show' => 'boolean',
+            'kiosk_name' => 'nullable|string',
         ];
     }
 }

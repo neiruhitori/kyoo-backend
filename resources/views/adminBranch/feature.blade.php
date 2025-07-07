@@ -139,6 +139,20 @@
                                         </select>
                                         @include('layouts.inputError', ['errorName' => 'vo_call_style'])
                                     </div>
+                                    <div class="form-group">
+                                            <label for="cs_page">{{ __('CS Page UI Style') }}</label>
+                                            <select name="cs_page" id="cs_page"
+                                                class="form-control @error('cs_page') is-invalid @enderror">
+                                                <option value="style-1"
+                                                    {{ !$branch_config || $branch_config->cs_page == "style-1" ? 'selected' : '' }}>
+                                                    {{ __('Style 1') }}
+                                                </option>
+                                                <option value="style-2"
+                                                    {{ !$branch_config || $branch_config->cs_page == "style-2" ? 'selected' : '' }}>
+                                                    {{ __('Style 2') }}
+                                                </option>
+                                            </select>
+                                    </div>
 
                                         <label for="">{{ __('Voice Call') }}</label>
 
@@ -180,6 +194,7 @@
                                         </div>
                                     @endif
                                 @endif
+                                
 
                                 <label for="wa-notification">{{ __('Whatsapp Notification') }}</label>
 
@@ -218,6 +233,7 @@
 
                                     @include('layouts.inputError', ['errorName' => 'serving_directly'])
                                 </div>
+                                
 
                                 <button type="submit" class="btn btn-warning">{{ __('Update') }}</button>
                             </form>

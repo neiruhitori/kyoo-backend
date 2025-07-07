@@ -20,18 +20,31 @@ class DepartmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         $service_categories = ServiceCategory::whereBranchId(Auth::user()->branch_id)->get();
-        $services = Service::whereBranchId(Auth::user()->branch_id)->get();
         $sub_services = SubService::whereBranchId(Auth::user()->branch_id)->get();
+        $servicesQuery = Service::whereBranchId(Auth::user()->branch_id);
+
+        if($request->has('filter')){
+            if ($request->filter == 'inactive') {
+                $servicesQuery->where('is_disable', true);
+            } else if($request->filter == 'active') {
+                $servicesQuery->where('is_disable', false);
+            }
+        }else{
+             $servicesQuery->where('is_disable', false);
+        }
+
+        $services = $servicesQuery->get();
 
         return view('adminBranch.department.index', [
             'departments' => $departments,
             'service_categories' => $service_categories,
             'services' => $services,
             'sub_services' => $sub_services,
+            'filter' => $request->filter ?? 'active'
         ]);
     }
 

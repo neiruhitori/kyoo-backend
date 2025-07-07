@@ -122,6 +122,7 @@ class RegistrationBranchController extends Controller
             'branch_id' => $branch->id,
             'maximum_recall' => 2,
             'maximum_requeue_count' => 2,
+            'cs_page' => 'style-2',
             'allow_transfer' => false
         ]);
 

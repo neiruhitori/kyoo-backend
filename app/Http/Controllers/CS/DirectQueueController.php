@@ -68,10 +68,22 @@ class DirectQueueController extends Controller
             return $directQueue->vct_priority &&  ($directQueue->status !== 'served' || $directQueue->workstation_id === $requesterWorkstationId);
         })->values();
 
+         $directQueues = DirectQueue::whereDate('created_at', now()->toDateString())
+            ->whereHas('Service', function ($query) {
+                $query->whereBranchId(Auth::user()->branch_id);
+            })
+            ->get();
+        $queueCounts = [
+                    'waiting'     => $directQueues->where('status', 'waiting')->count(),
+                    'no_show'     => $directQueues->where('status', 'no show')->count(),
+                    'end_served'  => $directQueues->where('status', 'end served')->count(),
+                ];
+
         return response()->json([
             'success' => true,
             'message' => 'get all direct queues by today',
-            'data' => $data
+            'data' => $data,
+            'count' => $queueCounts
         ]);
     }
 
@@ -186,6 +198,16 @@ class DirectQueueController extends Controller
         ]);
     }
 
+    public function getQrCode($queue_id)
+    {
+        $image = $this->get_queue_status_qr($queue_id);
+
+        return response()->json([
+            'image' =>  $image
+        ]);
+    }
+
+
     private function get_queue_status_qr($queue_id)
     {
         return QrCode::size(180)->generate(
@@ -201,7 +223,14 @@ class DirectQueueController extends Controller
             $service = $workstationService->Service;
             return $service ? $service->SubServices : collect();
         });
-        return view('cs.directQueue.monitor', ['sub_services' => $subServices]);
+
+        $directQueues = DirectQueue::whereDate('created_at', now()->toDateString())
+            ->whereHas('Service', function ($query) {
+                $query->whereBranchId(Auth::user()->branch_id);
+            })
+            ->get();
+
+        return view('cs.directQueue.monitor', ['sub_services' => $subServices ]);
     }
 
     private function checkPreviousQueue($directQueue, $isSkip = false)

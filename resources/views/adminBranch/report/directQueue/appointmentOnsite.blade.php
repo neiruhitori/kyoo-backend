@@ -79,7 +79,7 @@
                                     <label for="">{{ __('Booking Form') }}</label>
                                     <select name="booking_form" id="booking_form" class="form-control">
                                         <option value="standard-form" {{ $booking_form == 'standard-form' ? 'selected' : '' }}>Standard Form</option>
-                                        <option value="form-medical-1" {{ $booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical 1</option>
+                                        <option value="form-medical-1" {{ $booking_form == 'form-medical-1' ? 'selected' : '' }}>Form Medical</option>
                                         <option value="form-financing" {{ $booking_form == 'form-financing' ? 'selected' : '' }}>Form Financing</option>
                                     </select>
                                 </div>
@@ -89,7 +89,184 @@
                     <div class="row">
                         <div class="col">
                             <div class="table-responsive mt-5">
-                                @if ($booking_form == 'standard-form')
+                                @switch($booking_form)
+                                @case('standard-form')
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <th>{{ __('Order Date') }}</th>
+                                            <th>{{ __('Reservation Date') }}</th>
+                                            <th>{{ __('Booking Code') }}</th>
+                                            <th>{{ __('Queue No') }}</th>
+                                            <th>{{ __('Name') }}</th>
+                                            <th>{{ __('Email') }}</th>
+                                            <th>{{ __('Mobile Phone') }}</th>
+                                            <th>{{ __('Service') }}</th>
+                                            <th>{{ __('Slot') }}</th>
+                                            <th>{{ __('Status') }}</th>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($appointment_onsites as $appointment_onsite)
+                                                <tr>
+                                                    <td>{{ $appointment_onsite->created_at->formatLocalized('%d-%b-%Y') }}</td>
+                                                    <td>{{ date('d-M-Y', strtotime($appointment_onsite->date)) }}</td>
+                                                    <td>{{ strtoupper($appointment_onsite->booking_code) }}</td>
+                                                    <td>{{ $appointment_onsite->DirectQueue->queue_no ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->name }}</td>
+                                                    <td>{{ $appointment_onsite->email ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->phone }}</td>
+                                                    <td>{{ $appointment_onsite->Service->name }}</td>
+                                                    <td>{{ $appointment_onsite->Slot->start_time }} - {{ $appointment_onsite->Slot->end_time }}</td>
+                                                    <td>{{ $appointment_onsite->is_used ? 'Check-In' : __('Not Checked In') }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="7" class="text-center">{{ __('No data') }}</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                    @break
+
+                                @case('form-financing')
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <th>{{ __('Order Date') }}</th>
+                                            <th>{{ __('Reservation Date') }}</th>
+                                            <th>{{ __('Kode Unik') }}</th>
+                                            <th>{{ __('Queue No') }}</th>
+                                            <th>{{ __('Name') }}</th>
+                                            <th>{{ __('Email') }}</th>
+                                            <th>{{ __('Mobile Phone') }}</th>
+                                            <th>{{ __('No. Kontrak') }}</th>
+                                            <th>{{ __('Service') }}</th>
+                                            <th>{{ __('Slot') }}</th>
+                                            <th>{{ __('Status') }}</th>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($appointment_onsites as $appointment_onsite)
+                                                <tr>
+                                                    <td>{{ $appointment_onsite->created_at->formatLocalized('%d-%b-%Y') }}</td>
+                                                    <td>{{ date('d-M-Y', strtotime($appointment_onsite->date)) }}</td>
+                                                    <td>{{ strtoupper($appointment_onsite->booking_code) }}</td>
+                                                    <td>{{ $appointment_onsite->DirectQueue->queue_no ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->name }}</td>
+                                                    <td>{{ $appointment_onsite->email }}</td>
+                                                    <td>{{ $appointment_onsite->phone }}</td>
+                                                    <td>{{ $appointment_onsite->contract_number }}</td>
+                                                    <td>{{ $appointment_onsite->Service->name }}</td>
+                                                    <td>{{ $appointment_onsite->Slot->start_time }} - {{ $appointment_onsite->Slot->end_time }}</td>
+                                                    <td>{{ $appointment_onsite->is_used ? 'Check-In' : __('Not Checked In') }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="7" class="text-center">{{ __('No data') }}</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                    @break
+
+                                @case('form-medical-1')
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <th>{{ __('Order Date') }}</th>
+                                            <th>{{ __('Reservation Date') }}</th>
+                                            <th>{{ __('Booking Code') }}</th>
+                                            <th>{{ __('Queue No') }}</th>
+                                            <th>{{ __('Name') }}</th>
+                                            <th>{{ __('Date of Birth') }}</th>
+                                            <th>{{ __('Address') }}</th>
+                                            <th>{{ __('Mobile Phone') }}</th>
+                                            <th>{{ __('Emergency Number') }}</th>
+                                            <th>{{ __('NIK/Passport Number') }}</th>
+                                            <th>{{ __('Email') }}</th>
+                                            <th>{{ __('Reason for Visit') }}</th>
+                                            <th>{{ __('Service') }}</th>
+                                            <th>{{ __('Agent/Vessel') }}</th>
+                                            <th>{{ __('Vaccine') }}</th>
+                                            <th>{{ __('Slot') }}</th>
+                                            <th>{{ __('Status') }}</th>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($appointment_onsites as $appointment_onsite)
+                                                <tr>
+                                                    <td>{{ $appointment_onsite->created_at->formatLocalized('%d-%b-%Y') }}</td>
+                                                    <td>{{ date('d-M-Y', strtotime($appointment_onsite->date)) }}</td>
+                                                    <td>{{ strtoupper($appointment_onsite->booking_code) }}</td>
+                                                    <td>{{ $appointment_onsite->DirectQueue->queue_no ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->name }}</td>
+                                                    <td>{{ $appointment_onsite->date_of_birth ? date('d-M-Y', strtotime($appointment_onsite->date_of_birth)) : '-' }}</td>
+                                                    <td>{{ $appointment_onsite->address ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->phone ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->emergency_number ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->passport_number ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->email ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->reason_for_visit ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->Service->name ?? '-'}}</td>
+                                                    <td>{{ $appointment_onsite->agent ?? '-'}}</td>
+                                                    <td>{{ $appointment_onsite->vaccine ?? '-'}}</td>
+                                                    <td>{{ $appointment_onsite->Slot->start_time }} - {{ $appointment_onsite->Slot->end_time }}</td>
+                                                    <td>{{ $appointment_onsite->is_used ? 'Check-In' : __('Not Checked In') }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="7" class="text-center">{{ __('No data') }}</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                    @break
+                                @case('form-medical-1')
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <th>{{ __('Order Date') }}</th>
+                                            <th>{{ __('Reservation Date') }}</th>
+                                            <th>{{ __('Booking Code') }}</th>
+                                            <th>{{ __('Queue No') }}</th>
+                                            <th>{{ __('Name') }}</th>
+                                            <th>{{ __('Date of Birth') }}</th>
+                                            <th>{{ __('Address') }}</th>
+                                            <th>{{ __('Mobile Phone') }}</th>
+                                            <th>{{ __('Emergency Number') }}</th>
+                                            <th>{{ __('NIK/Passport Number') }}</th>
+                                            <th>{{ __('Email') }}</th>
+                                            <th>{{ __('Reason for Visit') }}</th>
+                                            <th>{{ __('Service') }}</th>
+                                            <th>{{ __('Slot') }}</th>
+                                            <th>{{ __('Status') }}</th>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($appointment_onsites as $appointment_onsite)
+                                                <tr>
+                                                    <td>{{ $appointment_onsite->created_at->formatLocalized('%d-%b-%Y') }}</td>
+                                                    <td>{{ date('d-M-Y', strtotime($appointment_onsite->date)) }}</td>
+                                                    <td>{{ strtoupper($appointment_onsite->booking_code) }}</td>
+                                                    <td>{{ $appointment_onsite->DirectQueue->queue_no ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->name }}</td>
+                                                    <td>{{ $appointment_onsite->date_of_birth ? date('d-M-Y', strtotime($appointment_onsite->date_of_birth)) : '-' }}</td>
+                                                    <td>{{ $appointment_onsite->address ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->phone }}</td>
+                                                    <td>{{ $appointment_onsite->emergency_number ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->passport_number ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->email }}</td>
+                                                    <td>{{ $appointment_onsite->reason_for_visit ?? '-' }}</td>
+                                                    <td>{{ $appointment_onsite->Service->name }}</td>
+                                                    <td>{{ $appointment_onsite->Slot->start_time }} - {{ $appointment_onsite->Slot->end_time }}</td>
+                                                    <td>{{ $appointment_onsite->is_used ? 'Check-In' : __('Not Checked In') }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="7" class="text-center">{{ __('No data') }}</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                    @break
+                                @default
+                                    <p>{{ __('Invalid booking form') }}</p>
+                            @endswitch
+
+                                {{-- @if ($booking_form == 'standard-form')
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <th>{{ __('Order Date') }}</th>
@@ -208,7 +385,7 @@
                                             @endforelse
                                         </tbody>
                                     </table>
-                                @endif
+                                @endif --}}
                             </div>
                         </div>
                     </div>

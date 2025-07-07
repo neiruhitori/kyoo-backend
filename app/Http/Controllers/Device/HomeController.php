@@ -9,6 +9,7 @@ use App\DirectQueue;
 
 use App\Workstation;
 use App\Models\TVToken;
+use App\Jobs\SendWebhook;
 use App\WorkstationService;
 use Illuminate\Support\Str;
 use App\BranchConfiguration;
@@ -17,8 +18,8 @@ use Illuminate\Http\Request;
 use App\Models\WebkioskToken;
 use App\Models\AppointmentOnsite;
 use App\Events\OnsiteQueueUpdated;
-use App\Models\FeatureSubscription;
 
+use App\Models\FeatureSubscription;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
@@ -315,65 +316,6 @@ class HomeController extends Controller
             if ($direct_queue->client_id) {
                 event(new OnsiteQueueUpdated($direct_queue));
             }
-            $branchID = $user->branch->id;
-            $client = BranchConfiguration::where('branch_id',$branchID)->first();
-            $tokenAPI = SecretKeyAPi::where('branch_id', $branchID)->first();
-            $webhookMessage = "You need an Webhook Url or Activate the feature!";
-
-            if ($client->webhook_url && $tokenAPI->secret_token && $tokenAPI->is_active){
-                $webhookMessage = "Webhook Send!";
-
-                $timezone = null;
-                if($user->branch && $user->branch->timezone){
-                    if($user->branch && $user->branch->timezone) {
-                        switch($user->branch->timezone) {
-                            case 'WIB':
-                                $timezone = 'GMT+7';
-                                break;
-                            case 'WITA':
-                                $timezone = 'GMT+8';
-                                break;
-                            case 'WIT':
-                                $timezone = 'GMT+9';
-                                break;
-                            default:
-                                $timezone = null;
-                                break;
-                        }
-                    }
-                }
-    
-                $webhookData = [
-                    'event_type' => 'onsite_checkin_booking',
-    
-                    'queue' => (object)[
-                            'id' => $direct_queue->id,
-                            'service_id' => $direct_queue->service_id,
-                            'branch_id' =>  $branchID,
-                            'booking_code' =>  strtoupper($direct_queue->booking_code),
-                            'service_type' => 'Onsite Queue',
-                            'check_in_status' => true,
-                            'check_in_date' => $direct_queue->created_at,
-                            'created_at' => $direct_queue->created_at,
-                        ],
-                        'branch' => (object)[
-                            'id' =>  $branchID,
-                            'name' => $user->branch->name,
-                        ],
-                        'service' => (object)[
-                            'id' => $direct_queue->service_id,
-                            'name' => $direct_queue->service->name,
-                            'branch_id' => $direct_queue->service->Branch->id,
-                            'branch_name' => $direct_queue->service->Branch->name,
-                        ]
-                ];
-                $webhookUpdatedData = (object) $webhookData;
-                
-               $this->sendWebhook($client, $webhookUpdatedData);
-                
-            }else{
-                $webhookMessage = "There's no Webhook Url or The feature was inactive";
-            }
 
             return response()->json([
                 'success' => true,
@@ -445,6 +387,7 @@ class HomeController extends Controller
             $data['appointment_onsite_id'] = $appointment_onsite->id;
 
             $direct_queue = $this->onsite_repository->store($data);
+            
             $direct_queue->total_waiting = DirectQueue::whereServiceId($direct_queue->service_id)
                                                         ->whereStatus('waiting')
                                                         ->whereDate('created_at', date('Y-m-d'))
@@ -507,7 +450,7 @@ class HomeController extends Controller
                 $webhookData = [
                     'event_type' => 'onsite_checkin_booking',
     
-                    'queue' => (object)[
+                    'queue' =>[
                             'id' => $appointment_onsite->id,
                             'service_id' => $appointment_onsite->service_id,
                             'branch_id' =>  $branchID,
@@ -517,20 +460,19 @@ class HomeController extends Controller
                             'check_in_date' => $appointment_onsite->updated_at,
                             'created_at' => $appointment_onsite->created_at,
                         ],
-                        'branch' => (object)[
+                        'branch' =>[
                             'id' =>  $branchID,
                             'name' => $user->branch->name,
                         ],
-                        'service' => (object)[
+                        'service' =>[
                             'id' => $appointment_onsite->service_id,
                             'name' => $appointment_onsite->service->name,
                             'branch_id' => $appointment_onsite->service->Branch->id,
                             'branch_name' => $appointment_onsite->service->Branch->name,
                         ]
                 ];
-                $webhookUpdatedData = (object) $webhookData;
                 
-               $this->sendWebhook($client, $webhookUpdatedData);
+               SendWebhook::dispatch($client, $webhookData);
                 
             }else{
                 $webhookMessage = "There's no Webhook Url or The feature was inactive";
@@ -558,34 +500,5 @@ class HomeController extends Controller
           }
         }
         return array_values($new_array);
-    }
-    protected function sendWebhook($client, $webhookUpdatedData)
-    {
-        $guzzle = new \GuzzleHttp\Client();  
-        $tokenAPI = SecretKeyAPi::where('branch_id', $client->branch_id)->first();
-        try {
-
-            $response = $guzzle->post($client->webhook_url, [
-                'headers' => [
-                    'x-secret-token' => $tokenAPI->secret_token,
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => $webhookUpdatedData
-            ]);
-
-            if ($response->getStatusCode() !== 200) {
-                throw new \Exception('Webhook failed with status: ' . $response->getStatusCode());
-            }
-
-            return response()->json([
-                'status' => 'success',
-               ]);
-
-        } catch (\Exception $e) {
-           return response()->json([
-            'status' => 'error',
-            'message' =>  $e->getMessage()
-           ]);
-        }
     }
 }

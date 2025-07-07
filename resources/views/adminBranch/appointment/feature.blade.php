@@ -57,6 +57,21 @@
                                 @csrf
                                 @method('PUT')
 
+                                <div class="form-group">
+                                        <label for="cs_page">{{ __('CS Page UI Style') }}</label>
+                                        <select name="cs_page" id="cs_page"
+                                            class="form-control @error('cs_page') is-invalid @enderror">
+                                            <option value="style-1"
+                                                {{ !$branch_config || $branch_config->cs_page == "style-1" ? 'selected' : '' }}>
+                                                {{ __('Style 1') }}
+                                            </option>
+                                            <option value="style-2"
+                                                {{ !$branch_config || $branch_config->cs_page == "style-2" ? 'selected' : '' }}>
+                                                {{ __('Style 2') }}
+                                            </option>
+                                        </select>
+                                </div>
+
                                 @if (Auth::user()->Branch->hasAccess('Panggilan Suara'))
                                     <label for="">{{ __('Voice Call') }}</label>
 
