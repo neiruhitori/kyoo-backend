@@ -5,41 +5,57 @@
 @endpush
 
 @section('content')
-    <div class="card mb-4 custom-info" data-open="open" role="alert">
-        <div class="card-body">
-            <div class="custom-info-head">
-                <h6 class="font-weight-bold my-0">
-                    <span class="fas fa-info-circle text-primary mr-1"></span>
-                    {{ __('Information') }}
-                </h6>
+<div class="accordion mb-3" id="accordionParent3">
+    <div class="border-left-primary rounded " style="border-radius: 0.5rem; overflow: hidden;">
 
-                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    {{ __('Show') }}
-                </button>
-            </div>
+        <div  id="headingOne" style="background-color: #E6F3FF;">
+            <button 
+                class="btn btn-block text-left d-flex align-items-center accordion-toggle-custom" 
+                type="button"
+                data-toggle="collapse" 
+                data-target="#accordion3" 
+                aria-expanded="true" 
+                aria-controls="accordion3"
+                style="color: #103C7C; gap: 0.5rem; outline: none; box-shadow: none; padding: 1rem;"
+                >
+                    <span class="fas fa-info-circle text-primary"></span>
+                    <h5 class="font-weight-bold my-0 text-primary">
+                        {{ __('Information') }}
+                    </h5>
+             </button>
+        </div>
 
-            <div class="custom-info-body">
-                <p>
+        <div 
+            id="accordion3" 
+            class="collapse show" 
+            aria-labelledby="headingOne" 
+            data-parent="#accordionParent3" 
+            style="background-color: #E6F3FF;"
+            >
+            <div style="padding: 0rem 1rem 1rem 2.5rem;">
+                <p class="mb-0">
                     {{ __('infobox.schedule') }} 
                 </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
             </div>
         </div>
     </div>
+</div>
 
     <div class="row">
         <div class="col-md-12">
             @include('layouts.alert')
 
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Working Days Schedule') }}</h6>
-                </div>
-
+                
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <a href="{{route('admin-branch.branch-configuration.schedule.create')}}" class="btn btn-primary">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h5 class="m-0 font-weight-bold" style="color: #103C7C">{{ __('Working Days Schedule') }}</h5>
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-end align-items-center" style="gap: 1rem">
+                            <div class="d-flex align-items-center" id="searchBar">
+                            </div>
+                            <a href="{{route('admin-branch.branch-configuration.schedule.create')}}" class="btn btn-primary" style="background-color: #103C7C">
                                 {{ __('create.module', ['module' => __('Schedule')]) }}
                             </a>
                         </div>
@@ -48,8 +64,8 @@
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
+                                <table class="table table-bordered table-cust" id="dataTable" width="100%" cellspacing="0">
+                                    <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                         <tr>
                                             <th class="text-right">{{ __('No.') }}</th>
                                             <th>{{ __('Day') }}</th>
@@ -67,13 +83,13 @@
                                                 <td>
                                                     @switch($schedule->status)
                                                         @case('closed')
-                                                            <span class="badge badge-danger">{{ __('Closed') }}</span>
+                                                            <span class="badge badge-danger badge-pill px-2">{{ __('Closed') }}</span>
                                                             @break
                                                         @case('fullday')
-                                                            <span class="badge badge-success">{{ __('Fullday') }}</span>
+                                                            <span class="badge badge-success badge-pill px-2">{{ __('Fullday') }}</span>
                                                             @break
                                                         @default
-                                                            <span class="badge badge-primary">{{ __('Open') }}</span>
+                                                            <span class="badge badge-primary badge-pill px-2">{{ __('Open') }}</span>
                                                     @endswitch
                                                 </td>
                                                 <td class="text-center">{{$schedule->start_time}}</td>
@@ -101,6 +117,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6 d-flex" id="length">
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-end" id="pagination">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,32 +130,35 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Holiday') }}</h6>
-                </div>
-
+                
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="mb-3">
+                    <div class="row mb-3">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <h5 class="m-0 font-weight-bold" style="color: #103C7C">{{ __('Holiday') }}</h5>
+                        </div>
+                        <div class="col-md-6 text-right">
                                 <a
                                     href="{{ route('admin-branch.branch-configuration.holiday.create') }}"
                                     class="btn btn-primary"
+                                    style="background-color: #103C7C"
                                 >
                                    {{ __('create.module',['module' => __('Holiday')])}}
                                 </a>
-
+    
                                 <a
                                     href="{{ route('admin-branch.branch-configuration.holiday.template.create') }}"
                                     class="btn btn-primary"
+                                    style="background-color: #103C7C"
                                 >
                                     {{ __('Select Holiday Template') }}
                                 </a>
-                            </div>
-
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
+                                <table class="table table-bordered table-cust" id="dataTable" width="100%" cellspacing="0">
+                                    <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                         <tr>
                                             <th class="text-center">{{ ('Date') }}</th>
                                             <th>{{ __('Description') }}</th>
@@ -165,11 +190,50 @@
                                 </table>
                             </div>
                         </div>
+                        </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <style>
+        .table-cust {
+            border: 1px solid #33A0FF4D; 
+        }
+
+        .table-cust th,
+        .table-cust td {
+            border: 1px solid #33A0FF4D !important; 
+        }
+            .accordion-toggle-custom.collapsed {
+                padding-bottom: 1rem !important;
+            }
+    
+            .accordion-toggle-custom:not(.collapsed) {
+                padding-bottom: 0rem !important;
+            }
+    
+            .accordion-toggle-custom {
+                transition: padding 0.3s ease;
+            }
+    
+            .accordion-toggle-custom::after {
+                    font-family: "Font Awesome 5 Free";
+                    font-weight: 900;
+                    transition: transform 0.2s ease;
+                    margin-left: auto;
+                }
+    
+            .accordion-toggle-custom[aria-expanded="false"]::after {
+                        content: "\f107";
+                    }
+    
+            .accordion-toggle-custom[aria-expanded="true"]::after {
+                        content: "\f106";
+                    }
+    </style>
 @endsection
 
 @push('js')
@@ -205,8 +269,18 @@
                         "next": "{{ __('Next') }}",
                         "previous": "{{ __('Previous') }}"
                     },
-                }
+                    searchPlaceholder: "{{ __('Search') }}"
+                },
+                info: false,
             })
+            $('#dataTable_filter label').contents().filter(function () {
+                    return this.nodeType === 3;
+                }).remove();
+            $('#dataTable_filter label').addClass('m-0');
+            $('#dataTable_filter label').appendTo('#searchBar');
+            $('#dataTable_length label').addClass('d-flex align-items-center');
+            $('#dataTable_length label').appendTo('#length');
+            $('#dataTable_paginate').appendTo('#pagination');
         })
     </script>
 @endpush

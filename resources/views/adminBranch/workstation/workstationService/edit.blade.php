@@ -3,19 +3,19 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            @include('layouts.alert')
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        {{ __('edit.module', ['module' => __('Workstation Service')]) }}
-                    </h6>
-                </div>
+                {{-- <div class="card-header py-3"> --}}
+                    {{-- </div> --}}
                 @csrf
                 <div class="card-body">
-                    @include('layouts.alert')
+                    <h5 class="mb-4 font-weight-bold" style="color: #103c7c">
+                        {{ __('edit.module', ['module' => __('Workstation Service')]) }}
+                    </h5>
+                    <form action="{{route('admin-branch.branch-configuration.workstation.workstation-service.update', ["workstation" => $workstationService->workstation_id, "workstation_service" => $workstationService->id])}}" method="post">
+                        @csrf
                     <div class="row">
-                        <div class="col-md-12">
-                            <form action="{{route('admin-branch.branch-configuration.workstation.workstation-service.update', ["workstation" => $workstationService->workstation_id, "workstation_service" => $workstationService->id])}}" method="post">
-                                @csrf
+                        <div class="col-md-6">
                                 <input type="hidden" name="_method" value="PUT">
                                 <input type="hidden" name="workstation_id" value="{{$workstationService->workstation_id}}">
                                 <div class="form-group">
@@ -28,6 +28,8 @@
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'service_id'])
                                 </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="priority">{{ __('Priority') }}</label>
                                     <select name="priority" id="priority" class="form-control @error('priority') is-invalid @enderror">
@@ -40,9 +42,11 @@
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'priority'])
                                 </div>
+                            </div>
+                            <div class="col-md-12 text-right">
                                 <button class="btn btn-warning">{{ __('Update') }}</button>
-                            </form>
-                        </div>
+                            </div>
+                         </form>
                     </div>
                 </div>
             </div>

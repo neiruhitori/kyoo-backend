@@ -3,39 +3,53 @@
 @section('content')
 
     @include('layouts.alert')
-    <div class="card mb-4 custom-info" data-open="open" role="alert">
-        <div class="card-body">
-            <div class="custom-info-head">
-                <h6 class="font-weight-bold my-0">
-                    <span class="fas fa-info-circle text-primary mr-1"></span>
-                    {{ __('Information') }}
-                </h6>
+    <div class="accordion mb-3" id="accordionParent3">
+        <div class="border-left-primary rounded " style="border-radius: 0.5rem; overflow: hidden;">
 
-                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    {{ __('Show') }}
+            <div  id="headingOne" style="background-color: #E6F3FF;">
+                <button 
+                    class="btn btn-block text-left d-flex align-items-center accordion-toggle-custom" 
+                    type="button"
+                    data-toggle="collapse" 
+                    data-target="#accordion3" 
+                    aria-expanded="true" 
+                    aria-controls="accordion3"
+                    style="color: #103C7C; gap: 0.5rem; outline: none; box-shadow: none; padding: 1rem;"
+                    >
+                        <span class="fas fa-info-circle text-primary"></span>
+                            <h5 class="font-weight-bold my-0 text-primary">
+                                {{ __('Information') }}
+                            </h5>
                 </button>
             </div>
 
-            <div class="custom-info-body">
-                <ul style="padding-left: 2rem;">
-                    <li style="margin-bottom: 0.25rem;">
-                        {{ __('infobox.access1') }}
-                    </li>
-                    <li>
-                        {{ __('infobox.access2') }}
-                    </li>
-                </ul>
-                <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
+            <div 
+                id="accordion3" 
+                class="collapse show" 
+                aria-labelledby="headingOne" 
+                data-parent="#accordionParent3" 
+                style="background-color: #E6F3FF;"
+                >
+                    <div style="padding: 0rem 1rem 1rem 1rem;">
+                       <ul style="">
+                            <li style="margin-bottom: 0.25rem;">
+                                {{ __('infobox.access1') }}
+                            </li>
+                            <li style="margin-bottom: 0.25rem;">
+                                {{ __('infobox.access2') }}
+                            </li>
+                        </ul>
+                    </div>
             </div>
         </div>
-    </div>
+</div>
 
     <div class="card shadow mb-4">
-        <div class="card-header">
-            <h6 class="m-0 font-weight-bold text-primary">{{ __('Activation of Additional Menu') }}</h6>
-        </div>
-
+        {{-- <div class="card-header">
+        </div> --}}
+        
         <div class="card-body">
+            <h5 class="mb-4 font-weight-bold" style="color: #103C7C">{{ __('Activation of Additional Menu') }}</h6>
             <form action="{{ route('admin-branch.cs.access.update', $branch->id) }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -56,7 +70,7 @@
                     </div>
                 @endforeach
 
-                <button type="submit" class="btn btn-warning float-right">{{ __('Save') }}</button>
+                <button type="submit" class="btn btn-primary float-right px-3" style="background-color: #103C7C">{{ __('Save') }}</button>
             </form>
         </div>
     </div>
@@ -84,5 +98,21 @@
             width: 1.25rem;
             height: 1.25rem;
         }
+            .accordion-toggle-custom {
+                transition: padding 0.3s ease;
+            }
+    .accordion-toggle-custom::after {
+                    font-family: "Font Awesome 5 Free";
+                    font-weight: 900;
+                    transition: transform 0.2s ease;
+                    margin-left: auto;
+                }
+    .accordion-toggle-custom[aria-expanded="false"]::after {
+                        content: "\f107";
+                    }
+
+    .accordion-toggle-custom[aria-expanded="true"]::after {
+                        content: "\f106";
+                    }
     </style>
 @endpush

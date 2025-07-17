@@ -21,20 +21,31 @@
             border: 0px !important;
             font-weight: 500px !important;
         }
+    table {
+            border: 1px solid #33A0FF4D; 
+        }
+
+    table th,
+    table td {
+            border: 1px solid #33A0FF4D !important;
+            }
+    table td {
+                color: black
+            }
     </style>
 @endpush
 @section('content')
 
     <div class="row">
         <div class="col-xl-12 col-lg-7">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{ __('Appointment Report') }}</h6>
-                </div>
-                <div class="card-body">
-                    @if (!$success)
+            @if (!$success)
                         @include('layouts.alert')
                     @endif
+            <div class="card shadow mb-4">
+                {{-- <div class="card-header py-3"> --}}
+                    {{-- </div> --}}
+                    <div class="card-body">
+                    <h5 class="mb-4 font-weight-bold " style="color: #103C7C">{{ __('Appointment Report') }}</h5>
                     <div class="row">
                         <div class="col-lg-4 col-md-12">
                             <form action="" method="get">
@@ -51,7 +62,7 @@
                                     <input type="date" name="end_date" class="form-control" value="{{ $end_date }}" />
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
+                                    <button class="btn btn-primary mt-3" style="background-color: #103C7C">{{ __('Filter') }}</button>
                                 </div>
                     </div>
 
@@ -92,7 +103,7 @@
                                 @switch($booking_form)
                                 @case('standard-form')
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
+                                        <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                             <th>{{ __('Order Date') }}</th>
                                             <th>{{ __('Reservation Date') }}</th>
                                             <th>{{ __('Booking Code') }}</th>
@@ -120,7 +131,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="7" class="text-center">{{ __('No data') }}</td>
+                                                    <td colspan="10" class="text-center">{{ __('No data') }}</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>

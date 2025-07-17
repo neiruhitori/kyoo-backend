@@ -16,20 +16,13 @@
                     @break
                 @case('admin_branch')
                         @if(!Auth::user()->Branch->is_premium && !Auth::user()->Branch->BranchType->is_exhibition)
-                        <li class="nav-item no-arrow mx-1">
-                            <div class="mt-3 input-group rounded">
-                                <div class="btn-group btn-group-toggle textpromotion" >
-                                    <label class="btn btn-primary" style="pointer-events: none;">
-                                      <small class="text-white">You're using Trial License, upgrade now to access other features!</small>
-                                    </label>
-                                    <label class="btn btn-warning">
-                                        <a class="text-decoration-none text-white" href="{{ route('admin-branch.subscription') }}"><small>Upgrade NOW!</small></a>
-                                    </label>
-                                  </div>
-                                {{-- <p class="form-control text-white bg-primary rounded-start">You're using Trial License, upgrade now to access other features!</p>--}}
-                            
-                                <a class="btn btn-warning rounded-end textupgrade" href="{{ route('admin-branch.subscription') }}">Upgrade NOW!</a> 
-                            
+                        <li class="nav-item align-content-center no-arrow mx-1">
+                            <div class="input-group rounded text-decoration-none">
+                                <div class="align-items-center textpromotion" style="gap: 0.5rem">
+                                    <p class="mb-0">You're using Trial License, upgrade now to access other features!</p>
+                                    <a class="btn btn-primary text-white" style="background-color: #092044" href="{{ route('admin-branch.subscription') }}"><small>Upgrade NOW!</small></a>
+                                </div>                            
+                                <a class="btn btn-primary rounded-end textupgrade px-3" style="background-color: #092044" href="{{ route('admin-branch.subscription') }}">Upgrade NOW!</a> 
                             </div>
                         </li>
                         @endif
@@ -258,13 +251,16 @@
             .textupgrade{
                 display: none
             }
+            .textpromotion{
+                    display: flex;
+            }
             @media screen and (max-width:1054px){
                 .textpromotion{
                     display: none;
                 }
                 .textupgrade{
-                display: block
-            }
+                    display: block
+                }
             }
         </style>
     {{-- @endpush --}}

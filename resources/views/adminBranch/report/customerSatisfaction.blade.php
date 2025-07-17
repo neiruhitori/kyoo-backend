@@ -22,6 +22,17 @@
             border: 0px !important;
             font-weight: 500px !important;
         }
+    table {
+            border: 1px solid #33A0FF4D; 
+        }
+
+    table th,
+    table td {
+            border: 1px solid #33A0FF4D !important;
+            }
+    table td {
+                color: black
+            }
     </style>
 @endpush
 
@@ -29,11 +40,11 @@
 <div class="row">
     <div class="col-xl-12 col-lg-7">
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{ __('Customer Satisfaction Report') }}</h6>
-            </div>
-
-            <div class="card-body">
+            {{-- <div class="card-header py-3"> --}}
+                {{-- </div> --}}
+                
+                <div class="card-body">
+                <h5 class="mb-4 font-weight-bold" style="color: #103c7c">{{ __('Customer Satisfaction Report') }}</h5>
                 <form action="" method="GET" class="mb-4" style="max-width: 500px;">
                     <div class="row">
                         <div class="form-group col-xs-12 col-md-6">
@@ -62,12 +73,12 @@
                     </div>
 
                     <div>
-                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <button type="submit" class="btn btn-primary" style="background-color: #103c7c">Filter</button>
                     </div>
                 </form>
 
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+                    <thead style="background-color:#33A0FF4D; color: #103C7C;">
                         <tr>
                             <th class="text-center">{{ __('Date') }}</th>
                             <th class="text-right">{{ __('Total Queue') }}</th>

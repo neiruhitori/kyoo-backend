@@ -6,7 +6,7 @@
             <form id="filterForm" class="mb-4">
                 <div class="form-row align-items-end">
                     <div class="col-auto">
-                        <label for="deparmentId">{{ __('Department') }}</label>
+                        <label for="deparmentId" class="font-weight-bold text-dark">{{ __('Department') }}</label>
                         <select class="form-control" id="departmentId" style="width: 180px;" autocomplete="off">
                             @foreach ($departments as $department)
                                 <option value="{{ $department->id }}">{{ $department->name }}</option>
@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="col-auto">
-                        <label for="serviceId">{{ __('Service') }}</label>
+                        <label for="serviceId" class="font-weight-bold text-dark">{{ __('Service') }}</label>
                         <select class="form-control" id="serviceId" style="width: 180px;" autocomplete="off">
                             <option value="all">All</option>
                             @foreach ($services as $service)
@@ -25,43 +25,47 @@
                     </div>
 
                     <div class="col-auto">
-                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <button type="submit" class="btn btn-primary px-4" style="background-color: #103C7C">Filter</button>
                     </div>
                 </div>
             </form>
 
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Monitoring {{ __('Service') }}</h6>
-                </div>
+                {{-- <div class="card-header py-3">
+                    
+                </div> --}}
 
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="d-flex align-items-center">
-                            <label for="refreshInterval" class="mr-3 mb-0" style="white-space: nowrap;">Refresh / {{ __('Minutes') }}</label>
-                            <select class="form-control" autocomplete="off" id="refreshInterval" style="max-width: 70px">
-                                <option value="5" selected>5</option>
-                                <option value="10">10</option>
-                                <option value="15">15</option>
-                            </select>
-                        </div>
-
-                        <div class="ml-3 badge badge-secondary" style="font-size: .875rem;">
-                            <span class="fas fa-redo"></span>
-                            <span class="ml-2" id="refreshedAt">00:00:00</span>
+                <div class="">
+                    <div class="d-flex justify-content-between align-items-center p-4">
+                        <h6 class="m-0 font-weight-bold" style="color: #103C7C">Monitoring {{ __('Service') }}</h6>
+                        <div class="d-flex justify-content-end align-items-center" style="gap: 0.75rem">
+                            <div class="d-flex align-items-center">
+                                <label for="refreshInterval" class="mr-3 mb-0" style="white-space: nowrap;">Refresh / {{ __('Minutes') }}</label>
+                                <select class="form-control" autocomplete="off" id="refreshInterval" style="max-width: 70px">
+                                    <option value="5" selected>5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                </select>
+                            </div>
+    
+                            <div class="px-2 py-2 rounded bg-warning text-white" style="font-size: .875rem;">
+                                <span class="fas fa-redo"></span>
+                                <span class="ml-2" id="refreshedAt">00:00:00</span>
+                            </div>
                         </div>
                     </div>
 
+
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped mb-4" id="table">
-                            <thead>
+                        <table class="table table-bordered mb-4" id="table">
+                            <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                 <tr>
                                     <th rowspan="2" class="align-middle">{{ __('Workstation') }}</th>
-                                    <th rowspan="2" class="align-middle">{{ __('Status') }}</th>
-                                    <th rowspan="2" class="align-middle">{{ __('Virtual Counter') }}</th>
-                                    <th rowspan="2" class="align-middle text-right">{{ __('Waiting') }}</th>
-                                    <th rowspan="2" class="align-middle text-right">{{ __('Serve') }}</th>
-                                    <th rowspan="2" class="align-middle text-right">{{ __('No Show') }}</th>
+                                    <th rowspan="2" class="align-middle text-center">{{ __('Status') }}</th>
+                                    <th rowspan="2" class="align-middle text-center">{{ __('Virtual Counter') }}</th>
+                                    <th rowspan="2" class="align-middle text-center">{{ __('Waiting') }}</th>
+                                    <th rowspan="2" class="align-middle text-center">{{ __('Serve') }}</th>
+                                    <th rowspan="2" class="align-middle text-center">{{ __('No Show') }}</th>
                                     <th rowspan="2" class="align-middle text-center">{{ __('Operational Hours') }}</th>
                                     <th colspan="2" class="text-center">{{ __('Service Time') }}</th>
                                 </tr>
@@ -84,7 +88,16 @@
         </div>
     </div>
 @endsection
+<style>
+#table {
+    border: 1px solid #33A0FF4D; 
+}
 
+#table th,
+#table td {
+    border: 1px solid #33A0FF4D !important; 
+}
+</style>
 @push('js')
 <script>
     let serviceId,
@@ -187,13 +200,13 @@
                 ${v.is_online ? 'Online' : 'Offline'}
             </span>`;
 
-            return `<tr>
+            return `<tr style="color: #000">
                 <td>${v.name}</td>
-                <td>${badgeEl}</td>
+                <td class="text-center">${badgeEl}</td>
                 <td>${v.user.name}</td>
-                <td class="text-right">${v.total_waiting}</td>
-                <td class="text-right">${v.total_served}</td>
-                <td class="text-right">${v.total_no_show}</td>
+                <td class="text-center">${v.total_waiting}</td>
+                <td class="text-center">${v.total_served}</td>
+                <td class="text-center">${v.total_no_show}</td>
                 <td class="text-center">${formatTime(v.now_operation_duration)}</td>
                 <td class="text-center">${formatTime(v.now_waiting_duration)}</td>
                 <td class="text-center">${formatTime(v.avg_waiting_duration)}</td>

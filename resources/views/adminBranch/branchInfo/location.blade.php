@@ -45,27 +45,66 @@
         .custom-card-header h6 {
             color: black !important;
         }
+        .accordion-toggle-custom.collapsed {
+            padding-bottom: 1rem !important;
+        }
+
+        .accordion-toggle-custom:not(.collapsed) {
+            padding-bottom: 0rem !important;
+        }
+
+        .accordion-toggle-custom {
+            transition: padding 0.3s ease;
+        }
+
+        .accordion-toggle-custom::after {
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                transition: transform 0.2s ease;
+                margin-left: auto;
+            }
+
+        .accordion-toggle-custom[aria-expanded="false"]::after {
+                    content: "\f107";
+                }
+
+        .accordion-toggle-custom[aria-expanded="true"]::after {
+                    content: "\f106";
+                }
     </style>
 @endpush
+<div class="accordion mb-3" id="accordionParent3">
+    <div class="border-left-primary rounded " style="border-radius: 0.5rem; overflow: hidden;">
 
-<div class="card mb-4 custom-info" data-open="open" role="alert">
-    <div class="card-body">
-        <div class="custom-info-head">
-            <h6 class="font-weight-bold my-0">
-                <span class="fas fa-info-circle text-primary mr-1"></span>
-                {{ __('Information') }}
-            </h6>
-
-            <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                {{ __('Show') }}
-            </button>
+        <div  id="headingOne" style="background-color: #E6F3FF;">
+            <button 
+                class="btn btn-block text-left d-flex align-items-center accordion-toggle-custom" 
+                type="button"
+                data-toggle="collapse" 
+                data-target="#accordion3" 
+                aria-expanded="true" 
+                aria-controls="accordion3"
+                style="color: #103C7C; gap: 0.5rem; outline: none; box-shadow: none; padding: 1rem;"
+                >
+                    <span class="fas fa-info-circle text-primary"></span>
+                    <h5 class="font-weight-bold my-0 text-primary">
+                        {{ __('Information') }}
+                    </h5>
+             </button>
         </div>
 
-        <div class="custom-info-body">
-            <p>
-                {{ __('infobox.location') }}
-            </p>
-            <button class="btn btn-warning float-right" data-toggle="alert"> {{ __('Hide') }}</button>
+        <div 
+            id="accordion3" 
+            class="collapse show" 
+            aria-labelledby="headingOne" 
+            data-parent="#accordionParent3" 
+            style="background-color: #E6F3FF;"
+            >
+            <div style="padding: 0rem 1rem 1rem 2.5rem;">
+                <p class="mb-0">
+                    {{ __('infobox.location') }}
+                </p>
+            </div>
         </div>
     </div>
 </div>

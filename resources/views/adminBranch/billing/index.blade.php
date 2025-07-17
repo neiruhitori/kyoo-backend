@@ -112,6 +112,57 @@
         .cursor-pointer {
             cursor: pointer;
         }
+
+        .round-checkbox input[type="checkbox"] {
+            opacity: 0;
+            position: absolute;
+        }
+
+
+        .round-checkbox label {
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+            padding-left: 2rem;
+            user-select: none;
+        }
+
+
+        .round-checkbox label::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 2px solid #999;
+            border-radius: 50%;
+            background-color: white;
+            transition: all 0.2s ease;
+        }
+
+
+        .round-checkbox input[type="checkbox"]:checked + label::before {
+            background-color: #103C7C;
+            border-color: #103C7C;
+        }
+
+        .round-checkbox label::after {
+            content: "";
+            position: absolute;
+            left: 0.4rem;
+            top: 0.35rem;
+            width: 0.35rem;
+            height: 0.65rem;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            opacity: 0;
+            transform: rotate(45deg);
+            transition: opacity 0.2s ease;
+        }
+
+        .round-checkbox input[type="checkbox"]:checked + label::after {
+            opacity: 1;
+        }
     </style>
 @endpush
 
@@ -127,73 +178,142 @@
 
 <div class="card shadow mb-4">
     <div class="card-header pb-0">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-             <a class="nav-link active px-5" id="license-tab" data-toggle="tab" href="#license" role="tab" aria-controls="license" aria-selected="true">License</a>
-            </li>
-            <li class="nav-item" role="presentation">
-             <a class="nav-link px-5" id="invoice-tab" data-toggle="tab" href="#invoice" role="tab" aria-controls="invoice" aria-selected="false">Invoice</a>
-            </li>
-            </ul>
+        <h5 class="font-weight-bold" style="color: #103C7C">License</h5>
     </div>
-    <div class="card-body">     
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="license" role="tabpanel" aria-labelledby="license-tab">
-                    @if (Auth::user()->Branch->BranchType->is_premium)
-                    <div class="mx-4 my-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;">{{ __('License Type') }}:</h6>
-                            <h6><b>{{ Auth::user()->Branch->BranchType->name }}</b></h6>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;">{{ __('Active Period') }}:</h6>
-                            {{-- format tanggal d-M-Y   --}}
-                            <h6> <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->updated_at)->translatedFormat('d F Y') }}</b> - 
-                                <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->license_expiration_date)->translatedFormat('d F Y') }}</b>
-                            </h6>
-                        </div>
-                        <div class="d-flex align-items-start mb-3">
-                            <h6 style="min-width: 150px;">{{ __('Feature') }}:</h6>
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_counter }} {{ __('Workstation') }}</button>
-                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_queue }} {{ __('Queue') }}</button>
-                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->BranchConfiguration->max_services}} {{ __('Staff') }}</button>
-
-                                    @foreach ($features as $val)
-
-                                    <button class="btn btn-primary mb-2">{{ __($val->additionalFeature->name) }}</button>
-
-                                    @endforeach
+    <div class="card-body">
+        <h4 class="mb-5" style="color: #000">License Detail</h4>
+            <div class="d-flex align-items-center mb-3">
+                <h6 style="min-width: 150px;">{{ __('License Type') }}:</h6>
+                <h6 style="color: #000"><b>{{ Auth::user()->Branch->BranchType->name ?? "Trial License" }}</b></h6>
+                @if (!Auth::user()->Branch->BranchType->is_premium)
+                    <h3 class="mx-3">|</h3>
+                    <a href="{{ route('admin-branch.subscription') }}" 
+                        class="btn btn-primary" 
+                        style="background-color: #103C7C">{{ __('KYOO Subscription') }}</a>
+                @endif
+            </div>
+            <div class="d-flex align-items-center mb-3">
+                <h6 style="min-width: 150px;">{{ __('Active Period') }}:</h6>
+                <h6 style="color: #000"> 
+                    <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->updated_at)->translatedFormat('d F Y') }}</b> - 
+                    <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->license_expiration_date)->translatedFormat('d F Y') }}</b>
+                </h6>
+            </div> 
+    </div>
+    <div class="card-body border-top">
+        <div class="mb-3 mt-2">
+                <h5 class="mb-3">{{ __('Feature') }}</h5>
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="round-checkbox">
+                                    <input type="checkbox" checked disabled>
+                                    <label for="myCheck">{{ Auth::user()->Branch->max_counter }} {{ __('Workstation') }}</label>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    @else
-                    <div class="mx-4 my-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;">{{ __('License Type') }}:</h6>
-                            <h6><b>Trial</b></h6>
-                            <a href="{{ route('admin-branch.subscription') }}" class="ml-3 btn btn-warning">{{ __('KYOO Subscription') }}</a>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;">{{ __('Active Period') }}:</h6>
-                            <h6> <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->updated_at)->translatedFormat('d F Y') }}</b> - 
-                                <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->license_expiration_date)->translatedFormat('d F Y') }}</b>
-                            </h6>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;">{{ __('Feature') }}:</h6>
-                            <div>
-                                <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_counter }} {{ __('Workstation') }}</button>
-                                    <button class="btn btn-primary mb-2">{{ Auth::user()->Branch->max_queue }} {{ __('Queue') }}</button>
+                            <div class="col-sm-6">
+                                    <div class="round-checkbox">
+                                        <input type="checkbox" checked disabled>
+                                        <label for="myCheck">{{ Auth::user()->Branch->BranchConfiguration->max_services}} {{ __('Staff') }}</label>
+                                    </div>
                             </div>
+                            <div class="col-sm-6">
+                                    <div class="round-checkbox">
+                                        <input type="checkbox" checked disabled>
+                                        <label for="myCheck">{{ Auth::user()->Branch->max_queue }} {{ __('Queue') }}</label>
+                                    </div>
+                            </div>
+                            @foreach ($features as $val)
+                                <div class="col-sm-6">
+                                    <div class="round-checkbox">
+                                        <input type="checkbox" checked disabled>
+                                        <label for="myCheck">{{ __($val->additionalFeature->name) }}</label>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-                    @endif
-                    
                 </div>
+        </div>
+    </div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header pb-0">
+        <h5 class="font-weight-bold" style="color: #103C7C">Invoice</h5>
+    </div>
+        <div class="card-body">
+        <h4 style="color: #000">Invoice History</h4>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered mb-4" id="table">
+            <thead style="background-color:#33A0FF4D; color: #103C7C;">
+                <tr class="text-center">
+                    <th scope="col">{{ __('Date') }}</th>
+                    <th scope="col">{{ __('Description') }}</th>
+                    <th scope="col">{{ __('Nominal Amount') }}</th>
+                    <th scope="col">{{ __('Status') }}</th>
+                    <th scope="col">{{ __('Action') }}</th>
+                </tr>
+            </thead>
+                <tbody>
+                    @if ($invoices->isEmpty())
+                        <tr>
+                            <td colspan="5" class="text-center">{{ __('No Invoice') }}.</td>
+                        </tr>    
+                    @else
+                    @foreach ($invoices as $inv)
+                        <tr>
+                            <th class="text-center">{{ \Carbon\Carbon::parse($inv->created_at)->translatedFormat('d-m-Y') }}</th>
+                            <td class="invoice-description" style="width: 40%;">
+                                {{ app()->getLocale() == 'en' ? ($inv->description_en ?? $inv->description) : $inv->description }}
+                            </td>
+                            <td class="text-center">
+                                @if($inv->currency == 'USD')
+                                    {{ $inv->currency ?? 'USD' }} ${{ number_format($inv->amount, 2) }}
+                                @else
+                                    Rp {{ number_format($inv->amount, 2, ',', '.') }}
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if ($inv->status == "PAID")
+                                    <span class="badge badge-pill px-2 py-1"
+                                    style="background-color:#C1F0DF; color: #1CC88A;">
+                                        {{$inv->status}}
+                                    </span>
+                                @elseif($inv->status == "PENDING")
+                                    <span class="badge badge-pill px-2 py-1"
+                                    style="background-color:#ffedbc; color: #fcac16;">
+                                        {{$inv->status}}
+                                    </span>
+                                @else
+                                    <span class="badge badge-pill px-2 py-1" 
+                                    style="background-color:#FDD5CE; color: #BF1D08;">
+                                        {{$inv->status}}
+                                    </span>
+                                @endif 
+                            </td>
+                            <td class="text-center">
+                                @if ($inv->status == "PENDING")
+                                    <a href="{{ $inv->invoice_url }}" class="btn btn-danger px-4">
+                                        <i class="fas fa-credit-card"></i>
+                                        Bayar
+                                    </a>
+                                @endif
+                                <button onclick="printInvoice('{{ $inv->id_invoice }}')" class="btn btn-warning px-3" title="{{ __('Download Invoice History') }}">
+                                    <i class="fas fa-download"></i>
+                                    Download
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                    @endif
+                </tbody>
+        </table>
+    </div>
+</div>
 
+            {{-- <div class="tab-content" id="myTabContent">
 
                 <div class="tab-pane fade mx-2 my-4" id="invoice" role="tabpanel" aria-labelledby="invoice-tab">
                     <div class="mx-4 my-4">
@@ -246,13 +366,13 @@
                     </div>
 
                 </div>
-            </div>
-    </div>
+            </div> --}}
+    {{-- </div> --}}
 
 
     
     
-</div>
+
 
 <script type="text/javascript">
     function printInvoice(invoiceId) { 

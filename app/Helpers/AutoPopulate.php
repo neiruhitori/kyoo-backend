@@ -39,6 +39,7 @@ class AutoPopulate {
         $service = Service::create([
             'branch_id' => $branch_id,
             'department_id' => $department->id,
+            'prefix_queue' => '0',
             'name' => 'Customer Service 1'
         ]);
 

@@ -114,7 +114,7 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Filter</button>
+    <button type="submit" class="btn btn-primary" style="background-color: #103c7c">Filter</button>
 </form>
 
 <div class="row">

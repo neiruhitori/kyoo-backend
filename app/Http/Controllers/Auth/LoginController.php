@@ -72,7 +72,10 @@ class LoginController extends Controller
         if ($loggedUser->role !== 'admin_kyoo') {
             $licenseExpirationDate = $loggedUser->Branch->license_expiration_date;
             $isExpired = Carbon::parse($licenseExpirationDate);
-            // $branchIsPremium = $loggedUser->Branch->BranchType->is_premium;
+            $premium = $loggedUser->Branch->BranchType->is_premium;
+                if(!$premium){
+                    session(['just_logged_in' => true]);
+                }
             if ($licenseExpirationDate && $isExpired->isPast()) {
                 // on failed expired account for non admin kyoo
                 $this->guard()->logout();
@@ -96,8 +99,8 @@ class LoginController extends Controller
 
         $createdAt = Carbon::parse($loggedUser->created_at);
         $fourMonthsAgo = Carbon::now()->subMonths(4);
-
-        if ((Auth::user()->Branch && Auth::user()->Branch->country == 'Indonesia') || Auth::user()->role == 'admin_kyoo') {
+        
+        if (($loggedUser->Branch && $loggedUser->Branch->country == 'Indonesia') || $loggedUser->role == 'admin_kyoo') {
             session()->put('locale', 'id');
         } else {
             session()->put('locale', 'en'); // Default ke EN jika Branch tidak ada

@@ -3,75 +3,113 @@
 @push('css')
     <link href="{{asset('admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
 @endpush
+<style>
+#table {
+    border: 1px solid #33A0FF4D; 
+}
 
+#table th,
+#table td {
+    border: 1px solid #33A0FF4D !important; 
+}
+        .accordion-toggle-custom {
+            transition: padding 0.3s ease;
+        }
+
+        .accordion-toggle-custom::after {
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                transition: transform 0.2s ease;
+                margin-left: auto;
+            }
+
+        .accordion-toggle-custom[aria-expanded="false"]::after {
+                    content: "\f107";
+                }
+
+        .accordion-toggle-custom[aria-expanded="true"]::after {
+                    content: "\f106";
+                }
+</style>
 @section('content')
-    <div class="card mb-4 custom-info" data-open="open" role="alert">
-        <div class="card-body">
-            <div class="custom-info-head">
-                <h6 class="font-weight-bold my-0">
-                    <span class="fas fa-info-circle text-primary mr-1"></span>
-                    {{ __('Information') }}
-                </h6>
+<div class="accordion mb-3" id="accordionParent3">
+    <div class="border-left-primary rounded " style="border-radius: 0.5rem; overflow: hidden;">
 
-                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    {{ __('Show') }}
-                </button>
-            </div>
+        <div  id="headingOne" style="background-color: #E6F3FF;">
+            <button 
+                class="btn btn-block text-left d-flex align-items-center accordion-toggle-custom" 
+                type="button"
+                data-toggle="collapse" 
+                data-target="#accordion3" 
+                aria-expanded="true" 
+                aria-controls="accordion3"
+                style="color: #103C7C; gap: 0.5rem; outline: none; box-shadow: none; padding: 1rem;"
+                >
+                    <span class="fas fa-info-circle text-primary"></span>
+                    <h5 class="font-weight-bold my-0 text-primary">
+                        {{ __('Information') }}
+                    </h5>
+             </button>
+        </div>
 
-            <div class="custom-info-body">
-                <p>
-                    <ul style="padding-left: 2rem;">
-                        <li style="margin-bottom: 0.25rem;">
-                            {{ __('infobox.department1') }}
-                        </li>
-                        @if(Auth::user()->Branch->BranchType->is_appointment)
-                            <li style="margin-bottom: 0.25rem;">
-                                {{ __('infobox.department2') }}
-                            </li>
-                        @endif
-                        <li>
-                            {{ __('infobox.department3') }}
-                        </li>
-                        <li>
-                            {{ __('infobox.department4') }}                        </li>
-                    </ul>
-                </p>
-                <button class="btn btn-warning float-right" data-toggle="alert"> {{ __('Hide') }}</button>
+        <div 
+            id="accordion3" 
+            class="collapse show" 
+            aria-labelledby="headingOne" 
+            data-parent="#accordionParent3" 
+            style="background-color: #E6F3FF;"
+            >
+            <div style="padding: 0rem 1rem 1rem 1.5rem;">
+                <ul style="padding-left: 2rem;">
+                    <li>
+                        {{ __('infobox.department1') }}
+                    </li>
+                    @if(Auth::user()->Branch->BranchType->is_appointment)
+                    <li>
+                        {{ __('infobox.department2') }}
+                    </li>
+                    @endif
+                    <li>
+                        {{ __('infobox.department3') }}
+                    </li>
+                    <li>
+                        {{ __('infobox.department4') }}                       
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
+</div>
 
     @include('layouts.alert')
 
     <div class="row">
         <div class="col-md-12">
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        {{ __('list.module', ['module' => __('Department')]) }}
-                    </h6>
-                </div>
                 <div class="card-body">
-                    @if (!Auth::user()->Branch->BranchType->is_premium || count($departments) >= Auth::user()->Branch->BranchConfiguration->max_departments)
-                        <div class="row">
-                            <div class="col-md-12 text-right">
-                                <button class="btn btn-primary" disabled>{{ __('create.module', ['module' => __('Department')]) }}</button>
-                            </div>
-                        </div>
-                    @else
                     <div class="row">
-                        <div class="col-md-12 text-right">
-                            <a href="{{route('admin-branch.branch-configuration.department.create')}}" class="btn btn-primary" >
+                        <div class="col-md-6 d-flex align-items-center">
+                            <h5 class="m-0 font-weight-bold" style="color: #103C7C">
+                                {{ __('list.module', ['module' => __('Department')]) }}
+                            </h5>
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-end" style="gap: 0.5rem;">
+                            <div class="d-flex align-items-center" id="searchBar">
+                            </div>
+                            @if (!Auth::user()->Branch->BranchType->is_premium || count($departments) >= Auth::user()->Branch->BranchConfiguration->max_departments)
+                                <button class="btn btn-primary" style="background-color: #103C7C" disabled>{{ __('create.module', ['module' => __('Department')]) }}</button>
+                            @else
+                            <a href="{{route('admin-branch.branch-configuration.department.create')}}" class="btn btn-primary" style="background-color: #103C7C" >
                                 {{ __('create.module', ['module' => __('Department')]) }}
                             </a>
+                            @endif
                         </div>
                     </div>
-                    @endif
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
+                                    <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                         <tr>
                                             <th>{{ __('Name') }}</th>
                                             <th>{{ __('Action') }}</th>
@@ -101,6 +139,12 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 d-flex" id="length">
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-end" id="pagination">
                         </div>
                     </div>
                 </div>
@@ -151,8 +195,18 @@
                         "next": "{{ __('Next') }}",
                         "previous": "{{ __('Previous') }}"
                     },
-                }
+                     searchPlaceholder: "{{ __('Search') }}"
+                },
+                info: false,
             })
+            $('#dataTable_filter label').contents().filter(function () {
+                    return this.nodeType === 3;
+                }).remove();
+            $('#dataTable_filter label').addClass('m-0');
+            $('#dataTable_filter label').appendTo('#searchBar');
+            $('#dataTable_length label').addClass('d-flex align-items-center');
+            $('#dataTable_length label').appendTo('#length');
+            $('#dataTable_paginate').appendTo('#pagination');
         })
     </script>
 @endpush

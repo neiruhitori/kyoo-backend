@@ -52,6 +52,7 @@ Route::namespace('AdminBranch')
 
         // Dashboard
         Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+        Route::get('/getDataChart', 'HomeController@getDataChart');
 
         // List Appointment Onsite
         Route::get('/appointment-onsites', 'AppointmentOnsiteController@index')->name('appointment-onsites');
@@ -510,22 +511,76 @@ Route::post('search', 'SearchQueueController@search')->name('search.search');
 
 Route::get('scan', 'QRScannerController@index')->name('scan.index');
 
-Route::get('AddCategoryService/onlyAdMin', function(){
-       $branchOnsite = App\Branch::onsite()->where('license_expiration_date', '<', Illuminate\Support\Carbon::now())
-                        ->get();
+// Route::get('AddCategoryService/onlyAdMin', function(){
+//        $branchOnsite = App\Branch::onsite()->where('license_expiration_date', '>', Illuminate\Support\Carbon::now())
+//                         ->get();
 
-        foreach ($branchOnsite as $branch) {
-            $hasCategory = App\Models\ServiceCategory::where('branch_id', $branch->id)->exists();
+//         foreach ($branchOnsite as $branch) {
+//             $hasCategory = App\Models\ServiceCategory::where('branch_id', $branch->id)->exists();
 
-            if(!$hasCategory){
-                App\Models\ServiceCategory::create([
-                    'name' => 'Service Category 1',
-                    'branch_id' => $branch->id
-                ]);
+//             if(!$hasCategory){
+//                 App\Models\ServiceCategory::create([
+//                     'name' => 'Service Category 1',
+//                     'branch_id' => $branch->id
+//                 ]);
+//             }
+
+//         }
+// });
+// Route::get('AddServiceToCategory/onlyAdMin', function(){
+//             $branches = App\Branch::onsite()
+//                 ->where('license_expiration_date', '>', Illuminate\Support\Carbon::now())
+//                 ->with('Service')
+//                 ->get();
+
+//             foreach ($branches as $branch) {
+//                 $firstCategory = App\Models\ServiceCategory::where('branch_id', $branch->id)->first();
+
+//                 if (!$firstCategory) {
+//                     continue;
+//                 }
+
+//                 foreach ($branch->Service as $service) {
+//                     if (is_null($service->service_category_id)) {
+//                         $service->service_category_id = $firstCategory->id;
+//                         $service->save();
+//                     }
+//                 }
+//             }
+// });
+
+Route::get('testing', function(){
+
+    $prefix = '0';
+    $last_onsite_queue = App\DirectQueue::where('service_id', 962)
+                ->whereDate('created_at', date('Y-m-d'))
+                ->where('queue_no', 'LIKE', 0 .'%')
+                ->orderBy('queue_no', 'desc')
+                ->first();
+
+            
+            $service_order_no = App\Service::where('branch_id', 635)
+            ->where('id', '<=', 962)
+            ->count();
+            // dd($last_onsite_queue);
+
+        if ($last_onsite_queue) {
+            $existingPrefix = substr($last_onsite_queue->queue_no, 0, strlen($prefix));
+            if (trim($prefix) !== '' && $existingPrefix == $prefix) {
+                $lastOnsiteQueueNumber = substr($last_onsite_queue->queue_no, strlen($prefix));
+                return $prefix . sprintf('%03s', (int) $lastOnsiteQueueNumber + 1);
             }
 
+            return (int) $last_onsite_queue->queue_no + 1;
         }
+
+        if (trim($prefix) !== '') {
+            return $prefix . sprintf('%03s', 1);
+        }
+
+        return $service_order_no . sprintf('%03s', 1);
 });
+
 
 }); //end of locale prefix
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');

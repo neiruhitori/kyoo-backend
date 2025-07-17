@@ -170,7 +170,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
 
         if ($last_onsite_queue) {
             $existingPrefix = substr($last_onsite_queue->queue_no, 0, strlen($prefix));
-            if ($prefix && $existingPrefix == $prefix) {
+            if (trim($prefix) !== '' && $existingPrefix == $prefix) {
                 $lastOnsiteQueueNumber = substr($last_onsite_queue->queue_no, strlen($prefix));
                 return $prefix . sprintf('%03s', (int) $lastOnsiteQueueNumber + 1);
             }
@@ -178,7 +178,7 @@ class DirectQueueRepository implements DirectQueueRepositoryInterface
             return (int) $last_onsite_queue->queue_no + 1;
         }
 
-        if ($prefix) {
+        if (trim($prefix) !== '') {
             return $prefix . sprintf('%03s', 1);
         }
 
