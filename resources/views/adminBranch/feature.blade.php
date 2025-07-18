@@ -243,8 +243,11 @@
                                             @include('layouts.inputError', ['errorName' => 'serving_directly'])
                                         </div>
                                     </div>
-
+                                    
                                 </div>
+                            </div>
+                            <div class="col text-right align-content-end">
+                                <button type="submit" class="btn btn-warning">Update</button>
                             </div>
                             @endif
                         </div>
