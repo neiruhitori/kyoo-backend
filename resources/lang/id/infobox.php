@@ -27,4 +27,5 @@ return [
     'subservice' => '1 Layanan bisa memiliki 1 atau lebih jenis Sub Layanan',
     'access1' => 'Ini adalah konfigurasi fitur yang bisa anda sesuaikan dengan kebutuhan.',
     'access2' => 'Aktifkan Menu tambahan untuk halaman petugas layanan',
+    'editschedule' => 'Jam buka ditutup menggunakan format 24 jam (Jam 00.00 sd 23.00)',
 ];

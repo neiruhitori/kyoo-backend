@@ -189,8 +189,8 @@
                                        Alamat web dibawah ini bisa ditempatkan di website, instagram, sosial media dan channel informasi institusi anda lainnya.
                                     </p>
                                     <div class="d-flex align-items-center">
-                                        <div class="p-1 rounded d-flex align-items-center" style="background-color: #fff; width: 30%;  max-width: 100%; width: fit-content; gap: 0.5rem;">
-                                            <a href="{{ $short_url }}" id="branchURL">{{ $short_url }}</a>
+                                        <div class="p-1 rounded d-flex align-items-center justify-content-between" style="background-color: #fff; width: 40%; max-width: 100%; gap: 0.5rem;">
+                                            <a href="{{ $short_url }}" id="branchURL" target="_blank">{{ $short_url }}</a>
                                             <button type="button" class="btn btn-primary" onclick="copyText()">
                                                 <i class="fas fa-copy text-white"></i>
                                             </button>
