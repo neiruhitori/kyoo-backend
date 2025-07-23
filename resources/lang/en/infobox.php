@@ -27,4 +27,5 @@ return [
     'subservice' => 'Service can have more types of sub-services',
     'access1' => 'This is the feature configuration that you can adjust to your needs.',
     'access2' => 'Activate the additional menu for the service officer\'s page',
+    'editschedule' => 'Opening hours are indicated using the 24-hour format (From 00:00 to 23:00)',
 ];

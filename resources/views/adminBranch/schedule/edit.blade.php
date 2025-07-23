@@ -1,7 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card mb-4 custom-info" data-open="open" role="alert">
+<div class="accordion mb-3" id="accordionParent3">
+    <div class="border-left-primary rounded " style="border-radius: 0.5rem; overflow: hidden;">
+
+        <div  id="headingOne" style="background-color: #E6F3FF;">
+            <button 
+                class="btn btn-block text-left d-flex align-items-center accordion-toggle-custom" 
+                type="button"
+                data-toggle="collapse" 
+                data-target="#accordion3" 
+                aria-expanded="true" 
+                aria-controls="accordion3"
+                style="color: #103C7C; gap: 0.5rem; outline: none; box-shadow: none; padding: 1rem;"
+                >
+                    <span class="fas fa-info-circle text-primary"></span>
+                    <h5 class="font-weight-bold my-0 text-primary">
+                        {{ __('Information') }}
+                    </h5>
+             </button>
+        </div>
+
+        <div 
+            id="accordion3" 
+            class="collapse show" 
+            aria-labelledby="headingOne" 
+            data-parent="#accordionParent3" 
+            style="background-color: #E6F3FF;"
+            >
+            <div style="padding: 0rem 1rem 1rem 2.5rem;">
+                <p class="mb-0">
+                   {{ __('infobox.editschedule') }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+    {{-- <div class="card mb-4 custom-info" data-open="open" role="alert">
         <div class="card-body">
             <div class="custom-info-head">
                 <h6 class="font-weight-bold my-0">
@@ -21,7 +56,7 @@
                 <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="row">
         <div class="col-md-12">

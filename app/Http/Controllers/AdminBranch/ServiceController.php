@@ -63,6 +63,15 @@ class ServiceController extends Controller
 
         $input = $request->all();
         $input['branch_id'] = Auth::user()->branch_id;
+        
+        $usedPrefixes = Service::where('branch_id', $input['branch_id'])->pluck('prefix_queue')->toArray();
+
+        foreach ($this->PREFIX_QUEUE_LIST as $prefix) {
+            if (!in_array($prefix, $usedPrefixes)) {
+                $input['prefix_queue'] = $prefix;
+                break;
+            }
+        }
 
         Service::create($input);
 

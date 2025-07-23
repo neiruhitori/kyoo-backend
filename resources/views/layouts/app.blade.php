@@ -111,6 +111,7 @@
         @include('layouts.navbar')
 
         <!-- Begin Page Content -->
+        @yield('isShowExpired')
         <div class="container-fluid">
           @yield('content')
         </div>

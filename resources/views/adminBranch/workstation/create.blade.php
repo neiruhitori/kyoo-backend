@@ -3,19 +3,18 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            @include('layouts.alert')
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        {{ __('create.module', ['module' => __('Workstation')]) }}
-                    </h6>
-                </div>
-                @csrf
+                {{-- <div class="card-header py-3"> --}}
+                    {{-- </div> --}}
                 <div class="card-body">
-                    @include('layouts.alert')
+                    <h5 class="mb-4 font-weight-bold " style="color: #103C7C">
+                        {{ __('create.module', ['module' => __('Workstation')]) }}
+                    </h5>
+                    <form action="{{route('admin-branch.branch-configuration.workstation.store')}}" method="post">
+                    @csrf
                     <div class="row">
-                        <div class="col-md-12">
-                            <form action="{{route('admin-branch.branch-configuration.workstation.store')}}" method="post">
-                                @csrf
+                        <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="department_id">{{ __('Department') }}</label>
                                     <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror">
@@ -25,25 +24,34 @@
                                     </select>
                                     @include('layouts.inputError', ['errorName' => 'department_id'])
                                 </div>
+                        </div>
+
+                        <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="name">{{ __('Name') }}</label>
                                     <input name="name" id="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" onchange="onChangeName()" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
+                        </div>
+                        <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="label">{{ __('Label') }}</label>
                                     <input name="label" type="text" class="form-control @error('label') is-invalid @enderror" value="{{old('label')}}" required>
                                     @include('layouts.inputError', ['errorName' => 'label'])
                                 </div>
+                        </div>
+                        <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="display_id">{{ __('Display ID') }}</label>
                                     <input name="display_id" id="display_id" type="text" class="form-control @error('display_id') is-invalid @enderror" value="{{old('display_id')}}" required readonly>
                                     @include('layouts.inputError', ['errorName' => 'display_id'])
                                 </div>
-                                <button class="btn btn-primary">{{ __('Save') }}</button>
-                            </form>
                         </div>
-                    </div>
+                        <div class="col-md-12 text-right">
+                            <button class="btn btn-primary px-4" style="background-color: #103C7C">{{ __('Save') }}</button>
+                        </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

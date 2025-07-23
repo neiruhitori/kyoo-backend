@@ -132,381 +132,312 @@
 
 
 
-    <div class="mb-3 mx-3">
-        <h5 class="font-weight-bold text-primary mb-0">
-           {{ __('Billing Menu') }}
-        </h5>
+    <div class="mb-5 mx-3">
+        @if ($unpaidInvoice)
+            <h5 class="font-weight-bold mb-0" style="color: #103C7C;">
+                {{ __('Subscription') }} - Current Plan Summary
+            </h5>
+        @else
+            <h5 class="font-weight-bold mb-0" style="color: #103C7C;">
+            {{ __('Subscription') }}
+            </h5>
+        @endif
     </div>
 
-    @if ($unpaidInvoice)
-
-    <div class="card text-white bg-info mb-3">
-        <div class="card-body">
-          <h5 class="card-title mb-3">{{ __('Invoice Notification') }}</h5>
-            <div class="row">
-                <div class="col mb-2">
-                    <div>{{ __('Paid Amount') }}:</div> 
-                    <b>{{ $unpaidInvoice->currency ?? 'Rp' }}. {{ number_format($unpaidInvoice->amount, 2, ',', '.') }}</b>
+    @if ($unpaidInvoice && $subscription)
+    <div class="card shadow-sm rounded mb-4">
+        <div class="text-white rounded" style="background-color: #BF1D08">
+            <div class="d-flex justify-content-center py-2 align-items-center">
+                <i class="fas fa-clock mr-2"></i> 
+                Payment Pending
+            </div>
+            <div class="card-body rounded" style="border-top-right-radius: 1rem; border-top-left-radius: 1rem; background-color: #fff; color: black; border:1px solid #fff">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-3">{{ __('Invoice Notification') }}</h5>
+                    <h6 class="mr-3">{{ __('Expires On') }}: <span class="text-danger">{{ \Carbon\Carbon::parse($unpaidInvoice->expiry_date)->translatedFormat('d F Y H:i')}}</span></h6>
                 </div>
-                <div class="col mb-2">
-                    <div>{{ __('Expires On') }}: </div>
-                    <b>{{ \Carbon\Carbon::parse($unpaidInvoice->expiry_date)->translatedFormat('d F Y H:i')}}</b>
-                </div>
-                <div class="col mb-2">
-                    <div>{{ __('Payment Status') }}: </div>
-                    <b id="unpaidStatus"><span class="badge badge-warning text-dark" >{{ $unpaidInvoice->status}}</span></b>
-                </div>
-                <div class="col mb-2">
-                    <a href="{{ $unpaidInvoice->invoice_url}}" target="_blank" class="btn btn-primary py-2 px-3" id="payButton">{{ __('Pay Here') }}</a>
+                <div class="row p-3 rounded" style="background-color: #FDD5CE4D;">
+                    <div class="col mb-2">
+                        <h4>{{ Str::ucfirst($subscription->package) }}</h4>
+                        <div style="color: #637381">License Type</div>
+                    </div>
+                    <div class="col mb-2">
+                        <h4>{{ $unpaidInvoice->currency ?? 'Rp' }}. {{ number_format($unpaidInvoice->amount, 2, ',', '.') }}</h4>
+                        <div style="color: #637381">{{ __('Paid Amount') }}</div>
+                    </div>
+                    <div class="col mb-2 text-right align-content-center">
+                        <a href="{{ $unpaidInvoice->invoice_url}}" target="_blank" class="btn btn-danger py-2 px-5" id="payButton">{{ __('Pay Here') }}</a>
+                    </div>
                 </div>
             </div>
         </div>
       </div>
-     
-    @endif
-    
 
-<div class="card shadow mb-4">
-    <div class="card-body">     
-        <form action="" id="formInvoice" method="POST">
-            @csrf
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="license" role="tabpanel" aria-labelledby="license-tab">
-
-                    <div class="mx-4 my-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;" class="pt-1">{{ __('License Type') }}:</h6>
-                            <div class="d-flex">
-                                <select class="custom-select" id="packageSelection" name="packageSelection" style="max-width: 300px;"  {{ $unpaidInvoice ? 'disabled' : '' }}>
-                                    <option value="lite" {{ $subscription && $subscription->package == 'lite' ? 'selected' : '' }}>Lite</option>
-                                    <option value="premium" {{ $subscription && $subscription->package == 'premium' ? 'selected' : '' }}>Premium</option>
-                                    @if (Auth::user()->Branch->country == 'Indonesia')
-                                    <option value="custom" {{ $subscription && $subscription->package == 'custom' ? 'selected' : '' }}>Custom</option>
-                                    @else
-                                        
-                                    @endif
-                                </select>
-                            </div>
-                        </div> 
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;" class="pt-1">{{ __('Queue Type') }}:</h6>
-
-                           @if ($isDirect)
-                           <input style="max-width: 200px;" type="text" class="form-control" id="license_input" value="Onsite" readonly>
-                           <input type="hidden" name="license_type" id="license_type" value="onsite">
-                           @else
-                           <input type="hidden" name="license_type" id="license_type" value="appointment">
-                           <input style="max-width: 200px;" type="text" class="form-control" id="license_input" value="Appointment" readonly>
-                           @endif
-                        </div>
-                        <div class="d-flex align-items-start mb-1">
-                            <h6 style="min-width: 150px;" class="pt-2">{{ __('Subs. Duration') }}:</h6>
-                            <select class="custom-select" style="max-width: 200px;" name="subs_duration" id="subs_duration"  {{ $unpaidInvoice ? 'disabled' : '' }}>
-                                <option value="3" {{ $subscription && $subscription->subs_duration == '3' ? 'selected' : '' }}>3</option>
-                                <option value="6" {{ $subscription && $subscription->subs_duration == '6' ? 'selected' : '' }}>6</option>
-                                <option value="12" {{ $subscription && $subscription->subs_duration == '12' ? 'selected' : '' }}>12</option>
-                              </select>
-                              <p class="pt-2 ml-3">{{ __('Month') }}</p>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;" class="pt-1">{{ __('Maximum Queue') }}:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="queue" id="queue" min="100" max="500" required value="{{ $subscription ? $subscription->queue  : '100' }}" readonly>
-                            <p class="pt-2 ml-3">{{ __('Queue Per Day') }}</p>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;" class="pt-1">{{ __('Counter Amount') }}:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="table" id="table"  min="1" max="5" required value="{{ $subscription ? $subscription->max_table  : '1' }}" readonly>
-                            <p class="pt-2 ml-3">{{ __('Workstation') }}</p>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 style="min-width: 150px;" class="pt-1">{{ __('Staff') }}:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="services" id="services" min="1" max="15" required value="{{ $subscription ? $subscription->max_service  : '1' }}" readonly>
-                            <p class="pt-2 ml-3">{{ __('Staff') }}</p>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <div id="web-kiosk" style="display: flex">
-                            <h6 style="min-width: 150px;" class="pt-1">Web Kiosk:</h6>
-                            <input style="max-width: 200px;" type="number" class="form-control" name="kiosk" id="kiosk" min="0" max="3" required value="{{ $subscription ? $subscription->kiosk  : '0' }}" readonly>
-                            <p class="pt-2 ml-3">{{ __('Device') }}</p>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center mb-5">
-                            <div id="web-signage" style="display: flex">
-                                <h6 style="min-width: 150px;" class="pt-1">Web Signage TV:</h6>
-                                <input style="max-width: 200px;" type="number" class="form-control" name="signage" id="signage" min="1" max="3" value="1" required readonly>
-                                <p class="pt-2 ml-3">{{ __('Device') }}</p>
-                            </div>
-                        </div>
-                        @if (Auth::user()->Branch->country == 'Indonesia')
-                        <div class="d-flex align-items-center mb-5">
-                            <h6 style="min-width: 150px;" class="pt-1">{{ __('Feature') }}:</h6>
-                            <div id="feature">
-                                <b></b>
-                            </div>
-                        </div>
-                        @endif
-                        
-                        <input type="hidden" name="amount" id="amount">
-                       
-                    </div>
-                    <div class="d-flex align-items-center ml-4 mb-2">
-                        @if ($unpaidInvoice)
-                        <button class="btn btn-primary px-5" disabled>{{ __('Complete Payment First') }}</button>
-                        @else
-                        <button class="btn btn-primary px-5" id="modalBtn" type="button" type="button" data-toggle="modal" data-target="#staticBackdrop" >{{ __('Continue') }}</button>
-                        @endif
-                    </div>
-                    
+      <div class="card shadow">
+        <div class="card-body">
+            <div class="row p-3">
+                <div class="col-md-3 mb-5">
+                    <h5>License Type</h5>
+                    <h5 style="color: #000">{{ Str::ucfirst($subscription->package) }}</h5>
+                </div>
+                <div class="col-md-3 mb-5">
+                    <h5>Queue Type</h5>
+                    <h5 style="color: #000">{{ Str::ucfirst($subscription->license_type) }}</h5>
+                </div>
+                <div class="col-md-3 mb-5">
+                    <h5>Subs. Duration</h5>
+                    <h5 style="color: #000">{{ $subscription->subs_duration }} {{ __('Month') }}</h5>
+                </div>
+                <div class="col-md-3 mb-5">
+                    <h5>Maximum Queue</h5>
+                    <h5 style="color: #000">{{ $subscription->queue }}/{{ __('Day') }}</h5>
                 </div>
 
 
+                <div class="col-md-3">
+                    <h5>Counter Amount</h5>
+                    <h5 style="color: #000">{{ $subscription->max_table }} {{ __('Workstation') }}</h5>
+                </div>
+                <div class="col-md-3">
+                    <h5>Staff</h5>
+                    <h5 style="color: #000">{{ $subscription->max_service }}</h5>
+                </div>
+                <div class="col-md-3">
+                    <h5>Web Kiosk</h5>
+                    <h5 style="color: #000">{{ $subscription->kiosk }} {{ __('Device') }}</h5>
+                </div>
+                {{-- <div class="col-md-3">
+                    <h5>Web Signage TV</h5>
+                    <h5 style="color: #000">1 Device</h5>
+                </div> --}}
             </div>
+        </div>
+      </div>
+
+    @else
+      
+
+    <div class="card shadow mb-4">
+        <div class="card-body">     
+            <form action="" id="formInvoice" method="POST">
+                @csrf
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="packageSelection" style="color: #000">{{ __('License Type') }}</label>
+                        <select class="form-control" id="packageSelection" name="packageSelection"  {{ $unpaidInvoice ? 'disabled' : '' }}>
+                            <option value="lite" {{ $subscription && $subscription->package == 'lite' ? 'selected' : '' }}>Lite</option>
+                            <option value="premium" {{ $subscription && $subscription->package == 'premium' ? 'selected' : '' }}>Premium</option>
+
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="license_type" style="color: #000">{{ __('Queue Type') }}</label>
+                        @if ($isDirect)
+                            <input type="text" class="form-control" id="license_input" value="Onsite" readonly>
+                            <input type="hidden" name="license_type" id="license_type" value="onsite">
+                       @else
+                            <input type="hidden" name="license_type" id="license_type" value="appointment">
+                            <input type="text" class="form-control" id="license_input" value="Appointment" readonly>
+                        @endif
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="subs_duration" style="color: #000">{{ __('Subs. Duration') }}</label>
+                        <select class="custom-select" name="subs_duration" id="subs_duration"  {{ $unpaidInvoice ? 'disabled' : '' }}>
+                            <option value="3" {{ $subscription && $subscription->subs_duration == '3' ? 'selected' : '' }}>3 {{ __('Month') }}</option>
+                            <option value="6" {{ $subscription && $subscription->subs_duration == '6' ? 'selected' : '' }}>6 {{ __('Month') }}</option>
+                            <option value="12" {{ $subscription && $subscription->subs_duration == '12' ? 'selected' : '' }}>12 {{ __('Month') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="queue" style="color: #000">{{ __('Maximum Queue') }}/{{ __('Day') }}</label>
+                        <input type="number" class="form-control" name="queue" id="queue" min="100" max="500" required value="{{ $subscription ? $subscription->queue  : '100' }}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="table" style="color: #000">{{ __('Counter Amount') }}</label>
+                        <input type="number" class="form-control" name="table" id="table"  min="1" max="5" required value="{{ $subscription ? $subscription->max_table  : '1' }}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                         <label for="services" style="color: #000">{{ __('Staff') }}</label>
+                         <input type="number" class="form-control" name="services" id="services" min="1" max="15" required value="{{ $subscription ? $subscription->max_service  : '1' }}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3" id="web-kiosk">
+                        <label for="services" style="color: #000">{{ __('Webkiosk') }}</label>
+                        <input type="number" class="form-control" name="kiosk" id="kiosk" min="1" max="3" value="1" required readonly>
+                    </div>
+                    <div class="col-md-6 mb-3" id="web-signage">
+                        <label for="services" style="color: #000">{{ __('Web Signage TV') }}</label>
+                        <input type="number" class="form-control" name="signage" id="signage" min="1" max="3" value="1" required readonly>
+                    </div>
+                    <input type="hidden" name="amount" id="amount">
+    
+                    <div class="col-md-12 text-right">
+                        @if ($unpaidInvoice)
+                            <button class="btn btn-primary px-5" disabled>{{ __('Complete Payment First') }}</button>
+                        @else
+                            <button class="btn btn-primary px-5" id="modalBtn" 
+                            type="button" type="button" data-toggle="modal" 
+                            data-target="#staticBackdrop" style="background-color: #103C7C; color: #fff;">
+                                    {{ __('Continue') }}
+                            </button>
+                        @endif
+                    </div>
+                </div>
+            {{-- </form> --}}
+        </div>
+    </div>
+
+@endif
+    
+
 
 <!-- Modal -->
 <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title text-dark" id="staticBackdropLabel"><b>{{ __('KYOO Subscription') }}</b></h5>
-        </div>
+        {{-- <div class="modal-header">
+        </div> --}}
         <div class="modal-body">
-          <div class="row " style="color: #000">
-            <div class="col-md-3">
-                <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 105px"><b>{{ __('License Type') }}:</b></h6>
+        <h5 class="modal-title mb-4" style="color: #103C7C;" id="staticBackdropLabel"><b>{{ __('KYOO Subscription') }}</b></h5>
+
+        <div class="card rounded mb-4">
+            <div class="text-white rounded-top" style="background-color: #103C7C">
+                <div class="d-flex justify-content-center py-2 align-items-center">
+                    License Feature
                 </div>
             </div>
-            <div class="col-md-9">
-                <div class="ml-2" style="min-width: 200px">
-                    <h6 class="" id="md_license"></h6>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 105px"><b>{{ __('Queue Type') }}:</b></h6>
-                </div>
-            </div>
-            <div class="col-md-9">
-                <div class="ml-2" style="min-width: 200px">
-                    <h6 class="" id="md_queue_type"></h6>
-                </div>
-            </div>
-            
-            <div class="col-md-3">
-                <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 105px"><b>{{ __('Subs. Duration') }}:</b></h6>
-                </div>
-            </div>
-            <div class="col-md-9">
-                <div  class="ml-2" style="min-width: 200px">
-                    <h6 class="" id="md_subsDuration"></h6>
-                </div>
-            </div>
-
-        <div class="col-md-3 d-flex">
-            <div class="d-flex align-items-center mb-2">
-                <h6 class="mr-2" style="min-width: 110px"><b>{{ __('Max Queue') }}:</b></h6>
-            </div>
-        </div>    
-        <div class="col-md-9">
-            <div class="ml-2" style="min-width: 90px">
-                <h6 class="" id="md_queue"></h6>
-            </div>
-        </div>
-
-        <div class="col-md-3" id="md_table_container">
-            <div class="d-flex align-items-center mb-2" >
-                <h6 class="mr-2" style="min-width: 110px"><b>{{ __('Counter') }}:</b></h6>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div class="ml-2" style="min-width: 90px">
-                <h6 class="" id="md_table"></h6>
-            </div>    
-        </div>
-
-        <div class="w-100"></div>
-
-        <div class="col-md-3 d-flex">
-            <div class="d-flex align-items-center mb-2">
-                <h6 class="mr-2" style="min-width: 110px"><b>{{ __('Staff') }}:</b></h6>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div class="ml-2" style="min-width: 90px">
-                <h6 class="" id="md_service"></h6>
-            </div>
-        </div>
-
-        <div class="col-md-3" id="md_kiosk_container">
-            <div class="d-flex align-items-center mb-2" >
-                <h6 class="mr-2" style="min-width: 110px"><b>Web Kiosk:</b></h6>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div class="ml-2" style="min-width: 90px">
-                <h6 class="" id="md_kiosk"></h6>
-            </div>
-        </div>
-
-        <div class="w-100"></div>
-
-        <div class="col-md-3 " id="md_signage_container">
-            <div class="d-flex align-items-end mb-2" >
-                <h6 class="mr-2" style="min-width: 112px"><b>Web Signage:</b></h6>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div id="signage" class="ml-2" style="min-width: 90px">
-                <h6 class="" id="md_signage"></h6>
-            </div>
-        </div>
-
-        <div class="col-md-12" id="no_license_data">
-            <h5><span class="badge badge-danger">{{ __('License Not Available') }}</span></h5>
-        </div>
-
-          </div>
-
-          <hr style="border-color:#000;">
-
-          <div class="row mx-1" style="color: #000">
-            <table class="table" style="color: #000" id="itemContainer">
-                <thead>
-                  <tr>
-                    <th>{{ __('Item') }}</th>
-                    <th>{{ __('Quantity') }}</th>
-                    <th>{{ __('Period') }}</th>
-                    <th>{{ __('Item Price') }}</th>
-                    <th>{{ __('Total Price') }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{{ __('Workstation') }}</td>
-                    <td id="tableQty"></td>
-                    <td class="itemPeriod"></td>
-                    <td id="tablePrice"></td>
-                    <td id="tableTotalPrice"></td>
-                  </tr>
-                  <tr id="customSignageContainer">
-                    <td>Web Signage</td>
-                    <td id="signageQty"></td>
-                    <td class="itemPeriod"></td>
-                    <td id="signagePrice"></td>
-                    <td id="signageTotalPrice"></td>
-                  </tr>
-                  <tr id="customKioskContainer">
-                    <td>Web Kiosk</td>
-                    <td id="kioskQty"></td>
-                    <td class="itemPeriod"></td>
-                    <td id="kioskPrice"></td>
-                    <td id="kioskTotalPrice"></td>
-                  </tr>
-                  <tr>
-                    <th colspan="4" class="text-right ">Subtotal Item :</th>
-                    <td id="items"></td>
-                  </tr>
-                  {{-- <tr>
-                    <th colspan="4" class="text-right ">Harga Lisensi:</th>
-                    <td id="customLicensePrice"></td>
-                  </tr> --}}
-                  <tr>
-                    <th colspan="4" class="text-right ">{{ __('VAT 11%') }} :</th>
-                    <td id="customTax"></td>
-                  </tr>
-                  <tr>
-                    <th colspan="4" class="text-right "><h5><b>TOTAL:</b></h5></th>
-                    <td id="customTotal"></td>
-                  </tr>
-                </tbody>
-              </table>
-
-          </div>
-
-          <div class="row" style="color: #000" id="nonCustom">
-
-            <div class="col-md-12" id="pricepercounter">
-                <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 112px"><b>Counter Price /Month:</b></h6>
-                        <div id="pingu" class="ml-2" style="min-width: 90px">
-                            <h6 class=""></h6>
+            <div class="card-body rounded">
+                 <div class="row p-3">
+                    <div class="col-md-4 mb-3">
+                        <h5>{{ __('License Type') }}</h5>
+                        <h5 style="color: #000" id="md_license"></h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5>{{ __('Queue Type') }}</h5>
+                        <h5 style="color: #000" id="md_queue_type"></h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5>{{ __('Subs. Duration') }}</h5>
+                        <h5 style="color: #000" id="md_subsDuration"></h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5>{{ __('Maximum Queue') }}</h5>
+                        <h5 style="color: #000" id="md_queue"></h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5>{{ __('Counter Amount') }}</h5>
+                        <h5 style="color: #000" id="md_table"></h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5>{{ __('Staff') }}</h5>
+                        <h5 style="color: #000" id="md_service"></h5>
+                    </div>
+                    <div class="col-md-12" id="no_license_data">
+                        <div class="p-3 rounded text-center" style="background-color: #fdd5ce">
+                            <h5 style="color: #BF1D08"><i class="fas fa-exclamation-circle mr-3"></i>{{ __('License Not Available') }}</h5>
                         </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-12" id="summCounter">
-                <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 112px"><b>Counter Price:</b></h6>
-                        <div id="zafkiel" class="ml-2" style="min-width: 90px">
-                            <h6 class=""></h6>
-                        </div>
-                </div>
-            </div>
-            <div class="col-md-12" id="signagePriceOver">
-                <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 112px"><b>Signage Price:</b></h6>
-                        <div id="raphiel" class="ml-2" style="min-width: 90px">
-                            <h6 class=""></h6>
-                        </div>
-                </div>
-            </div>
-            <div class="col-md-12" id="kioskPriceOver">
-                <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 112px"><b>Kiosk Price:</b></h6>
-                        <div id="miriel" class="ml-2" style="min-width: 90px">
-                            <h6 class=""></h6>
-                        </div>
-                </div>
+        </div>
+
+        <div id="summaryContainer">
+            <table class="table table-bordered rounded" style="color: #000" id="itemContainer">
+                    <thead class="text-center" style="background-color:#33A0FF4D; color: #103C7C;">
+                      <tr>
+                        <th>{{ __('Item') }}</th>
+                        <th>{{ __('Quantity') }}</th>
+                        <th>{{ __('Period') }}</th>
+                        <th>{{ __('Item Price') }}</th>
+                        <th>{{ __('Subtotal') }}</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-center">
+                      <tr>
+                        <td>{{ __('Workstation') }}</td>
+                        <td id="tableQty"></td>
+                        <td class="itemPeriod"></td>
+                        <td id="tablePrice"></td>
+                        <td id="tableTotalPrice"></td>
+                      </tr>
+                      <tr id="tableSignage">
+                        <td>Web Signage</td>
+                        <td id="signageQty"></td>
+                        <td class="itemPeriod"></td>
+                        <td id="signagePrice"></td>
+                        <td id="signageTotalPrice"></td>
+                      </tr>
+                      <tr id="tableKiosk">
+                        <td>Web Kiosk</td>
+                        <td id="kioskQty"></td>
+                        <td class="itemPeriod"></td>
+                        <td id="kioskPrice"></td>
+                        <td id="kioskTotalPrice"></td>
+                      </tr>
+                      {{-- <tr>
+                        <th colspan="4" class="text-right ">Subtotal Item :</th>
+                        <td id="items"></td>
+                      </tr> --}}
+                    </tbody>
+            </table>
+
+            <div class="row justify-content-end mb-3" id="subtotal">
+                  <div class="col-md-3 text-right">
+                      <h6>
+                          <b style="color: #000">
+                              {{ __('SUBTOTAL') }}
+                          </b>
+                      </h6>
+                  </div>
+                  <div class="col-md-3 text-center">
+                      <b class="text-danger" id="subtotalContent"><h6></h6></b>
+                  </div>
             </div>
 
-            <div class="col-md-12 d-flex">
-                <div class="d-flex mb-2">
-                    <h6 class="mr-2" style="min-width: 112px"><b>Subtotal Item:</b></h6>
-                        <div id="price" class="ml-2" style="min-width: 90px">
-                            <h6 class=""></h6>
-                        </div>
-                </div>
+
+            <div class="row justify-content-end" id="formTax">
+                  <div class="col-md-3 text-right">
+                      <h6>
+                          <b style="color: #000">
+                              {{ __('VAT 11%') }}
+                          </b>
+                      </h6>
+                  </div>
+                  <div class="col-md-3 text-center">
+                      <b class="text-danger" id="taxContent"><h6></h6></b>
+                  </div>
             </div>
 
-            <div class="col-md-12" id="formTax">
-                <div class="d-flex align-items-center mb-2">
-                    <h6 class="mr-2" style="min-width: 112px"><b>{{ __('VAT 11%') }}  :</b></h6>
-                        <div id="tax" class="ml-2" style="min-width: 90px">
-                            <h6 class=""></h6>
-                        </div>
-                </div>
+
+            <div class="row justify-content-end mb-3">
+                  <div class="col-md-3 text-right">
+                      <h6>
+                          <b style="color: #000">
+                              {{ __('TOTAL') }}
+                          </b>
+                      </h6>
+                  </div>
+                  <div class="col-md-3 text-center">
+                      <b class="text-danger" id="totalContent"><h6></h6></b>
+                  </div>
             </div>
-            
-           
-            <div class="col-md-12 d-flex">
-                <div class="d-flex align-items-center mb-2">
-                    <h5 class="mr-2" style="min-width: 112px"><b>TOTAL :</b></h5>
-                        <div id="total" class="ml-2" style="min-width: 90px">
-                            
-                            <h5 class=""></h5>
-                        </div>
-                </div>
-            </div>
-          </div>
+
+        </div>
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">{{ __('Cancel') }} </button>
-          <button type="submit" id="confirmBtn" class="btn btn-primary">{{ __('Continue Payment') }} </button>
+          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">{{ __('Cancel') }} </button>
+          <button type="submit" id="confirmBtn" class="btn btn-primary" style="background-color: #103C7C">{{ __('Continue Payment') }} </button>
         </div>
       </div>
+      </form>
     </div>
-  </div>
+</div>
 
 
-        </form>
-    </div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    let feature = document.getElementById('feature');
     let queue = document.getElementById('queue');
     let table = document.getElementById('table');
     let services = document.getElementById('services');
@@ -519,7 +450,6 @@
     let modalButton = document.getElementById('modalBtn');
     let signageContainer = document.getElementById('web-signage');
     let kioskContainer = document.getElementById('web-kiosk');
-    let modalSignage = document.getElementById('md_signage_container');
     let priceElement = document.getElementById('price');
     let taxElement = document.getElementById('tax');
     let itemsElement = document.getElementById('items');
@@ -528,204 +458,60 @@
     let payButton = document.getElementById("payButton");
     let unpaidStatus = document.getElementById("unpaidStatus");
 
-// function toggleSignageInput(selectedPackage) {
-//     const isDirect = {!! json_encode($isDirect) !!};//blade escape
-//     updateFeatures(selectedPackage, isDirect);
-//     if (selectedPackage === 'premium') {
-//         queue.setAttribute('readonly', true);
-//         table.setAttribute('readonly', true);
-//         services.setAttribute('readonly', true);
-//         kiosk.setAttribute('readonly', true);
+    limitInput(queue,100,500,packageSelection);
+    limitInput(table,1,5,packageSelection);
+    limitInput(services,1,15,packageSelection);
 
-//         queue.value = 500;
-//         table.value = 1;
-//         services.value = 3;
-//         kiosk.value = 0;
-//         signageContainer.style.display = 'flex';  
-//         modalSignage.style.display = 'flex';
-//         signage.setAttribute('readonly', true);   
-//         signage.value = 1; // Nilai default saat premium
-//     } else if (selectedPackage === 'custom') {
-//         // queue.removeAttribute('readonly');
-//         table.removeAttribute('readonly');
-//         services.removeAttribute('readonly');
-//         kiosk.removeAttribute('readonly');
-        
-//         table.addEventListener('input', function() {
-//         const tableValue = parseInt(table.value) || 0;
-//         let country = "{{ Auth::user()->Branch->country }}"
-//         if(country == 'Indonesia'){
-//             services.value = tableValue * 2;
-//         }else{
-//             services.value = tableValue * 2;
-//         }
-
-//                 if (tableValue >= 2) {
-//                     queue.value = 500
-//                 }else{
-//                     queue.value = 100
-//                 }
-//             });
-//         signageContainer.style.display = 'flex';
-//         modalSignage.style.display = 'flex';  
-//         signage.removeAttribute('readonly');  
-//         signage.value = 1;     
-//         kiosk.value = 1;
-//     } else {
-//         queue.setAttribute('readonly', true);
-//         table.setAttribute('readonly', true);
-//         services.setAttribute('readonly', true);
-//         kiosk.setAttribute('readonly', true);
-//         queue.value = 100;
-//         table.value = 1;
-//         services.value = 1;
-//         kiosk.value = 0;
-//         signageContainer.style.display = 'none';
-//         modalSignage.style.display = 'none';  
-//         signage.value = '';                      
-//     }
-//     updateFeatures(selectedPackage, isDirect);
-                      
-// }
-
-// queue.addEventListener('input',function() {
-//     let value = parseInt(this.value) || 1;
-//     let package = packageSelection.value;
-
-//     if (package == 'lite' && value > 100) {
-//         this.value = Math.min(Math.max(value, 1), 100);
-//     }
-// })
-
-
-
-function checkExpiry() {
-    if("{{ $unpaidInvoice }}" !== ""){
-        let expiryDate = new Date("{{ $unpaidInvoice->expiry_date ?? '' }}");
-        let now = new Date();
-        if (now >= expiryDate) {
-            unpaidStatus.innerHTML = `<span class="badge badge-danger text-white" >EXPIRED</span>`
-            payButton.style.pointerEvents = "none"; 
-            payButton.style.opacity = "0.5"; 
-            payButton.innerText = "Expired"; 
-        }
-    }else{
-
-    }
-}
-if("{{ $unpaidInvoice }}" !== ""){
-checkExpiry(); 
-setInterval(checkExpiry, 24 * 60 * 60 * 1000);
-}
-
-limitInput(queue,100,500,packageSelection);
-limitInput(table,1,5,packageSelection);
-limitInput(services,1,15,packageSelection);
-limitInput(kiosk,1,3,packageSelection);
-limitInput(signage,1,3,packageSelection);
-
-function limitInput(element, min, max, packageSelection = null) {
-    element.addEventListener('input', function () {
-        let value = parseInt(this.value) || min; // Default ke `min` jika tidak valid
-        if(element.id == 'queue'){
-            if (packageSelection) {
-                max = (packageSelection.value === 'lite') ? 100 : 500; 
+    function limitInput(element, min, max, packageSelection = null) {
+        element.addEventListener('input', function () {
+            let value = parseInt(this.value) || min;
+            if(element.id == 'queue'){
+                if (packageSelection) {
+                    max = (packageSelection.value === 'lite') ? 100 : 500; 
+                }
             }
-        }
-        this.value = Math.min(Math.max(value, min), max);
-    });
-}
+            this.value = Math.min(Math.max(value, min), max);
+        });
+    }
 
-function toggleSignageInput(selectedPackage) {
+function toggleInput(selectedPackage) {
     const isDirect = {!! json_encode($isDirect) !!}; // Blade escape
     const country = "{{ Auth::user()->Branch->country }}";
-    //non-indo
-    if (country !== 'Indonesia') {
-        queue.removeAttribute('readonly');
-        table.removeAttribute('readonly');
-        services.removeAttribute('readonly');
-        kiosk.removeAttribute('readonly');
 
-        signageContainer.style.display = 'flex';
-        modalSignage.style.display = 'flex';
+    queue.removeAttribute('readonly');
+    table.removeAttribute('readonly');
+    services.removeAttribute('readonly');
+
+    signageContainer.style.display = 'block';
         
         if (selectedPackage === 'premium') {
             queue.removeAttribute('readonly');
-            signage.removeAttribute('readonly');
-                    setValues({
-                        queue: 500,
-                        table: 1,
-                        services: 2,
-                        kiosk: 0,
-                        signage: 1
-                    });
-                    signageContainer.style.display = 'flex';
-                    kioskContainer.style.display = 'flex';
-                    modalSignage.style.display = 'flex';
-                }else {
-                    setReadOnly([queue, services, kiosk, signage], true);
-                    table.addEventListener('input', function () {
-                    const tableValue = parseInt(table.value) || 0;
-                    services.value = tableValue * 2;
+            setValues({
+                    queue: 500,
+                    table: 1,
+                    services: 2,
+                    kiosk: 1,
+                    signage: 1
                 });
-                setValues({
+            signageContainer.style.display = 'block';
+            kioskContainer.style.display = 'block';
+        }else {
+            setReadOnly([queue, services, kiosk, signage], true);
+            table.addEventListener('input', function () {
+                    const tableValue = parseInt(table.value) || 0;
+                    services.value = tableValue * 2; 
+                });
+            setValues({
                     queue: 100,
                     table: 1,
                     services: 2,
                     kiosk: 0,
-                    signage: ''
+                    signage: 0
                 });
-                signageContainer.style.display = 'none';
-                kioskContainer.style.display = 'none';
-                modalSignage.style.display = 'none';
-            }
+            signageContainer.style.display = 'none';
+            kioskContainer.style.display = 'none';
+        }
         return;
-
-    }
-
-
-    //indo
-    if (selectedPackage === 'premium') {
-        updateFeatures(selectedPackage, isDirect);
-        setReadOnly([queue, table, services, kiosk, signage], true);
-        setValues({
-            queue: 500,
-            table: 1,
-            services: 3,
-            kiosk: 0,
-            signage: 1
-        });
-        signageContainer.style.display = 'flex';
-        modalSignage.style.display = 'flex';
-    } else if (selectedPackage === 'custom') {
-        table.removeAttribute('readonly');
-        services.removeAttribute('readonly');
-        kiosk.removeAttribute('readonly');
-        signage.removeAttribute('readonly');
-
-        table.addEventListener('input', function () {
-            const tableValue = parseInt(table.value) || 0;
-            services.value = tableValue * 3;
-            queue.value = tableValue >= 2 ? 500 : 100;
-        });
-
-        signageContainer.style.display = 'flex';
-        modalSignage.style.display = 'flex';
-        setValues({ signage: 1, kiosk: 1 });
-    } else {
-        setReadOnly([queue, table, services, kiosk], true);
-        setValues({
-            queue: 100,
-            table: 1,
-            services: 1,
-            kiosk: 0,
-            signage: ''
-        });
-        signageContainer.style.display = 'none';
-        modalSignage.style.display = 'none';
-    }
-
-    updateFeatures(selectedPackage, isDirect);
 }
 
 function setReadOnly(elements, state) {
@@ -740,69 +526,21 @@ function setValues(values) {
     });
 }
 
-
-
-
-function updateFeatures(selectedPackage, isDirect) {
-    let featuresText = '';
-
-    if (selectedPackage === 'lite') {
-        featuresText = isDirect 
-            ? `{{ __('Linktree from Webtokoo') }}` 
-            : `{{ __('Email Notification and Linktree') }}`;
-    } else if (selectedPackage === 'premium') {
-        featuresText = isDirect 
-            ? `{{ __('Voice Calls, TV Monitoring, Hybrid Appointment Queue, Web Survey, and Linktree') }}`
-            : `{{ __('Email, WA Notification, and Linktree') }}`;
-    } else if (selectedPackage === 'custom') {
-        featuresText = isDirect 
-            ? `{{ __('Voice Calls, TV Monitoring, Hybrid Appointment Queue, Web Survey, and Linktree') }}`
-            : `{{ __('Email, WA Notification, and Linktree') }}`;
-    }
-
-    feature.innerHTML = `<b>${featuresText}</b>`;
-}
-
-
 function getModalData() {
     let tableVal = table.value;
     let queueVal = queue.value;
     let serviceVal = services.value;
     let packageVal = '';
     let subsDurationVal = subsDuration.value;
-    let queueTypeVal = '';
-        document.getElementById('md_table_container').style.display = 'flex';
-        document.getElementById('md_kiosk_container').style.display = 'none';
-        document.getElementById('md_signage_container').style.display = 'none';
+    let queueTypeVal = queueType.value == "onsite" ? 'Onsite' : 'Appointment';
 
-    if(packageSelection.value === "custom"){
-        let kioskVal = kiosk.value;
-        let signageVal = signage.value;
-        packageVal = "Custom";
-        document.getElementById('md_kiosk').innerHTML = kioskVal + ` {{ __('Device') }}`;
-        document.getElementById('md_signage').innerHTML = signageVal + ` {{ __('Device') }}`;
-        // document.getElementById('md_table_container').style.display = 'flex';
-        document.getElementById('md_kiosk_container').style.display = 'flex';
-        document.getElementById('md_signage_container').style.display = 'flex';
-        
-    }else if(packageSelection.value === "premium"){
+    if(packageSelection.value === "premium"){
         let signageVal = signage.value;
         let kioskVal = kiosk.value;        
         packageVal = "Premium";
-        document.getElementById('md_signage_container').style.display = 'flex';
-        document.getElementById('md_kiosk_container').style.display = 'flex';
-        document.getElementById('md_signage').innerHTML = signageVal + ` {{ __('Device') }}`;
-        document.getElementById('md_kiosk').innerHTML = kioskVal + ` {{ __('Device') }}`;
     }else{
         packageVal = "Lite";
     }
-    //tipe antrian
-    if(queueType.value == "onsite"){
-        queueTypeVal = "Onsite";
-    }else{
-        queueTypeVal = "Appointment";
-    }
-    // document.getElementById('md_kiosk').innerHTML = kioskVal + ` {{ __('Device') }}`;
     document.getElementById('md_table').innerHTML = tableVal + ` {{ __('Workstation') }}`;
     document.getElementById('md_license').innerHTML = packageVal;
     document.getElementById('md_queue_type').innerHTML = queueTypeVal;
@@ -818,34 +556,63 @@ subsDuration.addEventListener('change', function() {
 
 packageSelection.addEventListener('change', function() {
     const selectedPackage = packageSelection.value;
-    toggleSignageInput(selectedPackage);
+    toggleInput(selectedPackage);
 });
 
 
 function calculateTotal(price, country = 'Indonesia') {
     let tax = 0;
     if (country == 'Indonesia') {
-        tax = price * 0.11; // PPN 11%
+        tax = price * 0.11;
     }
     const total = price + tax;
     return {price, tax, total}
 }
 
+function setCurrency(price, country = 'Indonesia'){
+    const locale = country == "Indonesia" ? 'id-ID' : 'en-US';
+    const currency =  country == "Indonesia" ? 'IDR' : 'USD';
+
+    return price.toLocaleString(locale, { style: 'currency', currency: currency })
+}
+
 function getData(selectedPackage){
     const selectedDuration = parseInt(subsDuration.value);
+    let summaryCtn = document.getElementById('summaryContainer');
     let noDataBadge = document.getElementById('no_license_data');
+    let itemCtn = document.getElementById('itemContainer');
+    let tableQty = document.getElementById('tableQty');
+    let tablePrice = document.getElementById('tablePrice');
+    let tableTotalPrice = document.getElementById('tableTotalPrice');
+    let tableSignage = document.getElementById('tableSignage');
+    let signageQty = document.getElementById('signageQty');
+    let kioskQty = document.getElementById('kioskQty');
+    let signagePrice = document.getElementById('signagePrice');
+    let kioskPrice = document.getElementById('kioskPrice');
+    let signageTotalPrice = document.getElementById('signageTotalPrice');
+    let kioskTotalPrice = document.getElementById('kioskTotalPrice');
+    let tableKiosk = document.getElementById('tableKiosk');
+    let formTax = document.getElementById('formTax');
+    let subtotal = document.getElementById('subtotal');
+    let taxContent = document.getElementById('taxContent');
+    let totalContent = document.getElementById('totalContent');
+    let subtotalContent = document.getElementById('subtotalContent');
+    let itemPeriod = document.querySelectorAll('.itemPeriod');
     
-        let license = selectedPackage;
-
-        let tableVal = table.value;
-        let kioskVal = kiosk.value;
-        let signageVal = signage.value;
+    let license = selectedPackage;
+    let tableVal = table.value;
+    let kioskVal = kiosk.value;
+    let signageVal = signage.value;
 
     confirmBtn.disabled = true;
     confirmBtn.textContent = 'Loading...';
+    summaryCtn.style.display = 'none';
     noDataBadge.style.display = 'none';
-    document.getElementById('itemContainer').style.display = 'none';
-    document.getElementById('nonCustom').style.display = 'none';
+    formTax.style.display = "none"
+    subtotal.style.display = "none"
+    itemCtn.style.display = 'none';
+    tableSignage.style.display = 'none';
+    tableKiosk.style.display = 'none';
 
     $.ajax({
     url: '/admin-branch/get_Billing_Prices', 
@@ -862,157 +629,71 @@ function getData(selectedPackage){
             const data = response.data;
             
             if (data) {
-                const { price, tax, total, itemPrices } = calculateTotal(data.license_prices, data.country);
-              
-                if(data.billing_type == 'custom'){
-                    //jika license custom
-                    document.getElementById('itemContainer').style.display = 'table';
-                    const period = document.querySelectorAll('.itemPeriod');
-                    period.forEach(item => {
-                        item.innerHTML = `<h6>${selectedDuration} {{ __('Month') }}</h6>`;
-                    });
-
-                    let custKioskContainer = document.getElementById('customKioskContainer');
-                    custKioskContainer.style.display = 'revert';
-                    let custSignageContainer= document.getElementById('customSignageContainer');
-                    custSignageContainer.style.display = 'revert';
-
-                    if(kiosk.value == 0){
-                        custKioskContainer.style.display = 'none';
-                    }
-                    if(signage.value == 0){
-                        custSignageContainer.style.display = 'none';
-                    }
-
-                    let tablePrice = data.total_table_prices / table.value / selectedDuration;
-                    let kioskPrice = data.total_kiosk_prices / kiosk.value / selectedDuration;
-                    let signagePrice = data.signage_prices / signage.value / selectedDuration;
-                    signagePrice = isNaN(signagePrice) ? 0 : signagePrice
-                    kioskPrice = isNaN(kioskPrice) ? 0 : kioskPrice;
-
-                    document.getElementById('tableQty').innerHTML = `<h6>${table.value}</h6>`;
-                    document.getElementById('tablePrice').innerHTML = `<h6>${tablePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })} /{{ __('Month') }}</h6>`;
-                    document.getElementById('tableTotalPrice').innerHTML = `<h6>${data.total_table_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-                    document.getElementById('kioskQty').innerHTML = `<h6>${kiosk.value}</h6>`;
-                    document.getElementById('kioskPrice').innerHTML = `<h6>${kioskPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })} /{{ __('Month') }}</h6>`;
-                    document.getElementById('kioskTotalPrice').innerHTML = `<h6>${data.total_kiosk_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-                    document.getElementById('signageQty').innerHTML = `<h6>${signage.value}</h6>`;
-                    document.getElementById('signagePrice').innerHTML = `<h6>${signagePrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })} /{{ __('Month') }}</h6>`;
-                    document.getElementById('signageTotalPrice').innerHTML = `<h6>${data.signage_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-                    // document.getElementById('customLicensePrice').innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-
-                    document.getElementById('customTax').innerHTML = `<h6>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-
-                    document.getElementById('customTotal').innerHTML = `<h5><b>${total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h5>`;
-                    itemsElement.innerHTML = `<h6><b>${data.license_prices.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h6>`;
-                }else{
-                    let custTaxContainer= document.getElementById('formTax');
-                    let custPerContainer= document.getElementById('pricepercounter');
-                    let sigOverContainer= document.getElementById('signagePriceOver');
-                    let summContainer= document.getElementById('summCounter');
-                    let kiOverContainer= document.getElementById('kioskPriceOver');
-                    custTaxContainer.style.display = 'revert';
-                    custPerContainer.style.display = 'none';
-                    kiOverContainer.style.display = 'none';
-                    sigOverContainer.style.display = 'none';
-                    summContainer.style.display = 'none';
-                    //if non_idn
-                    document.getElementById('nonCustom').style.display = 'flex';
-                    if(data.country != 'Indonesia'){
-                        custTaxContainer.style.display = 'none';
-                            custPerContainer.style.display = 'revert';
-                            let perCounterPrice = price/data.subscription_duration/table.value;
-
-                        if (data.billing_type != 'lite') {
-                            
-                            let kioskPrice = data.total_kiosk_prices / kiosk.value / selectedDuration;
-                            let signagePrice = data.signage_prices / signage.value / selectedDuration;
-                            signagePrice = isNaN(signagePrice) ? 0 : signagePrice
-                            kioskPrice = isNaN(kioskPrice) ? 0 : kioskPrice;
-                            let finalPrice = total + data.total_kiosk_prices + data.signage_prices;
-
-                            kiOverContainer.style.display = 'revert';
-                            sigOverContainer.style.display = 'revert';
-                            summContainer.style.display = 'revert';
-                            document.getElementById('zafkiel').innerHTML = 
-                            `<h6>${tableVal} Counter x 
-                                 ${data.subscription_duration} Months x 
-                                USD ${perCounterPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
-                                </h6>`;
-                            document.getElementById('miriel').innerHTML = 
-                            `<h6>
-                                ${kiosk.value} Device
-                                ${kiosk.value > 0 ? 
-                                ` x ${data.subscription_duration} Months x USD ${kioskPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}` 
-                                : ''}
-                            </h6>`;
-                            document.getElementById('raphiel').innerHTML = 
-                            `<h6>
-                                ${signage.value} Device
-                                ${signage.value > 0 ? 
-                                ` x ${data.subscription_duration} Months x USD ${signagePrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}` 
-                                : ''}
-                            </h6>`;
-                            document.getElementById('pingu').innerHTML =
-                            `<h6>USD ${perCounterPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</h6>`;
-                            priceElement.innerHTML = 
-                            `<h6>Counter : USD ${total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} </h6>
-                             <h6>Signage : USD ${data.signage_prices.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} </h6>
-                             <h6>Kiosk : USD ${data.total_kiosk_prices.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} </h6>`;
-                            totalElement.innerHTML = `<h5><b>USD ${finalPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></h5>`;
-                            amount.value = finalPrice;
-                            confirmBtn.disabled = false;
-                            confirmBtn.textContent = `{{ __('Continue Payment') }}`;
-                            noDataBadge.style.display = 'none';
-                            return
-                        }else{
-                          
-                            // let perCounterPrice = data.total_table_prices / table.value / selectedDuration;
-                            document.getElementById('pingu').innerHTML =
-                            `<h6>USD ${perCounterPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</h6>`;
-                            priceElement.innerHTML = `<h6>${tableVal} Counter x ${data.subscription_duration} Months x USD ${perCounterPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</h6>`;
-                            totalElement.innerHTML = `<h5><b>USD ${total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></h5>`;
-                        }
-                    }else{
-                        priceElement.innerHTML = `<h6>${price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-                        taxElement.innerHTML = `<h6>${tax.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h6>`;
-                        totalElement.innerHTML = `<h5><b>${total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</b></h5>`;
-                    }
-                    
-                   
+                itemPeriod.forEach(el => {
+                    el.textContent = `${selectedDuration} {{ __('Month') }}`;
+                });
+                if(signageVal && signageVal != 0){
+                    tableSignage.style.display = 'revert';
+                    const signagePricePerMonth = data.total_signage_prices / signageVal / selectedDuration;
+                    signageQty.textContent = signageVal;
+                    signagePrice.textContent = `${setCurrency(signagePricePerMonth, data.country)} / {{ __('Month') }}`;
+                    signageTotalPrice.textContent = `${setCurrency(data.total_signage_prices, data.country)}`;
                 }
-                amount.value = total;
+                if(kioskVal && kioskVal != 0){
+                    tableKiosk.style.display = 'revert';
+                    const kioskPricePerMonth = data.total_kiosk_prices / kioskVal / selectedDuration;
+                    kioskQty.textContent = kioskVal;
+                    kioskPrice.textContent = `${setCurrency(kioskPricePerMonth, data.country)} / {{ __('Month') }}`;
+                    kioskTotalPrice.textContent = `${setCurrency(data.total_kiosk_prices, data.country)}`;
+                }
+                const { price, tax, total, itemPrices } = calculateTotal(data.final_total, data.country);
+                const finalPrice = total;
+                console.log({ price, tax, total, itemPrices })
+                if(data.country == 'Indonesia'){
+                    taxContent.textContent = `${setCurrency(tax,data.country)}`;
+                    formTax.style.display = "flex"
+                }
+                if(selectedPackage == 'premium'){
+                    subtotal.style.display = "flex"
+                    subtotalContent.textContent = `${setCurrency(data.final_total,data.country)}`
+                }
+                tableQty.textContent = tableVal;
+                const tablePricePerMonth = data.total_table_prices / selectedDuration / tableVal;
+                tablePrice.textContent = `${setCurrency(tablePricePerMonth, data.country)} / {{ __('Month') }}`;
+                tableTotalPrice.textContent = `${setCurrency(data.total_table_prices,data.country)}`;
+                totalContent.textContent = `${setCurrency(finalPrice,data.country)}`
+                amount.value = finalPrice;
                 const isDirect = {!! json_encode($isDirect) !!};//blade escape
-                    confirmBtn.disabled = false;
-                    confirmBtn.textContent = `{{ __('Continue Payment') }}`;
-                    noDataBadge.style.display = 'none';
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = `{{ __('Continue Payment') }}`;
+                summaryCtn.style.display = 'revert';
+                itemCtn.style.display = 'revert';
+                noDataBadge.style.display = 'none';
             }
         }else{
-                // priceElement.innerHTML = ``;
-                taxElement.innerHTML = ``;
-                totalElement.innerHTML = ``;
-                itemsElement.innerHTML = ``;
                 confirmBtn.disabled = true;
                 confirmBtn.textContent = `{{ __('License Not Available') }}`;
-                noDataBadge.style.display = 'flex';
+                noDataBadge.style.display = 'revert';
+                summaryCtn.style.display = 'none';
+                itemCtn.style.display = 'none';
             }
-    },
-    error: function(xhr) {
-        console.error(xhr.responseText);
+        },
+        error: function(xhr) {
+            console.error(xhr.responseText);
+        }
+    });
     }
-});
-}
 
-modalButton.addEventListener('click',function () {
-    const selectedPackage = packageSelection.value;
-    getModalData();
-    getData(selectedPackage);
-});
+    modalButton.addEventListener('click',function () {
+        const selectedPackage = packageSelection.value;
+        getModalData();
+        getData(selectedPackage);
+    });
 
-form.addEventListener('submit',function (e) {
-    confirmBtn.disabled = true;
-});
-toggleSignageInput(packageSelection.value);
+    form.addEventListener('submit',function (e) {
+        confirmBtn.disabled = true;
+    });
+    toggleInput(packageSelection.value);
 
 </script>
 

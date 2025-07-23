@@ -5,16 +5,12 @@
         <div class="col-xl-12 col-lg-7">
 
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Monitoring {{ __('Department') }}</h6>
-                </div>
-
+                
                 <div class="card-body">
-                  
-
+                    <h5 class="mb-3 font-weight-bold" style="color: #103C7C">Monitoring {{ __('Department') }}</h5>
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped mb-4" id="table">
-                            <thead>
+                            <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                 <tr>
                                     <th rowspan="2" class="align-middle">{{ __('Queue Number') }}</th>
                                     <th rowspan="2" class="align-middle text-right">{{ __('Booking Code') }}</th>
@@ -160,3 +156,13 @@
         </div>
     </div>
 @endsection
+<style>
+#table {
+    border: 1px solid #33A0FF4D; 
+    }
+
+#table th,
+#table td {
+    border: 1px solid #33A0FF4D !important; 
+}
+</style>

@@ -165,10 +165,11 @@ class BillingController extends Controller
         $user= Auth::user()->id;
         $branch= Auth::user()->Branch->id;
         $invoice_number = $this->no_transaksi();
-        $invoice_duration = Carbon::now()->addDays(3)->diffInSeconds() + 1; //tepat 3 hari
+        $invoice_duration = Carbon::now()->addDays(3)->diffInSeconds() + 1; //exact 3 days
         // $invoice_duration = 5*60;
         $description = $this->generateDesc($request->all(),$branch);
-        $amount = (int) $request->amount; //terkadang value nya desimal, jadi dibulatkan kebawah
+        $amount = (int) $request->amount; //sometimes $amount is decimal
+        
        if (Auth::user()->Branch->country == 'Indonesia') {
             try{
                 $response = $client->post('https://api.xendit.co/v2/invoices',
@@ -375,7 +376,6 @@ class BillingController extends Controller
                 }
         try{
     
-          // aman sedikit dunia
           DB::transaction(function () use ($request) {
               // if ($invoice) {
                 if ($request->status == "PAID") {
@@ -412,11 +412,9 @@ class BillingController extends Controller
                           //reset fitur branch
                           FeatureSubscription::where('branch_id', $branch_id)->delete();
 
-                          // cek paket pilihan
                             if ($data->package === "premium") {
-                                // 1 dan 2 khusus premium
                                 $featuresData = $features->filter(function($feature) {
-                                    return in_array($feature->id, [1, 2]);
+                                    return in_array($feature->id, [1, 2, 3, 4, 6, 7]);
                                 })->map(function($feature) use($branch_id) {
                                     return [
                                         'branch_id'  => $branch_id,
@@ -424,16 +422,17 @@ class BillingController extends Controller
                                         'created_at' => date('Y-m-d H:i:s')
                                     ];
                                 });
-                            } elseif ($data->package === "custom") {
-                                $featuresData = $features->map(function($feature) use($branch_id) {
+                            } 
+                             elseif ($data->package === "lite") {
+                                 $featuresData = $features->filter(function($feature) {
+                                    return in_array($feature->id, [1, 2, 7]);
+                                })->map(function($feature) use($branch_id) {
                                     return [
                                         'branch_id'  => $branch_id,
                                         'feature_id' => $feature->id,
                                         'created_at' => date('Y-m-d H:i:s')
                                     ];
                                 });
-                            } elseif ($data->package === "lite") {
-                                $featuresData = collect(); // kosongkan 
                             }
 
                           
@@ -453,12 +452,12 @@ class BillingController extends Controller
                           }
                          
                        }
-                            else{
-                                        return response()->json([
-                                            'status' => 'error',
-                                            'message' => 'Data Subscription Not Found'
-                                        ], 404);
-                                    }
+                            else {
+                                return response()->json([
+                                    'status' => 'error',
+                                    'message' => 'Data Subscription Not Found'
+                                    ], 404);
+                            }
                     }else{
                         return response()->json([
                             'status' => 'error',
@@ -556,9 +555,8 @@ class BillingController extends Controller
 
                                  // cek paket pilihan
                                     if ($data->package === "premium") {
-                                        // 1 dan 2 khusus premium
                                         $featuresData = $features->filter(function($feature) {
-                                            return in_array($feature->id, [1, 2]);
+                                            return in_array($feature->id, [1, 2, 3, 4, 6, 7]);
                                         })->map(function($feature) use($branchID) {
                                             return [
                                                 'branch_id'  => $branchID,
@@ -566,16 +564,16 @@ class BillingController extends Controller
                                                 'created_at' => date('Y-m-d H:i:s')
                                             ];
                                         });
-                                    } elseif ($data->package === "custom") {
-                                        $featuresData = $features->map(function($feature) use($branchID) {
+                                    } elseif ($data->package === "lite") {
+                                        $featuresData = $features->filter(function($feature) {
+                                            return in_array($feature->id, [1, 2, 7]);
+                                        })->map(function($feature) use($branchID) {
                                             return [
                                                 'branch_id'  => $branchID,
                                                 'feature_id' => $feature->id,
                                                 'created_at' => date('Y-m-d H:i:s')
                                             ];
                                         });
-                                    } elseif ($data->package === "lite") {
-                                        $featuresData = collect(); // kosongkan 
                                     }
 
                                 
@@ -617,25 +615,19 @@ class BillingController extends Controller
         }
     }
     public function getBilling(Request $request)
-    {
-           $type=Auth::user()->Branch->getQueueTypeAttribute();
-        //    $branchType = BranchType::where('id',$type)->first();
-        //    $isDirect = $branchType->is_direct_queue;
-           $branch_type_id = $type == 'onsite' ? 7 : 6;
-           $duration = $request->input('duration');
-            $license = $request->input('license');
-        //    $duration = 3;
-        //    $license = 'lite';
-        // dd(Auth::user()->Branch);
+    {   
+        $user = Auth::user();
+        $branch = $user->Branch;
+        $country = $branch->country;
+        $type = $branch->getQueueTypeAttribute();
+        $branch_type_id = $type == 'onsite' ? 7 : 6;
 
-        $totalItems = 0;
-        $totalKiosk = 0;
-        $totalTable=0;
-        $totalSignage=0;
-
+        $duration = $request->input('duration');
+        $license = $request->input('license');
         $tableQty = $request->input('table_qty');
         $kioskQty = $request->input('kiosk_qty');
         $signageQty = $request->input('signage_qty');
+
         $signagePrices =  ItemPrices::find(4); //harga signage
         $kioskPrices =  ItemPrices::find(5); //harga kiosk
 
@@ -644,48 +636,28 @@ class BillingController extends Controller
                     ->where('billing_types', $license)
                     ->first(['prices','en_prices' ,'billing_types', 'subscription_duration']);
             
-                            if (!$dataBilling) {
-                                return response()->json([
-                                    'status' => 404,
-                                    'message' => 'Lisensi Tidak Tersedia'
-                                ]);
-                            }
-        
-           if(Auth::user()->Branch->country != 'Indonesia'){
-               // ${harga_item selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
-                 $totalSignage = $signagePrices->en_prices * $duration * $signageQty;
-                 $totalKiosk = $kioskPrices->en_prices * $duration * $kioskQty;
-   
-               // ${harga_meja selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
-                 $totalTable = $dataBilling->en_prices * $duration * $tableQty;
-                 $totalItems = $dataBilling->en_prices * $duration * $tableQty;
-                //  $totalItems = $dataBilling->en_prices;
-           }else{
-                    if($license == 'custom'){
-                        // ${harga_item selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
-                        $totalSignage = $signagePrices->prices * $duration * $signageQty;
-                        $totalKiosk = $kioskPrices->prices * $duration * $kioskQty;
-            
-                        // ${harga_meja selama 1 bulan} * ${durasi_langganan} * ${jumlah_meja}
-                        $totalTable = $dataBilling->prices * $duration * $tableQty;
-                        
-            
-                        $totalItems = $totalTable + $totalKiosk + $totalSignage;
-            
-                    }else{
-                        $totalItems = $dataBilling->prices;
-                    }
-           }
+        if (!$dataBilling) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Lisensi Tidak Tersedia'
+            ]);
+        }
+
+        $currency = $country !== 'Indonesia' ? 'en_prices' : 'prices';
+
+        $totalSignage = $signagePrices->$currency * $duration * $signageQty;
+        $totalKiosk = $kioskPrices->$currency * $duration * $kioskQty;
+        $totalTable = $dataBilling->$currency * $duration * $tableQty;
+        $finalTotal = $totalSignage + $totalKiosk + $totalTable;
+
             return response()->json([
                 'status' => 200,
                 'data' => [
                     'total_kiosk_prices' => $totalKiosk ,
                     'total_table_prices' =>  $totalTable,
-                    'signage_prices' => $totalSignage,
-                    'license_prices' => $totalItems ,
-                    'billing_type' => $dataBilling->billing_types,
-                    'subscription_duration' => $dataBilling->subscription_duration,
-                    'country' => Auth::user()->Branch->country,
+                    'total_signage_prices' => $totalSignage,
+                    'final_total' => $finalTotal ,
+                    'country' => $country,
                 ]
             ]);
         

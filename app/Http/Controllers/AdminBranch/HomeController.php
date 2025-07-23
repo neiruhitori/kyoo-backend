@@ -78,7 +78,12 @@ class HomeController extends Controller
             $directQueueGraph = DirectQueue::whereHas('Service', function($query){
                 $query->whereBranchId(Auth::user()->branch_id);
             })
-                ->select(DB::raw("date_part('day', created_at) as day"), DB::raw('count(id) as total'))
+                ->select(
+                        DB::raw("to_char(created_at, 'DD Mon') as day"), 
+                        DB::raw('count(id) as total'),
+                        DB::raw("SUM(CASE WHEN status = 'end served' THEN 1 ELSE 0 END) as served"),
+                        DB::raw("SUM(CASE WHEN status = 'no show' THEN 1 ELSE 0 END) as no_show")
+                        )
                 ->whereMonth('created_at', date('m'))
                 ->whereYear('created_at', date('Y'))
                 ->groupBy('day')
@@ -89,7 +94,10 @@ class HomeController extends Controller
         $parseLicenseExpirationDate = Carbon::parse($licenseExpirationDate);
         $diffDayExpiredAccount = Carbon::now()->diffInDays($parseLicenseExpirationDate);
         $isShowExpiredBanner = $licenseExpirationDate && $diffDayExpiredAccount <= config('app.license_expiration_day');
-
+        if (session()->has('just_logged_in')) {
+            session()->flash('show_login_popup', true);
+            session()->forget('just_logged_in'); // supaya tidak muncul lagi di refresh selanjutnya
+        }
         return view('adminBranch.home', [
             'totalAppointment' => $isAppointment ? count($appointments) : 0,
             'totalServed' => $isAppointment ? count($appointments->where('status', 'served')) : 0,
@@ -102,6 +110,7 @@ class HomeController extends Controller
             'exhibition' => isset($exhibition) ? $exhibition : null,
             'isShowExpiredBanner' => $isShowExpiredBanner,
             'licenseExpirationDay' => $diffDayExpiredAccount,
+            'month' => date('F') ?? 'January'
         ]);
     }
 
@@ -173,4 +182,62 @@ class HomeController extends Controller
 
         return redirect($url);
     }
+    public function getDataChart(Request $request)
+    {
+        $month = $request->month ?? date('m');
+        $isAppointment = Auth::user()->Branch->BranchType->is_appointment;
+        $isDirectQueue = Auth::user()->Branch->BranchType->is_direct_queue;
+        $isExhibition = Auth::user()->Branch->BranchType->is_exhibition;
+
+        if($isDirectQueue){
+            $data = DirectQueue::whereHas('Service', function($query){
+                $query->whereBranchId(Auth::user()->branch_id);
+            })
+                ->select(
+                        DB::raw("to_char(created_at, 'DD-MM') as day"), 
+                        DB::raw("to_char(created_at, 'YYYY-MM-DD') as full_date"), 
+                        DB::raw('count(id) as total'),
+                        DB::raw("SUM(CASE WHEN status = 'end served' THEN 1 ELSE 0 END) as served"),
+                        DB::raw("SUM(CASE WHEN status = 'no show' THEN 1 ELSE 0 END) as no_show")
+                        )
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', date('Y'))
+                ->groupBy('day', 'full_date')
+                ->get()
+                ->keyBy('full_date');
+
+                $days = $this->getAllDaysInMonth($month);
+
+                $result = collect($days)->map(function($d) use ($data) {
+                    $date = $d['full_date'];
+
+                    return [
+                        'day' => $d['day'],
+                        'total' => $data[$date]->total ?? 0,
+                        'served' => $data[$date]->served ?? 0,
+                        'no_show' => $data[$date]->no_show ?? 0,
+                    ];
+                });
+
+            return response()->json([
+                'data' => $result
+            ]);
+            
+        }
+    }
+    public function getAllDaysInMonth($month) {
+            $days = [];
+            $startDate = \Carbon\Carbon::createFromDate(date('Y'), $month, 1);
+            $endDate = $startDate->copy()->endOfMonth();
+
+            while ($startDate <= $endDate) {
+                $days[] = [
+                    'day' => $startDate->format('d'),
+                    'full_date' => $startDate->format('Y-m-d'),
+                ];
+                $startDate->addDay();
+            }
+
+            return $days;
+        }
 }

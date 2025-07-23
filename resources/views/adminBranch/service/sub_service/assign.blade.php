@@ -5,44 +5,57 @@
 @endpush
 
 @section('content')
-    <div class="card mb-4 custom-info" data-open="open" role="alert">
-        <div class="card-body">
-            <div class="custom-info-head">
-                <h6 class="font-weight-bold my-0">
-                    <span class="fas fa-info-circle text-primary mr-1"></span>
-                    {{ __('Information') }}
-                </h6>
+     <div class="accordion mb-3" id="accordionParent3">
+        <div class="border-left-primary rounded " style="border-radius: 0.5rem; overflow: hidden;">
 
-                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    {{ __('Show') }}
+            <div  id="headingOne" style="background-color: #E6F3FF;">
+                <button 
+                    class="btn btn-block text-left d-flex align-items-center accordion-toggle-custom" 
+                    type="button"
+                    data-toggle="collapse" 
+                    data-target="#accordion3" 
+                    aria-expanded="true" 
+                    aria-controls="accordion3"
+                    style="color: #103C7C; gap: 0.5rem; outline: none; box-shadow: none; padding: 1rem;"
+                    >
+                        <span class="fas fa-info-circle text-primary"></span>
+                            <h5 class="font-weight-bold my-0 text-primary">
+                                {{ __('Information') }}
+                            </h5>
                 </button>
             </div>
 
-            <div class="custom-info-body">
-                <p>
-                    <ul style="padding-left: 2rem;">
-                        <li style="margin-bottom: 0.25rem;">
-                            {{ __('infobox.subservice') }}
-                        </li>
-                    </ul>
-                </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">{{ __('Hide') }}</button>
+            <div 
+                id="accordion3" 
+                class="collapse show" 
+                aria-labelledby="headingOne" 
+                data-parent="#accordionParent3" 
+                style="background-color: #E6F3FF;"
+                >
+                    <div style="padding: 0rem 1rem 1rem 1rem;">
+                       <ul style="">
+                            <li style="margin-bottom: 0.25rem;">
+                                {{ __('infobox.subservice') }}
+                            </li>
+                        </ul>
+                    </div>
             </div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
+            @include('layouts.alert')
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Sub-Service list in :serv', ['serv' => $service->name]) }}</h6>
-                </div>
+                {{-- <div class="card-header py-3"> --}}
+                    {{-- </div> --}}
                 <div class="card-body">
-                    @include('layouts.alert')
-
                     <div class="row">
-                        <div class="col-md-12 text-right">
-                            <a href="{{ route('admin-branch.branch-configuration.service.add.sub-service', $service->id) }}" class="btn btn-primary">
+                        <div class="col-md-6">
+                            <h5 class="mb-4 font-weight-bold" style="color: #103C7C">{{ __('Sub-Service list in :serv', ['serv' => $service->name]) }}</h5>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <a href="{{ route('admin-branch.branch-configuration.service.add.sub-service', $service->id) }}" class="btn btn-primary" style="background-color: #103C7C">
                                 {{ __('create.module', ['module' => __('Sub Service')]) }}
                             </a>
                         </div>
@@ -52,7 +65,7 @@
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
+                                    <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                         <tr>
                                             <th>{{ __('Service Name') }}</th>
                                             <th>{{ __('Sub Service') }}</th>
@@ -97,6 +110,41 @@
             </div>
         </div>
     </div>
+
+<style>
+table {
+    border: 1px solid #33A0FF4D; 
+    }
+
+table th,
+table td {
+
+        border: 1px solid #33A0FF4D !important;
+        text-align: center;
+    }
+table td {
+        color: black
+    }
+
+.accordion-toggle-custom {
+            transition: padding 0.3s ease;
+        }
+
+.accordion-toggle-custom::after {
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                transition: transform 0.2s ease;
+                margin-left: auto;
+            }
+
+.accordion-toggle-custom[aria-expanded="false"]::after {
+                    content: "\f107";
+                }
+
+.accordion-toggle-custom[aria-expanded="true"]::after {
+                    content: "\f106";
+                }
+</style>
 @endsection
 
 @push('js')

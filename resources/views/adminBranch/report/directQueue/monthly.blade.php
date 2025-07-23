@@ -23,43 +23,32 @@
             border: 0px !important;
             font-weight: 500px !important;
         }
+    table {
+            border: 1px solid #33A0FF4D; 
+        }
+
+    table th,
+    table td {
+            border: 1px solid #33A0FF4D !important;
+            }
+    table td {
+                color: black
+            }
     </style>
 @endpush
 @section('content')
-    {{-- <div class="card mb-4 custom-info" data-open="open" role="alert">
-        <div class="card-body">
-            <div class="custom-info-head">
-                <h6 class="font-weight-bold my-0">
-                    <span class="fas fa-info-circle text-primary mr-1"></span>
-                    Informasi
-                </h6>
-
-                <button class="custom-muted-btn font-weight-bold text-warning" data-toggle="alert">
-                    Tampilkan
-                </button>
-            </div>
-
-            <div class="custom-info-body">
-                <p>
-                    {{ __('For free license, report only available for last 3 months') }}
-                </p>
-                <button class="btn btn-warning float-right" data-toggle="alert">Sembunyikan</button>
-            </div>
-        </div>
-    </div> --}}
 
     <div class="row">
         <div class="col-xl-12 col-lg-7">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Monthly Report') }}</h6>
-                </div>
-
-                <div class="card-body">
-                    @if (session('error'))
+             @if (session('error'))
                         @include('layouts.alert')
-                    @endif
-
+            @endif
+            <div class="card shadow mb-4">
+                {{-- <div class="card-header py-3">
+                </div> --}}
+                
+                <div class="card-body">
+                    <h5 class="m-0 font-weight-bold " style="color: #103c7c">{{ __('Monthly Report') }}</h5>
                     <div class="row">
                         <div class="col-lg-4 col-md-12">
                             <form action="" method="get">
@@ -98,7 +87,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
+                                    <button class="btn btn-primary mt-3" style="background-color: #103C7C">{{ __('Filter') }}</button>
                                 </div>
                             </form>
                         </div>
@@ -107,7 +96,7 @@
                         <div class="col">
                             <div class="table-responsive mt-5">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
+                                    <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                         <th>{{ __('Queue Number') }}</th>
                                         <th>{{ __('Booking Code') }}</th>
                                         <th>{{ __('Queue Taken') }}</th>

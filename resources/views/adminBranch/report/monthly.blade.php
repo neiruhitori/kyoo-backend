@@ -23,6 +23,17 @@
             border: 0px !important;
             font-weight: 500px !important;
         }
+            table {
+            border: 1px solid #33A0FF4D; 
+        }
+
+    table th,
+    table td {
+            border: 1px solid #33A0FF4D !important;
+            }
+    table td {
+                color: black
+            }
     </style>
 @endpush
 @section('content')
@@ -50,14 +61,14 @@
 
     <div class="row">
         <div class="col-xl-12 col-lg-7">
+            @if (session('error'))
+                @include('layouts.alert')
+            @endif
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Monthly Report') }}</h6>
-                </div>
+                {{-- <div class="card-header py-3"> --}}
+                    {{-- </div> --}}
                 <div class="card-body">
-                    @if (session('error'))
-                        @include('layouts.alert')
-                    @endif
+                    <h5 class="mb-4 font-weight-bold" style="color: #103C7C">{{ __('Monthly Report') }}</h5>
 
                     <div class="row">
                         <div class="col-lg-4 col-md-12">
@@ -97,7 +108,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
+                                    <button class="btn btn-primary mt-3" style="background-color: #103c7c">{{ __('Filter') }}</button>
                                 </div>
                             </form>
                         </div>
@@ -106,7 +117,7 @@
                         <div class="col">
                             <div class="table-responsive mt-5">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
+                                    <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                         <th>{{ __('Queue Number') }}</th>
                                         <th>{{ __('Name') }}</th>
                                         <th>{{ __('Email') }}</th>

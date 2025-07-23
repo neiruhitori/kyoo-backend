@@ -1,6 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    table {
+            border: 1px solid #33A0FF4D; 
+        }
+
+    table th,
+    table td {
+            border: 1px solid #33A0FF4D !important;
+            }
+    table td {
+                color: black
+            }
+</style>
     <div class="row">
         <div class="col-xl-12 col-lg-7">
             <form id="filterForm" class="mb-4" style="width: 100%; max-width: 300px;">
@@ -56,15 +69,15 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Filter</button>
+                <button type="submit" class="btn btn-primary" style="background-color: #103C7C">Filter</button>
             </form>
 
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Department Report') }}</h6>
-                </div>
-
-                <div class="card-body">
+                {{-- <div class="card-header py-3"> --}}
+                    {{-- </div> --}}
+                    
+                    <div class="card-body">
+                    <h5 class="mb-4 font-weight-bold " style="color: #103C7C">{{ __('Department Report') }}</h5>
                     <div class="d-flex justify-content-between mb-3">
                         <div>
                             <a href="{{ route('admin-branch.report.department.chart') }}" class="btn btn-outline-dark">
@@ -85,7 +98,7 @@
 
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped mb-4" id="table">
-                            <thead>
+                            <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                 <tr>
                                     <th rowspan="2" class="align-middle">{{ __('Department') }}</th>
                                     <th rowspan="2" class="align-middle">{{ __('Workstation') }}</th>

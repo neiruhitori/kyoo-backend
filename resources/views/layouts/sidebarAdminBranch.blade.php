@@ -69,11 +69,11 @@
         </li>
     @endif
 
-    <li class="nav-item {{ !request()->is('admin-branch/branch-qr-code') ?: 'active' }}">
+    {{-- <li class="nav-item {{ !request()->is('admin-branch/branch-qr-code') ?: 'active' }}">
         <a class="nav-link" href="{{ route('admin-branch.branch-qr-code') }}">
             <i class="fas fa-fw fa-qrcode"></i>
             <span>{{ __('Branch QR Code') }}</span></a>
-    </li>
+    </li> --}}
 
     <!-- @if (
       Auth::user()->Branch->BranchType->is_premium &&
@@ -88,13 +88,14 @@
     @endif -->
 
     <li class="nav-item {{ !request()->is('admin-branch/product-guide/*') ?: 'active' }}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#instruction-of-use"
+        <a class="nav-link" href="{{ route('admin-branch.product-guide.queue-configuration') }}" 
+        {{-- data-toggle="collapse" data-target="#instruction-of-use" --}}
            aria-expanded="true" aria-controls="instruction-of-use">
             <i class="fas fa-fw fa-info-circle"></i>
             <span>{{ __('Instruction Help') }}</span>
         </a>
 
-        <div class="collapse {{ !request()->is('admin-branch/product-guide/*') ?: 'show' }}" id="instruction-of-use"
+        {{-- <div class="collapse {{ !request()->is('admin-branch/product-guide/*') ?: 'show' }}" id="instruction-of-use"
              data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a
@@ -111,7 +112,7 @@
                     {{ __('Customer Guide') }}
                 </a>
             </div>
-        </div>
+        </div> --}}
     </li>
 
     <!-- Divider -->

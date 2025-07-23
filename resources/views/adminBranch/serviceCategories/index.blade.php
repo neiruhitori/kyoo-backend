@@ -1,13 +1,15 @@
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">
-            {{ __('list.module', ['module' => __('Service Category')]) }}
-        </h6>
-    </div>
+    {{-- <div class="card-header py-3">
+    </div> --}}
     <div class="card-body">
         <div class="row">
-            <div class="col-md-12 text-right">
-                <a href="{{route('admin-branch.branch-configuration.service-category.create')}}" class="btn btn-primary"">
+            <div class="col-md-6">
+                <h5 class="m-0 font-weight-bold" style="color: #103C7C">
+                    {{ __('list.module', ['module' => __('Service Category')]) }}
+                </h5>
+            </div>
+            <div class="col-md-6 text-right">
+                <a href="{{route('admin-branch.branch-configuration.service-category.create')}}" class="btn btn-primary" style="background-color: #103C7C">
                     {{ __('create.module', ['module' => __('Service Category')]) }}
                 </a>
             </div>
@@ -16,7 +18,7 @@
             <div class="col-md-12 mt-3">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                        <thead style="background-color:#33A0FF4D; color: #103C7C;">
                             <tr>
                                 <th>{{ __('Name') }}</th>
                                 <th>{{ __('Action') }}</th>
@@ -65,3 +67,13 @@
         </div>
     </div>
 </div>
+<style>
+    #dataTable {
+        border: 1px solid #33A0FF4D; 
+    }
+    
+    #dataTable th,
+    #dataTable td {
+        border: 1px solid #33A0FF4D !important; 
+    }
+</style>

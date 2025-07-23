@@ -26,16 +26,18 @@
 @section('content')
     <div class="row">
         <div class="col-xl-12 col-lg-7">
+            @if (!$success)
+                @include('layouts.alert')
+            @endif
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Upcoming Appointment') }}</h6>
-                </div>
-                <div class="card-body">
-                    @if (!$success)
-                        @include('layouts.alert')
-                    @endif
-                    <div class="row">
-                        <div class="col-lg-4 col-md-12">
+                {{-- <div class="card-header py-3"> --}}
+                    {{-- </div> --}}
+                    <div class="">
+                        <div class="row p-3">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <h5 class="m-0 font-weight-bold" style="color: #103C7C">{{ __('Upcoming Appointment') }}</h5>
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-end">
                             <form action="" method="get" class="d-flex align-items-center">
                                 <div class="form-row align-items-end">
                                     <div class="col-auto">
@@ -43,7 +45,7 @@
                                         <input type="date" name="date" class="form-control" value="{{ $date }}" min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"/>
                                     </div>
                                     <div class="col-auto">
-                                        <button class="btn btn-primary mt-3">{{ __('Filter') }}</button>
+                                        <button class="btn btn-primary mt-3 px-4" style="background-color: #103C7C">{{ __('Filter') }}</button>
                                     </div>
                                 </div>
                             </form>
@@ -53,7 +55,7 @@
                         <div class="col">
                             <div class="table-responsive mt-3">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
+                                    <thead style="background-color:#33A0FF4D; color: #103C7C;">
                                         <th>{{ __('Order Date') }}</th>
                                         <th>{{ __('Reservation Date') }}</th>
                                         <th>{{ __('Booking Code') }}</th>

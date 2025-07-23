@@ -1,34 +1,38 @@
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">
-            {{ __('list.module', ['module' => __('Service')]) }}
-        </h6>
-    </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-3">
-                <form action="" method="get">
-                    <div class="d-flex">
-                        <select class="form-control" name="filter">
-                            <option value="all" {{ $filter == 'all' ? 'selected' : '' }}>All</option>
-                            <option value="active" {{ $filter == 'active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ $filter == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                        </select>
-                        <button type="submit" class="mx-2 btn btn-primary">Filter</button>
-                    </div>
-                </form>
+        <div class="row align-items-center">
+            <div class="col-md-12 mb-3">
+                <h5 class="m-0 font-weight-bold" style="color: #103C7C">
+                    {{ __('list.module', ['module' => __('Service')]) }}
+                </h5>
             </div>
-            <div class="col-md-9 text-right">
-                <a href="{{route('admin-branch.branch-configuration.service.create')}}" class="btn btn-primary"">
-                    {{ __('create.module', ['module' => __('Service')]) }}
-                </a>
+            <div class="col-md-6">
+                <div style="max-width:250px">
+                    <form action="" method="get" class="m-0">
+                        <div class="d-flex">
+                            <select class="form-control" name="filter">
+                                <option value="all" {{ $filter == 'all' ? 'selected' : '' }}>All</option>
+                                <option value="active" {{ $filter == 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ $filter == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            </select>
+                            <button type="submit" class="mx-2 btn btn-primary" style="background-color: #103C7C">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end align-items-center">
+                <div>
+                    <a href="{{route('admin-branch.branch-configuration.service.create')}}" class="btn btn-primary px-4" style="background-color: #103C7C">
+                        {{ __('create.module', ['module' => __('Service')]) }}
+                    </a>
+                </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 mt-3">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                        <thead style="background-color:#33A0FF4D; color: #103C7C;">
                             <tr>
                                 <th>{{ __('Name') }}</th>
                                 <th>{{ __('Department') }}</th>
@@ -161,3 +165,13 @@
         </div>
     </div>
 </div>
+<style>
+    #dataTable {
+        border: 1px solid #33A0FF4D; 
+    }
+    
+    #dataTable th,
+    #dataTable td {
+        border: 1px solid #33A0FF4D !important; 
+    }
+</style>

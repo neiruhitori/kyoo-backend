@@ -22,7 +22,7 @@
                                     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" required>
                                     @include('layouts.inputError', ['errorName' => 'name'])
                                 </div>
-                                <button class="btn btn-primary">{{ __('Save') }}</button>
+                                <button class="btn btn-primary" style="background-color: #103c7c">{{ __('Save') }}</button>
                             </form>
                         </div>
                     </div>
