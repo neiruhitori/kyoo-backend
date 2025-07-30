@@ -39,7 +39,10 @@ class HomeController extends Controller
             $appointmentGraph = Appointment::whereHas('Slot.Service', function($query){
                 $query->where('branch_id', Auth::user()->branch_id);
             })
-                ->select(DB::raw("date_part('day', date) as day"), DB::raw('count(id) as total'))
+                ->select(DB::raw("date_part('day', date) as day"), 
+                         DB::raw('count(id) as total'),
+                         DB::raw("SUM(CASE WHEN status = 'end served' THEN 1 ELSE 0 END) as served"),
+                         DB::raw("SUM(CASE WHEN status = 'no show' THEN 1 ELSE 0 END) as no_show"))
                 ->whereMonth('date', date('m'))
                 ->whereYear('date', date('Y'))
                 ->groupBy('day')
@@ -100,7 +103,7 @@ class HomeController extends Controller
         }
         return view('adminBranch.home', [
             'totalAppointment' => $isAppointment ? count($appointments) : 0,
-            'totalServed' => $isAppointment ? count($appointments->where('status', 'served')) : 0,
+            'totalServed' => $isAppointment ? count($appointments->where('status', 'end served')) : 0,
             'totalNoShow' => $isAppointment ? count($appointments->where('status', 'no show')) : 0,
             'appointmentGraph' => $isAppointment ? $appointmentGraph : [],
             'totalDirectQueue' => $isDirectQueue ? count($directQueues) : 0,
@@ -191,6 +194,41 @@ class HomeController extends Controller
 
         if($isDirectQueue){
             $data = DirectQueue::whereHas('Service', function($query){
+                $query->whereBranchId(Auth::user()->branch_id);
+            })
+                ->select(
+                        DB::raw("to_char(created_at, 'DD-MM') as day"), 
+                        DB::raw("to_char(created_at, 'YYYY-MM-DD') as full_date"), 
+                        DB::raw('count(id) as total'),
+                        DB::raw("SUM(CASE WHEN status = 'end served' THEN 1 ELSE 0 END) as served"),
+                        DB::raw("SUM(CASE WHEN status = 'no show' THEN 1 ELSE 0 END) as no_show")
+                        )
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', date('Y'))
+                ->groupBy('day', 'full_date')
+                ->get()
+                ->keyBy('full_date');
+
+                $days = $this->getAllDaysInMonth($month);
+
+                $result = collect($days)->map(function($d) use ($data) {
+                    $date = $d['full_date'];
+
+                    return [
+                        'day' => $d['day'],
+                        'total' => $data[$date]->total ?? 0,
+                        'served' => $data[$date]->served ?? 0,
+                        'no_show' => $data[$date]->no_show ?? 0,
+                    ];
+                });
+
+            return response()->json([
+                'data' => $result
+            ]);
+            
+        }
+        if($isAppointment){
+            $data = Appointment::whereHas('Service', function($query){
                 $query->whereBranchId(Auth::user()->branch_id);
             })
                 ->select(
