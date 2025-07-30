@@ -50,8 +50,11 @@ class ReportingWorkstationController extends Controller
             })->get();
             $totalServeDuration = (int) $value->total_serve_duration;
             $totalOperatingDuration = (int) $value->total_operating_duration;
-            $productivityPercentage = ($totalServeDuration / $totalOperatingDuration) * 100;
-
+            // $productivityPercentage = ($totalServeDuration / $totalOperatingDuration) * 100;
+             $productivityPercentage = $totalOperatingDuration > 0
+                                    ? ($totalServeDuration / $totalOperatingDuration) * 100
+                                    : 0;
+                                    
             return [
                 'branch_id' => (int) $value->branch_id,
                 'department_id' => (int) $value->department_id,
