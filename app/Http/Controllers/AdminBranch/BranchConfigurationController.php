@@ -42,7 +42,9 @@ class BranchConfigurationController extends Controller
         'promotion' => 'off',
         'wa_notification' => 'off',
         'wa_notification_owner' => 'off',
-        'serving_directly' => 'off'
+        'serving_directly' => 'off',
+        'notif_popup' => 'off',
+        'notif_sound' => 'off',
     ];
 
     foreach($defaults as $key => $value){
@@ -50,6 +52,7 @@ class BranchConfigurationController extends Controller
         $data[$key] = $value;
       }
     }
+    // dd($data);
 
     if(!isset($request->wa_notification_owner) && empty($request->phone_owner)){
       $request->validate([

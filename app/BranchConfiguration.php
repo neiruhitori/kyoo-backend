@@ -30,5 +30,7 @@ class BranchConfiguration extends Model
     'web_style',
     'ticket_style',
     'cs_page',
+    'notif_popup',
+    'notif_sound'
   ];
 }

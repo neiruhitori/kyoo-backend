@@ -22,10 +22,10 @@ class BranchConfigGuideController extends Controller
             ),
             'short_url' => url(Auth::user()->branch_id),
         ];
-        $branchConfig = Auth::user()->Branch->BranchConfiguration;
-        if (Auth::user()->Branch->queue_type == 'onsite' && $branchConfig->queue_layout_configuration == "modern-ui") {
-            return view('adminBranch.branchConfigGuide.modernUI');
-        }
+        // $branchConfig = Auth::user()->Branch->BranchConfiguration;
+        // if (Auth::user()->Branch->queue_type == 'onsite' && $branchConfig->queue_layout_configuration == "modern-ui") {
+        //     return view('adminBranch.branchConfigGuide.modernUI');
+        // }
 
         return view('adminBranch.branchConfigGuide.standardUI', $data);
     }

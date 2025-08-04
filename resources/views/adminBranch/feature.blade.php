@@ -71,7 +71,6 @@
                                         </div>
                             </div>
 
-
                             <div class="col-md-6">
                                 <div class="form-group">
                                             <label for="maximum_requeue_count">{{ __('Max Requeue') }}</label>
@@ -84,7 +83,6 @@
                                             @include('layouts.inputError', ['errorName' => 'maximum_requeue_count',])
                                 </div>
                             </div>
-
 
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -160,10 +158,10 @@
                             </div>
 
 
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="row">
                                 @if (Auth::user()->Branch->hasAccess('Panggilan Suara'))
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="">{{ __('Voice Call') }}</label>
                                             <div class="form-group">
                                                 <div class="form-check">
@@ -183,7 +181,7 @@
                                     </div>
                                 @endif
                                     @if (Auth::user()->Branch->hasAccess('Promosi'))
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                             <label for="">{{ __('Promotion') }}</label>
                                             <div class="form-group">
                                                 <div class="form-check">
@@ -204,7 +202,7 @@
                                         </div>
                                     @endif
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="wa-notification">{{ __('Whatsapp Notification') }}</label>
                                         <div class="form-group">
                                             <div class="form-check">
@@ -224,7 +222,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="serving-directly">{{ __('Serve Directly') }}</label>
                                         <div class="form-group">
                                             <div class="form-check">
@@ -241,6 +239,46 @@
                                             </div>
         
                                             @include('layouts.inputError', ['errorName' => 'serving_directly'])
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label for="notif_popup">{{ __('Pop Up Notification') }}</label>
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="notif_popup" class="form-check-input"
+                                                    id="serving-directly"
+                                                    {{
+                                                        ($branch_config && $branch_config->notif_popup) ||
+                                                        old('notif_popup')
+                                                        ? 'checked'
+                                                        : ''
+                                                    }}>
+        
+                                                <label for="notif_popup" class="form-check-label">{{ __('Activate') }}</label>
+                                            </div>
+        
+                                            @include('layouts.inputError', ['errorName' => 'notif_popup'])
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label for="notif_sound">{{ __('Sound Notification') }}</label>
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="notif_sound" class="form-check-input"
+                                                    id="serving-directly"
+                                                    {{
+                                                        ($branch_config && $branch_config->notif_sound) ||
+                                                        old('notif_sound')
+                                                        ? 'checked'
+                                                        : ''
+                                                    }}>
+        
+                                                <label for="notif_sound" class="form-check-label">{{ __('Activate') }}</label>
+                                            </div>
+        
+                                            @include('layouts.inputError', ['errorName' => 'notif_sound'])
                                         </div>
                                     </div>
                                     

@@ -12,6 +12,9 @@
         <div class="text-dark p-3">
           <p>{{ username }}</p>
           <h5 class="font-weight-bold">{{ this.workstation.label }}</h5>
+          <h6 class="font-weight-bold text-white p-1 rounded bg-info" v-if="notif_popup && notificationDenied">
+              You have notification feature on! Please allow the notification in your browser settings
+          </h6>
         </div>
       </div>
 
@@ -142,8 +145,8 @@
       </div>
       <div class="col-md-6 mb-3">
         <div class="card shadow rounded">
-          <div class="card-header">
-            {{ t('Current Queue') }}
+          <div class="card-header d-flex justify-content-between">
+              {{ t('Current Queue') }}
           </div>
           <div class="card-body">
             <div class=" d-flex flex-wrap justify-content-between" v-if="queue_detail">
@@ -579,7 +582,21 @@
                  </div>
              </div>
          </div>
+         <!-- <div class="permission-wrapper" >
+                <div class="permission-body">
+                    <p>
+                        {{ t('Your browser is blocking notification') }}
+                    </p>
+                    <button
+                        class="active-button"
+                        @click="requestPermission"
+                    >
+                    {{ t('Enable Notification') }}
+                    </button>
+                </div>
+            </div> -->
   </div>
+  
 </template>
 
 <script>
@@ -616,6 +633,14 @@ export default {
       default: false
     },
     serving_directly: {
+      type: Boolean,
+      default: false
+    },
+    notif_popup: {
+      type: Boolean,
+      default: false
+    },
+    notif_sound: {
       type: Boolean,
       default: false
     },
@@ -695,11 +720,16 @@ export default {
       timerInterval: null,
       audioChunks: [],
       mediaRecorder: null,
+      notificationDenied: false,
     };
   },
 
   async mounted () {
     await this.getQueues();
+    if (typeof Notification !== 'undefined') {
+      this.requestPermission();
+      this.notificationDenied = Notification.permission === 'denied';
+    }
     const [selected_queue] = this.queues.filter(v => v.status === 'served');
     if (selected_queue) {
       this.selectQueue(selected_queue.queue_no);
@@ -747,6 +777,12 @@ export default {
           duration: 3000,
           dismissible: true,
         });
+        if(this.notif_popup){
+          this.showNotification();
+        }
+        if(this.notif_sound){
+          this.playNotificationSound();
+        }
         this.getQueues();
       }
     );
@@ -761,6 +797,27 @@ export default {
   },
 
   methods: {
+    requestPermission() {
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission()
+      }
+    },
+    showNotification() {
+      if (Notification.permission === 'granted') {
+        const notif = new Notification('Antrian Baru Masuk!');
+
+        notif.onclick = () => {
+            window.focus();
+            this.$router.push('/cs/directQueue/monitor');
+        };
+      }
+    },
+    playNotificationSound() {
+      const audio = new Audio('/storage/audio/vo/intro_bell.wav');
+      audio.play().catch(error => {
+        console.warn("Autoplay blocked or error:", error);
+      });
+    },
     t(key, params = {}) {
          const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
             if (translation) {
@@ -1327,6 +1384,22 @@ selected_queue: selected_queue.created_at
 </script>
 
 <style>
+.permission-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+}
+.permission-body {
+    text-align: center;
+}
 .pointer {
   cursor: pointer;
 }
