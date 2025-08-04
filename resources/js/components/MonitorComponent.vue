@@ -21,7 +21,12 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-md-12 text-right">
+            <div class="col-md-6">
+               <h6 class="font-weight-bold text-white p-1 rounded bg-info" v-if="notif_popup && notificationDenied">
+                  You have Notification on! Please allow the notification in your browser settings
+              </h6>
+            </div>
+            <div class="col-md-6 text-right">
               <a
                 href="/cs/directQueue/create"
                 class="btn btn-primary"
@@ -408,6 +413,14 @@ export default {
       type: Boolean,
       default: false
     },
+    notif_popup: {
+      type: Boolean,
+      default: false
+    },
+    notif_sound: {
+      type: Boolean,
+      default: false
+    },
     auth: {
       type: Object,
       required: true
@@ -467,11 +480,16 @@ export default {
       timerInterval: null,
       audioChunks: [],
       mediaRecorder: null,
+      notificationDenied: false,
     };
   },
 
   async mounted () {
     await this.getQueues();
+    if (typeof Notification !== 'undefined') {
+      this.requestPermission();
+      this.notificationDenied = Notification.permission === 'denied';
+    }
     const [selected_queue] = this.queues.filter(v => v.status === 'served');
     if (selected_queue) {
       this.selectQueue(selected_queue.queue_no);
@@ -490,6 +508,12 @@ export default {
           duration: 3000,
           dismissible: true,
         });
+        if(this.notif_popup){
+          this.showNotification();
+        }
+        if(this.notif_sound){
+          this.playNotificationSound();
+        }
         this.getQueues();
       }
     );
@@ -504,6 +528,27 @@ export default {
   },
 
   methods: {
+    requestPermission() {
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission()
+      }
+    },
+    showNotification() {
+      if (Notification.permission === 'granted') {
+        const notif = new Notification('Antrian Baru Masuk!');
+
+        notif.onclick = () => {
+            window.focus();
+            this.$router.push('/cs/directQueue/monitor');
+        };
+      }
+    },
+    playNotificationSound() {
+      const audio = new Audio('/storage/audio/vo/intro_bell.wav');
+      audio.play().catch(error => {
+        console.warn("Autoplay blocked or error:", error);
+      });
+    },
     t(key, params = {}) {
          const translation = this.messages[this.currentLocale] && this.messages[this.currentLocale][key];
             if (translation) {
