@@ -200,6 +200,7 @@ Route::namespace('AdminBranch')
          Route::post('/customer-feedback', 'CustomerFeedbackController@save')->name('feedback.save');
          Route::post('/customer-feedback/create', 'CustomerFeedbackController@addQuestion')->name('feedback.store');
          Route::put('/customer-feedback/edit/{id}', 'CustomerFeedbackController@update')->name('feedback.update');
+         Route::delete('/customer-feedback/delete/{id}', 'CustomerFeedbackController@delete')->name('feedback.delete');
         // Service Quality
         Route::middleware('access:Voice Recording')
             ->prefix('/service-quality')
