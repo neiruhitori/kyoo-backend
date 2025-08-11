@@ -42,6 +42,7 @@
         <div class="card shadow mb-4">
             <div class="card-body">
                 <form action="" method="post">
+                @csrf
                 <div class="row">
                     <div class="col-md-6">
                                 <div class="form-group">
