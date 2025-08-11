@@ -36,25 +36,26 @@
 @section('content')
 
 @include('layouts.alert')
-<form action="" method="post">
 @csrf
 <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="survey_type">{{ __('Survey Type') }}</label>
-                                @php
-                                    $selectedType = $config->type ?? 'default';
-                                @endphp
-                                <select name="survey_type" id="survey_type" class="form-control">
-                                    <option value="default" {{ $selectedType === 'default' ? 'selected' : '' }}> Default </option>
-                                    <option value="nps" {{ $selectedType === 'nps' ? 'selected' : '' }}> NPS </option>
-                                    <option value="csat" {{ $selectedType === 'csat' ? 'selected' : '' }}> CSAT </option>
-                                </select>
-                            </div>
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                                <form action="" method="post">
+                                <div class="form-group">
+                                    <label for="survey_type">{{ __('Survey Type') }}</label>
+                                    @php
+                                        $selectedType = $config->type ?? 'default';
+                                    @endphp
+                                    <select name="survey_type" id="survey_type" class="form-control">
+                                        <option value="default" {{ $selectedType === 'default' ? 'selected' : '' }}> Default </option>
+                                        <option value="nps" {{ $selectedType === 'nps' ? 'selected' : '' }}> NPS </option>
+                                        <option value="csat" {{ $selectedType === 'csat' ? 'selected' : '' }}> CSAT </option>
+                                    </select>
+                                </div>
+                            </form>
                         </div>
                         <div class="col-md-6 d-flex align-items-end" style="gap: 1rem">
                             <div class="form-group d-flex align-items-center">
@@ -89,8 +90,16 @@
                                         <textarea class="form-control" rows="3" readonly>{{ $question->question_text}}</textarea>
                                     </div>
                                     <div class="col-md-1 d-flex justify-content-end align-items-center flex-column" style="gap: 0.5rem">
-                                        <a href="{{ route('admin-branch.feedback.edit', $question->id) }}" class="btn btn-warning"><i class="fas fa-fw fa-edit"></i></a>
-                                        <button class="btn btn-danger"><i class="fas fa-fw fa-trash"></i></button>
+                                        <a href="{{ route('admin-branch.feedback.edit', $question->id) }}" class="btn btn-warning">
+                                            <i class="fas fa-fw fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('admin-branch.feedback.delete', $question->id) }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                            <button class="btn btn-danger" type="submit">
+                                                <i class="fas fa-fw fa-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -111,7 +120,6 @@
         </div>
 
     </div>
-</form>
 
 <style>
     textarea {

@@ -130,4 +130,15 @@ class CustomerFeedbackController extends Controller
         ]);
     }
 
+    public function delete($id)
+    {
+        $config = SurveyConfiguration::where('branch_id', Auth::user()->Branch->id)->first();
+        $question = SurveyQuestions::where('id',$id)->where('survey_config_id', $config->id)
+                    ->firstOrFail();
+        $question->delete();
+        return redirect()
+            ->route('admin-branch.feedback.index')
+            ->with('success', 'Question added');
+    }
+
 }
