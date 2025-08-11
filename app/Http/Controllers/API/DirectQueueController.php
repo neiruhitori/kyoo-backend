@@ -7,9 +7,13 @@ use App\Service;
 use App\DirectQueue;
 use App\BranchConfiguration;
 use App\Models\SecretKeyAPi;
+use App\Models\SurveyQuestions;
+use App\Models\SurveyResponses;
 use App\Events\OnsiteQueueUpdated;
+use App\Models\SurveyConfiguration;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Events\DirectQueue as DirectQueueEvent;
 use App\Interfaces\DirectQueueRepositoryInterface;
 use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
@@ -140,6 +144,67 @@ class DirectQueueController extends Controller
 
     public function feedback(DirectQueue $directQueue, DirectQueueFeedback $request)
     {
+        $branchId = $directQueue->branch_id;
+        $survey_config = SurveyConfiguration::where('branch_id', $branchId)->first();
+
+        if($survey_config && $survey_config->type !== 'default'){
+            $totalRating = 0;
+            if (is_array($request->rating)) {
+                foreach ($request->rating as $questionId => $rateValue) {
+                    SurveyResponses::updateOrCreate(
+                        [
+                            'direct_queue_id'   => $directQueue->id,
+                            'survey_question_id' => $questionId,
+                            'survey_type' => $survey_config->type,
+                        ],
+                        [
+                            'value' => $rateValue,
+                            'survey_config_id' => $survey_config->id,
+                            'branch_id' => $branchId,
+                            'queue_type' => 'onsite' ,
+                            'name' => $directQueue->name ?? 'no name',
+                            'email' => $directQueue->email ?? 'no email',
+
+                        ]
+                    );
+                    $totalRating += $rateValue;
+                }
+                
+                $directQueue->update([
+                    'rating' => $totalRating,
+                    'is_liked' => $request->is_liked,
+                ]);
+            } else {
+                $firstQuestionId = SurveyQuestions::where('survey_config_id', $survey_config->id)
+                    ->value('id');
+
+                SurveyResponses::updateOrCreate(
+                    [
+                        'direct_queue_id'    => $directQueue->id,
+                        'survey_question_id' => $firstQuestionId,
+                        'survey_type' => $survey_config->type,
+                    ],
+                    [
+                        'value' => $request->rating,
+                        'survey_config_id' => $survey_config->id,
+                        'branch_id' => $branchId,
+                        'queue_type' => 'onsite' ,
+                        'name' => $directQueue->name ?? 'no name',
+                        'email' => $directQueue->email ?? 'no email',
+                    ]
+                );
+                $directQueue->update([
+                    'rating' => $request->rating,
+                    'is_liked' => $request->is_liked,
+                ]);
+            }
+             return response()->json([
+                'success' => true,
+                'message' => 'success give feedback direct queue',
+                'data' => $directQueue
+            ]);
+        }
+
         $directQueue->update([
             'rating' => $request->rating,
             'is_liked' => $request->is_liked,

@@ -93,6 +93,8 @@ Route::post('direct-queue', 'API\DirectQueueController@store')->middleware('cook
 Route::get('direct-queue/{directQueue}', 'API\DirectQueueController@show');
 Route::post('direct-queue/{direct_queue}/feedback', 'API\DirectQueueController@feedback');
 
+Route::get('fetch-survey/{branchId}', 'AdminBranch\CustomerFeedbackController@fetch');
+
 Route::post('appointment-onsite', 'API\AppointmentOnsiteController@store')->middleware('cookie.clientid');
 Route::get('appointment-onsite/{appointmentOnsite}', 'API\AppointmentOnsiteController@show');
 Route::get('appointment-onsite/{branch}/slots', 'API\AppointmentOnsiteController@slots');

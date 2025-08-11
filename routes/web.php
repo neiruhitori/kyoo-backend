@@ -194,6 +194,12 @@ Route::namespace('AdminBranch')
             });
         });
 
+         Route::get('/customer-feedback', 'CustomerFeedbackController@index')->name('feedback.index');
+         Route::get('/customer-feedback/create', 'CustomerFeedbackController@create')->name('feedback.create');
+         Route::get('/customer-feedback/edit/{id}', 'CustomerFeedbackController@edit')->name('feedback.edit');
+         Route::post('/customer-feedback', 'CustomerFeedbackController@save')->name('feedback.save');
+         Route::post('/customer-feedback/create', 'CustomerFeedbackController@addQuestion')->name('feedback.store');
+         Route::put('/customer-feedback/edit/{id}', 'CustomerFeedbackController@update')->name('feedback.update');
         // Service Quality
         Route::middleware('access:Voice Recording')
             ->prefix('/service-quality')

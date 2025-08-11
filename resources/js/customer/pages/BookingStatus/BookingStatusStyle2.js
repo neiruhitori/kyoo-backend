@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useQuery, useMutation } from 'react-query'
 import { getBooking, cancelBooking } from '../../api/booking'
 import { fetchServiceById } from '../../api/services'
-import { createFeedback } from '../../api/feedback'
+import { createFeedback, fetchSurvey} from '../../api/feedback'
 import { fetchBranch } from '../../api/branch'
 import { getTermConditionByBranchId } from '../../api/termCondition'
 import { cancelAppointment } from '../../api/appointment'
@@ -33,16 +33,18 @@ import TicketRip from '../../components/TicketRip'
 import TicketCard from '../../components/TicketCard'
 import id from 'date-fns/locale/id'
 import en  from 'date-fns/locale/en-US';
+import SurveyRenderer from './../../components/SurveyRenderer';
 
 export default function BookingStatus() {
     const{t, locale} = useLocalization();
     const { bookingId, queueType, branchId } = useParams()
     const PAGE_TITLE = t(`${queueType} Status`)
 
-    const [rating, setRating] = useState(0)
+    const [rating, setRating] = useState({})
     const [allowRate, setAllowRate] = useState(false)
     const [isShowDialog, setIsShowDialog] = useState(false)
     const [isShowPromotion, setIsShowPromotion] = useState(true)
+    const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false)
 
     const promotionsQuery = usePromotions(branchId)
     const bookingQuery = useQuery('booking', () => getBooking(queueType, bookingId), {
@@ -57,6 +59,9 @@ export default function BookingStatus() {
     const branchQuery = useQuery('branch', () => fetchBranch(booking?.branch_id), {
         enabled: bookingQuery.status === 'success'
     })
+    const surveyQuery = useQuery('survey', () => fetchSurvey(branchId), {
+            enabled: bookingQuery.status === 'success'
+        })
     const feedbackMutation = useMutation('feedback', (data) => createFeedback(queueType, bookingId, data))
     const termConditionQuery = useQuery('termCondition', () => getTermConditionByBranchId(branchId))
 
@@ -64,6 +69,7 @@ export default function BookingStatus() {
     const service = serviceQuery.data
     const branch = branchQuery.data
     const termCondition = termConditionQuery.data
+    const surveyData = surveyQuery.data?.data
     let schedule = null;
 
     const branchType = branch?.branch_type.is_premium
@@ -101,7 +107,7 @@ export default function BookingStatus() {
     const bookingStatus = bookingStatusMap[booking?.status]
     useMemo(() => {
         if (booking) {
-            setRating(booking.rating)
+            setRating(booking.rating || {})
             setAllowRate(!booking.rating)
         }
     }, [booking])
@@ -111,12 +117,12 @@ export default function BookingStatus() {
     function handleFeedbackClick() {
         feedbackMutation.mutate({
             rating,
-            is_liked: false
+            is_liked: false,
+            bookingId
         }, {
-            onSuccess: (data) => {
-                if (data.success) {
-                    setAllowRate(false)
-                }
+            onSuccess: ({ data }) => {
+                setIsFeedbackSubmitted(true) 
+                booking.rating = data.rating
             }
         })
     }
@@ -437,36 +443,16 @@ export default function BookingStatus() {
                     </div>
                 </Card>}
 
-            {!!branchType && queueType === 'appointment' && booking?.status === 'end served' && <Card style={{
-                margin: '1.625rem 0',
-                padding: '1.625rem'
-            }}>
-                <p style={{
-                    textAlign: 'center'
-                }}>{t('How satisfied are you with our service?')}</p>
-
-                <div style={{
-                    marginTop: '1.125rem'
-                }}>
-                    <Rating
-                        rate={rating}
-                        onRateClick={rate => allowRate && setRating(rate)}
-                    />
-                </div>
-
-                {allowRate && <div style={{
-                    textAlign: 'center',
-                    marginTop: '1.125rem'
-                }}>
-                    <button type="submit" style={{
-                        padding: '.625rem 1.125rem',
-                        borderRadius: '14px',
-                        color: '#FFFFFF',
-                        backgroundColor: '#007EC6',
-                        border: 'none'
-                    }} onClick={handleFeedbackClick}>{t('Send Feedback')}</button>
-                </div>}
-            </Card>}
+            {!!branchType && queueType === 'appointment' && booking?.status === 'end served' &&
+                <SurveyRenderer
+                    surveyData={surveyData}
+                    booking={booking}
+                    rating={rating}
+                    setRating={setRating}
+                    handleFeedbackClick={handleFeedbackClick}
+                    isFeedbackSubmitted = {isFeedbackSubmitted}
+                    t={t}
+                />}
 
             <InfoAlert style={{
                 marginTop: '1.625rem',
