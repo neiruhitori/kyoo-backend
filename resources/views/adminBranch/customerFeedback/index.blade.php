@@ -41,9 +41,9 @@
     <div class="col-md-6">
         <div class="card shadow mb-4">
             <div class="card-body">
+                <form action="" method="post">
                 <div class="row">
                     <div class="col-md-6">
-                                <form action="" method="post">
                                 <div class="form-group">
                                     <label for="survey_type">{{ __('Survey Type') }}</label>
                                     @php
@@ -55,7 +55,7 @@
                                         <option value="csat" {{ $selectedType === 'csat' ? 'selected' : '' }}> CSAT </option>
                                     </select>
                                 </div>
-                            </form>
+                            
                         </div>
                         <div class="col-md-6 d-flex align-items-end" style="gap: 1rem">
                             <div class="form-group d-flex align-items-center">
@@ -74,6 +74,7 @@
                             </div>
                         </div>
                     </div>
+                </form>
                 </div>
             </div>
         </div>
