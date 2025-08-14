@@ -140,6 +140,7 @@ class AppointmentController extends Controller
                 $appointment->update([
                     'rating' => $totalRating,
                     'is_liked' => $request->is_liked,
+                    'survey_type' => $survey_config->type
                 ]);
             } else {
                 $firstQuestionId = SurveyQuestions::where('survey_config_id', $survey_config->id)
@@ -163,6 +164,7 @@ class AppointmentController extends Controller
                 $appointment->update([
                     'rating' => $request->rating,
                     'is_liked' => $request->is_liked,
+                    'survey_type' => $survey_config->type
                 ]);
             }
              return response()->json([
@@ -172,7 +174,11 @@ class AppointmentController extends Controller
             ]);
         }
 
-        $appointment->update($request->all());
+        $appointment->update([
+                    'rating' => $request->rating,
+                    'is_liked' => $request->is_liked,
+                    'survey_type' => $survey_config->type
+                ]);
         return response()->json([
             'success' => true,
             'message' => 'success give feedback appointment',

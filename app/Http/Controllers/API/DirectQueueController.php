@@ -173,6 +173,7 @@ class DirectQueueController extends Controller
                 $directQueue->update([
                     'rating' => $totalRating,
                     'is_liked' => $request->is_liked,
+                    'survey_type' => $survey_config->type
                 ]);
             } else {
                 $firstQuestionId = SurveyQuestions::where('survey_config_id', $survey_config->id)
@@ -196,6 +197,7 @@ class DirectQueueController extends Controller
                 $directQueue->update([
                     'rating' => $request->rating,
                     'is_liked' => $request->is_liked,
+                    'survey_type' => $survey_config->type
                 ]);
             }
              return response()->json([
@@ -206,9 +208,10 @@ class DirectQueueController extends Controller
         }
 
         $directQueue->update([
-            'rating' => $request->rating,
-            'is_liked' => $request->is_liked,
-        ]);
+                    'rating' => $request->rating,
+                    'is_liked' => $request->is_liked,
+                    'survey_type' => $survey_config->type
+                ]);
 
         return response()->json([
             'success' => true,

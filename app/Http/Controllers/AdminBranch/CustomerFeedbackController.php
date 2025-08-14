@@ -76,8 +76,9 @@ class CustomerFeedbackController extends Controller
             ['branch_id' => $branchId],
             ['type' => $request->survey_type]
         );
-
-        return back()->with('success', 'Survey type updated.');
+        return redirect()
+            ->route('admin-branch.feedback.index')
+            ->with('success', 'Survey Type updated');
     }
 
 
@@ -139,6 +140,11 @@ class CustomerFeedbackController extends Controller
         return redirect()
             ->route('admin-branch.feedback.index')
             ->with('success', 'Question added');
+    }
+
+    public function report()
+    {
+        # code...
     }
 
 }

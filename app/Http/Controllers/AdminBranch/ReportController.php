@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\AdminBranch;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Throwable;
 use App\Appointment;
 use App\DirectQueue;
 use App\WorkstationService;
-use App\Interfaces\ExhibitionRepositoryInterface;
-use App\Models\AppointmentOnsite;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
+use App\Models\SurveyQuestions;
+use App\Models\SurveyResponses;
+use App\Models\AppointmentOnsite;
 use Illuminate\Support\Facades\DB;
-use Throwable;
+use App\Models\SurveyConfiguration;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Interfaces\ExhibitionRepositoryInterface;
 
 class ReportController extends Controller
 {
@@ -431,50 +434,156 @@ class ReportController extends Controller
 
     public function customerSatisfaction(Request $request)
     {
-        $queue_type = $this->getUserQueueType();
-
+        $queueType = $this->getUserQueueType();
         $month = $request->month ?? date('n');
         $year = $request->year ?? date('Y');
-
-        $data['reports'] = [];
-        if ($queue_type == 'appointment') {
-            $data['reports'] = Appointment::select(
-                'date',
-                DB::raw('COUNT(id) AS total_queue'),
-                DB::raw('COUNT(rating) AS total_feedback'),
-                DB::raw('SUM(rating) AS total_rating')
-            )
-                ->whereMonth('date', $month)
-                ->whereYear('date', $year)
-                ->where('branch_id', Auth::user()->branch_id)
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get();
-        } else if ($queue_type == 'direct_queue') {
-            $data['reports'] = DirectQueue::select(
-                DB::raw('DATE(created_at) AS date'),
-                DB::raw('COUNT(id) AS total_queue'),
-                DB::raw('COUNT(rating) AS total_feedback'),
-                DB::raw('SUM(rating) AS total_rating')
-            )
-                ->whereMonth('created_at', $month)
-                ->whereYear('created_at', $year)
-                ->where('branch_id', Auth::user()->branch_id)
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get();
+        $branchId = Auth::user()->Branch->id;
+        $config = SurveyConfiguration::where('branch_id', $branchId)->first();
+       
+        if (!$config) {
+            if ($request->filled('survey_type') && $request->survey_type != 'default') {
+                    return back()->with('error', 'Survey configuration not found for this branch.');
+                }
+            $surveyType = 'default';
+            $questions = null;
+        } else {
+            $surveyType = $request->survey_type ?? $config->type;
+            $questions = $surveyType != 'default'
+                            ? $this->getQuestions($config->id, $config->type)
+                            : null;
         }
 
-        foreach ($data['reports'] as $report) {
-            $report->date = date('j F Y', strtotime($report->date));
-            $report->average_rate = $report->total_feedback ? $report->total_rating / $report->total_feedback : 0;
-            $report->feedback_percentage = (int) floor($report->total_feedback / $report->total_queue * 100);
-        }
+        if($surveyType == 'nps'){
+            $data['reports'] = $questions->isNotEmpty()
+                                ? $this->getNPSReport($queueType, $month, $year, $questions[0]->id)
+                                : null;
+        }elseif($surveyType == 'csat'){
+            $responses = $this->getCSATReport($queueType, $month, $year);
+            $responseMap = $responses->keyBy('survey_question_id');
+            $data['reports'] = $questions->map(function ($q) use ($responseMap) {
+                $report = $responseMap->get($q->id);
+                    return (object) [
+                            'survey_question_id' => $q->id,
+                            'question_text'      => $q->question_text,
+                            'total_respondent'   => $report ? (int) $report->total_respondent : 0,
+                            'avg_score'          => $report ? (float) $report->avg_score : 0,
+                            ];
+                        });
+        }else{
+            $data['reports'] = $this->getCustomerSatisfactionReport($queueType, $month, $year);
+            foreach ($data['reports'] as $report) {
+                $report->date = date('j F Y', strtotime($report->date));
+                $report->average_rate = $report->total_feedback 
+                    ? $report->total_rating / $report->total_feedback 
+                    : 0;
+                $report->feedback_percentage = $report->total_queue
+                    ? (int) floor($report->total_feedback / $report->total_queue * 100)
+                    : 0;
+            }
+        }        
+
 
         $data['month'] = $month;
         $data['year'] = $year;
+        $data['surveyType'] = $surveyType;
+        $data['questions'] = $questions;
 
         return view('adminBranch.report.customerSatisfaction', $data);
+    }
+
+    private function getQuestions($config_id, $surveyType){
+        $questions = SurveyQuestions::where('survey_config_id', $config_id)->select('question_text','question_index', 'id');
+        
+        if($surveyType == 'nps'){
+            $questions->orderBy('question_index', 'asc')->limit(1);
+        }
+
+        return $questions->get();
+    }
+
+    private function getCustomerSatisfactionReport($queueType, $month, $year){
+         $modelMap = [
+            'appointment'  => ['model' => Appointment::class, 'dateColumn' => 'date'],
+            'direct_queue' => ['model' => DirectQueue::class, 'dateColumn' => 'created_at'],
+        ];
+
+        if (!isset($modelMap[$queueType])) {
+            return collect();
+        }
+
+        $model = $modelMap[$queueType]['model'];
+        $dateColumn = $modelMap[$queueType]['dateColumn'];
+
+        $query = $model::select(
+                DB::raw($queueType === 'appointment' 
+                    ? "{$dateColumn} AS date"
+                    : "DATE({$dateColumn}) AS date"),
+                DB::raw('COUNT(id) AS total_queue'),
+                DB::raw('COUNT(rating) AS total_feedback'),
+                DB::raw('SUM(rating) AS total_rating')
+            )
+            ->whereMonth($dateColumn, $month)
+            ->whereYear($dateColumn, $year)
+            ->where('branch_id', Auth::user()->branch_id)
+            ->where(function ($q) {
+                $q->whereNull('survey_type')
+                ->orWhere('survey_type', 'default');
+            })->where(function ($q) {
+                $q->whereNull('rating')
+                ->orWhere('rating', '<=', 5);
+            });
+
+        return $query->groupBy('date')
+                    ->orderBy('date')
+                    ->get();
+    }
+
+    private function getNPSReport($queueType, $month, $year, $question_id){
+            $query = SurveyResponses::select(
+                DB::raw('COUNT(value) AS total_respondent'),
+                DB::raw('SUM(CASE WHEN value BETWEEN 0 AND 6 THEN 1 ELSE 0 END) AS detractors'),
+                DB::raw('ROUND((SUM(CASE WHEN value BETWEEN 0 AND 6 THEN 1 ELSE 0 END) / NULLIF(COUNT(value) * 1.0,0)) * 100, 2) AS detractor_percent'),
+                DB::raw('SUM(CASE WHEN value BETWEEN 7 AND 8 THEN 1 ELSE 0 END) AS passives'),
+                DB::raw('ROUND((SUM(CASE WHEN value BETWEEN 7 AND 8 THEN 1 ELSE 0 END) / NULLIF(COUNT(value) * 1.0,0)) * 100, 2) AS passive_percent'),
+                DB::raw('SUM(CASE WHEN value BETWEEN 9 AND 10 THEN 1 ELSE 0 END) AS promoters'),
+                DB::raw('ROUND((SUM(CASE WHEN value BETWEEN 9 AND 10 THEN 1 ELSE 0 END) / NULLIF(COUNT(value) * 1.0,0)) * 100, 2) AS promoter_percent'),
+                DB::raw('ROUND(AVG(value), 2) AS avg_score')
+        )
+        ->where('survey_type', 'nps')
+        ->where('survey_question_id', $question_id)
+        ->whereMonth('created_at', $month)
+        ->whereYear('created_at', $year)
+        ->where('branch_id', Auth::user()->branch_id);
+
+        if ($queueType === 'appointment') {
+            $query->whereNotNull('appointment_id');
+        } elseif ($queueType === 'direct_queue') {
+            $query->whereNotNull('direct_queue_id');
+        }
+
+        return $query->first();
+    }
+
+    private function getCSATReport($queueType, $month, $year){
+        $query = SurveyResponses::select(
+                'survey_question_id',
+                DB::raw('COUNT(value) AS total_respondent'),
+                DB::raw('ROUND(AVG(value * 1.0), 2) AS avg_score')
+            )
+            ->where('survey_type', 'csat')
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->where('branch_id', Auth::user()->branch_id);
+
+            if ($queueType === 'appointment') {
+                $query->whereNotNull('appointment_id');
+            } elseif ($queueType === 'direct_queue') {
+                $query->whereNotNull('direct_queue_id');
+            }
+
+            return $query
+                ->groupBy('survey_question_id')
+                ->get();
     }
 
     private function getUserQueueType()
