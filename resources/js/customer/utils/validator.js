@@ -65,10 +65,9 @@ class Validator {
     }
 
     isAllValid() {
-        for (let field in this.fields) {
-            if (!this.fields[field]) return false
+         for (let field in this.fields) {
+            if (this.fields[field] === false) return false
         }
-
         return true
     }
 

@@ -63,8 +63,9 @@ function AppointmentOnsiteVisitorInformation() {
     }
     if (serviceQuery.status === 'success') {
         service = serviceQuery.data
+        bookingFormService = service?.template_form_booking ?? branch?.branch_configuration.template_booking_form
     }
-    const selectedTemplateForm = service?.template_form_booking ?? branch?.branch_configuration.template_booking_form;
+    const selectedTemplateForm = bookingFormService
     const validationMessage = {
         name: validator.message('name', name, ['required']),
         phone: validator.message('phone', phone, ['required', 'phone']),
@@ -465,30 +466,10 @@ function AppointmentOnsiteVisitorInformation() {
     );
 
     const renderForm = () => {
-        let bookingFormService = serviceQuery.data?.template_form_booking;
         if (serviceQuery.isLoading) {
             return <p>Loading...</p>; 
         }
-        if(bookingFormService == null){
-            switch (branch?.branch_configuration.template_booking_form) {
-                case 'standard-form':
-                    return renderStandardUI();
-                case 'form-medical-1':
-                    return renderMedicalUI();
-                case 'form-medical-2':
-                    return renderMedicalUI2();
-                case 'form-medical-3':
-                    return renderMedicalUI3();
-                case 'form-medical-4':
-                    return renderMedicalUI4();
-                case 'form-medical-5':
-                    return renderMedicalUI5();
-                case 'form-financing':
-                    return renderFinanceUI();
-                default:
-                    return null;
-            }
-        }else{
+        if(bookingFormService){
             switch (bookingFormService) {
                 case 'standard-form':
                     return renderStandardUI();
