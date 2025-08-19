@@ -57,4 +57,8 @@ class Service extends Model
         return $this->belongsToMany(SubService::class, 'service_sub_service')
                     ->withPivot('created_at', 'updated_at','id');
     }
+     public function scopeActive($query)
+    {
+        return $query->where('is_disable', false);
+    }
 }

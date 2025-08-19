@@ -556,38 +556,12 @@ Route::get('scan', 'QRScannerController@index')->name('scan.index');
 //             }
 // });
 
-Route::get('testing', function(){
-
-    $prefix = '0';
-    $last_onsite_queue = App\DirectQueue::where('service_id', 962)
-                ->whereDate('created_at', date('Y-m-d'))
-                ->where('queue_no', 'LIKE', 0 .'%')
-                ->orderBy('queue_no', 'desc')
-                ->first();
-
-            
-            $service_order_no = App\Service::where('branch_id', 635)
-            ->where('id', '<=', 962)
-            ->count();
-            // dd($last_onsite_queue);
-
-        if ($last_onsite_queue) {
-            $existingPrefix = substr($last_onsite_queue->queue_no, 0, strlen($prefix));
-            if (trim($prefix) !== '' && $existingPrefix == $prefix) {
-                $lastOnsiteQueueNumber = substr($last_onsite_queue->queue_no, strlen($prefix));
-                return $prefix . sprintf('%03s', (int) $lastOnsiteQueueNumber + 1);
-            }
-
-            return (int) $last_onsite_queue->queue_no + 1;
-        }
-
-        if (trim($prefix) !== '') {
-            return $prefix . sprintf('%03s', 1);
-        }
-
-        return $service_order_no . sprintf('%03s', 1);
-});
+// Route::get('testing', function(){
+    
+// });
 
 
 }); //end of locale prefix
+Route::get('feedback/{branchId}/{queueType}/{queueId}', 'FeedbackController@index')->name('feedback.mail')->middleware('signed');
+// Route::get('feedback', 'FeedbackController@index');
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');

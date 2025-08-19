@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers\CS;
 
+use App\User;
 use App\DirectQueue;
 use App\WorkstationService;
-use App\User;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\CS\StoreDirectQueue;
-use Illuminate\Support\Facades\Auth;
-use App\Interfaces\DirectQueueRepositoryInterface;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-
-use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
-use App\Events\DirectQueue as DirectQueueEvent;
+use App\Jobs\SendFeedbackMail;
+use App\Events\OnsiteQueueCalled;
 use App\Events\OnsiteQueueUpdated;
 use App\Events\QueueStatusUpdated;
-use App\Events\OnsiteQueueCalled;
+use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\Auth;
+use App\Jobs\SendDirectQueueCallMail;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\CS\StoreDirectQueue;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Events\DirectQueue as DirectQueueEvent;
+use App\Interfaces\DirectQueueRepositoryInterface;
+use App\Events\VCTDirectQueue as VCTDirectQueueEvent;
 
 class DirectQueueController extends Controller
 {
@@ -284,6 +286,7 @@ class DirectQueueController extends Controller
             ->where('service_id', $request->service_id)
             ->whereNotIn('status', ['no show', 'end served'])
             ->whereDate('created_at', date('Y-m-d'))
+            ->with(['Workstation'])
             ->first();
 
         if (!$directQueue) {
@@ -357,7 +360,7 @@ class DirectQueueController extends Controller
 
         if ($directQueue->client_id) {
             event(new OnsiteQueueUpdated($directQueue));
-            event(new OnsiteQueueCalled($directQueue));
+            // event(new OnsiteQueueCalled($directQueue));
         }
 
         if ($directQueue->fcm_id) {
@@ -373,6 +376,9 @@ class DirectQueueController extends Controller
                     ]
                 ])
                 ->send();
+        }
+        if($directQueue->email){
+            SendFeedbackMail::dispatch('onsite',$directQueue);
         }
 
         return response()->json([

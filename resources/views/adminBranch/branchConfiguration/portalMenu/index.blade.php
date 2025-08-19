@@ -348,14 +348,17 @@
 @if(Auth::user()->Branch->BranchType->is_premium && Auth::user()->Branch->BranchType->is_direct_queue)
 <div class="card shadow mb-4">
    <div class="card-body">
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h5 class="font-weight-bold" style="color: #103C7C">Custom Service Form</h5>
+    <form action="{{ route('admin-branch.branch-configuration.menu-portal.service.update') }}" method="POST">
+        @csrf
+        @method('PUT')
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5 class="font-weight-bold" style="color: #103C7C">Custom Service Form</h5>
+            </div>
+            <div class="col-md-6 text-right">
+                <button type="submit" class="btn btn-primary px-4" style="background-color: #103C7C">{{ __('Save'). ' Form'}}</submit>
+            </div>
         </div>
-        <div class="col-md-6 text-right">
-            <button type="submit" class="btn btn-primary px-4" style="background-color: #103C7C">{{ __('Save'). ' Form'}}</submit>
-        </div>
-    </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
@@ -393,6 +396,7 @@
                 </div>
             </div>
         </div>
+    </form>
     </div>
 </div>
 @endif
