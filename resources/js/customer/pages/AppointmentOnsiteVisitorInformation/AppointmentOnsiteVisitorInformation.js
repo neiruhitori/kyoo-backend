@@ -549,7 +549,6 @@ function AppointmentOnsiteVisitorInformation() {
                     setHeaderErrorMessage(t('Failed to Create Queue'))
                 }
                 showError(booking.message)
-                console.log(booking)
                 return
             }
             navigate(`/customer/${branchId}/appointment-onsite/booking-status/${booking.data.id}`)
@@ -559,7 +558,6 @@ function AppointmentOnsiteVisitorInformation() {
             } else {
                 setHeaderErrorMessage(t('Failed to Create Queue'))
             }
-            console.log(error)
             showError(error.message)
         }
     }
