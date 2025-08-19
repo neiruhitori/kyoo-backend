@@ -55,13 +55,15 @@ class FeedbackController extends Controller
         }
 
         $questions = $query->get();
-
+        
         return view('feedback', [
             'questions'   => $questions,
             'queue_id'   => $queueId,
             'branch_name' => $branchName->name,
             'data'        => $check,
             'answers'     => $answers,
+            'type'        => $config->type,
+            'queue_type'  => $queueType,
         ]);
     }
 

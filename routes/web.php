@@ -563,5 +563,4 @@ Route::get('scan', 'QRScannerController@index')->name('scan.index');
 
 }); //end of locale prefix
 Route::get('feedback/{branchId}/{queueType}/{queueId}', 'FeedbackController@index')->name('feedback.mail')->middleware('signed');
-// Route::get('feedback', 'FeedbackController@index');
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');

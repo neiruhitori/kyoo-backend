@@ -159,6 +159,8 @@
 
     let answers = {};
     const questionGroups = document.querySelectorAll(".rating-root");
+    const type = "{{ $type }}"
+    const queueType = "{{ $queue_type }}" == 'onsite' ? 'direct-queue' : 'appointment';
 
     questionGroups.forEach(group => {
         let questionId = group.dataset.questionId;
@@ -168,28 +170,29 @@
                 group.querySelectorAll(".rating-item").forEach(b => b.classList.remove("active"));
                 
                 this.classList.add("active");
-                
-                answers[questionId] = this.dataset.value;
-                console.log("Jawaban sementara:", answers);
+                let val = parseInt(this.dataset.value, 10);
+                answers[questionId] = isNaN(val) ? 0 : val;
             });
         });
     });
     
      document.getElementById("submitSurvey").addEventListener("click", async function () {
         if (Object.keys(answers).length < questionGroups.length) {
-            alert("Harap jawab semua pertanyaan dulu sebelum submit.");
+            alert("Please complete the feedback!");
             return;
         }
 
         let id = "{{ $queue_id ?? '' }}";
         let data = {
-            rating: answers,
+            rating: type == "nps" 
+                        ? Object.values(answers)[0]
+                        : answers,
             is_liked: false,
             bookingId: id,
         };
 
         try {
-            await axios.post(`/api/direct-queue/${id}/feedback`, data);
+            await axios.post(`/api/${queueType}/${id}/feedback`, data);
             document.querySelectorAll("button").forEach(btn => btn.disabled = true);
 
             document.querySelector("#container1").insertAdjacentHTML("beforeend", `
@@ -200,7 +203,7 @@
             `);
         } catch (error) {
             console.error(error);
-            alert("Gagal mengirim jawaban. Silakan coba lagi.");
+            alert("Failed to submit, try again");
         }
     });
 

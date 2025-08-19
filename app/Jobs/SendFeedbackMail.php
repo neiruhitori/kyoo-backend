@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CS\DirectQueueCalledMail;
 use Illuminate\Queue\SerializesModels;
+use App\Mail\CS\AppointmentFeedbackMail;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -43,22 +44,22 @@ class SendFeedbackMail implements ShouldQueue
      */
     public function handle()
     {
-           try {
+        try {
             if ($this->queueType == 'onsite') {
                 if ($this->queueData->email) {
                     Mail::to($this->queueData->email)
                         ->send(new OnsiteFeedbackMail($this->queueData));
                 }
             } 
-            // elseif ($this->queueType === 'appointment') {
-            //     if ($this->queueData->email) {
-            //         Mail::to($this->queueData->email)
-            //             ->send(new AppointmentCalledMail($this->queueData));
-            //     }
-            // }
+            elseif ($this->queueType === 'appointment') {
+                if ($this->queueData->email) {
+                    Mail::to($this->queueData->email)
+                        ->send(new AppointmentFeedbackMail($this->queueData));
+                }
+            }
         } catch (\Throwable $e) {
             Log::warning("Gagal kirim email survey [{$this->queueType}]: {$e->getMessage()}");
-            throw $e; // biar job bisa retry
+            throw $e;
         }
     }
 
