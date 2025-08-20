@@ -90,7 +90,7 @@
                     <thead style="background-color:#33A0FF4D; color: #103C7C;">
                         @if ($surveyType == 'nps')
                             <tr>
-                                <th rowspan="2" class="align-middle text-center">{{ __('Question') }}</th>
+                                <th rowspan="2" class="align-middle">{{ __('Question') }}</th>
                                 <th rowspan="2" class="align-middle text-center">{{ __('Total Respondent') }}</th>
                                 <th colspan="2" class="text-center">{{ __('Detractors') }}</th> 
                                 <th colspan="2" class="text-center">{{ __('Passives') }}</th> 
@@ -108,7 +108,7 @@
                         
                         @elseif($surveyType == 'csat')
                              <tr>
-                                <th class="text-center">{{ __('Question') }}</th>
+                                <th>{{ __('Question') }}</th>
                                 <th class="text-center">{{ __('Total Respondent') }}</th>
                                 <th class="text-center">{{ __('Average Review Score') }}</th>   
                             </tr>
@@ -127,7 +127,7 @@
                            @if ($surveyType == 'nps')
                                 @if ($reports && $reports->total_respondent > 0)
                                     <tr>
-                                        <td class="text-center">{{ $questions[0]->question_text ?? '-' }}</td>
+                                        <td>{{ $questions[0]->question_text ?? '-' }}</td>
                                         <td class="text-right">{{ $reports->total_respondent }}</td>
                                         <td class="text-center">{{ $reports->detractors }}</td>
                                         <td class="text-center">{{ $reports->detractor_percent }}%</td>
@@ -143,7 +143,7 @@
                             @elseif($surveyType == 'csat')
                                 @forelse ($reports as $report)
                                     <tr>
-                                        <td class="text-center">{{ $report->question_text }}</td>
+                                        <td class="text-left">{{ $report->question_text }}</td>
                                         <td class="text-center">{{ $report->total_respondent }}</td>
                                         <td class="text-center">
                                             {{ $report->avg_score }}%
