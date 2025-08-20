@@ -518,49 +518,11 @@ Route::post('search', 'SearchQueueController@search')->name('search.search');
 
 Route::get('scan', 'QRScannerController@index')->name('scan.index');
 
-// Route::get('AddCategoryService/onlyAdMin', function(){
-//        $branchOnsite = App\Branch::onsite()->where('license_expiration_date', '>', Illuminate\Support\Carbon::now())
-//                         ->get();
-
-//         foreach ($branchOnsite as $branch) {
-//             $hasCategory = App\Models\ServiceCategory::where('branch_id', $branch->id)->exists();
-
-//             if(!$hasCategory){
-//                 App\Models\ServiceCategory::create([
-//                     'name' => 'Service Category 1',
-//                     'branch_id' => $branch->id
-//                 ]);
-//             }
-
-//         }
-// });
-// Route::get('AddServiceToCategory/onlyAdMin', function(){
-//             $branches = App\Branch::onsite()
-//                 ->where('license_expiration_date', '>', Illuminate\Support\Carbon::now())
-//                 ->with('Service')
-//                 ->get();
-
-//             foreach ($branches as $branch) {
-//                 $firstCategory = App\Models\ServiceCategory::where('branch_id', $branch->id)->first();
-
-//                 if (!$firstCategory) {
-//                     continue;
-//                 }
-
-//                 foreach ($branch->Service as $service) {
-//                     if (is_null($service->service_category_id)) {
-//                         $service->service_category_id = $firstCategory->id;
-//                         $service->save();
-//                     }
-//                 }
-//             }
-// });
-
 // Route::get('testing', function(){
-    
 // });
 
 
 }); //end of locale prefix
 Route::get('feedback/{branchId}/{queueType}/{queueId}', 'FeedbackController@index')->name('feedback.mail')->middleware('signed');
+// Route::get('feedback/{branchId}/{queueType}/{queueId}', 'FeedbackController@index')->name('feedback.mail');
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');

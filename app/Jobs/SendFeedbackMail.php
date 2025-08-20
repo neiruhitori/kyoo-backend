@@ -45,15 +45,18 @@ class SendFeedbackMail implements ShouldQueue
     public function handle()
     {
         try {
+            $locale = $this->queueData->Branch->country === 'Indonesia' ? 'id' : 'en';
             if ($this->queueType == 'onsite') {
                 if ($this->queueData->email) {
                     Mail::to($this->queueData->email)
+                        ->locale($locale)
                         ->send(new OnsiteFeedbackMail($this->queueData));
                 }
             } 
             elseif ($this->queueType === 'appointment') {
                 if ($this->queueData->email) {
                     Mail::to($this->queueData->email)
+                        ->locale($locale)
                         ->send(new AppointmentFeedbackMail($this->queueData));
                 }
             }

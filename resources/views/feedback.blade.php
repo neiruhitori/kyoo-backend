@@ -90,7 +90,8 @@
 
     <div id="container1">
         <div class="px-3 py-5">
-            <h4 class="font-weight-bold mb-5" style="color: black">{{ $branch_name }} - Feedback</h4>
+            <img src="{{asset('storage/'.$branch_logo)}}" style="max-height: 100px; margin-bottom: 1rem;" alt="">
+            <h5 class="font-weight-bold mb-5" style="color: black">{{ $branch_name }} - {{ __('Customer Experience Survey') }}</h5>
         @if ($data && $data->count())
             <form>
                 @foreach($answers as $resp)
@@ -112,8 +113,8 @@
                     </div>
                 @endforeach
                 <div class="thankyou-box">
-                    <h3>Thank you for answering!</h3>
-                    <h5>Your answer has been submitted</h5>
+                    <h3>{{ __('Thank you for answering!') }}</h3>
+                    <h5>{{ __('Your answer has been submitted') }}</h5>
                 </div>
 
             </form>
@@ -178,7 +179,7 @@
     
      document.getElementById("submitSurvey").addEventListener("click", async function () {
         if (Object.keys(answers).length < questionGroups.length) {
-            alert("Please complete the feedback!");
+            alert("{{ __('Please complete the feedback!') }}");
             return;
         }
 
@@ -197,8 +198,8 @@
 
             document.querySelector("#container1").insertAdjacentHTML("beforeend", `
                 <div class="thankyou-box">
-                    <h3>Thank you for answering!</h3>
-                    <h5>Your answer has been submitted</h5>
+                    <h3>{{ __('Thank you for answering!') }}</h3>
+                    <h5>{{ __('Your answer has been submitted') }}</h5>
                 </div>
             `);
         } catch (error) {

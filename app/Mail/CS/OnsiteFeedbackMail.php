@@ -38,7 +38,6 @@ class OnsiteFeedbackMail extends Mailable implements ShouldQueue
     {
         $branch = $this->directQueue->Branch;
         config(['app.name' => $branch->name]);
-
         $full = URL::signedRoute(
                             'feedback.mail',
                             [
@@ -48,8 +47,6 @@ class OnsiteFeedbackMail extends Mailable implements ShouldQueue
                             ]
                         );
         $survey = parse_url($full, PHP_URL_PATH) . '?' . parse_url($full, PHP_URL_QUERY);
-
-        setlocale(LC_TIME, 'id_ID');
 
         return $this
             ->from('noreply@kyoo.id', 'KYOO')

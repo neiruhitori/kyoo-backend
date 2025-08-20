@@ -34,12 +34,11 @@ class FeedbackController extends Controller
             ->where('status', 'end served')
             ->first();
             
-        $branchName = Branch::where('id',$branchId)->select('name')->first();
+        $branch = Branch::where('id',$branchId)->select('logo','name')->first();
         $config = SurveyConfiguration::where('branch_id', $branchId)->first();
         $query = SurveyQuestions::where('survey_config_id', $config->id)
                                  ->orderBy('question_index', 'asc');
         $answers = null;
-
 
         if ($check) {
             $answers = SurveyResponses::where('branch_id', $branchId)
@@ -59,7 +58,8 @@ class FeedbackController extends Controller
         return view('feedback', [
             'questions'   => $questions,
             'queue_id'   => $queueId,
-            'branch_name' => $branchName->name,
+            'branch_name' => $branch->name,
+            'branch_logo' => $branch->logo,
             'data'        => $check,
             'answers'     => $answers,
             'type'        => $config->type,
