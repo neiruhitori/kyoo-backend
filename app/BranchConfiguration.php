@@ -31,6 +31,7 @@ class BranchConfiguration extends Model
     'ticket_style',
     'cs_page',
     'notif_popup',
-    'notif_sound'
+    'notif_sound',
+    'sandbox_url'
   ];
 }

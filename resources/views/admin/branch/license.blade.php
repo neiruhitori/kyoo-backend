@@ -15,11 +15,9 @@
             <form action="{{ route('admin.branch.license.webhook', $branch->id) }}" method="POST">
                 @csrf
             <div class="row">
-                    <div class="col-md-3">
-                        <label for="endpoint" class="font-weight-bold">{{ __('Endpoint Webhook') }}</label>
-                    </div>
-                    <div class="col-md-9">
+                    <div class="col-md-9 mb-2">
                         <div class="form-group mb-2">
+                            <label for="endpoint" class="font-weight-bold">{{ __('Endpoint Webhook') }}</label>
                             <div>
                                 <input
                                     type="text"
@@ -32,7 +30,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-9 mb-2">
+                        <div class="form-group mb-2">
+                            <label for="sandbox" class="font-weight-bold">{{ __('Endpoint Sandbox') }}</label>
+                            <div>
+                                <input
+                                    type="text"
+                                    name="sandbox"
+                                    id="sandbox"
+                                    class="form-control"
+                                    value="{{ $sandbox_url ?? '' }}"
+                                    placeholder="http://your.api.sandbox"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <button type="submit" class="btn btn-warning">Simpan</button>
                     </div>
                 </div>
@@ -83,7 +96,6 @@
         </form>
         </div>
     </div>
-                    
     @endif
 
     <form action="{{ route('admin.branch.license.update', $branch->id) }}" method="POST">
@@ -221,16 +233,18 @@
 
    
     <script>
-  function copyText() {
-        var copyText = document.getElementById("secret_key");
-        
-        copyText.select();
-        copyText.blur();
-        copyText.setSelectionRange(0, 99999); 
-        document.execCommand("copy");
-        window.getSelection().removeAllRanges();
-       
-    }
+        function copyText() {
+                var copyText = document.getElementById("secret_key");
+                
+                copyText.select();
+                copyText.blur();
+                copyText.setSelectionRange(0, 99999); 
+                document.execCommand("copy");
+                window.getSelection().removeAllRanges();
+            
+            }
+
+
     </script>
 
   

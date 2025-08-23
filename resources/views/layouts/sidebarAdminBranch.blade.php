@@ -272,6 +272,17 @@
                        {{ __('Promotion')}}
                     </a>
                     @endif
+                @if (
+                  Auth::user()->Branch->BranchType->is_premium &&
+                  Auth::user()->Branch->hasAccess('Webhook Antrian')
+                )
+                    <a
+                        class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/webhook*') ?: 'active' }}"
+                        href="{{ route('admin-branch.branch-configuration.webhook') }}"
+                    >
+                       {{ __('Webhook')}}
+                    </a>
+                    @endif
             </div>
         </div>
     </li>

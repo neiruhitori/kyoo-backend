@@ -192,6 +192,11 @@ Route::namespace('AdminBranch')
                 Route::post('/text', 'PromotionsController@storeText')->name('text.store');
                 Route::delete('/text/{id}', 'PromotionsController@destroyText')->name('text.destroy');
             });
+
+            Route::get('/webhook','WebhookController@index')->name('webhook');
+            Route::post('/webhook/resend/{id}/{mode}','WebhookController@resend')->name('webhook.resend');
+            Route::post('/webhook/dummy','WebhookController@sendDummy')->name('webhook.dummy');
+            Route::post('/webhook/logs-webhook','WebhookController@fetchWebhook');
         });
 
          Route::get('/customer-feedback', 'CustomerFeedbackController@index')->name('feedback.index');
@@ -294,10 +299,11 @@ Route::namespace('AdminBranch')
        //hanya untuk front-end
         Route::get('/get_Billing_Prices','BillingController@getBilling');
         //hanya untuk front-end
-
+        
         Route::prefix('/cs')->name('cs.')->group(function () {
             Route::resource('access', 'CSAccessController');
         });
+        
     });
 
 Route::resource('registrationBranch', 'RegistrationBranchController')->only(['store', 'edit']);
