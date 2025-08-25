@@ -10,13 +10,14 @@ use App\Appointment;
 use App\Workstation;
 use App\Supports\BookingCode;
 
+use App\Jobs\SendFeedbackMail;
 use Illuminate\Support\Carbon;
 use App\Events\AppointmentServed;
 use App\Events\AppointmentCreated;
 use Illuminate\Support\Facades\DB;
 use App\Events\AppointmentEndServed;
-use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Events\QueueAppointmentStatus;
 use App\Events\OwnerAppointmentCreated;
@@ -262,7 +263,6 @@ class AppointmentService
                 $isOverlap = false;
             }
         }
-
         return [$startTime, $endTime];
     }
 
@@ -439,6 +439,10 @@ class AppointmentService
             'end_served_time' => date('Y-m-d H:i:s'),
             'serving_duration' => Carbon::now()->diffInseconds(Carbon::parse($appointment->served_time))
         ]);
+
+        if($appointment->email){
+            SendFeedbackMail::dispatch('appointment',$appointment);
+        }
 
         AppointmentEndServed::dispatch($appointment);
     }

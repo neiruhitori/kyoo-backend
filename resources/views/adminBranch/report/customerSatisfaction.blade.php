@@ -70,6 +70,15 @@
                                 @endfor
                             </select>
                         </div>
+
+                        <div class="form-group col-xs-12 col-md-6">
+                            <label>{{ __('Select Survey Type') }}</label>
+                            <select name="survey_type" class="form-control">
+                                <option value="default" {{ $surveyType == 'default' ? 'selected' : ''}}>Default</option>
+                                <option value="nps" {{ $surveyType == 'nps' ? 'selected' : ''}}>NPS</option>
+                                <option value="csat" {{ $surveyType == 'csat' ? 'selected' : ''}}>CSAT</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div>
@@ -79,34 +88,86 @@
 
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead style="background-color:#33A0FF4D; color: #103C7C;">
-                        <tr>
-                            <th class="text-center">{{ __('Date') }}</th>
-                            <th class="text-right">{{ __('Total Queue') }}</th>
-                            <th class="text-right">{{ __('Total Feedback') }}</th>
-                            <th class="text-right">{{ __('Feedback Percentage') }}</th>
-                            <th>{{ __('Average Review Score') }}</th>   
-                        </tr>
+                        @if ($surveyType == 'nps')
+                            <tr>
+                                <th rowspan="2" class="align-middle">{{ __('Question') }}</th>
+                                <th rowspan="2" class="align-middle text-center">{{ __('Total Respondent') }}</th>
+                                <th colspan="2" class="text-center">{{ __('Detractors') }}</th> 
+                                <th colspan="2" class="text-center">{{ __('Passives') }}</th> 
+                                <th colspan="2" class="text-center">{{ __('Promoter') }}</th> 
+                                <th rowspan="2" class="align-middle text-center">{{ __('Avg. Score') }}</th>
+                            </tr>
+                            <tr>
+                                <th class="text-center">{{ __('Respondent') }}</th>
+                                <th class="text-center">{{ __('%') }}</th>
+                                <th class="text-center">{{ __('Respondent') }}</th>
+                                <th class="text-center">{{ __('%') }}</th>
+                                <th class="text-center">{{ __('Respondent') }}</th>
+                                <th class="text-center">{{ __('%') }}</th>
+                            </tr>
+                        
+                        @elseif($surveyType == 'csat')
+                             <tr>
+                                <th>{{ __('Question') }}</th>
+                                <th class="text-center">{{ __('Total Respondent') }}</th>
+                                <th class="text-center">{{ __('Average Review Score') }}</th>   
+                            </tr>
+                        @else
+                            <tr>
+                                <th class="text-center">{{ __('Date') }}</th>
+                                <th class="text-right">{{ __('Total Queue') }}</th>
+                                <th class="text-right">{{ __('Total Feedback') }}</th>
+                                <th class="text-right">{{ __('Feedback Percentage') }}</th>
+                                <th>{{ __('Average Review Score') }}</th>   
+                            </tr>
+                        @endif
                     </thead>
 
                     <tbody>
-                        @if (count($reports) > 0) 
-                            @foreach ($reports as $report)
-                                <tr>
-                                    <td class="text-center">{{ $report->date }}</td>
-                                    <td class="text-right">{{ $report->total_queue }}</td>
-                                    <td class="text-right">{{ $report->total_feedback }}</td>
-                                    <td class="text-right">{{ $report->feedback_percentage }}%</td>
-                                    <td>
-                                        <span class="fas fa-star mr-1 text-warning"></span>
-                                        {{ $report->average_rate }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="5" class="text-center">{{ __('Data not Found') }}</td>
-                            </tr>
-                        @endif
+                           @if ($surveyType == 'nps')
+                                @if ($reports && $reports->total_respondent > 0)
+                                    <tr>
+                                        <td>{{ $questions[0]->question_text ?? '-' }}</td>
+                                        <td class="text-right">{{ $reports->total_respondent }}</td>
+                                        <td class="text-center">{{ $reports->detractors }}</td>
+                                        <td class="text-center">{{ $reports->detractor_percent }}%</td>
+                                        <td class="text-center">{{ $reports->passives }}</td>
+                                        <td class="text-center">{{ $reports->passive_percent }}%</td>
+                                        <td class="text-center">{{ $reports->promoters }}</td>
+                                        <td class="text-center">{{ $reports->promoter_percent }}%</td>
+                                        <td class="text-right">{{ $reports->avg_score }}%</td>
+                                    </tr>
+                                @else
+                                    <tr><td colspan="9" class="text-center">{{ __('Data not Found') }}</td></tr>
+                                @endif
+                            @elseif($surveyType == 'csat')
+                                @forelse ($reports as $report)
+                                    <tr>
+                                        <td class="text-left">{{ $report->question_text }}</td>
+                                        <td class="text-center">{{ $report->total_respondent }}</td>
+                                        <td class="text-center">
+                                            {{ $report->avg_score }}%
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="5" class="text-center">{{ __('Data not Found') }}</td></tr>
+                                @endforelse
+                            @else
+                                @forelse ($reports as $report)
+                                    <tr>
+                                        <td class="text-center">{{ $report->date }}</td>
+                                        <td class="text-right">{{ $report->total_queue }}</td>
+                                        <td class="text-right">{{ $report->total_feedback }}</td>
+                                        <td class="text-right">{{ $report->feedback_percentage }}%</td>
+                                        <td>
+                                            <span class="fas fa-star mr-1 text-warning"></span>
+                                            {{ $report->average_rate }}
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="5" class="text-center">{{ __('Data not Found') }}</td></tr>
+                                @endforelse
+                            @endif
                     </tbody>
                 </table>
             </div>

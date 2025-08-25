@@ -27,10 +27,32 @@ class FeedbackAppointment extends FormRequest
      */
     public function rules()
     {
-        return [
-            'rating' => 'required|numeric|min:0|max:5',
-            'is_liked' => 'required|boolean',
-        ];
+        $appointment = $this->route('appointment');
+        $surveyConfig = \App\Models\SurveyConfiguration::where('branch_id', $appointment->branch_id)->first();
+
+            $type = $surveyConfig->type ?? 'default';
+
+            switch ($type) {
+                case 'nps':
+                    return [
+                        'rating'   => 'required|numeric|min:0|max:10',
+                        'is_liked' => 'required|boolean',
+                    ];
+
+                case 'csat':
+                    return [
+                        'rating'      => 'required|array',
+                        'rating.*'    => 'numeric|min:0|max:10',
+                        'is_liked'    => 'required|boolean',
+                    ];
+
+                case 'default':
+                default:
+                    return [
+                        'rating'   => 'required|numeric|min:0|max:5',
+                        'is_liked' => 'required|boolean',
+                    ];
+            }
     }
 
     /**

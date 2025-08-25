@@ -36,6 +36,7 @@ class Appointment extends Model
         'appointment_channel',
         'serving_duration',
         'waiting_duration',
+        'survey_type'
     ];
 
     protected $casts = [

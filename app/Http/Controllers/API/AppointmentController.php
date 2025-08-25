@@ -8,11 +8,14 @@ use App\Service;
 use App\Appointment;
 use App\DirectQueue;
 use Illuminate\Http\Request;
+use App\Models\SurveyQuestions;
+use App\Models\SurveyResponses;
+use App\Models\SurveyConfiguration;
 use App\Http\Controllers\Controller;
+
 use App\Services\AppointmentService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-
 use App\Http\Requests\API\StoreAppointment;
 use App\Http\Requests\API\FeedbackAppointment;
 use App\Notifications\AppointmentCreatedNotification;
@@ -108,7 +111,74 @@ class AppointmentController extends Controller
 
     public function feedback(FeedbackAppointment $request, Appointment $appointment)
     {
-        $appointment->update($request->all());
+        $branchId = $appointment->branch_id;
+        $survey_config = SurveyConfiguration::where('branch_id', $branchId)->first();
+
+        if($survey_config && $survey_config->type !== 'default'){
+            $totalRating = 0;
+            if (is_array($request->rating)) {
+                foreach ($request->rating as $questionId => $rateValue) {
+                    SurveyResponses::updateOrCreate(
+                        [
+                            'appointment_id'   => $appointment->id,
+                            'survey_question_id' => $questionId,
+                            'survey_type' => $survey_config->type,
+                        ],
+                        [
+                            'value' => $rateValue,
+                            'survey_config_id' => $survey_config->id,
+                            'branch_id' => $branchId,
+                            'queue_type' => 'appointment' ,
+                            'name' => $appointment->name ?? 'no name',
+                            'email' => $appointment->email ?? 'no email',
+
+                        ]
+                    );
+                    $totalRating += $rateValue;
+                }
+                
+                $appointment->update([
+                    'rating' => $totalRating,
+                    'is_liked' => $request->is_liked,
+                    'survey_type' => $survey_config->type
+                ]);
+            } else {
+                $firstQuestionId = SurveyQuestions::where('survey_config_id', $survey_config->id)
+                    ->value('id');
+
+                SurveyResponses::updateOrCreate(
+                    [
+                        'appointment_id'    => $appointment->id,
+                        'survey_question_id' => $firstQuestionId,
+                        'survey_type' => $survey_config->type,
+                    ],
+                    [
+                        'value' => $request->rating,
+                        'survey_config_id' => $survey_config->id,
+                        'branch_id' => $branchId,
+                        'queue_type' => 'appointment' ,
+                        'name' => $appointment->name ?? 'no name',
+                        'email' => $appointment->email ?? 'no email',
+                    ]
+                );
+                $appointment->update([
+                    'rating' => $request->rating,
+                    'is_liked' => $request->is_liked,
+                    'survey_type' => $survey_config->type
+                ]);
+            }
+             return response()->json([
+                'success' => true,
+                'message' => 'success give feedback direct queue',
+                'data' => $appointment
+            ]);
+        }
+
+        $appointment->update([
+                    'rating' => $request->rating,
+                    'is_liked' => $request->is_liked,
+                    'survey_type' => $survey_config->type
+                ]);
         return response()->json([
             'success' => true,
             'message' => 'success give feedback appointment',

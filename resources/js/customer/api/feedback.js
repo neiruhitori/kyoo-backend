@@ -11,3 +11,6 @@ export function createFeedback(queueType, id, data) {
         .then(res => res.data)
     }
 }
+export function fetchSurvey(branchId){
+    return http.get(`fetch-survey/${branchId}`).then(res => res.data)
+}

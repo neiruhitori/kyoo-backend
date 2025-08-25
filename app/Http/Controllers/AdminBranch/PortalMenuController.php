@@ -12,7 +12,7 @@ class PortalMenuController extends Controller
     public function edit()
     {
         $branchConfiguration = Auth::user()->Branch->BranchConfiguration;
-        $services = Auth::user()->Branch->Service;
+        $services = Auth::user()->Branch->Service->where('is_disable', false);
 
         return view('adminBranch.branchConfiguration.portalMenu.index', compact('branchConfiguration','services'));
     }

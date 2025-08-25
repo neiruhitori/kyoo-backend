@@ -15,11 +15,9 @@
             <form action="{{ route('admin.branch.license.webhook', $branch->id) }}" method="POST">
                 @csrf
             <div class="row">
-                    <div class="col-md-3">
-                        <label for="endpoint" class="font-weight-bold">{{ __('Endpoint Webhook') }}</label>
-                    </div>
-                    <div class="col-md-9">
+                    <div class="col-md-9 mb-2">
                         <div class="form-group mb-2">
+                            <label for="endpoint" class="font-weight-bold">{{ __('Endpoint Webhook') }}</label>
                             <div>
                                 <input
                                     type="text"
@@ -32,7 +30,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
+                        <label for="is_live_test">{{ __('Webhook Live Testing') }}</label>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input type="checkbox" name="is_live_test" class="form-check-input"
+                                            id="is_live_test"
+                                            {{
+                                                ($is_live_test) ||
+                                                    old('is_live_test')
+                                                    ? 'checked' : ''
+                                            }}
+                                            >
+        
+                                    <label for="is_live_test" class="form-check-label">{{ __('Activate') }}</label>
+                                </div>
+                                    @include('layouts.inputError', ['errorName' => 'is_live_test'])
+                            </div>
+                    </div>
+                    <div class="col-md-12">
                         <button type="submit" class="btn btn-warning">Simpan</button>
                     </div>
                 </div>
@@ -83,7 +99,6 @@
         </form>
         </div>
     </div>
-                    
     @endif
 
     <form action="{{ route('admin.branch.license.update', $branch->id) }}" method="POST">
@@ -221,16 +236,18 @@
 
    
     <script>
-  function copyText() {
-        var copyText = document.getElementById("secret_key");
-        
-        copyText.select();
-        copyText.blur();
-        copyText.setSelectionRange(0, 99999); 
-        document.execCommand("copy");
-        window.getSelection().removeAllRanges();
-       
-    }
+        function copyText() {
+                var copyText = document.getElementById("secret_key");
+                
+                copyText.select();
+                copyText.blur();
+                copyText.setSelectionRange(0, 99999); 
+                document.execCommand("copy");
+                window.getSelection().removeAllRanges();
+            
+            }
+
+
     </script>
 
   

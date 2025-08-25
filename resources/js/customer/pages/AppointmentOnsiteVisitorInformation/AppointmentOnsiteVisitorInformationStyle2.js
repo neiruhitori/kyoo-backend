@@ -64,8 +64,10 @@ function AppointmentOnsiteVisitorInformation() {
     }
     if (serviceQuery.status === 'success') {
         service = serviceQuery.data
-    }
-    const selectedTemplateForm = service?.template_form_booking ?? branch?.branch_configuration.template_booking_form;
+        bookingFormService = service?.template_form_booking ?? branch?.branch_configuration.template_booking_form
+    }    
+    const selectedTemplateForm = bookingFormService;
+
     const validationMessage = {
         name: validator.message('name', name, ['required']),
         phone: validator.message('phone', phone, ['required', 'phone']),
@@ -104,41 +106,15 @@ function AppointmentOnsiteVisitorInformation() {
             vaccine: validator.message('vaccine', vaccine, ['required']),
         }),
     };
-    
+
     useEffect(() => {
-        const templateRequiredMap = {
-          'form-medical-1': ['name', 'phone', 'email', 'reasonForVisit'],
-          'form-financing': ['name', 'phone', 'contractNumber'],
-          'form-medical-2': ['name', 'phone', 'passportNumber', 'reasonForVisit'],
-          'form-medical-3': ['name', 'phone', 'passportNumber', 'email', 'agent'],
-          'form-medical-4': ['name', 'phone', 'passportNumber',],
-          'form-medical-5': ['name', 'phone', 'passportNumber', 'vaccine'],
-          default: ['name', 'phone', 'email']
-        };
-      
-        const requiredFields = templateRequiredMap[selectedTemplateForm] ?? templateRequiredMap.default;
-      
-        const formValues = {
-          name, phone, email,
-          dateOfBirth, address, emergencyNumber,
-          passportNumber, reasonForVisit, contractNumber, agent, vaccine
-        };
-      
-        const isAllFilled = requiredFields.every(field => {
-          const value = formValues[field];
-          const error = validationMessage[field];
-          return value && value.trim() !== '' && !error;
-        });
-      
-        setIsFilled(isAllFilled);
-      }, [
-        selectedTemplateForm,
+        setIsFilled(validator.isAllValid());
+    },[selectedTemplateForm,
         name, phone, email,
         dateOfBirth, address,
         emergencyNumber, passportNumber,
         reasonForVisit, contractNumber,
-        validationMessage, agent, vaccine
-      ]);
+        validationMessage, agent, vaccine])
       
 
     const bookingMutation = useMutation('booking', (data) => createAppointmentOnsite(data))
@@ -502,30 +478,10 @@ function AppointmentOnsiteVisitorInformation() {
     );
 
     const renderForm = () => {
-        let bookingFormService = serviceQuery.data?.template_form_booking;
         if (serviceQuery.isLoading) {
             return <p>Loading...</p>; 
         }
-        if(bookingFormService == null){
-            switch (branch?.branch_configuration.template_booking_form) {
-                case 'standard-form':
-                    return renderStandardUI();
-                case 'form-medical-1':
-                    return renderMedicalUI();
-                case 'form-medical-2':
-                    return renderMedicalUI2();
-                case 'form-medical-3':
-                    return renderMedicalUI3();
-                case 'form-medical-4':
-                    return renderMedicalUI4();
-                case 'form-medical-5':
-                    return renderMedicalUI5();
-                case 'form-financing':
-                    return renderFinanceUI();
-                default:
-                    return null;
-            }
-        }else{
+        if(bookingFormService){
             switch (bookingFormService) {
                 case 'standard-form':
                     return renderStandardUI();
@@ -553,10 +509,8 @@ function AppointmentOnsiteVisitorInformation() {
         if (selectedButton === 'submit' && !validator.isAllValid()) {
             validator.showMessages()
             forceUpdate()
-
             return
         }
-        const bookingFormService = serviceQuery.data?.template_form_booking || branch?.branch_configuration.template_booking_form;
         try {
             const booking = await bookingMutation.mutateAsync({
                 service_id: serviceId,

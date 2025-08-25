@@ -272,11 +272,27 @@
                        {{ __('Promotion')}}
                     </a>
                     @endif
+                @if (
+                  Auth::user()->Branch->BranchType->is_premium &&
+                  Auth::user()->Branch->hasAccess('Webhook Antrian')
+                )
+                    <a
+                        class="collapse-item kyoo-sublink {{ !request()->is('admin-branch/branch-configuration/webhook*') ?: 'active' }}"
+                        href="{{ route('admin-branch.branch-configuration.webhook') }}"
+                    >
+                       {{ __('Webhook')}}
+                    </a>
+                    @endif
             </div>
         </div>
     </li>
 
     <hr class="sidebar-divider my-0">
+    <li class="nav-item {{ !request()->is('admin-branch/customer-feedback') ?: 'active' }}">
+        <a class="nav-link" href="{{ route('admin-branch.feedback.index') }}">
+            <i class="fas fa-fw fa-address-book"></i>
+            <span>{{ __('Customer Feedback') }}</span></a>
+    </li>
 
     @if (
       Auth::user()->Branch->BranchType->is_premium &&

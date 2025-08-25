@@ -6,7 +6,7 @@ import html2canvas from 'html2canvas'
 
 import { getBooking } from '../../api/booking'
 import { fetchBranch } from '../../api/branch'
-import { createFeedback } from '../../api/feedback'
+import { createFeedback, fetchSurvey } from '../../api/feedback'
 import usePromotions from '../../hooks/usePromotions'
 import { formatBrowser, getDayName, getMonthAbrvName } from '../../utils/date'
 import { getCookie } from '../../lib/helper'
@@ -32,6 +32,7 @@ import LocationIcon from '../../icons/LocationIcon'
 import SaveIcon from '../../icons/SaveIcon'
 import RedoIcon from '../../icons/RedoIcon'
 import AngleRightIcon from '../../icons/AngleRightIcon'
+import SurveyRenderer from './../../components/SurveyRenderer';
 
 const BranchLogo = styled.img`
     display: inline-block;
@@ -165,14 +166,16 @@ function OnsiteBookingStatus(props) {
     const ticketRef = useRef(null)
     const navigate = useNavigate()
 
-    const [rating, setRating] = useState(0)
+    const [rating, setRating] = useState({})
     const [isDialogShown, setIsDialogShown] = useState(false)
+    const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false)
     const [isConfirmationDialogShown, setIsConfirmationDialogShown] = useState(false)
     const [isShowPromotion, setIsShowPromotion] = useState(true)
 
     let booking = null
     let branch = null
     let schedule = null
+    let surveyData = null
     let branchType = 'free'
 
     useEffect(() => {
@@ -206,6 +209,11 @@ function OnsiteBookingStatus(props) {
         enabled: bookingQuery.status === 'success'
     })
     const feedbackMutation = useMutation('feedback', (data) => createFeedback('onsite', bookingId, data))
+    
+    const surveyQuery = useQuery('survey', () => fetchSurvey(branchId))
+    if(surveyQuery.status == 'success'){
+        surveyData = surveyQuery.data?.data
+    }
 
     if (bookingQuery.status === 'success') {
         booking = bookingQuery.data?.data
@@ -236,9 +244,11 @@ function OnsiteBookingStatus(props) {
     function handleFeedbackClick() {
         feedbackMutation.mutate({
             rating,
-            is_liked: false
+            is_liked: false,
+            bookingId
         }, {
             onSuccess: ({ data }) => {
+                setIsFeedbackSubmitted(true) 
                 booking.rating = data.rating
                 queryClient.invalidateQueries(['booking', bookingId])
             }
@@ -508,38 +518,16 @@ function OnsiteBookingStatus(props) {
                 </Link>
             </div>
 
-            {branchType === 'premium' && booking.status === 'end served' && <Card style={{
-                marginBottom: '1.5rem',
-                padding: '1.625rem'
-            }}>
-                <p style={{
-                    textAlign: 'center'
-                }}>{t('How satisfied are you with our service?')}</p>
-            
-                <div style={{
-                    marginTop: '1.125rem'
-                }}>
-                    <Rating
-                        rate={booking.rating || rating}
-                        onRateClick={rate => {
-                            if (!booking.rating) setRating(rate)
-                        }}
-                    />
-                </div>
-            
-                {!booking.rating && <div style={{
-                    textAlign: 'center',
-                    marginTop: '1.125rem'
-                }}>
-                    <button type="submit" style={{
-                        padding: '.625rem 1.125rem',
-                        borderRadius: '14px',
-                        color: '#FFFFFF',
-                        backgroundColor: '#007EC6',
-                        border: 'none'
-                    }} onClick={handleFeedbackClick}>{t('Send Feedback')}</button>
-                </div>}
-            </Card>}
+            {branchType === 'premium' && booking.status === 'end served' && 
+            <SurveyRenderer
+                surveyData={surveyData}
+                booking={booking}
+                rating={rating}
+                setRating={setRating}
+                handleFeedbackClick={handleFeedbackClick}
+                isFeedbackSubmitted = {isFeedbackSubmitted}
+                t={t}
+            />}
 
             <InfoAlert>
                 <h4 style={{
