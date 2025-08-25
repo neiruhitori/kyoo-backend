@@ -16,8 +16,11 @@ class WebhookController extends Controller
 { 
     public function index()
     {
+        if(!Auth::user()->Branch->hasAccess('Webhook Antrian')){
+            return redirect('dashboard')->with('error', 'You didnt have required Feature!');
+        }
         $endpoint = BranchConfiguration::where('branch_id', Auth::user()->Branch->id)
-                                        ->select(['webhook_url','sandbox_url'])
+                                        ->select(['webhook_url'])
                                         ->first();
 
         $logs = WebhookLogs::with('queue:id,name')
