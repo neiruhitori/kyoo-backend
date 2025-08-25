@@ -30,22 +30,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-9 mb-2">
-                        <div class="form-group mb-2">
-                            <label for="sandbox" class="font-weight-bold">{{ __('Endpoint Sandbox') }}</label>
-                            <div>
-                                <input
-                                    type="text"
-                                    name="sandbox"
-                                    id="sandbox"
-                                    class="form-control"
-                                    value="{{ $sandbox_url ?? '' }}"
-                                    placeholder="http://your.api.sandbox"
-                                >
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-md-4">
+                        <label for="is_live_test">{{ __('Sound Notification') }}</label>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input type="checkbox" name="is_live_test" class="form-check-input"
+                                            id="is_live_test"
+                                            {{
+                                                ($is_live_test) ||
+                                                    old('is_live_test')
+                                                    ? 'checked' : ''
+                                            }}
+                                            >
+        
+                                    <label for="is_live_test" class="form-check-label">{{ __('Activate') }}</label>
+                                </div>
+                                    @include('layouts.inputError', ['errorName' => 'is_live_test'])
+                            </div>
+                    </div>
+                    <div class="col-md-12">
                         <button type="submit" class="btn btn-warning">Simpan</button>
                     </div>
                 </div>

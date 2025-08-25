@@ -22,17 +22,13 @@
                             </h6>
                             <small>Click to see endpoint</small>
                         </div>
-                        <div class="col-12 alert alert-dark">
+                        {{-- <div class="col-12 alert alert-dark">
                             <h6 class="font-weight-bold" style="color: black">Sandbox Url</h6>
                             <h6 class="noselect blurred" id="linkSandbox" onclick="toggleBlur('linkSandbox')">
                                 {{ $sandbox ?? 'No Endpoint found' }}
                             </h6>
                             <small class="mb-3 d-block">Click to see endpoint</small>
                             <div class="d-flex align-items-center" style="gap: 0.5rem">
-                                {{-- <form action="{{ route('admin-branch.branch-configuration.webhook.dummy') }}" method="post" class="mb-0">
-                                    @csrf
-                                    <button type="submit" class="btn btn-primary">Test with dummies</button>
-                                </form> --}}
                                 <button type="button" class="btn btn-primary" id="btnDummy">Test with dummies</button>
                                 <h6 class="font-weight-bold mb-0" id="result"></h6>
                             </div>
@@ -41,7 +37,7 @@
                                     Click to see Dummy Payload
                                 </small>
                             </button>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -63,9 +59,45 @@
                                         <th>{{ __('Action') }}</th>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td colspan="5" class="text-center">{{ __('Data not Found') }}</td>
-                                        </tr>
+                                        @forelse ($logs as $log)
+                                            <tr>
+                                                <td>{{ $log->created_at_formatted }}</td>
+                                                <td>{{ $log->queue->name }}</td>
+                                                <td>
+                                                    @switch($log->event_type)
+                                                        @case('onsite_checkin_booking')
+                                                            <h5 class="font-weight-bold text-success">Check In</h5>
+                                                            @break
+                                                        @case('onsite_create_booking')
+                                                            <h5 class="font-weight-bold text-primary">Create Booking</h5>    
+                                                            @break
+                                                        @case('onsite_modify_booking')
+                                                            <h5 class="font-weight-bold">Modify Booking</h5>    
+                                                            @break
+                                                        @default
+                                                    @endswitch
+                                                </td>
+                                                <td>{{ $log->status_code }}</td>
+                                                <td>
+                                                <button type="button" class="btn btn-secondary btn-detail"
+                                                    data-target="#exampleModal"
+                                                    data-payload='@json($log->payload)'
+                                                    data-toggle="modal">
+                                                    Detail
+                                                </button>
+                                                    @if ($log->status_code != 200)
+                                                    <form action="{{ route('admin-branch.branch-configuration.webhook.resend', ['id' => $log->id, 'live']) }}" method="post" style="display:inline-block">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success">Resend</button>
+                                                    </form>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5" class="text-center">{{ __('Data not Found') }}</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -75,22 +107,22 @@
             </div>
         </div>
     </div>
+
     
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Payload</h5>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Payload Detail</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <pre style="white-space: pre-wrap; word-wrap: break-word;"></pre>
+            </div>
+            </div>
         </div>
-        <div class="modal-body">
-            <pre>{{ json_encode($sandbox_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-        </div>
-    </div>
-    </div>
+
 @endsection
 <style>
 .noselect{
@@ -106,80 +138,101 @@
 function toggleBlur(id) {
     document.getElementById(id).classList.toggle("blurred");
 }
-document.addEventListener('DOMContentLoaded', function(){
-    feedTable()
-    document.getElementById('btnDummy').addEventListener('click', sendDummy);
-});
-
-async function sendDummy(){
-    const hit = await axios.post('/admin-branch/branch-configuration/webhook/dummy')
-            .then(res => {
-                console.log(res.data)
-                document.getElementById('result').innerText = `${res.data.code} ${res.data.status}`;
-            })
-            .catch(err => {
-                console.error(err)
-                if (err.response) {
-                    document.getElementById('result').innerText = `${err.response.status} ${err.response.statusText}`;
-                } else {
-                    document.getElementById('result').innerText = 'Network Error';
-                }
-            })
-
-}
-
-async function feedTable() {
-        const res = await axios.post('/admin-branch/branch-configuration/webhook/logs-webhook')
-            .then(res => res.data.data)
-            .catch(err => {
-                console.error(err)
-                
-                return []
-            })
-        
-        if (!res.length) {
-            $("#table tbody").html(`<tr>
-                <td colspan="5" class="text-center">{{ __('Data not Found') }}</td>
-            </tr>`)
-            return
+document.addEventListener('click', function(e) {
+    if (e.target.matches('.btn-detail')) {
+        let rawPayload = e.target.dataset.payload;
+        let content = '';
+        try {
+            let parsed = JSON.parse(rawPayload);
+            content = JSON.stringify(parsed, null, 2);
+        } catch (err) {
+            content = rawPayload;
         }
-        
-        $("#table tbody").html(
-            transformResponse(res)
-        )
+
+        document.querySelector('#exampleModal pre').innerText = content;
     }
+});
+// document.addEventListener('DOMContentLoaded', function(){
+//     feedTable()
+// });
 
-function transformResponse(data) {
-    var liveUrl = "{{ route('admin-branch.branch-configuration.webhook.resend', [':id', 'live']) }}";
-    var sandboxUrl = "{{ route('admin-branch.branch-configuration.webhook.resend', [':id', 'sandbox']) }}";
+// async function feedTable() {
+//         const res = await axios.post('/admin-branch/branch-configuration/webhook/logs-webhook')
+//             .then(res => res.data.data)
+//             .catch(err => {
+//                 console.error(err)
+                
+//                 return []
+//             })
+        
+//         if (!res.length) {
+//             $("#table tbody").html(`<tr>
+//                 <td colspan="5" class="text-center">{{ __('Data not Found') }}</td>
+//             </tr>`)
+//             return
+//         }
+        
+//         $("#table tbody").html(
+//             transformResponse(res)
+//         )
+//     }
 
-    return data.map(v => {
-        let liveAction = liveUrl.replace(':id', v.id);
-        let sandboxAction = sandboxUrl.replace(':id', v.id);
-        let actionButtons = '';
+// function transformResponse(data) {
+//     var liveUrl = "{{ route('admin-branch.branch-configuration.webhook.resend', [':id', 'live']) }}";
+//     var sandboxUrl = "{{ route('admin-branch.branch-configuration.webhook.resend', [':id', 'sandbox']) }}";
 
-        if (v.status_code != 200) {
-            actionButtons = `
-            <td class="d-flex" style="gap:0.5rem;">
-                <form action="${liveAction}" method="post" style="display:inline-block">
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="btn btn-success">Resend Live</button>
-                </form>
-                <form action="${sandboxAction}" method="post" style="display:inline-block">
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="btn btn-secondary">Resend Sandbox</button>
-                </form>
-            </td>`;
-        }
+//     return data.map(v => {
+//         let liveAction = liveUrl.replace(':id', v.id);
+//         let sandboxAction = sandboxUrl.replace(':id', v.id);
+//         let actionButtons = '';
 
-        return `<tr style="color: #000">
-            <td>${v.created_at_formatted}</td>
-            <td class="text-right">${v.queue?.name ?? '-'}</td>
-            <td class="text-right">${v.event_type}</td>
-            <td class="text-right">${v.status_code}</td>
-            ${actionButtons}
-        </tr>`;
-    }).join('');
-}
+//         if (v.status_code != 200) {
+//             actionButtons = `
+//                 <form action="${liveAction}" method="post" style="display:inline-block">
+//                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
+//                     <button type="submit" class="btn btn-success">Resend</button>
+//                 </form>`;
+//         }
+
+//         return `<tr style="color: #000">
+//             <td>${v.created_at_formatted}</td>
+//             <td >${v.queue?.name ?? '-'}</td>
+//             <td>${v.event_type}</td>
+//             <td>${v.status_code}</td>
+//             <td class="d-flex" style="gap:0.5rem;">
+//                 ${actionButtons}
+//                 <div>
+//                     <button type="submit" class="btn btn-secondary btn-detail" 
+//                     data-toggle="modal" 
+//                     data-target="#exampleModal"
+//                     data-payload='${v.payload}'>
+//                         Detail
+//                     </button>
+//                 </div>
+//             </td>
+//         </tr>`;
+//     }).join('');
+// }
+
+// document.addEventListener('click', function(e) {
+//     if (e.target.matches('.btn-detail')) {
+//         let rawPayload = e.target.dataset.payload;
+//         let content = '';
+//         try {
+//             if (typeof rawPayload === 'object') {
+//                 content = JSON.stringify(rawPayload, null, 2);
+//             } else {
+//                 let parsed = JSON.parse(rawPayload);
+//                 content = JSON.stringify(parsed, null, 2);
+//             }
+//         } catch (err) {
+//             content = rawPayload;
+//         }
+
+//         document.querySelector('#exampleModal pre').innerText = content;
+//     }
+// });
+
+
 
 </script>

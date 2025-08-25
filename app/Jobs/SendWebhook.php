@@ -19,15 +19,13 @@ class SendWebhook implements ShouldQueue
 
     protected $client;
     protected $webhookData;
-    protected $mode;
-    public function __construct($client, $webhookData, $mode = 'live')
+    public function __construct($client, $webhookData)
     {
         $this->client = $client;
         if (is_string($webhookData)) {
             $webhookData = json_decode($webhookData, true);
         }
         $this->webhookData = $webhookData;
-        $this->mode = $mode;
     }
 
     public function handle():void
@@ -36,8 +34,7 @@ class SendWebhook implements ShouldQueue
         
             $clientHttp = new Client();
             $tokenAPI = SecretKeyAPi::where('branch_id', $this->client->branch_id)->first();
-            $endpoint = $this->mode == 'sandbox' ? $this->client->sandbox_url : $this->client->webhook_url;
-            $response = $clientHttp->post($endpoint, [
+            $response = $clientHttp->post($this->client->webhook_url, [
                 'headers' => [
                     'x-secret-token' => $tokenAPI->secret_token,
                     'Content-Type' => 'application/json',
@@ -46,7 +43,7 @@ class SendWebhook implements ShouldQueue
                 'timeout' => 5,
             ]);
 
-            if ($this->mode != 'sandbox') {
+            if ($this->client->is_live_test) {
                 $status = $response->getStatusCode();
                 $log = WebhookLogs::UpdateOrCreate(
                         [
@@ -67,7 +64,7 @@ class SendWebhook implements ShouldQueue
                 'error' => $e->getMessage(),
                 'url' => $this->client->webhook_url
             ]);
-            if ($this->mode != 'sandbox') {
+            if ($this->client->is_live_test) {
                 $log = WebhookLogs::UpdateOrCreate(
                         [
                             'branch_id'  => $this->client->branch_id,

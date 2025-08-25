@@ -32,6 +32,7 @@ class BranchConfiguration extends Model
     'cs_page',
     'notif_popup',
     'notif_sound',
-    'sandbox_url'
+    'sandbox_url',
+    'is_live_test'
   ];
 }

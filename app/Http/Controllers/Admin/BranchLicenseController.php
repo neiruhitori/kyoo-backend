@@ -30,7 +30,7 @@ class BranchLicenseController extends Controller
             'branch_types' => BranchType::all(),
             'features' => AdditionalFeature::all(),
             'webhook_url' => $webhook_url->webhook_url,
-            'sandbox_url' => $webhook_url->sandbox_url,
+            'is_live_test' => $webhook_url->is_live_test,
             'secret_token' => SecretKeyAPi::where('branch_id', $branch->id)->first(),
             'selected_features' => FeatureSubscription::where('branch_id', $branch->id)->get()
         ];
@@ -129,14 +129,14 @@ class BranchLicenseController extends Controller
     {
         $validate = $request->validate([
             'endpoint' => 'required|url',
-            'sandbox' => 'nullable|url'
         ]);
-
+        $validate['is_live_test'] = $request->boolean('is_live_test');
+        // dd($request->all(), $validate['is_live_test']);
         if($validate)
         {
             $query = BranchConfiguration::where('branch_id',$id)->update([
                 'webhook_url' => $request->endpoint,
-                'sandbox_url'  => $request->sandbox,
+                'is_live_test'  => $validate['is_live_test'],
               ]);
               if($query){
                 $request->session()->flash('success', 'Webhook URL diperbarui');

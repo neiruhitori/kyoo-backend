@@ -195,8 +195,6 @@ Route::namespace('AdminBranch')
 
             Route::get('/webhook','WebhookController@index')->name('webhook');
             Route::post('/webhook/resend/{id}/{mode}','WebhookController@resend')->name('webhook.resend');
-            Route::post('/webhook/dummy','WebhookController@sendDummy')->name('webhook.dummy');
-            Route::post('/webhook/logs-webhook','WebhookController@fetchWebhook');
         });
 
          Route::get('/customer-feedback', 'CustomerFeedbackController@index')->name('feedback.index');
