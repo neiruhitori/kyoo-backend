@@ -31,7 +31,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label for="is_live_test">{{ __('Sound Notification') }}</label>
+                        <label for="is_live_test">{{ __('Webhook Live Testing') }}</label>
                             <div class="form-group">
                                 <div class="form-check">
                                     <input type="checkbox" name="is_live_test" class="form-check-input"
