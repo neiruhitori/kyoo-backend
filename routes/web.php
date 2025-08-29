@@ -528,5 +528,7 @@ Route::get('scan', 'QRScannerController@index')->name('scan.index');
 
 }); //end of locale prefix
 Route::get('feedback/{branchId}/{queueType}/{queueId}', 'FeedbackController@index')->name('feedback.mail')->middleware('signed');
+Route::get('userMobileRegistration/{registrationUser}/verification', 'API\Mobile\LoginController@verification')->name('userMobile.verif')->middleware('signed');
+Route::get('/user/register/verified', 'API\Mobile\LoginController@afterVerified')->name('userMobile.afterVerified');
 // Route::get('feedback/{branchId}/{queueType}/{queueId}', 'FeedbackController@index')->name('feedback.mail');
 Route::get('{branch}', 'ShortURLController@customerWebUrl')->name('shortUrl.customerWebUrl');
