@@ -127,4 +127,18 @@ class LoginController extends Controller
         $user->revoke();
         return response()->json('Successfully Logout');
     }
+
+    public function detail (){
+        $check = Auth::check();
+        if(!$check){
+            return response()->json([
+                'message' => 'Unauthenticated'
+            ], 401);
+        }
+
+         return response()->json([
+                'message' => 'Detail Fetched!',
+                'data' => Auth::user()
+            ]);
+    }
 }
