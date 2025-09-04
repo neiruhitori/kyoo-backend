@@ -532,7 +532,6 @@ class DashboardController extends Controller
 
         return response()->json([
             'success' => true,
-            'asd' => $booking_form,
             'message' => 'get all services by branch id',
             'data'    => $paginator->items(),
             'meta'    => [
