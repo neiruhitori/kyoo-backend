@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers\API\Mobile;
 
+use App\Slot;
 use Countries;
 use App\Branch;
+use App\Service;
 use App\Appointment;
 use App\DirectQueue;
 use App\Models\Regency;
 use App\IndustryCategory;
 use App\Models\UserMobile;
 use Illuminate\Http\Request;
+use App\Models\ServiceCategory;
 use App\Models\AppointmentOnsite;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class DashboardController extends Controller
 {
@@ -29,9 +34,22 @@ class DashboardController extends Controller
     public function getCategories()
     {
         $categories = IndustryCategory::all();
+
+        $perPage = $request->get('per_page', 10) ?? 10;
+        $page    = $request->get('page', 1) ?? 1;
+
+        $paginator = $categories->paginate($perPage, ['*'], 'page', $page);
+
         return response()->json([
+            'success' => true,
             'message' => 'Get All Categories',
-            'data' => $categories,
+            'data'    => $paginator->items(),
+            'meta'    => [
+                'current_page' => $paginator->currentPage(),
+                'per_page'     => $paginator->perPage(),
+                'total'        => $paginator->total(),
+                'last_page'    => $paginator->lastPage(),
+            ]
         ]);
     }
     public function detail()
@@ -54,7 +72,7 @@ class DashboardController extends Controller
         ]); 
     }
 
-    public function getActiveAppointment()
+    public function getActiveAppointment(Request $request)
     {
         $client_id = Auth::user()->client_id; 
 
@@ -125,6 +143,18 @@ class DashboardController extends Controller
             ->take(8)
             ->values();
 
+        $perPage = $request->get('per_page', 8) ?? 8; 
+        $page    = $request->get('page', 1) ?? 1;      
+        $offset  = ($page - 1) * $perPage;
+
+        $paginated = new LengthAwarePaginator(
+            $all->slice($offset, $perPage)->values(),
+            $all->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
         $calledQueue = collect()
                     ->merge(
                         $direct_queues->filter(fn($dq) => $dq->status === 'served' && $dq->call_time !== null)
@@ -137,14 +167,16 @@ class DashboardController extends Controller
                     
 
         return response()->json([
-            'message' => 'Queue Fetched!',
-            'queue_count' => $all->count(),
+            'message'      => 'Queue Fetched!',
+            'queue'        => $paginated->items(),
             'called_queue' => $calledQueue,
-            'queue' => $all,
+            'total'        => $paginated->total(),
+            'page'         => $paginated->currentPage(),
+            'last_page'    => $paginated->lastPage(),
         ]);
     }
 
-    public function getBranchByCategory($categoryId, $regencyId)
+    public function getBranchByCategory(Request $request, $categoryId, $regencyId)
     {
         $category_id = $categoryId;
         if (!is_numeric($category_id) || !is_numeric($regencyId)) {
@@ -161,16 +193,25 @@ class DashboardController extends Controller
                 'data' => Auth::user(),
             ], 404);
         }
-        $branch = Branch::with(['BranchConfiguration:id,branch_id,layer','BranchType:id,is_appointment,is_direct_queue'])
+        
+        $today = strtolower(now()->format('l'));
+        $query = Branch::with(['BranchConfiguration:id,branch_id,layer',
+                                'BranchType:id,is_appointment,is_direct_queue'
+                            ])
                             ->where('industry_category_id',$category_id)
                             ->where('country',$country_user)
                             ->where('regency_id',$regency)
-                            ->where('is_active',true)
-                            ->get()
-                            ->reject(function ($b) {
-                                return $b->BranchType && $b->BranchType->is_exhibition || $b->BranchConfiguration->layer == 1;
-                            })
-                            ->makeHidden([
+                            ->where('is_active',true);
+
+        if ($request->filled('search')) {
+            $search = strtolower($request->search);
+            $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
+        }
+        $branch = $query->get()
+                        ->reject(function ($b) {
+                            return $b->BranchType && $b->BranchType->is_exhibition || $b->BranchConfiguration->layer == 1;
+                        })
+                        ->makeHidden([
                                 'fixed_phone',
                                 'mobile_phone',
                                 'lat',
@@ -180,15 +221,40 @@ class DashboardController extends Controller
                                 'max_counter',
                                 'corporate_id',
                                 'license_expiration_date',
-                            ]);
+                            ])->map(function ($branch) use ($today) {
+                                $arr = $branch->toArray();
+                                if (isset($arr['schedule'])) {
+                                    $arr['schedule'] = collect($arr['schedule'])
+                                                        ->where('day', $today)
+                                                        ->values()
+                                                        ->all();
+                                }
+                                return $arr;
+                            });
+            $perPage = $request->get('per_page', 10) ?? 10;
+            $page    = $request->get('page', 1) ?? 1;    
+
+            $paginated = new LengthAwarePaginator(
+                $branch->forPage($page, $perPage)->values(),
+                $branch->count(),
+                $perPage,
+                $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
 
         return response()->json([
             'message' => 'Branch Fetched!',
-            'data' => $branch,
+            'data'    => $paginated->items(),
+            'meta'    => [
+                'current_page' => $paginated->currentPage(),
+                'per_page'     => $paginated->perPage(),
+                'total'        => $paginated->total(),
+                'last_page'    => $paginated->lastPage(),
+            ]
         ]);
     }
 
-    public function getBranchByRegency($regencyId)
+    public function getBranchByRegency(Request $request,$regencyId)
     {
         if (!is_numeric($regencyId)) {
             return response()->json([
@@ -203,10 +269,16 @@ class DashboardController extends Controller
                 'data' => Auth::user(),
             ], 404);
         }
-        $branch = Branch::with(['BranchConfiguration:id,branch_id,layer','BranchType:id,is_appointment,is_direct_queue'])
+
+        $query = Branch::with(['BranchConfiguration:id,branch_id,layer','BranchType:id,is_appointment,is_direct_queue'])
                             ->where('regency_id',$regency)
-                            ->where('is_active',true)
-                            ->get()
+                            ->where('is_active',true);
+        if ($request->filled('search')) {
+            $search = strtolower($request->search);
+            $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
+        }
+        $today = strtolower(now()->format('l'));
+        $branch = $query->get()
                             ->reject(function ($b) {
                                 return $b->BranchType && $b->BranchType->is_exhibition || $b->BranchConfiguration->layer == 1;
                             })
@@ -220,15 +292,41 @@ class DashboardController extends Controller
                                 'max_counter',
                                 'corporate_id',
                                 'license_expiration_date',
-                            ]);
+                            ])->map(function ($branch) use ($today) {
+                                $arr = $branch->toArray();
+                                if (isset($arr['schedule'])) {
+                                    $arr['schedule'] = collect($arr['schedule'])
+                                                        ->where('day', $today)
+                                                        ->values()
+                                                        ->all();
+                                }
+                                return $arr;
+                            });
+
+            $perPage = $request->get('per_page', 10) ?? 10;
+            $page    = $request->get('page', 1) ?? 1;    
+
+            $paginated = new LengthAwarePaginator(
+                $branch->forPage($page, $perPage)->values(),
+                $branch->count(),
+                $perPage,
+                $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
 
         return response()->json([
             'message' => 'Branch Fetched!',
-            'data' => $branch,
+            'data'    => $paginated->items(),
+            'meta'    => [
+                'current_page' => $paginated->currentPage(),
+                'per_page'     => $paginated->perPage(),
+                'total'        => $paginated->total(),
+                'last_page'    => $paginated->lastPage(),
+            ]
         ]);
     }
 
-    public function getPrevBranch()
+    public function getPrevBranch(Request $request)
     {
         $client_id = Auth::user()->client_id;
         if(!$client_id){
@@ -236,7 +334,10 @@ class DashboardController extends Controller
                 'message' => 'Client ID not found',
             ], 404);
         }
-        $appointment = Appointment::with(['Branch','Branch.BranchConfiguration:id,branch_id,layer','Branch.BranchType:id,is_appointment,is_direct_queue'])
+        $today = strtolower(now()->format('l'));
+        $appointment = Appointment::with(['Branch',
+                                    'Branch.BranchConfiguration:id,branch_id,layer',
+                                    'Branch.BranchType:id,is_appointment,is_direct_queue'])
                                     ->where('client_id', $client_id)
                                     ->where('status', 'end served')
                                     ->latest()
@@ -246,8 +347,15 @@ class DashboardController extends Controller
                                     ->pluck('Branch')
                                     ->unique('id')
                                     ->values()
-                                    ->map(function ($b){
-                                        return $b->makeHidden([
+                                    ->map(function ($b) use ($today){
+                                        $arr = $b->toArray();
+                                        if (isset($arr['schedule'])) {
+                                            $arr['schedule'] = collect($arr['schedule'])
+                                                                ->where('day', $today)
+                                                                ->values()
+                                                                ->all();
+                                        }
+                                        return collect($arr)->except([
                                             'fixed_phone',
                                             'mobile_phone',
                                             'lat',
@@ -259,6 +367,7 @@ class DashboardController extends Controller
                                             'license_expiration_date',
                                         ]);
                                     }); 
+
         $directQueue = DirectQueue::with(['Branch','Branch.BranchConfiguration:id,branch_id,layer','Branch.BranchType:id,is_appointment,is_direct_queue'])
                                     ->where('client_id', $client_id)
                                     ->whereNotNull('appointment_onsite_id')
@@ -270,8 +379,15 @@ class DashboardController extends Controller
                                     ->pluck('Branch')
                                     ->unique('id')
                                     ->values()
-                                    ->map(function ($b){
-                                        return $b->makeHidden([
+                                    ->map(function ($b) use ($today){
+                                        $arr = $b->toArray();
+                                        if (isset($arr['schedule'])) {
+                                            $arr['schedule'] = collect($arr['schedule'])
+                                                                ->where('day', $today)
+                                                                ->values()
+                                                                ->all();
+                                        }
+                                        return collect($arr)->except([
                                             'fixed_phone',
                                             'mobile_phone',
                                             'lat',
@@ -288,11 +404,286 @@ class DashboardController extends Controller
             ->merge($appointment)
             ->merge($directQueue)
             ->take(6)
-            ->values();        
+            ->values();
+            
+            if ($request->filled('search')) {
+                $search = strtolower($request->search);
+                $all = $all->filter(function ($branch) use ($search) {
+                    return strpos(strtolower($branch->name), $search) !== false;
+                })->values();
+            }
+            $perPage = $request->get('per_page', 6) ?? 6;
+            $page = $request->get('page', 1) ?? 1;
+
+            $paginated = new LengthAwarePaginator(
+                $all->forPage($page, $perPage)->values(),
+                $all->count(),
+                $perPage,
+                $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+
 
          return response()->json([
             'message' => 'Previous Branch Fetched!',
-            'data' => $all,
+            'data'    => $paginated->items(),
+            'meta'    => [
+                'current_page' => $paginated->currentPage(),
+                'per_page'     => $paginated->perPage(),
+                'total'        => $paginated->total(),
+                'last_page'    => $paginated->lastPage(),
+            ]
         ]);
     }
+
+    public function regencyByProvince(Request $request, $country, $province_id = null){
+        $query = Regency::where('country', $country);
+
+        if (!empty($province_id)) {
+            $query->where('province_id', $province_id);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
+        }
+        $perPage = $request->get('per_page', 10) ?? 10;
+        $page    = $request->get('page', 1) ?? 1;
+
+        $paginator = $query->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'get all regencies',
+            'data'    => $paginator->items(),
+            'meta'    => [
+                'current_page' => $paginator->currentPage(),
+                'per_page'     => $paginator->perPage(),
+                'total'        => $paginator->total(),
+                'last_page'    => $paginator->lastPage(),
+            ]
+        ]);
+    }
+
+    public function getServiceCategoryBranch(Request $request, $branch_id)
+    {
+        $service_categories = ServiceCategory::where('branch_id', $branch_id);
+
+        $perPage = $request->get('per_page', 10) ?? 10;
+        $page    = $request->get('page', 1) ?? 1;
+
+        $paginator = $service_categories->paginate($perPage, ['*'], 'page', $page);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'get all service categories by branch id',
+            'data'    => $paginator->items(),
+            'meta'    => [
+                'current_page' => $paginator->currentPage(),
+                'per_page'     => $paginator->perPage(),
+                'total'        => $paginator->total(),
+                'last_page'    => $paginator->lastPage(),
+            ]
+        ]);
+    }
+
+    public function getServiceByBranchId(Request $request, $branch_id)
+    {
+        $dateNow = $request->date ?? date('Y-m-d');
+        $dayNow =  strtolower(date("l", strtotime($dateNow)));
+        $branch = Branch::find($branch_id);
+        $booking_form = $branch->BranchConfiguration->template_booking_form;
+        $type = [
+                'appointment' => 'appointment',
+                'onsite' => 'appointment-onsite',
+        ];
+        $queueType = $type[$branch->queue_type];
+
+        $query = Service::where('branch_id', $branch_id)
+                            ->where('is_disable',false);
+
+        if ($request->filled('service_category_id')) {
+            $query->where('service_category_id', $request->service_category_id);
+        }
+
+        $perPage = $request->get('per_page', 10) ?? 10;
+        $page    = $request->get('page', 1) ?? 1;
+
+        $paginator = $query->paginate($perPage, ['*'], 'page', $page);
+                            
+        $services = $paginator->items();
+
+        foreach ($services as $service) {
+            // get filled slot
+            $filledSlot = $this->getFilledSlot($queueType, [
+                'service_id' => $service->id,
+                'date' => $dateNow
+            ]);
+
+            // get total slot
+            $slots = Slot::where('day', $dayNow)
+                ->whereServiceId($service->id);
+
+            $service->template_form_booking = $service->template_form_booking ?? $booking_form;
+            $service->slots = $slots->get();
+            $service->filledSlot = $filledSlot;
+            $service->totalSlot = $slots->sum('max_slots');
+        }
+
+        return response()->json([
+            'success' => true,
+            'asd' => $booking_form,
+            'message' => 'get all services by branch id',
+            'data'    => $paginator->items(),
+            'meta'    => [
+                'current_page' => $paginator->currentPage(),
+                'per_page'     => $paginator->perPage(),
+                'total'        => $paginator->total(),
+                'last_page'    => $paginator->lastPage(),
+            ]
+        ]);
+    }
+
+    public function getSlot(Request $request, $id)
+    {
+        $date = $request->date ?? null;
+
+        $service = Service::with(['Branch'])
+            ->where('id', $id)
+            ->firstOrFail()
+            ->makeHidden('Branch');
+
+        if ($date) {
+            $day = strtolower(date("l", strtotime($date)));
+            $slots = $service->Slot()->where('day', $day)->get();
+        } else {
+            $slots = $service->Slot;
+        }
+
+        $type = [
+            'appointment' => 'appointment',
+            'onsite' => 'appointment-onsite',
+        ];
+
+        $queueType = $request->queue_type ?? $type[$service->Branch->queue_type];
+
+        foreach ($slots as $slot) {
+            $slot->filled_slot = $this->getFilledSlot($queueType, [
+                'service_id' => $service->id,
+                'slot_id'    => $slot->id,
+                'date'       => $date ?? date('Y-m-d') 
+            ]);
+        }
+
+        $service->setRelation('Slot', $slots);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'get service by id',
+            'data'    => $service
+        ]);
+    }
+
+    public function popularService(Request $request)
+    {
+        $startDate = now()->subMonth();
+        $endDate   = now();
+        $today     = strtolower(now()->format('l'));
+        $regencyId = $request->get('regency_id') ?? null;
+
+        $union = DB::table('appointments')
+            ->select('service_id', 'rating')
+            ->where('status', 'end served')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->unionAll(
+                DB::table('direct_queues')
+                    ->select('service_id', 'rating')
+                    ->where('status', 'end served')
+                    ->whereBetween('created_at', [$startDate, $endDate])
+            );
+
+        $services = DB::table('services as s')
+            ->leftJoin('branches as b', 'b.id', '=', 's.branch_id')
+            ->joinSub($union, 'q', function($join) {
+                $join->on('q.service_id', '=', 's.id');
+            })
+            ->select(
+                's.id',
+                's.name',
+                'b.id as branch_id',
+                'b.name as branch_name',
+                DB::raw('COUNT(q.service_id) as total_queue'),
+                DB::raw('AVG(q.rating) as avg_rating')
+            )
+            ->when($regencyId, function($q) use ($regencyId) {
+                $q->where('b.regency_id', $regencyId);
+            })
+            ->groupBy('s.id', 's.name', 'b.id', 'b.name')
+            ->orderByDesc('total_queue')
+            ->orderByDesc('avg_rating')
+            ->limit(10) //top 10
+            ->get();
+
+        $services->transform(function ($service) use ($today) {
+            $schedule = DB::table('schedules')
+                    ->where('branch_id', $service->branch_id)
+                    ->where('day', $today)
+                    ->get();
+
+                return [
+                    'id'          => $service->id,
+                    'name'        => $service->name,
+                    'total_queue' => (int) $service->total_queue,
+                    'avg_rating'  => $service->avg_rating ? round($service->avg_rating, 2) : null,
+                    'branch'      => [
+                        'id'       => $service->branch_id,
+                        'name'     => $service->branch_name,
+                        'schedule' => $schedule,
+                    ]
+                ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Top layanan populer bulan ini',
+            'data' => $services
+        ]);
+    }
+
+    public function getFilledSlot($queue_type, $params)
+    {
+        if ($queue_type == 'appointment') {
+            return Appointment::withoutCanceled()->whereHas('Slot', function ($query) use ($params) {
+                $query->where('service_id', $params['service_id']);
+            })
+                ->when(isset($params['slot_id']), function ($q) use ($params) {
+                    $q->where('slot_id', $params['slot_id']);
+                })
+                ->where('date', $params['date'])
+                ->count();
+        }
+
+        if ($queue_type == 'exhibition') {
+            return Exhibition::whereHas('Slot', function ($query) use ($params) {
+                $query->where('service_id', $params['service_id']);
+            })
+                ->when(isset($params['slot_id']), function ($q) use ($params) {
+                    $q->where('slot_id', $params['slot_id']);
+                })
+                ->where('date', $params['date'])
+                ->count();
+        }
+
+        if($queue_type == 'appointment-onsite') {
+            return AppointmentOnsite::whereHas('Slot', function ($query) use ($params) {
+                $query->where('service_id', $params['service_id']);
+            })
+                ->when(isset($params['slot_id']), function ($q) use ($params) {
+                    $q->where('slot_id', $params['slot_id']);
+                })
+                ->where('date', $params['date'])
+                ->count();
+        }
+    }
+
 }

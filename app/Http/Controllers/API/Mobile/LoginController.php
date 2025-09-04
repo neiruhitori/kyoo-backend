@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        $user = UserMobile::where('email', $request->email)->first();
+        $user = UserMobile::with('Regency')->where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
@@ -25,11 +26,18 @@ class LoginController extends Controller
                 'status_code' => 400
             ], 400);
         }
-        $data = $user->only([
-            'id', 'name', 'email', 'phone', 
-            'google_id', 'remember_token', 
-            'regency', 'country', 'client_id'
-        ]);
+        $data = [
+            'id'             => $user->id,
+            'name'           => $user->name,
+            'email'          => $user->email,
+            'phone'          => $user->phone,
+            'google_id'      => $user->google_id,
+            'remember_token' => $user->remember_token,
+            'country'        => $user->country,
+            'client_id'      => $user->client_id,
+            'regency'        => $user->Regency,
+            'photo'          => $user->photo,
+        ];
 
         return response()->json([
             'data' => $data,
@@ -47,7 +55,9 @@ class LoginController extends Controller
             'password' => 'required|string',
             'phone'    => 'nullable|string|max:20',
         ],[
-            'email.unique' => 'User with this email already exists'
+            'required'      => ':attribute is required',
+            'email.unique' => 'User with this email already exists',
+            'email.email' => 'Email format is not correct',
         ]);
 
         $input = $request->all();
@@ -60,7 +70,7 @@ class LoginController extends Controller
         ->send(new RegistrationUserMail($user));
 
         return response()->json([
-            'message' => 'Email verification sended!',
+            'message' => 'Registration Success, check your email to verification',
         ]);
     }
 
@@ -121,11 +131,65 @@ class LoginController extends Controller
         ]);
     }
 
+    public function updateProfile(Request $request)
+    {
+         $request->validate([
+            'name'     => 'nullable|string|max:255',
+            'password' => 'nullable|string',
+            'photo'    => 'nullable|image',
+        ],[
+            'required'      => ':attribute is required',
+        ]);
+
+        $user = UserMobile::with('Regency')->find(Auth::user()->id);
+
+        $data = $request->except('photo');
+
+        if (!empty($request->password)) {
+            $data['password'] = Hash::make($request->password);
+        } else {
+            unset($data['password']);
+        }
+
+        if (empty($request->name)) {
+            unset($data['name']);
+        }
+
+        if ($request->hasFile('photo')) {
+            if ($user->photo && Storage::disk('public')->exists($user->photo)) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            $data['photo'] = $request->file('photo')->store('user_mobile', 'public');
+        }
+        $user->update($data);
+
+        $updatedData = [
+            'id'             => $user->id,
+            'name'           => $user->name,
+            'email'          => $user->email,
+            'phone'          => $user->phone,
+            'google_id'      => $user->google_id,
+            'remember_token' => $user->remember_token,
+            'country'        => $user->country,
+            'client_id'      => $user->client_id,
+            'regency'        => $user->Regency,
+            'photo'          => $user->photo,
+        ];
+
+        return response()->json([
+            'message' => 'Profile Changed!',
+            'data' => $updatedData
+        ]);
+    }
+
     public function logout(Request $request)
     {
         $user = Auth::user()->token();
         $user->revoke();
-        return response()->json('Successfully Logout');
+
+        return response()->json([
+            'message' => 'Successfully Logout!'
+        ]);
     }
 
     public function detail (){

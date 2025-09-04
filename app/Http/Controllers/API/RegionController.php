@@ -53,7 +53,7 @@ class RegionController extends Controller
 
     public function regencyById($regency_id)
     {
-        $regency = Regency::find($regency_id);
+        $regency = Regency::with('province')->find($regency_id);
 
         return response()->json([
             'success' => true,

@@ -25,9 +25,14 @@ Route::prefix('mobile')->group(function (){
 
     Route::get('region/all', [DashboardController::class, 'getRegion']);
     Route::get('branch/categories/all', [DashboardController::class, 'getCategories']);
-    // Route::post('branch/service', [BranchServiceController::class, 'service']);
+    Route::get('regency/{country}/{province?}', [DashboardController::class, 'regencyByProvince']);
+    Route::get('service-category/branch/{branch_id}', [DashboardController::class, 'getServiceCategoryBranch']);
+    Route::get('service/branch/{branch_id}', [DashboardController::class, 'getServiceByBranchId']);
+    Route::get('service/{service_id}', [DashboardController::class, 'getSlot']);
+    Route::get('service-popular', [DashboardController::class, 'popularService']);
     
     Route::middleware(['auth:mobile'])->group(function(){
+        Route::post('profile', [LoginController::class, 'updateProfile']);
         Route::get('detail', [LoginController::class, 'detail']);
         Route::post('setRegion', [DashboardController::class, 'setRegion']);
         Route::get('queues', [DashboardController::class, 'getActiveAppointment']);

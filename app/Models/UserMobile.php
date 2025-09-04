@@ -17,4 +17,9 @@ class UserMobile extends Authenticatable
     protected $table = 'users_mobile';
 
     protected $guarded = ['id'];
+
+    public function Regency()
+    {
+        return $this->belongsTo(Regency::class,'regency');
+    }
 }
