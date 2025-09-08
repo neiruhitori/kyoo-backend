@@ -52,6 +52,7 @@ class DashboardController extends Controller
             ]
         ]);
     }
+    
     public function detail()
     {
         return response()->json(Auth::user());
@@ -62,13 +63,19 @@ class DashboardController extends Controller
         $request->validate([
             'country' => 'string|required',
             'regency' => 'required',
+        ],[
+            'required' => ':attribute is required',
         ]);
 
-        $id = Auth::user()->id;
-        UserMobile::where('id',$id)->update($request->all());
+        $user = Auth::user();
+        UserMobile::where('id',$user->id)->update($request->all());
 
         return response()->json([
-            'message' => Auth::user(),
+            'message' => 'Region Changed!',
+            'data' => [
+                        'country' => $user->country,
+                        'regency' => $user->Regency->name,
+                    ]
         ]); 
     }
 

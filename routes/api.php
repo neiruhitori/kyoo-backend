@@ -22,7 +22,9 @@ Route::prefix('mobile')->group(function (){
     Route::post('logout', [LoginController::class, 'logout'])->middleware(['auth:mobile']);
     Route::post('register', [LoginController::class, 'register']);
     Route::post('login/oauth/google', [LoginController::class, 'loginWithGoogle']);
-
+    Route::post('forgot-password', [LoginController::class, 'forgotPassword']);
+    Route::post('reset-password', [LoginController::class, 'resetPassword']);
+    
     Route::get('region/all', [DashboardController::class, 'getRegion']);
     Route::get('branch/categories/all', [DashboardController::class, 'getCategories']);
     Route::get('regency/{country}/{province?}', [DashboardController::class, 'regencyByProvince']);
@@ -32,13 +34,16 @@ Route::prefix('mobile')->group(function (){
     Route::get('service-popular', [DashboardController::class, 'popularService']);
     
     Route::middleware(['auth:mobile'])->group(function(){
-        Route::post('profile', [LoginController::class, 'updateProfile']);
         Route::get('detail', [LoginController::class, 'detail']);
-        Route::post('setRegion', [DashboardController::class, 'setRegion']);
         Route::get('queues', [DashboardController::class, 'getActiveAppointment']);
         Route::get('branch/category/{categoryId}/{regencyId}', [DashboardController::class, 'getBranchByCategory']);
         Route::get('branch/regency/{regencyId}', [DashboardController::class, 'getBranchByRegency']);
         Route::get('branch/previous', [DashboardController::class, 'getPrevBranch']);
+
+        Route::post('profile', [LoginController::class, 'updateProfile']);
+        Route::post('profile/verify-password', [LoginController::class, 'passwordVerif']);
+        Route::post('profile/update-password', [LoginController::class, 'updatePassword']);
+        Route::post('setRegion', [DashboardController::class, 'setRegion']);
         Route::post('appointment-onsite', [BranchServiceController::class, 'storeAppointmentOnsite']);
         Route::post('appointment', [BranchServiceController::class, 'storeAppointment']);
     });

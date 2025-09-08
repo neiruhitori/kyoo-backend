@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Mobile;
 
 use App\Models\UserMobile;
+use App\Models\PasswordOTP;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\RegistrationUser;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\ForgotPasswordMobileMail;
 use Illuminate\Support\Facades\Storage;
 
 class LoginController extends Controller
@@ -35,7 +37,7 @@ class LoginController extends Controller
             'remember_token' => $user->remember_token,
             'country'        => $user->country,
             'client_id'      => $user->client_id,
-            'regency'        => $user->Regency,
+            'regency'        => $user->Regency->name,
             'photo'          => $user->photo,
         ];
 
@@ -52,7 +54,7 @@ class LoginController extends Controller
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|string|email|max:255|unique:registration_user_mobile',
-            'password' => 'required|string',
+            'password' => 'required|string|min:8',
             'phone'    => 'nullable|string|max:20',
         ],[
             'required'      => ':attribute is required',
@@ -135,7 +137,6 @@ class LoginController extends Controller
     {
          $request->validate([
             'name'     => 'nullable|string|max:255',
-            'password' => 'nullable|string',
             'photo'    => 'nullable|image',
         ],[
             'required'      => ':attribute is required',
@@ -144,12 +145,6 @@ class LoginController extends Controller
         $user = UserMobile::with('Regency')->find(Auth::user()->id);
 
         $data = $request->except('photo');
-
-        if (!empty($request->password)) {
-            $data['password'] = Hash::make($request->password);
-        } else {
-            unset($data['password']);
-        }
 
         if (empty($request->name)) {
             unset($data['name']);
@@ -172,7 +167,7 @@ class LoginController extends Controller
             'remember_token' => $user->remember_token,
             'country'        => $user->country,
             'client_id'      => $user->client_id,
-            'regency'        => $user->Regency,
+            'regency'        => $user->Regency->name,
             'photo'          => $user->photo,
         ];
 
@@ -204,5 +199,121 @@ class LoginController extends Controller
                 'message' => 'Detail Fetched!',
                 'data' => Auth::user()
             ]);
+    }
+
+    public function passwordVerif(Request $request)
+    { 
+        $request->validate([
+            'password' => 'required'
+        ],[
+            'required' => 'Password is required'
+        ]);
+
+        $user = Auth::user();
+
+        if(Hash::check($request->password, $user->password)){
+            return response()->json([
+                'message' => 'Password matched!',
+                'matched' => true
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Password not matched!',
+                'matched' => false
+            ], 422);
+        }
+        
+    }
+
+    public function updatePassword(Request $request)
+    { 
+        $request->validate([
+            'password' => 'required|min:8'
+        ]);
+
+        $user = UserMobile::with('Regency')->find(Auth::user()->id);
+        $data = $request->all();
+        $data['password'] = Hash::make($request->password);
+        
+        $user->update($data);
+
+        $updated = [
+            'id'             => $user->id,
+            'name'           => $user->name,
+            'email'          => $user->email,
+            'phone'          => $user->phone,
+            'google_id'      => $user->google_id,
+            'remember_token' => $user->remember_token,
+            'country'        => $user->country,
+            'client_id'      => $user->client_id,
+            'regency'        => $user->Regency->name,
+            'photo'          => $user->photo,
+        ];
+
+        return response()->json([
+            'message' => 'Password Updated!',
+            'data' => $updated
+        ]);
+        
+    }
+
+    public function forgotPassword(Request $request)
+    {
+       $request->validate([
+            'email' => 'required|email|exists:users_mobile,email'
+       ],[
+            'email.exists' => 'The selected email does not exist in our records.',
+            'email.email' => 'The given data is not email',
+            'email.required' => 'Email is required'
+       ]);
+
+       $otp = random_int(100000,999999);
+       $expired = now()->addMinutes(30);
+
+       $verif = PasswordOTP::updateOrCreate(
+                    [ 'email' => $request->email ],
+                    [
+                        'otp' => $otp,
+                        'expires_at' => $expired
+                    ]
+                );
+
+        //kirim mail
+        Mail::to($request->email)->locale('en')->send(new ForgotPasswordMobileMail($verif));
+
+        return response()->json([
+            'message' => 'OTP has been sent to your email.',
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email'    => 'required|email|exists:users_mobile,email',
+            'otp'      => 'required|string',
+            'password' => 'required|string|min:8',
+        ],[
+            'required' => ':attribute is required',
+            'email.email' => 'The given data is not email',
+        ]);
+
+        $resetOTP = PasswordOTP::where('email', $request->email)->where('otp', $request->otp)->first();
+
+        if (!$resetOTP) {
+            return response()->json(['message' => 'Invalid OTP or email'], 400);
+        }
+        if (now()->greaterThan($resetOTP->expires_at)) {
+            return response()->json(['message' => 'OTP has expired'], 400);
+        }
+
+        $user = UserMobile::where('email', $request->email)->first();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        $resetOTP->delete();
+
+        return response()->json([
+            'message' => 'Password reset successful.'
+        ]);
     }
 }
