@@ -147,7 +147,9 @@ class LoginController extends Controller
 
         return response()->json([
             'user'  => $data,
-            'token' => $token,
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'status_code' => 200,
         ]);
     }
 
