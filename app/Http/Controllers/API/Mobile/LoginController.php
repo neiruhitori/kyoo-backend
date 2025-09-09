@@ -306,7 +306,7 @@ class LoginController extends Controller
         Mail::to($request->email)->locale('en')->send(new ForgotPasswordMobileMail($verif));
 
         return response()->json([
-            'message' => 'OTP has been sent to your email.',
+            'message' => 'Email with OTP has been sent to your email.',
         ]);
     }
 

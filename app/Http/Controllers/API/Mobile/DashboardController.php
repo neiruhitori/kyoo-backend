@@ -74,7 +74,10 @@ class DashboardController extends Controller
             'message' => 'Region Changed!',
             'data' => [
                         'country' => $user->country,
-                        'regency' => $user->Regency->name,
+                        'regency' =>[ 
+                                    'id' => $user->Regency ? $user->Regency->id : null, 
+                                    'name' => $user->Regency ? $user->Regency->name : null 
+                                    ],
                     ]
         ]); 
     }
