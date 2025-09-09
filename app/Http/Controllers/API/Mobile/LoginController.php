@@ -37,7 +37,10 @@ class LoginController extends Controller
             'remember_token' => $user->remember_token,
             'country'        => $user->country,
             'client_id'      => $user->client_id,
-            'regency'        => $user->Regency->name,
+            'regency'        => [ 
+                                'id' => $user->Regency->id, 
+                                'name' => $user->Regency->name
+                                ],
             'photo'          => $user->photo,
         ];
 
@@ -125,10 +128,25 @@ class LoginController extends Controller
             ]);
         }
 
+        $data = [
+            'id'             => $user->id,
+            'name'           => $user->name,
+            'email'          => $user->email,
+            'phone'          => $user->phone,
+            'google_id'      => $user->google_id,
+            'remember_token' => $user->remember_token,
+            'country'        => $user->country,
+            'client_id'      => $user->client_id,
+            'regency'        => [ 
+                                'id' => $user->Regency ? $user->Regency->id : null, 
+                                'name' => $user->Regency ? $user->Regency->name : null 
+                                ],
+            'photo'          => $user->photo,
+        ];
         $token = $user->createToken('authToken')->accessToken;
 
         return response()->json([
-            'user'  => $user,
+            'user'  => $data,
             'token' => $token,
         ]);
     }
@@ -167,7 +185,10 @@ class LoginController extends Controller
             'remember_token' => $user->remember_token,
             'country'        => $user->country,
             'client_id'      => $user->client_id,
-            'regency'        => $user->Regency->name,
+            'regency'        =>  [ 
+                                'id' => $user->Regency->id, 
+                                'name' => $user->Regency->name
+                                ],
             'photo'          => $user->photo,
         ];
 
@@ -246,7 +267,10 @@ class LoginController extends Controller
             'remember_token' => $user->remember_token,
             'country'        => $user->country,
             'client_id'      => $user->client_id,
-            'regency'        => $user->Regency->name,
+            'regency'        => [ 
+                                'id' => $user->Regency->id, 
+                                'name' => $user->Regency->name
+                                ],
             'photo'          => $user->photo,
         ];
 
