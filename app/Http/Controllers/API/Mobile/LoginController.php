@@ -38,8 +38,8 @@ class LoginController extends Controller
             'country'        => $user->country,
             'client_id'      => $user->client_id,
             'regency'        => [ 
-                                'id' => $user->Regency->id, 
-                                'name' => $user->Regency->name
+                                'id' => $user->Regency?->id, 
+                                'name' => $user->Regency?->name
                                 ],
             'photo'          => $user->photo,
         ];
@@ -138,8 +138,8 @@ class LoginController extends Controller
             'country'        => $user->country,
             'client_id'      => $user->client_id,
             'regency'        => [ 
-                                'id' => $user->Regency ? $user->Regency->id : null, 
-                                'name' => $user->Regency ? $user->Regency->name : null 
+                                'id' => $user->Regency?->id, 
+                                'name' =>$user->Regency?->name 
                                 ],
             'photo'          => $user->photo,
         ];
