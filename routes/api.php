@@ -31,7 +31,7 @@ Route::prefix('mobile')->group(function (){
     Route::get('service-category/branch/{branch_id}', [DashboardController::class, 'getServiceCategoryBranch']);
     Route::get('service/branch/{branch_id}', [DashboardController::class, 'getServiceByBranchId']);
     Route::get('service/{service_id}', [DashboardController::class, 'getSlot']);
-    Route::get('service-popular', [DashboardController::class, 'popularService']);
+    Route::get('branch-popular', [DashboardController::class, 'popularBranch']);
     
     Route::middleware(['auth:mobile'])->group(function(){
         Route::get('detail', [LoginController::class, 'detail']);

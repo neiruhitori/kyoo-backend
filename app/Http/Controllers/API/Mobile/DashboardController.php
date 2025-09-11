@@ -31,14 +31,12 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function getCategories()
+    public function getCategories(Request $request)
     {
-        $categories = IndustryCategory::all();
-
         $perPage = $request->get('per_page', 10) ?? 10;
         $page    = $request->get('page', 1) ?? 1;
 
-        $paginator = $categories->paginate($perPage, ['*'], 'page', $page);
+        $paginator = IndustryCategory::paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
             'success' => true,
@@ -206,7 +204,8 @@ class DashboardController extends Controller
         
         $today = strtolower(now()->format('l'));
         $query = Branch::with(['BranchConfiguration:id,branch_id,layer',
-                                'BranchType:id,is_appointment,is_direct_queue'
+                                'BranchType:id,is_appointment,is_direct_queue',
+                                'IndustryCategory:id,name'
                             ])
                             ->where('industry_category_id',$category_id)
                             ->where('country',$country_user)
@@ -219,7 +218,8 @@ class DashboardController extends Controller
         }
         $branch = $query->get()
                         ->reject(function ($b) {
-                            return $b->BranchType && $b->BranchType->is_exhibition || $b->BranchConfiguration->layer == 1;
+                             return ($b->BranchType && $b->BranchType->is_exhibition)
+                                    || ($b->BranchConfiguration && $b->BranchConfiguration->layer !== null && $b->BranchConfiguration->layer == 1);
                         })
                         ->makeHidden([
                                 'fixed_phone',
@@ -280,7 +280,7 @@ class DashboardController extends Controller
             ], 404);
         }
 
-        $query = Branch::with(['BranchConfiguration:id,branch_id,layer','BranchType:id,is_appointment,is_direct_queue'])
+        $query = Branch::with(['BranchConfiguration:id,branch_id,layer','BranchType:id,is_appointment,is_direct_queue','IndustryCategory:id,name'])
                             ->where('regency_id',$regency)
                             ->where('is_active',true);
         if ($request->filled('search')) {
@@ -290,7 +290,8 @@ class DashboardController extends Controller
         $today = strtolower(now()->format('l'));
         $branch = $query->get()
                             ->reject(function ($b) {
-                                return $b->BranchType && $b->BranchType->is_exhibition || $b->BranchConfiguration->layer == 1;
+                                return ($b->BranchType && $b->BranchType->is_exhibition)
+                                    || ($b->BranchConfiguration && $b->BranchConfiguration->layer !== null && $b->BranchConfiguration->layer == 1);
                             })
                             ->makeHidden([
                                 'fixed_phone',
@@ -347,7 +348,8 @@ class DashboardController extends Controller
         $today = strtolower(now()->format('l'));
         $appointment = Appointment::with(['Branch',
                                     'Branch.BranchConfiguration:id,branch_id,layer',
-                                    'Branch.BranchType:id,is_appointment,is_direct_queue'])
+                                    'Branch.BranchType:id,is_appointment,is_direct_queue',
+                                    'Branch.IndustryCategory:id,name'])
                                     ->where('client_id', $client_id)
                                     ->where('status', 'end served')
                                     ->latest()
@@ -593,7 +595,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function popularService(Request $request)
+    public function popularBranch(Request $request)
     {
         $startDate = now()->subMonth();
         $endDate   = now();
@@ -611,51 +613,24 @@ class DashboardController extends Controller
                     ->whereBetween('created_at', [$startDate, $endDate])
             );
 
-        $services = DB::table('services as s')
-            ->leftJoin('branches as b', 'b.id', '=', 's.branch_id')
-            ->joinSub($union, 'q', function($join) {
-                $join->on('q.service_id', '=', 's.id');
-            })
-            ->select(
-                's.id',
-                's.name',
-                'b.id as branch_id',
-                'b.name as branch_name',
-                DB::raw('COUNT(q.service_id) as total_queue'),
-                DB::raw('AVG(q.rating) as avg_rating')
-            )
-            ->when($regencyId, function($q) use ($regencyId) {
-                $q->where('b.regency_id', $regencyId);
-            })
-            ->groupBy('s.id', 's.name', 'b.id', 'b.name')
-            ->orderByDesc('total_queue')
-            ->orderByDesc('avg_rating')
-            ->limit(10) //top 10
-            ->get();
-
-        $services->transform(function ($service) use ($today) {
-            $schedule = DB::table('schedules')
-                    ->where('branch_id', $service->branch_id)
-                    ->where('day', $today)
-                    ->get();
-
-                return [
-                    'id'          => $service->id,
-                    'name'        => $service->name,
-                    'total_queue' => (int) $service->total_queue,
-                    'avg_rating'  => $service->avg_rating ? round($service->avg_rating, 2) : null,
-                    'branch'      => [
-                        'id'       => $service->branch_id,
-                        'name'     => $service->branch_name,
-                        'schedule' => $schedule,
-                    ]
-                ];
-        });
+            $branches = Branch::with([
+                    'Schedule' => fn($q) => $q->where('day', $today),
+                    'IndustryCategory:id,name'
+                ])
+                ->join('services as s', 's.branch_id', '=', 'branches.id')
+                ->joinSub($union, 'q', fn($join) => $join->on('q.service_id', '=', 's.id'))
+                ->selectRaw('branches.*, COUNT(q.service_id) as total_queue, AVG(q.rating) as avg_rating')
+                ->when($regencyId, fn($q) => $q->where('branches.regency_id', $regencyId))
+                ->groupBy('branches.id')
+                ->orderByDesc('total_queue')
+                ->orderByDesc('avg_rating')
+                ->limit(10)
+                ->get();
 
         return response()->json([
             'success' => true,
-            'message' => 'Top layanan populer bulan ini',
-            'data' => $services
+            'message' => 'Popular branch this month',
+            'data' => $branches
         ]);
     }
 
