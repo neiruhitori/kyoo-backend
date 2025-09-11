@@ -377,9 +377,9 @@ class DirectQueueController extends Controller
                 ])
                 ->send();
         }
-        if($directQueue->email){
-            SendFeedbackMail::dispatch('onsite',$directQueue);
-        }
+        // if($directQueue->email){
+        //     SendFeedbackMail::dispatch('onsite',$directQueue);
+        // }
 
         return response()->json([
             'success' => true,
@@ -709,6 +709,10 @@ class DirectQueueController extends Controller
             'branch_id' => Auth::user()->branch_id,
             'workstation_id' => $directQueue->workstation_id
         ]));
+
+        if($directQueue->email){
+            SendFeedbackMail::dispatch('onsite',$directQueue);
+        }
 
         if ($directQueue->client_id) {
             event(new OnsiteQueueUpdated($directQueue));
