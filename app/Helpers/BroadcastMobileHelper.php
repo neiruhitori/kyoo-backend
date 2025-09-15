@@ -33,12 +33,6 @@ class BroadcastMobileHelper
             throw new Exception("client_id could not be found");
         }
 
-        \Log::info("Broadcasting MobileQueueStatusUpdated", [
-            'channel' => "onsite_queues.{$clientId}",
-            'type' => $type,
-            'payload_preview' => array_slice($payload, 0, 5, true),
-        ]);
-
         event(new MobileQueueStatusUpdated(
             $type,
             $payload,
