@@ -99,6 +99,9 @@ class DashboardController extends Controller
                                 ->get();
 
         $appointments->each(function ($appointment) {
+            $appointment->is_appointment = true;
+            $appointment->is_onsite_hybrid = false;
+            $appointment->is_direct_queue = false;
                 if ($appointment->Branch) {
                     $appointment->Branch->makeHidden(['is_today_open', 'holiday', 'schedule']);
                 }
@@ -119,6 +122,9 @@ class DashboardController extends Controller
                                 ->get();
 
         $appointment_onsites->each(function ($appointment_onsite) {
+            $appointment_onsite->is_appointment = false;
+            $appointment_onsite->is_onsite_hybrid = true;
+            $appointment_onsite->is_direct_queue = false;
                 if ($appointment_onsite->Service && $appointment_onsite->Service->Branch) {
                     $appointment_onsite->Service->Branch->makeHidden(['is_today_open', 'holiday', 'schedule']);
                 }
@@ -138,6 +144,9 @@ class DashboardController extends Controller
                                 ->get();
 
         $direct_queues->each(function ($direct_queue) {
+            $direct_queue->is_appointment = false;
+            $direct_queue->is_onsite_hybrid = false;
+            $direct_queue->is_direct_queue = true;
                 if ($direct_queue->Branch) {
                     $direct_queue->Branch->makeHidden(['is_today_open', 'holiday', 'schedule']);
                 }
