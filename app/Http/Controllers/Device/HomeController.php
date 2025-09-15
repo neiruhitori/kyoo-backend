@@ -23,6 +23,8 @@ use App\Models\FeatureSubscription;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
+use App\Helpers\BroadcastMobileHelper;
+use App\Events\MobileQueueStatusUpdated;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Requests\Device\StoreDirectQueue;
 use App\Events\DirectQueue as DirectQueueEvent;
@@ -398,6 +400,7 @@ class HomeController extends Controller
 
             if ($direct_queue->client_id) {
                 event(new OnsiteQueueUpdated($direct_queue));
+                BroadcastMobileHelper::mobileQueueUpdate('direct_queue', $direct_queue);
             }
 
             $appointment_onsite->update([
