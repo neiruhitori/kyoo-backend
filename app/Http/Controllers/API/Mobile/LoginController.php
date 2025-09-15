@@ -124,6 +124,7 @@ class LoginController extends Controller
                 'email' => $data['email'],
                 'password' => Hash::make(Str::random(16)),
                 'google_id' => $data['sub'],
+                'client_id' => 'mobile_app'. Str::random(16),
                 'email_verified_at' => now(),
             ]);
         }
@@ -285,13 +286,26 @@ class LoginController extends Controller
 
     public function forgotPassword(Request $request)
     {
-       $request->validate([
-            'email' => 'required|email|exists:users_mobile,email'
-       ],[
-            'email.exists' => 'The selected email does not exist in our records.',
-            'email.email' => 'The given data is not email',
-            'email.required' => 'Email is required'
-       ]);
+        $request->validate([
+                'email' => 'required|email'
+        ],[
+                'email.email' => 'The given data is not email',
+                'email.required' => 'Email is required'
+        ]);
+
+        $user = UserMobile::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'The selected email does not exist in our records.',
+            ], 404);
+        }
+
+        if ($user->google_id) {
+            return response()->json([
+                'message' => 'This email is registered with Google account. Please login using Google.',
+            ], 400);
+        }
 
        $otp = random_int(100000,999999);
        $expired = now()->addMinutes(30);
