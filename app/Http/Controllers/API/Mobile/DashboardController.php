@@ -389,7 +389,10 @@ class DashboardController extends Controller
                                         ]);
                                     }); 
 
-        $directQueue = DirectQueue::with(['Branch','Branch.BranchConfiguration:id,branch_id,layer','Branch.BranchType:id,is_appointment,is_direct_queue'])
+        $directQueue = DirectQueue::with([  'Branch',
+                                            'Branch.BranchConfiguration:id,branch_id,layer',
+                                            'Branch.BranchType:id,is_appointment,is_direct_queue',
+                                            'Branch.IndustryCategory:id,name'])
                                     ->where('client_id', $client_id)
                                     ->whereNotNull('appointment_onsite_id')
                                     ->where('status', 'end served')
