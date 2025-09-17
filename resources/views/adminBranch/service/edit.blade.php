@@ -68,9 +68,23 @@
                                         <label for="prefix_queue">{{ __('SLA Duration Service') }}</label>
                                         <input name="sla_duration" type="number" class="form-control @error('sla_duration') is-invalid @enderror" value="{{old('sla_duration') ?: $service->sla_duration}}" min="0" required>
                                         <label style="font-size: 12px;">{{ __('Duration unit in minutes, to disable the input of the number 0') }}</label>
-                                        @include('layouts.inputError', ['errorName' => 'prefix_queue'])
+                                        @include('layouts.inputError', ['errorName' => 'sla_duration'])
                                     </div>
                                 @endif
+
+                            @if ($isOfficialWA)        
+                                <div class="form-group">
+                                    <label for="whatsapp_template">{{ __('Whatsapp Template') }}</label>
+                                    <select name="whatsapp_template" id="whatsapp_template" class="form-control @error('whatsapp_template') is-invalid @enderror">
+                                        <option value=""> {{ __('Select Template') }} </option>
+                                        <option value="kyoo_appt_qr_in" {{ $service->whatsapp_template == 'kyoo_appt_qr_in' ? 'selected' : '' }}>{{ __('Kyoo General Appointment-Hybrid (Bahasa)') }}</option>
+                                        <option value="kyoo_appt_qr_en" {{ $service->whatsapp_template == 'kyoo_appt_qr_en' ? 'selected' : '' }}>{{ __('Kyoo General Appointment-Hybrid (English)') }}</option>
+                                    </select>
+                                    @include('layouts.inputError', ['errorName' => 'whatsapp_template'])
+                                </div>
+                            @endif
+
+
                                 <div class="form-check form-group">
                                     <input name="is_show" id="is_show" type="checkbox" value="1" class="form-check-input @error('is_show') is-invalid @enderror"
                                             {{

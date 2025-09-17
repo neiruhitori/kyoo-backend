@@ -24,7 +24,7 @@ class LoginController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Data pengguna atau password tidak sesuai.',
+                'message' => 'Username or password is incorrect',
                 'status_code' => 400
             ], 400);
         }
