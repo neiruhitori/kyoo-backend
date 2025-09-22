@@ -202,14 +202,6 @@ class DashboardController extends Controller
             ], 400);
         }
         $regency = $regencyId ?? Auth::user()->regency;
-        $country_user = Auth::user()->country;
-        
-        if (!$country_user) {
-            return response()->json([
-                'message' => 'User has not set the country',
-                'data' => Auth::user(),
-            ], 404);
-        }
         
         $today = strtolower(now()->format('l'));
         $query = Branch::with(['BranchConfiguration:id,branch_id,layer',
@@ -217,7 +209,6 @@ class DashboardController extends Controller
                                 'IndustryCategory:id,name'
                             ])
                             ->where('industry_category_id',$category_id)
-                            ->where('country',$country_user)
                             ->where('regency_id',$regency)
                             ->where('is_active',true);
 
@@ -227,8 +218,18 @@ class DashboardController extends Controller
         }
         $branch = $query->get()
                         ->reject(function ($b) {
-                             return ($b->BranchType && $b->BranchType->is_exhibition)
-                                    || ($b->BranchConfiguration && $b->BranchConfiguration->layer !== null && $b->BranchConfiguration->layer == 1);
+                                if (!$b->BranchConfiguration || $b->BranchConfiguration->layer === null) {
+                                    return true;
+                                }
+                                if ($b->BranchType && $b->BranchType->is_exhibition) {
+                                    return true;
+                                }
+                                if ($b->BranchType && $b->BranchType->is_direct_queue) {
+                                    return $b->BranchConfiguration->layer != 2;
+                                }
+                                return false;
+                            //  return ($b->BranchType && $b->BranchType->is_exhibition)
+                            //         || ($b->BranchConfiguration && $b->BranchConfiguration->layer !== null && $b->BranchConfiguration->layer == 1);
                         })
                         ->makeHidden([
                                 'fixed_phone',
@@ -242,6 +243,17 @@ class DashboardController extends Controller
                                 'license_expiration_date',
                             ])->map(function ($branch) use ($today) {
                                 $arr = $branch->toArray();
+
+                                if (isset($arr['branch_type'])) {
+                                    $arr['branch_type']['is_onsite_hybrid'] = 
+                                        ($branch->BranchType && $branch->BranchType->is_direct_queue)
+                                        && ($branch->BranchConfiguration && $branch->BranchConfiguration->layer == 2);
+                                } else {
+                                    $arr['branch_type'] = [
+                                        'is_onsite_hybrid' => false
+                                        ];
+                                }
+
                                 if (isset($arr['schedule'])) {
                                     $arr['schedule'] = collect($arr['schedule'])
                                                         ->where('day', $today)
@@ -289,7 +301,9 @@ class DashboardController extends Controller
             ], 404);
         }
 
-        $query = Branch::with(['BranchConfiguration:id,branch_id,layer','BranchType:id,is_appointment,is_direct_queue','IndustryCategory:id,name'])
+        $query = Branch::with(['BranchConfiguration:id,branch_id,layer',
+                                'BranchType:id,is_appointment,is_direct_queue',
+                                'IndustryCategory:id,name'])
                             ->where('regency_id',$regency)
                             ->where('is_active',true);
         if ($request->filled('search')) {
@@ -299,8 +313,19 @@ class DashboardController extends Controller
         $today = strtolower(now()->format('l'));
         $branch = $query->get()
                             ->reject(function ($b) {
-                                return ($b->BranchType && $b->BranchType->is_exhibition)
-                                    || ($b->BranchConfiguration && $b->BranchConfiguration->layer !== null && $b->BranchConfiguration->layer == 1);
+                                if (!$b->BranchConfiguration || $b->BranchConfiguration->layer === null) {
+                                    return true;
+                                }
+                                if ($b->BranchType && $b->BranchType->is_exhibition) {
+                                    return true;
+                                }
+                                if ($b->BranchType && $b->BranchType->is_direct_queue) {
+                                    return $b->BranchConfiguration->layer != 2;
+                                }
+                                return false;
+
+                                // return ($b->BranchType && $b->BranchType->is_exhibition)
+                                //     || ($b->BranchConfiguration && $b->BranchConfiguration->layer !== null && $b->BranchConfiguration->layer == 1);
                             })
                             ->makeHidden([
                                 'fixed_phone',
@@ -314,6 +339,17 @@ class DashboardController extends Controller
                                 'license_expiration_date',
                             ])->map(function ($branch) use ($today) {
                                 $arr = $branch->toArray();
+
+                                if (isset($arr['branch_type'])) {
+                                    $arr['branch_type']['is_onsite_hybrid'] = 
+                                        ($branch->BranchType && $branch->BranchType->is_direct_queue)
+                                        && ($branch->BranchConfiguration && $branch->BranchConfiguration->layer == 2);
+                                } else {
+                                    $arr['branch_type'] = [
+                                        'is_onsite_hybrid' => false
+                                    ];
+                                }
+
                                 if (isset($arr['schedule'])) {
                                     $arr['schedule'] = collect($arr['schedule'])
                                                         ->where('day', $today)
@@ -370,6 +406,17 @@ class DashboardController extends Controller
                                     ->values()
                                     ->map(function ($b) use ($today){
                                         $arr = $b->toArray();
+
+                                        if (isset($arr['branch_type'])) {
+                                            $arr['branch_type']['is_onsite_hybrid'] = 
+                                                ($b->BranchType && $b->BranchType->is_direct_queue)
+                                                && ($b->BranchConfiguration && $b->BranchConfiguration->layer == 2);
+                                        } else {
+                                            $arr['branch_type'] = [
+                                                'is_onsite_hybrid' => false
+                                            ];
+                                        }
+
                                         if (isset($arr['schedule'])) {
                                             $arr['schedule'] = collect($arr['schedule'])
                                                                 ->where('day', $today)
@@ -405,6 +452,17 @@ class DashboardController extends Controller
                                     ->values()
                                     ->map(function ($b) use ($today){
                                         $arr = $b->toArray();
+
+                                        if (isset($arr['branch_type'])) {
+                                            $arr['branch_type']['is_onsite_hybrid'] = 
+                                                ($b->BranchType && $b->BranchType->is_direct_queue)
+                                                && ($b->BranchConfiguration && $b->BranchConfiguration->layer == 2);
+                                        } else {
+                                            $arr['branch_type'] = [
+                                                'is_onsite_hybrid' => false
+                                            ];
+                                        }
+
                                         if (isset($arr['schedule'])) {
                                             $arr['schedule'] = collect($arr['schedule'])
                                                                 ->where('day', $today)
@@ -627,7 +685,9 @@ class DashboardController extends Controller
 
             $branches = Branch::with([
                     'Schedule' => fn($q) => $q->where('day', $today),
-                    'IndustryCategory:id,name'
+                    'IndustryCategory:id,name',
+                    'BranchType:id,is_appointment,is_direct_queue',
+                    'BranchConfiguration:id,branch_id,layer'
                 ])
                 ->join('services as s', 's.branch_id', '=', 'branches.id')
                 ->joinSub($union, 'q', fn($join) => $join->on('q.service_id', '=', 's.id'))
@@ -637,7 +697,35 @@ class DashboardController extends Controller
                 ->orderByDesc('total_queue')
                 ->orderByDesc('avg_rating')
                 ->limit(10)
-                ->get();
+                ->get()
+                ->reject(function ($b) {
+                    if (!$b->BranchConfiguration || $b->BranchConfiguration->layer === null) {
+                        return true;
+                    }
+                    if ($b->BranchType && $b->BranchType->is_exhibition) {
+                        return true;
+                    }
+                    if ($b->BranchType && $b->BranchType->is_direct_queue) {
+                        return $b->BranchConfiguration->layer != 2;
+                    }
+                    return false;
+                })
+                ->map(function ($b) {
+                    $arr = $b->toArray();
+
+                    if (isset($arr['branch_type'])) {
+                        $arr['branch_type']['is_onsite_hybrid'] = 
+                            ($b->BranchType && $b->BranchType->is_direct_queue)
+                            && ($b->BranchConfiguration && $b->BranchConfiguration->layer == 2);
+                    } else {
+                        $arr['branch_type'] = [
+                            'is_onsite_hybrid' => false
+                            ];
+                    }
+
+                    return $arr;
+                })
+                ->values();
 
         return response()->json([
             'success' => true,
