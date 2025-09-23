@@ -20,6 +20,6 @@ class UserMobile extends Authenticatable
 
     public function Regency()
     {
-        return $this->belongsTo(Regency::class,'regency');
+        return $this->belongsTo(Regency::class,'regency','id');
     }
 }
