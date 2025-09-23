@@ -126,6 +126,7 @@ class LoginController extends Controller
                 'google_id' => $data['sub'],
                 'client_id' => 'mobile_app'. Str::random(16),
                 'email_verified_at' => now(),
+                'regency' => null
             ]);
         }
 
@@ -139,8 +140,8 @@ class LoginController extends Controller
             'country'        => $user->country,
             'client_id'      => $user->client_id,
             'regency'        => [ 
-                                'id' => optional($user->Regency)->id,
-                                'name' => optional($user->Regency)->name,
+                                'id' => $user->Regency ? $user->Regency->id : null, 
+                                'name' => $user->Regency ? $user->Regency->name : null, 
                                 ],
             'photo'          => $user->photo,
         ];
