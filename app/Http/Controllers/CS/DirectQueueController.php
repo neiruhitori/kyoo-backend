@@ -852,6 +852,7 @@ class DirectQueueController extends Controller
         $data['direct_queue_channel'] = 'Web';
         $data['appointment_onsite_id'] = $oldDirectQueue->appointment_onsite_id;
         $data['sub_service_id'] = null;
+        $data['client_id'] = $oldDirectQueue->client_id ?? null;
 
         $directQueue = $this->onsite_repository->transfer($data);
         
