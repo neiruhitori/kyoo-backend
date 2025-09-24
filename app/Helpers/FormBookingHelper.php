@@ -71,6 +71,7 @@ class FormBookingHelper{
                             'label' => 'Reason for Visit',
                             'type' => 'text',
                             'required' => false,
+                            'multiline' => true
                         ],
             'agent' =>   [
                             'key' => 'agent',
@@ -97,6 +98,7 @@ class FormBookingHelper{
                             'label' => 'Notes',
                             'type' => 'text',
                             'required' => false,
+                            'multiline' => true
                         ],
         ];
     }
