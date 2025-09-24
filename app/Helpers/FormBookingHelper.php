@@ -33,7 +33,7 @@ class FormBookingHelper{
             'phone' =>   [
                             'key' => 'phone',
                             'label' => 'Phone Number',
-                            'type' => 'numeric',
+                            'type' => 'phone',
                             'required' => true,
                         ],
             'date_of_birth' =>   [
@@ -51,7 +51,7 @@ class FormBookingHelper{
             'emergency_number' =>   [
                             'key' => 'emergency_number',
                             'label' => 'Emergency Number',
-                            'type' => 'numeric',
+                            'type' => 'phone',
                             'required' => true,
                         ],
             'passport_number' =>   [
