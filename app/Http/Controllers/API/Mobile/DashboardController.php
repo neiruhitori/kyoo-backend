@@ -14,6 +14,7 @@ use App\Models\UserMobile;
 use Illuminate\Http\Request;
 use App\Models\ServiceCategory;
 use App\Models\AppointmentOnsite;
+use App\Helpers\FormBookingHelper;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -647,6 +648,7 @@ class DashboardController extends Controller
         ];
 
         $queueType = $request->queue_type ?? $type[$service->Branch->queue_type];
+        $formBooking = $service->template_form_booking ?? $service->Branch->BranchConfiguration->template_booking_form;
 
         foreach ($slots as $slot) {
             $slot->filled_slot = $this->getFilledSlot($queueType, [
@@ -657,6 +659,9 @@ class DashboardController extends Controller
         }
 
         $service->setRelation('Slot', $slots);
+
+        $service['template_form_booking'] = $formBooking;
+        $service['fields'] = FormBookingHelper::getForm($formBooking, $queueType);
 
         return response()->json([
             'success' => true,
