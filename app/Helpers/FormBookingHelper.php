@@ -107,12 +107,12 @@ class FormBookingHelper{
         $f = self::fields();
 
         return [
-            'standard-ui' => [
+            'standard-form' => [
                 $f['name'],
                 $f['email'],
                 $f['phone'],
             ],
-            'standard-ui-appt' => [
+            'standard-form-appt' => [
                 $f['name'],
                 $f['email'],
                 $f['phone'],
@@ -175,8 +175,8 @@ class FormBookingHelper{
     public static function getForm(string $key, string $type): array
     {
         $forms = self::form();
-        if($type == 'appointment' && $key == 'standard-ui'){
-            return $forms['standard-ui-appt'];
+        if($type == 'appointment' && $key == 'standard-form'){
+            return $forms['standard-form-appt'];
         }
         return $forms[$key] ?? [];
     }
