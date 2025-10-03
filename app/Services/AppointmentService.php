@@ -20,8 +20,10 @@ use App\Events\AppointmentEndServed;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Events\QueueAppointmentStatus;
+use App\Helpers\BroadcastMobileHelper;
 use App\Events\OwnerAppointmentCreated;
 use App\Events\AppointmentCanceledEvent;
+use App\Events\MobileQueueStatusUpdated;
 use App\Models\BranchScheduleTemplateDetail;
 use App\Notifications\AppointmentCreatedNotification;
 
@@ -325,11 +327,14 @@ class AppointmentService
         if (in_array($appointment->status, ['end served', 'no show', 'canceled'])) {
             throw new \Exception(__('Appointment has been completed'));
         }
-
         Appointment::where('id', $appointment->id)->update([
             'status' => 'check in',
             'checkin_time' => date('Y-m-d H:i:s')
         ]);
+
+        if($appointment->client_id){
+            BroadcastMobileHelper::mobileQueueUpdate('appointment', $appointment);
+        }
     }
 
     public function serve(int $appointmentId)
@@ -351,7 +356,6 @@ class AppointmentService
         if ($appointment->status !== 'check in') {
             throw new \Exception(__('Customer has not yet arrived'));
         }
-
         Appointment::where('id', $appointment->id)->update([
             'status' => 'served',
             'served_time' => date('Y-m-d H:i:s'),
@@ -359,7 +363,10 @@ class AppointmentService
             'vct_id' => Auth::id(),
             'waiting_duration' => Carbon::now()->diffInseconds(Carbon::parse($appointment->checkin_time))
         ]);
-
+        
+        if($appointment->client_id){
+            BroadcastMobileHelper::mobileQueueUpdate('appointment', $appointment);
+        }
         AppointmentServed::dispatch($appointment);
     }
 
@@ -387,7 +394,9 @@ class AppointmentService
             'status' => 'canceled',
             'canceled_time' => date('Y-m-d H:i:s'),
         ]);
-
+        if($appointment->client_id){
+            BroadcastMobileHelper::mobileQueueUpdate('appointment', $appointment);
+        }
         AppointmentCanceledEvent::dispatch($appointment);
     }
 
@@ -414,7 +423,9 @@ class AppointmentService
         if (in_array($appointment->status, ['end served', 'canceled'])) {
             throw new \Exception(__('Appointment has been completed'));
         }
-
+        if($appointment->client_id){
+            BroadcastMobileHelper::mobileQueueUpdate('appointment', $appointment);
+        }
         Appointment::where('id', $appointmentId)->update(['status' => 'no show']);
     }
 
@@ -443,7 +454,9 @@ class AppointmentService
         if($appointment->email){
             SendFeedbackMail::dispatch('appointment',$appointment);
         }
-
+        if($appointment->client_id){
+            BroadcastMobileHelper::mobileQueueUpdate('appointment', $appointment);
+        }
         AppointmentEndServed::dispatch($appointment);
     }
 

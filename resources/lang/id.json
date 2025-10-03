@@ -212,6 +212,7 @@
     "Expires On": "Kedaluarsa pada tanggal",
     "Payment Status": "Status Pembayaran",
     "Pay Here": "Lakukan Pembayaran disini",
+    "Pay": "Bayar",
     "Subs. Duration": "Lama Langganan",
     "Max Queue": "Maksimum Antrian",
     "Queue Per Day": "Antrian / Hari",
@@ -413,6 +414,7 @@
     "days": "hari",
     "Your trial period will end in": "Masa percobaan Anda akan berakhir dalam",
     "Upgrade your account to continue enjoying": "Upgrade akun anda agar dapat kembali menikmati layanan",
+    "Your license will expire soon, please extend it to use KYOO service!": "License anda akan segera berakhir, segera perpanjang license anda!",
 
 
     "Information": "Informasi",
@@ -500,6 +502,10 @@
 
     "You have made an appointment on :booking_date at :branch_name. Click the button below to track your appointment.":"Anda telah membuat appointment pada tanggal :booking_date di :branch_name. Klik tombol dibawah untuk melacak Appointment Anda. ",
     "Appointment at :branch_name": "Appointment di :branch_name",
+    "KYOO subscription will expire in": "Periode berlangganan KYOO akan berakhir dalam",
+    "To continue using KYOO services, please renew your subscription": "Perpanjang periode berlangganan untuk terus menggunakan layanan KYOO",
+    "Your Trial Account will expire in": "Trial Akun Anda akan berakhir dalam",
+    "Extend License": "Perpanjang License",
 
     "List Schedule Template": "Daftar Template Jadwal",
     "List Branch": "Daftar Cabang",
@@ -780,6 +786,7 @@
     "Hi :Branch, thank you for register your branch to Kyoo.id. Now your branch has been verified": "Hai :Branch, terima kasih telah mendaftarkan cabang Anda di Kyoo. Sekarang cabang Anda terverifikasi",
     "Hi :Branch, thank you for register your branch to Kyoo. Please click button below to verify your branch": "Hai :Branch, terima kasih telah mendaftarkan cabang Anda di Kyoo. Klik tombol dibawah untuk memverifikasi cabang Anda",
     "For free license, report only available for last 3 months": "Untuk versi gratis, laporan hanya tersedia 3 bulan ke belakang",
+    "Hi :User, thank you for register your account to Kyoo. Please click button below to verify your account": "Hai :User, terima kasih telah mendaftarkan akun Anda di Kyoo. Klik tombol dibawah untuk memverifikasi Akun anda",
 
     "Instruction Help": "Petunjuk Penggunaan",
     "How to Configure Queue": "Cara Konfigurasi Antrian",

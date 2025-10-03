@@ -2,12 +2,15 @@
 
 namespace App\Notifications;
 
-use App\Models\AppointmentOnsite;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
+use App\Models\AppointmentOnsite;
+use App\Jobs\AppointmentOnsiteMail;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Mail\CS\AppointmentOnsiteCreatedMail;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class AppointmentOnsiteCreatedNotification extends Notification implements ShouldQueue
 {
@@ -71,8 +74,8 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
             'content-type' => 'application/json',
         ])
         ->post("{$appointmentOnsite->Service->Branch->BranchConfiguration->api_wa}/api/v1/sendTemplateMessages", [
-            'broadcast_name' => 'kyoo_appt_qr_in',
-            'template_name' => 'kyoo_appt_qr_in',
+            'broadcast_name' => $appointmentOnsite->Service->whatsapp_template ?? 'kyoo_appt_qr_in',
+            'template_name' => $appointmentOnsite->Service->whatsapp_template ?? 'kyoo_appt_qr_in',
             'receivers' => [
                 [
                     'customParams' => [

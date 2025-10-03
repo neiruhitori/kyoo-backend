@@ -3,9 +3,15 @@
 @section('isShowExpired')
 @if($isShowExpiredBanner)
     <div class="alert alert-warning alert-block mb-4" style="display: flex; justify-content: center; gap: 2rem; align-items: center; background: linear-gradient(to right,  #062034, #13609A); color: white; border-radius: 0%;" >
-        <span><i class="fas fa-clock mr-2"></i>{{ __('Your trial period will end in') }} <strong class="text-warning">{{$licenseExpirationDay}}</strong> {{ __('days') }}. {{ __('Upgrade your account to continue enjoying') }} <strong class="text-warning">KYOO</strong></span>
-        {{-- <a href="mailto:support@awandigital.id" class="btn btn-warning"><strong>UPGRADE</strong></a> --}}
-        <a href="{{ route('admin-branch.subscription') }}" class="btn btn-light px-4" style="color: #103C7C"><strong>UPGRADE</strong></a>
+        @if (Auth::user()->Branch->BranchType->is_premium)
+            <span><i class="fas fa-clock mr-2"></i>{{ __('KYOO subscription will expire in') }} <strong class="text-warning">{{$licenseExpirationDay}}</strong> {{ __('days') }}. {{ __('To continue using KYOO services, please renew your subscription') }}</span>
+            {{-- <a href="mailto:support@awandigital.id" class="btn btn-warning"><strong>UPGRADE</strong></a> --}}
+            <a href="{{ route('admin-branch.subscription') }}" class="btn btn-light px-4" style="color: #103C7C"><strong>EXTEND</strong></a>           
+        @else
+            <span><i class="fas fa-clock mr-2"></i>{{ __('Your trial period will end in') }} <strong class="text-warning">{{$licenseExpirationDay}}</strong> {{ __('days') }}. {{ __('Upgrade your account to continue enjoying') }} <strong class="text-warning">KYOO</strong></span>
+            {{-- <a href="mailto:support@awandigital.id" class="btn btn-warning"><strong>UPGRADE</strong></a> --}}
+            <a href="{{ route('admin-branch.subscription') }}" class="btn btn-light px-4" style="color: #103C7C"><strong>UPGRADE</strong></a>    
+        @endif
     </div>
 @endif
 @endsection
@@ -25,9 +31,9 @@
     <div class="modal-content">
       <div class="modal-body text-center m-5 d-flex flex-column justify-content-center">
         <img src="{{ asset('img/trial-clock.png') }}" alt="" class="mx-auto d-block mb-4" style="80px">
-        <h4 class="font-weight-bold text-dark">Waktu Trial tersisa {{ $licenseExpirationDay }} hari lagi</h4>
-        <p class="mb-0 text-dark">Trial Akun Anda akan berakhir dalam <b style="color: black">{{ $licenseExpirationDay }}</b> hari.</p>
-        <p class="text-dark">Upgrade akun anda agar dapat kembali menikmati layanan <b  style="color: black">KYOO</b></p>
+        <h4 class="font-weight-bold text-dark">{{ __('Your trial period will end in') }} {{ $licenseExpirationDay }} {{ __('days') }}</h4>
+        <p class="mb-0 text-dark">{{ __('Your Trial Account will expire in') }} <b style="color: black">{{ $licenseExpirationDay }}</b> {{ __('days') }}.</p>
+        <p class="text-dark">{{ __('Upgrade your account to continue enjoying') }} <b  style="color: black">KYOO</b></p>
         <div class="d-flex justify-content-center" style="gap:1rem;">
             <button type="button" class="btn btn-light px-4" data-dismiss="modal">Close</button>
             <a href="{{ route('admin-branch.subscription') }}" class="btn btn-primary px-4" style="background-color: #103C7C">UPGRADE</a>

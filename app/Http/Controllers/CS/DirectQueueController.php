@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\SendDirectQueueCallMail;
+use App\Helpers\BroadcastMobileHelper;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CS\StoreDirectQueue;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -360,7 +361,7 @@ class DirectQueueController extends Controller
 
         if ($directQueue->client_id) {
             event(new OnsiteQueueUpdated($directQueue));
-            // event(new OnsiteQueueCalled($directQueue));
+            BroadcastMobileHelper::mobileQueueUpdate('direct_queue', $directQueue);
         }
 
         if ($directQueue->fcm_id) {
@@ -377,9 +378,9 @@ class DirectQueueController extends Controller
                 ])
                 ->send();
         }
-        if($directQueue->email){
-            SendFeedbackMail::dispatch('onsite',$directQueue);
-        }
+        // if($directQueue->email){
+        //     SendFeedbackMail::dispatch('onsite',$directQueue);
+        // }
 
         return response()->json([
             'success' => true,
@@ -483,6 +484,7 @@ class DirectQueueController extends Controller
         if ($directQueue->client_id) {
             event(new OnsiteQueueUpdated($directQueue));
             event(new OnsiteQueueCalled($directQueue));
+            BroadcastMobileHelper::mobileQueueUpdate('direct_queue', $directQueue);
         }
 
         if ($directQueue->fcm_id) {
@@ -573,6 +575,7 @@ class DirectQueueController extends Controller
         if ($directQueue->client_id) {
             event(new OnsiteQueueUpdated($directQueue));
             event(new OnsiteQueueCalled($directQueue));
+            BroadcastMobileHelper::mobileQueueUpdate('direct_queue', $directQueue);
         }
 
         if ($directQueue->fcm_id) {
@@ -656,6 +659,7 @@ class DirectQueueController extends Controller
 
         if ($directQueue->client_id) {
             event(new OnsiteQueueUpdated($directQueue));
+            BroadcastMobileHelper::mobileQueueUpdate('direct_queue', $directQueue);
         }
 
         return response()->json([
@@ -710,8 +714,13 @@ class DirectQueueController extends Controller
             'workstation_id' => $directQueue->workstation_id
         ]));
 
+        if($directQueue->email){
+            SendFeedbackMail::dispatch('onsite',$directQueue);
+        }
+
         if ($directQueue->client_id) {
             event(new OnsiteQueueUpdated($directQueue));
+            BroadcastMobileHelper::mobileQueueUpdate('direct_queue', $directQueue);
         }
 
         return response()->json([
@@ -760,6 +769,7 @@ class DirectQueueController extends Controller
 
         if ($directQueue->client_id) {
             event(new OnsiteQueueUpdated($directQueue));
+            BroadcastMobileHelper::mobileQueueUpdate('direct_queue', $directQueue);
         }
 
         return response()->json([
@@ -829,6 +839,7 @@ class DirectQueueController extends Controller
 
         if ($oldDirectQueue->client_id) {
             event(new OnsiteQueueUpdated($oldDirectQueue));
+            BroadcastMobileHelper::mobileQueueUpdate('direct_queue', $oldDirectQueue);
         }
 
         $data = $request->all();
@@ -841,6 +852,7 @@ class DirectQueueController extends Controller
         $data['direct_queue_channel'] = 'Web';
         $data['appointment_onsite_id'] = $oldDirectQueue->appointment_onsite_id;
         $data['sub_service_id'] = null;
+        $data['client_id'] = $oldDirectQueue->client_id ?? null;
 
         $directQueue = $this->onsite_repository->transfer($data);
         
@@ -850,6 +862,7 @@ class DirectQueueController extends Controller
 
         if ($directQueue->client_id) {
             event(new OnsiteQueueUpdated($directQueue));
+            BroadcastMobileHelper::mobileQueueUpdate('direct_queue', $directQueue);
         }
 
         return response()->json([

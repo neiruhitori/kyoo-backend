@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Slot;
+use App\Branch;
 use App\Service;
 use App\Appointment;
-use App\Models\AppointmentOnsite;
 use App\Models\Exhibition;
-use App\Slot;
+use Illuminate\Http\Request;
+use App\Models\AppointmentOnsite;
+use App\Http\Controllers\Controller;
 
 class ServiceController extends Controller
 {
@@ -16,15 +17,26 @@ class ServiceController extends Controller
     {
         $dateNow = $request->date ?? date('Y-m-d');
         $dayNow =  strtolower(date("l", strtotime($dateNow)));
-        $services = Service::where('branch_id', $branch_id)
-                            ->when($request->service_category_id !== null, function ($query) use ($request) {
-                                return $query->serviceCategory($request->queue_type, $request->service_category_id);
-                            })
-                            ->get();
+        $branch = Branch::find($branch_id);
+        $booking_form = $branch->BranchConfiguration->template_booking_form;
+        $type = [
+                'appointment' => 'appointment',
+                'onsite' => 'appointment-onsite',
+        ];
+        $queueType = $type[$branch->queue_type];
+
+        $query = Service::where('branch_id', $branch_id)
+                            ->where('is_disable',false);
+
+        if ($request->filled('service_category_id')) {
+            $query->where('service_category_id', $request->service_category_id);
+        }
+                            
+        $services = $query->get();
 
         foreach ($services as $service) {
             // get filled slot
-            $filledSlot = $this->getFilledSlot($request->queue_type, [
+            $filledSlot = $this->getFilledSlot($queueType, [
                 'service_id' => $service->id,
                 'date' => $dateNow
             ]);
@@ -33,6 +45,7 @@ class ServiceController extends Controller
             $slots = Slot::where('day', $dayNow)
                 ->whereServiceId($service->id);
 
+            $service->template_form_booking = $service->template_form_booking ?? $booking_form;
             $service->slots = $slots->get();
             $service->filledSlot = $filledSlot;
             $service->totalSlot = $slots->sum('max_slots');
@@ -41,17 +54,25 @@ class ServiceController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'get all services by branch id',
-            'data' => $services
+            'data' => $services,
         ]);
     }
 
     public function getById(Request $request, $id)
     {
-        $service = Service::with('Slot')->where('id', $id)->first();
+        $service = Service::with(['Slot','Branch'])
+                            ->where('id', $id)
+                            ->first()
+                            ->makeHidden('Branch');
         $date = $request->date ?? date('Y-m-d');
+        $type = [
+                'appointment' => 'appointment',
+                'onsite' => 'appointment-onsite',
+        ];
+        $queueType = $request->queue_type ?? $type[$service->Branch->queue_type];
 
         foreach ($service->slot as $slot) {
-            $slot->filled_slot = $this->getFilledSlot($request->queue_type, [
+            $slot->filled_slot = $this->getFilledSlot($queueType, [
                 'service_id' => $service->id,
                 'slot_id' => $slot->id,
                 'date' => $date
@@ -78,7 +99,7 @@ class ServiceController extends Controller
                 ->count();
         }
 
-        if ($queue_type === 'exhibition') {
+        if ($queue_type == 'exhibition') {
             return Exhibition::whereHas('Slot', function ($query) use ($params) {
                 $query->where('service_id', $params['service_id']);
             })
@@ -89,7 +110,7 @@ class ServiceController extends Controller
                 ->count();
         }
 
-        if($queue_type === 'appointment-onsite') {
+        if($queue_type == 'appointment-onsite') {
             return AppointmentOnsite::whereHas('Slot', function ($query) use ($params) {
                 $query->where('service_id', $params['service_id']);
             })

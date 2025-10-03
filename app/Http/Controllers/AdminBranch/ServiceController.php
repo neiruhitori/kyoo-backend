@@ -6,6 +6,7 @@ use App\Log;
 use App\Service;
 use App\Department;
 use App\DirectQueue;
+use App\BranchConfiguration;
 use Illuminate\Http\Request;
 use App\Models\ServiceCategory;
 use App\Http\Controllers\Controller;
@@ -116,6 +117,9 @@ class ServiceController extends Controller
         $isDirectQueueAndPemiumUser = Auth::user()->Branch->BranchType->is_direct_queue && Auth::user()->Branch->BranchType->is_premium;
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         $service_categories = ServiceCategory::whereBranchId(Auth::user()->branch_id)->get();
+        $branchConfig = BranchConfiguration::where('branch_id',Auth::user()->branch_id)->first();
+
+        $isOfficialWA = $branchConfig->whatsapp_type === 'official_wa_branch';
 
         return view('adminBranch.service.edit', [
             'service' => $service,
@@ -124,6 +128,7 @@ class ServiceController extends Controller
             'prefixQueueList' => $this->PREFIX_QUEUE_LIST,
             'isAllowConfigPrefix' => $this->isAllowConfigPrefix(),
             'isDirectQueueAndPemiumUser' => $isDirectQueueAndPemiumUser,
+            'isOfficialWA' => $isOfficialWA,
         ]);
     }
 

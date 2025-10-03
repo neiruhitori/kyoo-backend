@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\Mobile\LoginController;
+use App\Http\Controllers\API\Mobile\DashboardController;
+use App\Http\Controllers\API\Mobile\BranchServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +16,38 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::prefix('mobile')->group(function (){
+    Route::post('login', [LoginController::class, 'login']);
+    Route::post('logout', [LoginController::class, 'logout'])->middleware(['auth:mobile']);
+    Route::post('register', [LoginController::class, 'register']);
+    Route::post('login/oauth/google', [LoginController::class, 'loginWithGoogle']);
+    Route::post('forgot-password', [LoginController::class, 'forgotPassword']);
+    Route::post('reset-password', [LoginController::class, 'resetPassword']);
+    
+    Route::get('region/all', [DashboardController::class, 'getRegion']);
+    Route::get('branch/categories/all', [DashboardController::class, 'getCategories']);
+    Route::get('regency/{country}/{province?}', [DashboardController::class, 'regencyByProvince']);
+    Route::get('service-category/branch/{branch_id}', [DashboardController::class, 'getServiceCategoryBranch']);
+    Route::get('service/branch/{branch_id}', [DashboardController::class, 'getServiceByBranchId']);
+    Route::get('service/{service_id}', [DashboardController::class, 'getSlot']);
+    Route::get('branch-popular', [DashboardController::class, 'popularBranch']);
+    
+    Route::middleware(['auth:mobile'])->group(function(){
+        Route::get('detail', [LoginController::class, 'detail']);
+        Route::get('queues', [DashboardController::class, 'getActiveAppointment']);
+        Route::get('branch/category/{categoryId}/{regencyId}', [DashboardController::class, 'getBranchByCategory']);
+        Route::get('branch/regency/{regencyId}', [DashboardController::class, 'getBranchByRegency']);
+        Route::get('branch/previous', [DashboardController::class, 'getPrevBranch']);
+
+        Route::post('profile', [LoginController::class, 'updateProfile']);
+        Route::post('profile/verify-password', [LoginController::class, 'passwordVerif']);
+        Route::post('profile/update-password', [LoginController::class, 'updatePassword']);
+        Route::post('setRegion', [DashboardController::class, 'setRegion']);
+        Route::post('appointment-onsite', [BranchServiceController::class, 'storeAppointmentOnsite']);
+        Route::post('appointment', [BranchServiceController::class, 'storeAppointment']);
+    });
+});
 
 //iMIN Route API
 Route::post('kiosk/login', 'API\KioskController@login');
@@ -41,7 +76,7 @@ Route::get('allProvince/{country}', 'API\RegionController@provinceByCountry');
 Route::get('allRegency', 'API\RegionController@allRegency');
 // Route::get('regency/{province}', 'API\RegionController@regencyByProvince');
 Route::get('regency/{country}/{province}', 'API\RegionController@regencyByProvince');
-Route::get('regency/city/{id}', 'API\RegionController@regencyById');
+Route::get('regency/{id}', 'API\RegionController@regencyById');
 
 // user routes
 Route::post('user/register', 'API\UserController@register');
