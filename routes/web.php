@@ -292,8 +292,9 @@ Route::namespace('AdminBranch')
         
         Route::get('/billing','BillingController@index')->name('billing');
         Route::get('/billing/{id}/print','BillingController@print')->name('billing.print');
-        Route::post('/subscription','BillingController@storeInvoice');
+        Route::post('/subscription','BillingController@storeInvoice')->name('subscription.store');
         Route::get('/subscription','BillingController@invoiceForm')->name('subscription');
+        Route::get('/extend','BillingController@extend')->name('extend.subscription');
        //hanya untuk front-end
         Route::get('/get_Billing_Prices','BillingController@getBilling');
         //hanya untuk front-end
@@ -523,6 +524,8 @@ Route::post('search', 'SearchQueueController@search')->name('search.search');
 Route::get('scan', 'QRScannerController@index')->name('scan.index');
 
 // Route::get('testing', function(){
+//     $branch =  App\Branch::where('id', 620)->first();
+//     dd($branch->BranchType->is_premium);
 // });
 
 

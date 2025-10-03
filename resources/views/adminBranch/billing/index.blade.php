@@ -198,7 +198,15 @@
                     <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->updated_at)->translatedFormat('d F Y') }}</b> - 
                     <b>{{ \Carbon\Carbon::parse(Auth::user()->Branch->license_expiration_date)->translatedFormat('d F Y') }}</b>
                 </h6>
-            </div> 
+            </div>
+            @if ($isAlmostExpired)
+                <div class="d-flex align-items-center mb-3 p-2 rounded" style="background-color:#33A0FF4D;">
+                    <h6 style="min-width: 150px;" class="mr-3 mb-0">{{ __('Your license will expire soon, please extend it to use KYOO service!') }}</h6>
+                    <a href="{{ route('admin-branch.extend.subscription') }}" 
+                    class="btn btn-primary" 
+                    style="background-color: #103C7C">{{ __('Extend License') }}</a>
+                </div> 
+            @endif
     </div>
     <div class="card-body border-top">
         <div class="mb-3 mt-2">
@@ -297,7 +305,7 @@
                                 @if ($inv->status == "PENDING")
                                     <a href="{{ $inv->invoice_url }}" class="btn btn-danger px-4">
                                         <i class="fas fa-credit-card"></i>
-                                        Bayar
+                                        {{ __('Pay') }}
                                     </a>
                                 @endif
                                 <button onclick="printInvoice('{{ $inv->id_invoice }}')" class="btn btn-warning px-3" title="{{ __('Download Invoice History') }}">

@@ -41,8 +41,13 @@ class BillingController extends Controller
         $invoices = Invoice::where('branch_id',$branch_id)->orderBy('created_at','desc')->get();
         if ($request->query('success')) {
             session()->flash('success', 'Billing processed, please wait several minutes and refresh the page');
-        } 
-        return view('adminBranch.billing.index',compact('features','invoices'));
+        }
+        $expiredAt = Carbon::parse(Auth::user()->Branch->license_expiration_date);
+        $isAlmostExpired = Auth::user()->Branch->BranchType->is_premium && $expiredAt->isBetween(
+                Carbon::now(),
+                Carbon::now()->addDays(30)
+            );
+        return view('adminBranch.billing.index',compact('features','invoices','isAlmostExpired'));
     }
 
     public function paypalAccessToken(){
@@ -63,7 +68,7 @@ class BillingController extends Controller
         return 'KYOO_INV' . date('dmy') . $kd;
     }
 
-    public function generateDesc($dataDesc,$branch){
+    public function generateDesc($dataDesc,$branch, $isExtend = false){
         if(!$dataDesc && !$branch){
             return false;
             // dd('tidak ada data diberikan');
@@ -81,6 +86,14 @@ class BillingController extends Controller
             $branchType = "Onsite";
         }
 
+         $prefixIndo = $isExtend
+                        ? "Perpanjangan Langganan Antrian {$branchType}"
+                        : "Berlangganan Antrian {$branchType}";
+
+        $prefixEn = $isExtend
+                    ? "{$branchType} Queue Subscription Extension"
+                    : "{$branchType} Queue Subscription";
+
         $duration = $dataDesc['subs_duration'];
         $license = $dataDesc['packageSelection'];
         $queue = $dataDesc['queue'];
@@ -89,11 +102,13 @@ class BillingController extends Controller
         $kiosk = $dataDesc['kiosk'] ?? 0;
         $signage = $dataDesc['signage'] ?? 0;
         $startDate = Carbon::now();
-        $endDate = $startDate->copy()->addMonths($duration);
+        // $endDate = $startDate->copy()->addMonths($duration);
+        $endDate =  $isExtend ? Carbon::parse(Auth::user()->Branch->license_expiration_date)->addMonths($duration)
+                                : $startDate->copy()->addMonths($duration);
 
         $descIndo = sprintf(
-            "Berlangganan Antrian %s - Lisensi %s Selama %d Bulan (%s - %s). Jenis Antrian %s, %d Bulan Langganan, Max %d Antrian, Max Petugas Layanan %d User, %d Meja",
-            $branchType,
+            "%s - Lisensi %s Selama %d Bulan (%s - %s). Jenis Antrian %s, %d Bulan Langganan, Max %d Antrian, Max Petugas Layanan %d User, %d Meja",
+            $prefixIndo,
             $license,
             $duration,
             $startDate->format('d/m/Y'),
@@ -119,8 +134,8 @@ class BillingController extends Controller
         }
 
         $descEn = sprintf(
-            "%s Queue Subscription - %s license for %d Months (%s - %s). %s Queue Type, %d Months Subscription, Max %d Queues, Max Service Staff %d User, %d Workstation",
-            $branchType,
+            "%s - %s license for %d Months (%s - %s). %s Queue Type, %d Months Subscription, Max %d Queues, Max Service Staff %d User, %d Workstation",
+            $prefixEn,
             $license,
             $duration,
             $startDate->format('d/m/Y'),
@@ -161,14 +176,15 @@ class BillingController extends Controller
         if(Auth::user()->Branch->BranchType->is_exhibition){
             abort(404);
         }
-
         $user= Auth::user()->id;
         $branch= Auth::user()->Branch->id;
         $invoice_number = $this->no_transaksi();
+        $isExtend = Auth::user()->Branch->BranchType->is_premium;
         $invoice_duration = Carbon::now()->addDays(3)->diffInSeconds() + 1; //exact 3 days
-        // $invoice_duration = 5*60;
-        $description = $this->generateDesc($request->all(),$branch);
+        $description = $this->generateDesc($request->all(),$branch, $isExtend);
         $amount = (int) $request->amount; //sometimes $amount is decimal
+        // dd($description);
+        // $invoice_duration = 5*60;
         
        if (Auth::user()->Branch->country == 'Indonesia') {
             try{
@@ -363,6 +379,109 @@ class BillingController extends Controller
                                       ->first() : null;
             return view('adminBranch.billing.invoiceForm',compact('isDirect','unpaidInvoice','subscription'));
     }
+    public function extend()
+    {
+            if(Auth::user()->Branch->BranchType->is_exhibition){
+                return back();
+            }
+            if(!Auth::user()->Branch->BranchType->is_premium){
+               return redirect(route('admin-branch.billing'));
+            }
+
+            $expiredAt = Carbon::parse(Auth::user()->Branch->license_expiration_date);
+
+            $isAlmostExpired = $expiredAt->isBetween(
+                Carbon::now(),
+                Carbon::now()->addDays(30)
+            );
+            // dd($isAlmostExpired);
+
+            $type=Auth::user()->Branch->branch_type_id;
+            $branchType = BranchType::where('id',$type)->first();
+            $isDirect = $branchType->is_direct_queue;
+            
+            //find active
+            $currentSubs = Subscription::where('branch_id', Auth::user()->Branch->id)
+                                      ->where('status', 'active')
+                                      ->latest()
+                                      ->first();
+            if(!$currentSubs){
+                return redirect(route('admin-branch.billing'))->with('error','Data not found');
+            }
+
+            $invoice = Invoice::where('branch_id', Auth::user()->Branch->id)
+                            ->where('invoice_number', $currentSubs->invoice)
+                            ->where('status', 'PAID')
+                            ->first();
+
+
+            $branchType = $currentSubs->license_type == 'onsite' ? 7 : 6;
+            
+            $billing = BillingPricesModel::where('branch_type_id', $branchType)
+                                        ->where('billing_types', $currentSubs->package)
+                                        ->where('subscription_duration', $currentSubs->subs_duration)
+                                        ->first();
+
+            $signageItem = ItemPrices::find(4);
+            $kioskItem   = ItemPrices::find(5);
+
+            $formatCurrency = function ($value, $currency) {
+                if ($currency === 'IDR') {
+                    return 'Rp ' . number_format($value, 2, ',', '.');
+                }
+                return 'USD ' . number_format($value, 2, '.', ',');
+            };
+            
+            $duration   = $currentSubs->subs_duration ?? 0;
+            $currency   = $invoice->currency ? $invoice->currency : ($invoice->description_en ? 'USD' : 'IDR');
+            $tableQty   = $currentSubs->max_table ?? 0;
+            $signageQty = $currentSubs->kiosk ?? 0;
+            $kioskQty   = $currentSubs->kiosk ?? 0;
+
+            $tablePrice   = $currency == 'IDR' ? ($billing->prices ?? 0)     : ($billing->en_prices ?? 0);
+            $signagePrice = $currency == 'IDR' ? ($signageItem->prices ?? 0) : ($signageItem->en_prices ?? 0);
+            $kioskPrice   = $currency == 'IDR' ? ($kioskItem->prices ?? 0)   : ($kioskItem->en_prices ?? 0);
+
+            $tableTotal   = $tablePrice   * $tableQty   * $duration;
+            $signageTotal = $signagePrice * $signageQty * $duration;
+            $kioskTotal   = $kioskPrice   * $kioskQty   * $duration;
+
+            $subtotal   = $tableTotal + $signageTotal + $kioskTotal;
+            $tax        = $currency == 'IDR' ? $subtotal * 0.11 : 0;
+            $grandTotal = $subtotal + $tax;
+
+            // formatted version
+            $data = [
+                'duration'     => $duration,
+                'currency'     => $currency,
+                'tableQty'     => $tableQty,
+                'signageQty'   => $signageQty,
+                'kioskQty'     => $kioskQty,
+
+                'tablePrice'   => $formatCurrency($tablePrice, $currency),
+                'signagePrice' => $formatCurrency($signagePrice, $currency),
+                'kioskPrice'   => $formatCurrency($kioskPrice, $currency),
+
+                'tableTotal'   => $formatCurrency($tableTotal, $currency),
+                'signageTotal' => $formatCurrency($signageTotal, $currency),
+                'kioskTotal'   => $formatCurrency($kioskTotal, $currency),
+
+                'subtotal'     => $formatCurrency($subtotal, $currency),
+                'tax'          => $formatCurrency($tax, $currency),
+                'grandTotal'   => $formatCurrency($grandTotal, $currency),
+            ];
+
+            $unpaidInvoice = Invoice::where('branch_id', Auth::user()->Branch->id)
+                            ->whereIn('status', ['PENDING', 'APPROVED'])
+                            ->first();
+
+            $unpaidSubs = $unpaidInvoice ? Subscription::where('invoice', $unpaidInvoice->invoice_number)
+                                      ->where('status', 'pending')
+                                      ->first() : null;
+            // dd($data);
+
+            return view('adminBranch.billing.extend',compact('isDirect','currentSubs','invoice','billing','data','isAlmostExpired','unpaidInvoice','unpaidSubs'));
+    }
 
     public function callbackInvoice(Request $request)
     {
@@ -383,81 +502,90 @@ class BillingController extends Controller
                   
                     if($invoice){
                         Invoice::where('id_invoice', $request->id)
-                        ->where('status', 'PENDING')->update([
-                            'status' => $request->status,
-                        ]);
-                        
+                                        ->where('status', 'PENDING')->update([
+                                            'status' => $request->status,
+                                        ]);
+                        //init
                         $subscription = Subscription::where('invoice', $request->external_id)
-                        ->where('status', 'pending')->update([
-                            'status' => 'active',
-                        ]);
-               
-                   if($subscription){
-                          //ambil data membership di subscription
-                          $data = Subscription::where('invoice', $request->external_id)
-                          ->where('status', 'active')
-                          ->first();
-                    if($data){
-                           
-                          //setup
-                          $branch_id = $data->branch_id;
-                          $features = AdditionalFeature::all();
-                          $license = null;
-                          
-                          if($data->license_type == "onsite"){
-                              $license = 7; //PDQ
-                          }else{
-                              $license = 6; //PA
-                          }
-                          //reset fitur branch
-                          FeatureSubscription::where('branch_id', $branch_id)->delete();
-
-                            if ($data->package === "premium") {
-                                $featuresData = $features->filter(function($feature) {
-                                    return in_array($feature->id, [1, 2, 3, 4, 6, 7]);
-                                })->map(function($feature) use($branch_id) {
-                                    return [
-                                        'branch_id'  => $branch_id,
-                                        'feature_id' => $feature->id,
-                                        'created_at' => date('Y-m-d H:i:s')
-                                    ];
-                                });
-                            } 
-                             elseif ($data->package === "lite") {
-                                 $featuresData = $features->filter(function($feature) {
-                                    return in_array($feature->id, [1, 2, 7]);
-                                })->map(function($feature) use($branch_id) {
-                                    return [
-                                        'branch_id'  => $branch_id,
-                                        'feature_id' => $feature->id,
-                                        'created_at' => date('Y-m-d H:i:s')
-                                    ];
-                                });
-                            }
-
-                          
-                            if ($featuresData->isNotEmpty()) {
-                                FeatureSubscription::insert($featuresData->toArray());
-                            }
-                          //set ke branch
-                          Branch::where('id', $branch_id)->update([
-                              'branch_type_id' => $license,
-                              'max_counter' => $data->max_table,
-                              'max_queue' => $data->queue,
-                              'license_expiration_date' => Carbon::now()->addMonths($data->subs_duration)->format('Y-m-d H:i:s'),
-                          ]);
-                            BranchConfiguration::where('branch_id',$branch_id)->update([
-                                'max_services' => $data->max_service,
-                            ]);
-                          }
-                         
-                       }
-                            else {
+                                                    ->where('status', 'pending')->first();
+                        if (!$subscription) {
                                 return response()->json([
                                     'status' => 'error',
                                     'message' => 'Data Subscription Not Found'
-                                    ], 404);
+                                ], 404);
                             }
+
+                        //set old to exp
+                        Subscription::where('branch_id', $subscription->branch_id)
+                                        ->where('status', 'active')
+                                        ->update(['status' => 'expired']);
+                        //new 
+                        $subscription->update(['status' => 'active']);
+
+                        $data = $subscription->fresh();
+                            if($data){
+                                //setup
+                                $branch_id = $data->branch_id;
+                                $features = AdditionalFeature::all();
+                                $license = null;
+                                
+                                if($data->license_type == "onsite"){
+                                    $license = 7; //PDQ
+                                }else{
+                                    $license = 6; //PA
+                                }
+                                //reset fitur
+                                FeatureSubscription::where('branch_id', $branch_id)->delete();
+
+                                    if ($data->package === "premium") {
+                                        $featuresData = $features->filter(function($feature) {
+                                            return in_array($feature->id, [1, 2, 3, 4, 6, 7]);
+                                        })->map(function($feature) use($branch_id) {
+                                            return [
+                                                'branch_id'  => $branch_id,
+                                                'feature_id' => $feature->id,
+                                                'created_at' => date('Y-m-d H:i:s')
+                                            ];
+                                        });
+                                    } 
+                                    elseif ($data->package === "lite") {
+                                        $featuresData = $features->filter(function($feature) {
+                                            return in_array($feature->id, [1, 2, 7]);
+                                        })->map(function($feature) use($branch_id) {
+                                            return [
+                                                'branch_id'  => $branch_id,
+                                                'feature_id' => $feature->id,
+                                                'created_at' => date('Y-m-d H:i:s')
+                                            ];
+                                        });
+                                    }
+
+                                
+                                    if ($featuresData->isNotEmpty()) {
+                                        FeatureSubscription::insert($featuresData->toArray());
+                                    }
+                                //set ke branch
+                                $branch =  Branch::where('id', $branch_id)->first();
+                                if($branch){
+                                    $isExtend = $branch->BranchType->is_premium;
+                                    $currentExpiry = $isExtend ? Carbon::parse($branch->license_expiration_date) : now();
+
+                                    $newExpiry = $currentExpiry->greaterThan(now())
+                                                    ? $currentExpiry->copy()->addMonths($data->subs_duration)
+                                                    : now()->addMonths($data->subs_duration);
+
+                                    $branch->update([
+                                        'branch_type_id' => $license,
+                                        'max_counter' => $data->max_table,
+                                        'max_queue' => $data->queue,
+                                        'license_expiration_date' => $newExpiry,
+                                    ]);
+                                }
+                                    BranchConfiguration::where('branch_id',$branch_id)->update([
+                                        'max_services' => $data->max_service,
+                                    ]);
+                            }
+            
                     }else{
                         return response()->json([
                             'status' => 'error',
@@ -541,12 +669,15 @@ class BillingController extends Controller
                                     ->where('payment_gateway', 'PAYPAL')
                                     ->update(['status' => 'PAID']);
                             $subs = Subscription::where('invoice', $invoice->invoice_number)
-                                                ->where('status', 'pending');
+                                                ->where('status', 'pending')->first();
+
+                            Subscription::where('branch_id', $subs->branch_id)
+                                        ->where('status', 'active')
+                                        ->update(['status' => 'expired']);
+
                             if ($subs) {
                                 $subs->update(['status' => 'active']);
-                                $data = Subscription::where('invoice', $invoice->invoice_number)
-                                        ->where('status', 'active')
-                                        ->first();
+                                $data = $subs->fresh();
 
                                 $branchID = $data->branch_id;
                                 $features = AdditionalFeature::all();
@@ -580,12 +711,19 @@ class BillingController extends Controller
                                     if ($featuresData->isNotEmpty()) {
                                         FeatureSubscription::insert($featuresData->toArray());
                                     }
+                                    $branch =  Branch::where('id', $branchID)->first();
+                                    $isExtend = $branch->BranchType->is_premium;
+                                    $currentExpiry = $isExtend ? Carbon::parse($branch->license_expiration_date) : now();
+                                    $newExpiry = $currentExpiry->greaterThan(now())
+                                                        ? $currentExpiry->copy()->addMonths($data->subs_duration)
+                                                        : now()->addMonths($data->subs_duration);
+
                                      //set ke branch
-                                    Branch::where('id', $branchID)->update([
+                                    $branch->update([
                                         'branch_type_id' => $license,
                                         'max_counter' => $data->max_table,
                                         'max_queue' => $data->queue,
-                                        'license_expiration_date' => Carbon::now()->addMonths($data->subs_duration)->format('Y-m-d H:i:s'),
+                                        'license_expiration_date' => $newExpiry,
                                     ]);
                                     BranchConfiguration::where('branch_id',$branchID)->update([
                                         'max_services' => $data->max_service,
