@@ -845,6 +845,7 @@ class DirectQueueController extends Controller
         $data = $request->all();
         $data['name'] = $oldDirectQueue->name;
         $data['phone'] = $oldDirectQueue->phone;
+        $data['email'] = $oldDirectQueue->email ?? null;
         // $data['workstation_id'] = $workstation_service->workstation_id;
         $data['user_id'] = Auth::id();
         $data['service_id'] = $workstation_service->service_id;
