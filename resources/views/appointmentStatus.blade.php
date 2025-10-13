@@ -182,7 +182,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 text-center">
-                                <a href="https://play.google.com/store/apps/details?id=com.kyoo.android"
+                                <a href="https://play.google.com/store/apps/details?id=com.kyoo.kyoo_app"
                                     target="_blank">
                                     <img src="{{ asset('img/playstore.png') }}" alt="" srcset="" class="img-playstore">
                                 </a>

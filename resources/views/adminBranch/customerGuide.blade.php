@@ -168,7 +168,7 @@
                             <div class="card-body">
                                 {{ __('Customers can download the KYOO App to take a queue') }}
                                 <div style="width: 145px;height: auto;">
-                                <a href="https://play.google.com/store/apps/details?id=com.kyoo.android" target="__blank">
+                                <a href="https://play.google.com/store/apps/details?id=com.kyoo.kyoo_app" target="__blank">
                                     <img src="/img/playstore.png" height="70px" />
                                 </a>
                                 </div>

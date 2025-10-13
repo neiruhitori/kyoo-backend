@@ -4,7 +4,7 @@
 <tr>
 <td class="content-cell" align="center">
     <p>{{ __('Download our Apps on Playstore') }}</p>
-    <a href="https://play.google.com/store/apps/details?id=com.kyoo.android">
+    <a href="https://play.google.com/store/apps/details?id=com.kyoo.kyoo_app">
         <img src="{{ asset('img/playstore.png') }}" alt="playstore img" style="width: 150px; margin-bottom: 100px">
     </a>
 {{ Illuminate\Mail\Markdown::parse($slot) }}

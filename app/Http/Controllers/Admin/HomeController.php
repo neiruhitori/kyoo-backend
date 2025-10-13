@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Requests\Admin\UpdateProfile;
-use App\Exports\Admin\ReportExport;
-use App\Branch;
+use DB;
+use Auth;
+use Excel;
 use App\User;
+use App\Branch;
 use App\Appointment;
 use App\DirectQueue;
 use App\Models\Exhibition;
-use Auth;
-use DB;
-use Excel;
+use App\Models\UserMobile;
+use Illuminate\Http\Request;
+use App\Exports\Admin\ReportExport;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateProfile;
+
 class HomeController extends Controller
 {
     public function index()
@@ -24,7 +26,7 @@ class HomeController extends Controller
 
         return view('admin.home', [
             'totalBranch' => Branch::count(),
-            'totalUser' => User::whereRole('customer')->count(),
+            'totalUser' => UserMobile::count(),
             'totalAppointment' => Appointment::count(),
             'totalOnsite' => DirectQueue::count(),
             'totalExhibition' => Exhibition::count(),
