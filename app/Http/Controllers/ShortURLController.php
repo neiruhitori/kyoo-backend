@@ -13,7 +13,8 @@ class ShortURLController extends Controller
     public function APICustomerUrl(Branch $branch)
     {
         return response()->json([
-            'url' => 'customer/' . $branch->id . '/' . $branch->queue_type . '/services'
+            'url' => 'customer/' . $branch->id . '/' . $branch->queue_type . '/services',
+            'style' => $branch->BranchConfiguration->web_style ?? 'web-style-1'
         ]);
     }
 }
