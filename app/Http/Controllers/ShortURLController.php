@@ -10,4 +10,10 @@ class ShortURLController extends Controller
     {
         return redirect('customer/' . $branch->id . '/' . $branch->queue_type . '/services');
     }
+    public function APICustomerUrl(Branch $branch)
+    {
+        return response()->json([
+            'url' => 'customer/' . $branch->id . '/' . $branch->queue_type . '/services'
+        ]);
+    }
 }
