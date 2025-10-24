@@ -39,7 +39,7 @@ class AppointmentCreatedMail extends Mailable
         $locale = $country == 'Indonesia' ? 'id' : 'en';
         $clientApp = false;
         if ($this->appointment->client_id) {
-            $clientApp = UserMobile::where('id', $this->appointment->client_id)->exists();
+            $clientApp = UserMobile::where('client_id', $this->appointment->client_id)->exists();
         }
         $url = $clientApp 
                 ? URL::signedRoute('app.mobile.checkQueue', 

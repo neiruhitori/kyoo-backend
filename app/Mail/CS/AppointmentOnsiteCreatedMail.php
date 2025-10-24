@@ -44,7 +44,7 @@ class AppointmentOnsiteCreatedMail extends Mailable implements ShouldQueue
 
         $clientApp = false;
         if ($this->appointmentOnsite->client_id) {
-            $clientApp = UserMobile::where('id', $this->appointmentOnsite->client_id)->exists();
+            $clientApp = UserMobile::where('client_id', $this->appointmentOnsite->client_id)->exists();
         }
         $url = $clientApp 
                 ? URL::signedRoute('app.mobile.checkQueue', 
