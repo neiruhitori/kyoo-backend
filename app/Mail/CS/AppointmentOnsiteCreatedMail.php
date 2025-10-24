@@ -2,17 +2,19 @@
 
 namespace App\Mail\CS;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
-
-use App\Models\AppointmentOnsite;
-use Carbon\Carbon;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Storage;
+use Carbon\Carbon;
+use App\Models\UserMobile;
+use Illuminate\Bus\Queueable;
 
-class AppointmentOnsiteCreatedMail extends Mailable
+use Illuminate\Mail\Mailable;
+use App\Models\AppointmentOnsite;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+class AppointmentOnsiteCreatedMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -40,6 +42,18 @@ class AppointmentOnsiteCreatedMail extends Mailable
         $id_date->setLocale('id');
         config(['app.name' => $branch->name]);
 
+        $clientApp = false;
+        if ($this->appointmentOnsite->client_id) {
+            $clientApp = UserMobile::where('id', $this->appointmentOnsite->client_id)->exists();
+        }
+        $url = $clientApp 
+                ? URL::signedRoute('app.mobile.checkQueue', 
+                        [
+                            'branch_id' => $branch->id,
+                            'booking_id' => $this->appointmentOnsite->id,
+                        ])
+                : url('customer/' . $branch->id. '/appointment-onsite/booking-status/' . $this->appointmentOnsite->id);
+
         $qr_code_url = 'qr_codes/'. $this->appointmentOnsite->id .'_qr_code.png';
 
         setlocale(LC_TIME, 'id_ID');
@@ -60,6 +74,7 @@ class AppointmentOnsiteCreatedMail extends Mailable
                 'service_name' => $this->appointmentOnsite->Service->name,
                 'address' => $branch->address,
                 'qr_code' => $qr_code_url,
+                'url' => $url,
             ]);
     }
 }
