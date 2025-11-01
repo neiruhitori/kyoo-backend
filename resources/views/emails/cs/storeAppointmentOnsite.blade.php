@@ -1,12 +1,13 @@
 @component('mail::message')
 # Appointment Onsite
 
-Anda telah membuat appointment onsite pada tanggal {{ $booking_date }} di {{ $branch_name }}. Klik tombol dibawah untuk melacak Appointment Anda.
+{{ __('You have made an appointment on :booking_date at :branch_name. Click the button below to track your appointment.',['booking_date' => $booking_date,'branch_name' => $branch_name ]) }}
+{{-- Anda telah membuat appointment onsite pada tanggal {{ $booking_date }} di {{ $branch_name }}. Klik tombol dibawah untuk melacak Appointment Anda. --}}
 
 <div style="text-align: center;">
 <table style="margin-left: auto; margin-right: auto;">
 <tr>
-<td style="text-align: left; padding-right: 5px;">Kode Booking</td>
+<td style="text-align: left; padding-right: 5px;">{{ __('Kode Booking') }}</td>
 <td style="text-align: left;">: {{ strtoupper($booking_code) }}</td>
 </tr>
 <tr>
@@ -32,7 +33,7 @@ Anda telah membuat appointment onsite pada tanggal {{ $booking_date }} di {{ $br
 <img src="{{ asset('storage/' . $qr_code) }}" alt="{{ strtoupper($booking_code) }}">
 </div>
 
-@component('mail::button', ['url' => url('customer/' . $branch_id. '/appointment-onsite/booking-status/' . $appointment_onsite_id)])
+@component('mail::button', ['url' => $url])
 {{ __('Check My Appointment Onsite') }}
 @endcomponent
 

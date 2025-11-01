@@ -83,7 +83,8 @@ class DashboardController extends Controller
 
     public function getActiveAppointment(Request $request)
     {
-        $client_id = Auth::user()->client_id; 
+        $client_id = Auth::user()->client_id;
+        $booking_id = $request->get('booking_id'); 
 
         $appointments = Appointment::with([
                                     'Service' => function ($q) {
@@ -160,6 +161,12 @@ class DashboardController extends Controller
             ->sortBy('date')
             ->take(8)
             ->values();
+        
+        if ($booking_id) {
+            $all = $all->sortByDesc(function ($item) use ($booking_id) {
+                return $item->id == $booking_id ? 1 : 0;
+            })->values();
+        }
 
         $perPage = $request->get('per_page', 8) ?? 8; 
         $page    = $request->get('page', 1) ?? 1;      

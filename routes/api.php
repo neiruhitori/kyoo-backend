@@ -174,6 +174,7 @@ Route::get('search', 'API\SearchQueueController');
 
 Route::post('/subscription/callback','AdminBranch\BillingController@callbackInvoice');
 Route::post('/paypal/callback','AdminBranch\BillingController@callbackPaypal');
+
 /**
  * External API Routes
  */
@@ -189,3 +190,5 @@ Route::namespace('API\External')->prefix('external')->middleware('external.check
 Route::get('introspect', function () {
     return response()->noContent();
 })->middleware('auth:api');
+
+Route::get('{branch}','ShortURLController@APICustomerUrl')->whereNumber('branch');

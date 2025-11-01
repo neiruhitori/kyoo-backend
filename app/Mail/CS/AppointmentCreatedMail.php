@@ -4,8 +4,10 @@ namespace App\Mail\CS;
 
 use Carbon\Carbon;
 use App\Appointment;
+use App\Models\UserMobile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -35,6 +37,19 @@ class AppointmentCreatedMail extends Mailable
         $branch = $this->appointment->Slot->Service->Branch;
         $country = $branch->country;
         $locale = $country == 'Indonesia' ? 'id' : 'en';
+        $clientApp = false;
+        if ($this->appointment->client_id) {
+            $clientApp = UserMobile::where('client_id', $this->appointment->client_id)->exists();
+        }
+        $url = $clientApp 
+                ? URL::signedRoute('app.mobile.checkQueue', 
+                        [
+                            'branch_id' => $branch->id,
+                            'booking_id' => $this->appointment->id,
+                        ])
+                : url('customer/' . $branch->id. '/appointment/booking-status/' . $this->appointment->id);
+
+        
         $timezoneArr = [
             'WIB'  => 'Asia/Jakarta',
             'WITA' => 'Asia/Makassar',
@@ -45,7 +60,6 @@ class AppointmentCreatedMail extends Mailable
         $timezone = $timezoneArr[$branch->timezone] ?? config('app.timezone');
         // setlocale(LC_TIME, 'id_ID');
         app()->setLocale($locale);
-        \Log::info($this->appointment->Slot->start_time);
         $startTime = Carbon::parse($this->appointment->date . ' ' . $this->appointment->Slot->start_time)
         ->setTimezone($timezone)
         ->format('Ymd\THis');
@@ -77,6 +91,7 @@ class AppointmentCreatedMail extends Mailable
                 'appointment_id' => $this->appointment->id,
                 'branch_id' => $branch->id,
                 'branch_name' => $branch->name,
+                'url' => $url,
                 'booking_date' =>  Carbon::parse($this->appointment->date)->locale($locale)->isoFormat('D MMMM YYYY')
             ])
             ->attachData($icsContent,'appointment-'.$this->appointment->id.'.ics' ,[
