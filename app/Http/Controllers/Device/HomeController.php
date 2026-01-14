@@ -54,7 +54,7 @@ class HomeController extends Controller
         $tv_config = $branch && $branch->TVconfiguration ? $branch->TVconfiguration->TVToken : null;
     $webkiosk_config = $branch && $branch->WebkioskConfiguration ? $branch->WebkioskConfiguration->WebkioskToken : null;
 
-   
+
         $tv_token = $tv_config ? $tv_config->token : Str::random(12);
         $webkiosk_token = $webkiosk_config ? $webkiosk_config->token : Str::random(12);
 
@@ -279,7 +279,13 @@ class HomeController extends Controller
 
         $workstationServices = WorkstationService::whereHas('Workstation.WorkstationVct', function($query) use ($vctIds) {
             return $query->whereIn('vct_id', $vctIds);
-        })->with('Service')->get();
+        })
+            ->with('Service')
+            ->get()
+            ->sortBy(function ($item) {
+                return isset($item->service) ? $item->service->id : 0;
+            })
+            ->values();
 
         return response()->json([
             'success' => true,
@@ -311,7 +317,7 @@ class HomeController extends Controller
                                                         ->whereStatus('waiting')
                                                         ->whereDate('created_at', date('Y-m-d'))
                                                         ->count();
-            
+
             event(new VCTDirectQueueEvent($direct_queue, $user->branch_id));
             event(new DirectQueueEvent($direct_queue, $user->branch_id));
 
@@ -363,7 +369,7 @@ class HomeController extends Controller
             ->where('is_used', false)
             ->whereDate('date', '>=', date('Y-m-d'))
             ->first();
-            
+
 
             if(!$appointment_onsite) {
                 throw new \Exception(__('Booking code not found or expired'), 10003);
@@ -375,7 +381,7 @@ class HomeController extends Controller
                 $startTime =  Carbon::createFromFormat('H:i:s', $appointment_onsite->start_time);
 
                 $allowedCheckInTime = $startTime->subHours($branchConfig->check_in_rule);
-    
+
                 if (now()->format('H:i:s') < $allowedCheckInTime->format('H:i:s')) {
                     throw new \Exception(__('Check-in is done ') . $branchConfig->check_in_rule . __(' hours before the service opens. You can check in at ') . $allowedCheckInTime->format('H:i') . ".", 10005);
                 }
@@ -389,7 +395,7 @@ class HomeController extends Controller
             $data['appointment_onsite_id'] = $appointment_onsite->id;
 
             $direct_queue = $this->onsite_repository->store($data);
-            
+
             $direct_queue->total_waiting = DirectQueue::whereServiceId($direct_queue->service_id)
                                                         ->whereStatus('waiting')
                                                         ->whereDate('created_at', date('Y-m-d'))
@@ -416,20 +422,20 @@ class HomeController extends Controller
                 $webhookMessage = "Webhook Send!";
                 $startTime = $appointment_onsite->start_time;
                 $endTime = $appointment_onsite->end_time;
-    
+
                 if (strlen($startTime) === 5) { // Jika dalam format H:i
                     $startTime = Carbon::createFromFormat('H:i', $startTime)->format('H:i:s');
                 } else {
                     $startTime = Carbon::createFromFormat('H:i:s', $startTime)->format('H:i:s');
                 }
-                
+
                 if (strlen($endTime) === 5) { // Jika dalam format H:i
                     $endTime = Carbon::createFromFormat('H:i', $endTime)->format('H:i:s');
                 } else {
                     $endTime = Carbon::createFromFormat('H:i:s', $endTime)->format('H:i:s');
                 }
-    
-                
+
+
                 $timezone = null;
                 if($user->branch && $user->branch->timezone){
                     if($user->branch && $user->branch->timezone) {
@@ -449,10 +455,10 @@ class HomeController extends Controller
                         }
                     }
                 }
-    
+
                 $webhookData = [
                     'event_type' => 'onsite_checkin_booking',
-    
+
                     'queue' =>[
                             'id' => $appointment_onsite->id,
                             'service_id' => $appointment_onsite->service_id,
@@ -474,9 +480,9 @@ class HomeController extends Controller
                             'branch_name' => $appointment_onsite->service->Branch->name,
                         ]
                 ];
-                
+
                SendWebhook::dispatch($client, $webhookData);
-                
+
             }else{
                 $webhookMessage = "There's no Webhook Url or The feature was inactive";
             }

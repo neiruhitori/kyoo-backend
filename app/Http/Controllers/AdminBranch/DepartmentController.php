@@ -25,7 +25,8 @@ class DepartmentController extends Controller
         $departments = Department::whereBranchId(Auth::user()->branch_id)->get();
         $service_categories = ServiceCategory::whereBranchId(Auth::user()->branch_id)->get();
         $sub_services = SubService::whereBranchId(Auth::user()->branch_id)->get();
-        $servicesQuery = Service::whereBranchId(Auth::user()->branch_id);
+        $servicesQuery = Service::whereBranchId(Auth::user()->branch_id)
+           ->orderBy('id', 'asc');
 
         if($request->has('filter')){
             if ($request->filter == 'inactive') {
