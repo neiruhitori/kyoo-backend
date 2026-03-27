@@ -37,85 +37,106 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
         return [WhatsAppOfficial::class];
     }
 
-    public function waBlast(AppointmentOnsite $appointmentOnsite){
+    private function normalizePhone($phone)
+    {
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+
+        if (substr($phone, 0, 1) === '0') {
+            return '62' . substr($phone, 1);
+        }
+
+        if (substr($phone, 0, 2) !== '62') {
+            return '62' . $phone;
+        }
+
+        return $phone;
+    }
+
+    public function waBlast(AppointmentOnsite $appointmentOnsite)
+    {
         $branch = $appointmentOnsite->Service->Branch;
         $type = $branch->getQueueTypeAttribute();
         //url dynamic to detail branch, example:https://dev.kyoo.id/customer/93/onsite/detail
-        $url = url('/customer/'.$branch->id.'/'.$type.'/detail');
-        $url_booking = url('/customer/'.$branch->id.'/'.$type.'/booking-status/'.$appointmentOnsite->id);
+        $url = url('/customer/' . $branch->id . '/' . $type . '/detail');
+        $url_booking = url('/customer/' . $branch->id . '/' . $type . '/booking-status/' . $appointmentOnsite->id);
 
         // Data JSON yang akan dikirim
         $payload = [
-            "phone_number"   => $appointmentOnsite->phone,
-            "name"           => $appointmentOnsite->name,
-            "branch_name"    => $branch->name,
-            "booking_code"   => strtoupper($appointmentOnsite->booking_code),
+            "phone_number" => $appointmentOnsite->phone,
+            "name" => $appointmentOnsite->name,
+            "branch_name" => $branch->name,
+            "booking_code" => strtoupper($appointmentOnsite->booking_code),
             "appointment_date" => $appointmentOnsite->date,
-            "start_time"     => $appointmentOnsite->start_time,
-            "end_time"       => $appointmentOnsite->end_time,
-            "service_name"   => $appointmentOnsite->Service->name,
-            "address"        => $branch->address,
+            "start_time" => $appointmentOnsite->start_time,
+            "end_time" => $appointmentOnsite->end_time,
+            "service_name" => $appointmentOnsite->Service->name,
+            "address" => $branch->address,
             "booking_status" => $url_booking,
-            "link_branch"    => $url,
+            "link_branch" => $url,
         ];
-    
+
         // Mengirim request POST ke endpoint waBlast
         $response = Http::withHeaders([
             'x-api-key' => $branch->BranchConfiguration->api_token,
             'Content-Type' => 'application/json',
         ])->post('https://api.pawarta.awandigital.id/api/send-message-template', $payload);
-    
+
     }
 
     public function toWhatsApp(AppointmentOnsite $appointmentOnsite)
     {
+        $senderPhone = null;
+
         Http::withHeaders([
             'Authorization' => $appointmentOnsite->Service->Branch->BranchConfiguration->api_token,
             'content-type' => 'application/json',
         ])
-        ->post("{$appointmentOnsite->Service->Branch->BranchConfiguration->api_wa}/api/v1/sendTemplateMessages", [
-            'broadcast_name' => $appointmentOnsite->Service->whatsapp_template ?? 'kyoo_appt_qr_in',
-            'template_name' => $appointmentOnsite->Service->whatsapp_template ?? 'kyoo_appt_qr_in',
-            'receivers' => [
-                [
-                    'customParams' => [
-                        [
-                            'name' => 'patient_name',
-                            'value' => $appointmentOnsite->name,
+            ->post("{$appointmentOnsite->Service->Branch->BranchConfiguration->api_wa}/api/v1/sendTemplateMessages", [
+                'broadcast_name' => $appointmentOnsite->Service->whatsapp_template ?? 'kyoo_appt_qr_in',
+                'template_name' => $appointmentOnsite->Service->whatsapp_template ?? 'kyoo_appt_qr_in',
+                'sender_phone' => $senderPhone
+                    ? $this->normalizePhone($senderPhone)
+                    : '',
+                'receivers' => [
+                    [
+                        'customParams' => [
+                            [
+                                'name' => 'patient_name',
+                                'value' => $appointmentOnsite->name,
+                            ],
+                            [
+                                'name' => 'qr_code',
+                                'value' => config('app.url') . '/storage/' . $appointmentOnsite->qr_code,
+                            ],
+                            [
+                                'name' => 'appt_code',
+                                'value' => strtoupper($appointmentOnsite->booking_code),
+                            ],
+                            [
+                                'name' => 'appt_date',
+                                'value' => date('d M Y', strtotime($appointmentOnsite->date)),
+                            ],
+                            [
+                                'name' => 'appt_time',
+                                'value' => $appointmentOnsite->start_time,
+                            ],
+                            [
+                                'name' => 'appt_type',
+                                'value' => $appointmentOnsite->Service->name,
+                            ],
+                            [
+                                'name' => 'appt_location',
+                                'value' => $appointmentOnsite->Service->Branch->address,
+                            ],
+                            [
+                                'name' => 'booking_url',
+                                'value' => config('app.url') . "/customer/{$appointmentOnsite->Service->Branch->id}/appointment-onsite/booking-status/{$appointmentOnsite->id}",
+                            ],
                         ],
-                        [
-                            'name' => 'appt_date',
-                            'value' => $appointmentOnsite->date,
-                        ],
-                        [
-                            'name' => 'appt_time',
-                            'value' => "{$appointmentOnsite->start_time} - {$appointmentOnsite->end_time}",
-                        ],
-                        [
-                            'name' => 'appt_type',
-                            'value' => $appointmentOnsite->Service->name,
-                        ],
-                        [
-                            'name' => 'appt_location',
-                            'value' => $appointmentOnsite->Service->Branch->address,
-                        ],
-                        [
-                            'name' => 'booking_url',
-                            'value' => config('app.url') . "/customer/{$appointmentOnsite->Service->Branch->id}/appointment-onsite/booking-status/{$appointmentOnsite->id}",
-                        ],
-                        [
-                            'name' => 'appt_code',
-                            'value' => strtoupper($appointmentOnsite->booking_code),
-                        ],
-                        [
-                            'name' => 'qr_code',
-                            'value' => config('app.url') . '/storage/' . $appointmentOnsite->qr_code,
-                        ],
+                        'whatsappNumber' => $this->normalizePhone($appointmentOnsite->phone),
                     ],
-                    'whatsappNumber' => $appointmentOnsite->phone,
                 ],
-            ],
-        ]);
+            ]);
     }
 
     /**
