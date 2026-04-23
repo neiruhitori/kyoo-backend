@@ -37,21 +37,6 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
         return [WhatsAppOfficial::class];
     }
 
-    private function normalizePhone($phone)
-    {
-        $phone = preg_replace('/[^0-9]/', '', $phone);
-
-        if (substr($phone, 0, 1) === '0') {
-            return '62' . substr($phone, 1);
-        }
-
-        if (substr($phone, 0, 2) !== '62') {
-            return '62' . $phone;
-        }
-
-        return $phone;
-    }
-
     public function waBlast(AppointmentOnsite $appointmentOnsite)
     {
         $branch = $appointmentOnsite->Service->Branch;
@@ -94,9 +79,8 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
             ->post("{$appointmentOnsite->Service->Branch->BranchConfiguration->api_wa}/api/v1/sendTemplateMessages", [
                 'broadcast_name' => $appointmentOnsite->Service->whatsapp_template ?? 'kyoo_appt_qr_in',
                 'template_name' => $appointmentOnsite->Service->whatsapp_template ?? 'kyoo_appt_qr_in',
-                'sender_phone' => $senderPhone
-                    ? $this->normalizePhone($senderPhone)
-                    : '',
+                'sender_phone' => $senderPhone ?? '',
+
                 'receivers' => [
                     [
                         'customParams' => [
@@ -133,7 +117,7 @@ class AppointmentOnsiteCreatedNotification extends Notification implements Shoul
                                 'value' => config('app.url') . "/customer/{$appointmentOnsite->Service->Branch->id}/appointment-onsite/booking-status/{$appointmentOnsite->id}",
                             ],
                         ],
-                        'whatsappNumber' => $this->normalizePhone($appointmentOnsite->phone),
+                        'whatsappNumber' => $appointmentOnsite->phone,
                     ],
                 ],
             ]);
