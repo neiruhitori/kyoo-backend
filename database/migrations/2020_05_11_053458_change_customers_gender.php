@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class ChangeCustomersGender extends Migration
 {
@@ -13,9 +14,7 @@ class ChangeCustomersGender extends Migration
      */
     public function up()
     {
-        Schema::table('customers', function (Blueprint $table) {
-            DB::statement("ALTER TABLE customers ALTER COLUMN gender DROP NOT NULL");
-        });
+        DB::statement("ALTER TABLE customers MODIFY gender ENUM('male', 'female') NULL");
     }
 
     /**

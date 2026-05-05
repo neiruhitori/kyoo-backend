@@ -15,7 +15,7 @@ class CreateTermsConditionsTable extends Migration
     {
         Schema::create('terms_conditions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('branch_id');
+            $table->foreignId('branch_id');
             $table->text('body');
             $table->timestamps();
 

@@ -16,7 +16,7 @@ class AddFieldsOnAppointment extends Migration
         Schema::table('appointments', function (Blueprint $table) {
             $table->foreignId('vct_id')->after('status')->nullable();
             $table->timestamp('checkin_time')->after('vct_id')->nullable();
-            $table->timestamp('served_time')->after('served_time')->nullable();
+            $table->timestamp('served_time')->after('checkin_time')->nullable();
 
             $table->foreign('vct_id')->references('id')->on('users');
         });

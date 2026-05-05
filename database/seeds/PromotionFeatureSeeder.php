@@ -14,9 +14,9 @@ class PromotionFeatureSeeder extends Seeder
      */
     public function run()
     {
-        AdditionalFeature::create([
-            'name' => 'Promosi',
-            'code' => 'PMS',
-        ]);
+        AdditionalFeature::firstOrCreate(
+            ['code' => 'PMS'],
+            ['name' => 'Promosi']
+        );
     }
 }

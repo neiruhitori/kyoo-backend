@@ -39,14 +39,15 @@ class HomeController extends Controller
             $appointmentGraph = Appointment::whereHas('Slot.Service', function($query){
                 $query->where('branch_id', Auth::user()->branch_id);
             })
-                ->select(DB::raw("date_part('day', date) as day"), 
-                         DB::raw('count(id) as total'),
+                ->select(
+                    DB::raw("DAY(date) as day"),
+                    DB::raw('count(id) as total'),
                          DB::raw("SUM(CASE WHEN status = 'end served' THEN 1 ELSE 0 END) as served"),
                          DB::raw("SUM(CASE WHEN status = 'no show' THEN 1 ELSE 0 END) as no_show"))
                 ->whereMonth('date', date('m'))
                 ->whereYear('date', date('Y'))
                 ->groupBy('day')
-                ->get(); // for pgsql
+                ->get();
         }
 
         if ($isExhibition) {
@@ -64,7 +65,7 @@ class HomeController extends Controller
             $exhibition['graph'] = Exhibition::whereHas('Slot.Service', function($query){
                 $query->where('branch_id', Auth::user()->branch_id);
             })
-                ->select(DB::raw("date_part('day', date) as day"), DB::raw('count(id) as total'))
+                ->select(DB::raw("DAY(date) as day"), DB::raw('count(id) as total'))
                 ->whereMonth('date', date('m'))
                 ->whereYear('date', date('Y'))
                 ->groupBy('day')

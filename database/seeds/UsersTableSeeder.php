@@ -14,12 +14,14 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
-            'name' => 'Admin Kyoo',
-            'email' => 'admin@kyoo.id',
-            'password' => 'Secret123',
-            'phone' => '123123123',
-            'role' => 'admin_kyoo'
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@kyoo.id'],
+            [
+                'name' => 'Admin Kyoo',
+                'password' => 'Secret123',
+                'phone' => '123123123',
+                'role' => 'admin_kyoo'
+            ]
+        );
     }
 }

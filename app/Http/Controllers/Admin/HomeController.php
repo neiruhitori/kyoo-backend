@@ -20,9 +20,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $appointmentGraph = Appointment::select(DB::raw("date_part('month', date) as month"), DB::raw("count(id) as total"))->groupBy('month')->orderBy('month')->get(); // for pgsql
-        $exhibitionGraph = Exhibition::select(DB::raw("date_part('month', date) as month"), DB::raw("count(id) as total"))->groupBy('month')->orderBy('month')->get(); // for pgsql
-        $onsiteGraph = DirectQueue::select(DB::raw("date_part('month', created_at) as month"), DB::raw("count(id) as total"))->groupBy('month')->orderBy('month')->get(); // for pgsql
+        $appointmentGraph = Appointment::select(DB::raw("MONTH(date) as month"), DB::raw("count(id) as total"))->groupBy('month')->orderBy('month')->get();
+        $exhibitionGraph = Exhibition::select(DB::raw("MONTH(date) as month"), DB::raw("count(id) as total"))->groupBy('month')->orderBy('month')->get();
+        $onsiteGraph = DirectQueue::select(DB::raw("MONTH(created_at) as month"), DB::raw("count(id) as total"))->groupBy('month')->orderBy('month')->get();
 
         return view('admin.home', [
             'totalBranch' => Branch::count(),

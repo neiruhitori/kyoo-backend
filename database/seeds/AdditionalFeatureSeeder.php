@@ -14,7 +14,7 @@ class AdditionalFeatureSeeder extends Seeder
      */
     public function run()
     {
-        AdditionalFeature::insert([
+        $features = [
             [
                 'code' => 'WST',
                 'name' => 'Web Signage TV',
@@ -35,6 +35,10 @@ class AdditionalFeatureSeeder extends Seeder
                 'name' => 'Customer Feedback',
                 'created_at' => date('Y-m-d H:i:s')
             ]
-        ]);
+        ];
+
+        foreach ($features as $feature) {
+            AdditionalFeature::firstOrCreate(['code' => $feature['code']], $feature);
+        }
     }
 }

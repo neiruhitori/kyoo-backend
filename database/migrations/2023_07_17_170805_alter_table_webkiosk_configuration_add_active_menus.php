@@ -17,7 +17,7 @@ class AlterTableWebkioskConfigurationAddActiveMenus extends Migration
     public function up()
     {
         Schema::table('webkiosk_configuration', function (Blueprint $table) {
-            $table->mediumText('active_menus')->default("[]")->after('layout_id');
+            $table->mediumText('active_menus')->nullable()->after('layout_id');
         });
     }
 

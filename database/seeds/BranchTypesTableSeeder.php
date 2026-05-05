@@ -79,6 +79,9 @@ class BranchTypesTableSeeder extends Seeder
                 "is_direct_queue" => true
             ],
         ];
-        BranchType::insert($types);
+
+        foreach ($types as $type) {
+            BranchType::firstOrCreate(['code' => $type['code']], $type);
+        }
     }
 }

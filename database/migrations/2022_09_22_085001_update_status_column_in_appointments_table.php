@@ -15,7 +15,12 @@ class UpdateStatusColumnInAppointmentsTable extends Migration
     public function up()
     {
         Schema::table('appointments', function (Blueprint $table) {
-            DB::statement("ALTER TABLE appointments DROP CONSTRAINT appointments_status_check");
+            // Check if constraint exists before dropping
+            $constraints = DB::select("SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME = 'appointments' AND CONSTRAINT_NAME = 'appointments_status_check'");
+
+            if (!empty($constraints)) {
+                DB::statement("ALTER TABLE appointments DROP CONSTRAINT appointments_status_check");
+            }
         });
     }
 

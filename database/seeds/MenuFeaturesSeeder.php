@@ -14,7 +14,7 @@ class MenuFeaturesSeeder extends Seeder
      */
     public function run()
     {
-        MenuFeatures::insert([
+        $features = [
             [
                 'name' => 'Monitoring Department',
                 'code' => 'MD',
@@ -39,6 +39,10 @@ class MenuFeaturesSeeder extends Seeder
                 'route' => '/cs/workstation-service',
                 'created_at' => date('Y-m-d H:i:s')
             ]
-        ]);
+        ];
+
+        foreach ($features as $feature) {
+            MenuFeatures::firstOrCreate(['code' => $feature['code']], $feature);
+        }
     }
 }

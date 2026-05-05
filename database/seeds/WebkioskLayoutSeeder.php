@@ -14,7 +14,7 @@ class WebkioskLayoutSeeder extends Seeder
      */
     public function run()
     {
-        WebkioskLayout::insert([
+        $layouts = [
             [
                 'name' => 'Layout 1',
                 'code' => 'layout_1',
@@ -33,6 +33,10 @@ class WebkioskLayoutSeeder extends Seeder
                 'image' => 'img/webkiosk/layout-3.png',
                 'created_at' => date('Y-m-d H:i:s')
             ],
-        ]);
+        ];
+
+        foreach ($layouts as $layout) {
+            WebkioskLayout::firstOrCreate(['code' => $layout['code']], $layout);
+        }
     }
 }
