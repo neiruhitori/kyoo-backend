@@ -14,7 +14,8 @@ class ChangeCustomersGender extends Migration
      */
     public function up()
     {
-        DB::statement("ALTER TABLE customers MODIFY gender ENUM('male', 'female') NULL");
+        // PostgreSQL syntax: ALTER COLUMN ... TYPE
+        DB::statement("ALTER TABLE customers ALTER COLUMN gender TYPE varchar(255)");
     }
 
     /**
